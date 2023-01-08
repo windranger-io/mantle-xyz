@@ -1,2 +1,2 @@
-export * from './atoms/Button'
-export * from './atoms/CardLink'
+export * from './src/atoms/Button'
+export * from './src/atoms/CardLink'

@@ -1,10 +1,10 @@
 module.exports = {
-  root: true,
+  // root: true,
   // This tells ESLint to load the config from the package `eslint-config-custom`
-  extends: ['custom'],
+  extends: '@bitdao/eslint-config-next',
   settings: {
     next: {
-      rootDir: ['apps/*/'],
+      rootDir: ['packages/*/'],
     },
   },
   rules: {

@@ -6,7 +6,7 @@ module.exports = {
     `eslint --fix ${filenames.join(' ')}`,
     `prettier --write ${filenames.join(' ')}`,
   ],
-  'packages/**/*.(ts|tsx|js)': filenames => [
+  'packages/ui/**/*.(ts|tsx|js)': filenames => [
     `eslint --fix ${filenames.join(' ')}`,
     `prettier --write ${filenames.join(' ')}`,
   ],
