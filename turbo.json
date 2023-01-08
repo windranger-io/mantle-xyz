@@ -5,11 +5,17 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"]
     },
-    "test": {},
+    "test": {
+      "outputs": ["coverage/"],
+      "dependsOn": []
+    },
     "lint": {
       "outputs": []
     },
     "dev": {
+      "cache": false
+    },
+    "e2e:test": {
       "cache": false
     }
   }

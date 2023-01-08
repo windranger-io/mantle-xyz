@@ -1,0 +1,47 @@
+name: Test & Build
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Test
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.9.2
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --prefer-offline --frozen-lockfile
+      - name: Install Playwright
+        run: pnpx playwright@1.29.1 install chromium --with-deps
+      - name: Run Playwright tests
+        run: pnpm run ci
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.9.2
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --prefer-offline --frozen-lockfile
+      - name: Build
+        run: pnpm run build
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
