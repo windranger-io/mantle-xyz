@@ -15,7 +15,10 @@
     "dev": {
       "cache": false
     },
-    "e2e:test": {
+    "dev:app-template": {
+      "cache": false
+    },
+    "e2e:test:app-template": {
       "cache": false
     }
   }

@@ -1,5 +1,3 @@
-import * as React from 'react'
-
 /**
  * The most amazing button ever made
  *

@@ -8,6 +8,13 @@ module.exports = {
     },
   },
   rules: {
+    // Allow named function exports
+    'react/function-component-definition': [
+      2,
+      {
+        namedComponents: 'arrow-function',
+      },
+    ],
     'import/no-extraneous-dependencies': 'off',
     'import/prefer-default-export': 'off',
   },

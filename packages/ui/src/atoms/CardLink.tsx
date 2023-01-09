@@ -1,5 +1,3 @@
-import * as React from 'react'
-
 /**
  * Example of a component
  * Do use types for props

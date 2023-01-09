@@ -1,19 +1,19 @@
 {
-  "name": "web-tests",
+  "name": "@bitdao/web-tests",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev:test": "playwright test",
-    "start-server": "cd ../../ && pnpm dev",
-    "e2e:test": "start-server-and-test start-server http://localhost:3000 dev:test"
+    "start-server": "cd ../../ && pnpm dev:app-template",
+    "dev:test:app-template": "playwright test tests/app-template/",
+    "e2e:test:app-template": "start-server-and-test start-server http://localhost:3000 dev:tes:app-template"
   },
   "dependencies": {
     "start-server-and-test": "^1.14.0",
     "app-template": "workspace:*"
   },
   "devDependencies": {
+    "@bitdao/tsconfig": "workspace:*",
     "@playwright/test": "^1.29.1",
-    "tsconfig": "workspace:*",
     "typescript": "^4.9.3"
   }
 }
