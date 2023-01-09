@@ -2,26 +2,26 @@
 
 The offial monorepo for the BitDAO ecosystem. We like to call it the BitDAO Operating System System.
 
-
 ## Tech Stack
 
-This monorepo uses [turborepo]() and [pnpm](https://pnpm.io) as a package manager. It includes the following packages/apps:
+This monorepo uses [turborepo](https://turbo.build) for the monorepo build and [pnpm](https://pnpm.io) as a package manager. It includes the following packages/apps:
 
 ### Apps and Packages
 
 **Apps**
 
 - `website`: The main BitDAO.io marketing website and pages
-- `dashboard`: The main application dashboard, jobs, events, usecases, analytics 
+- `dashboard`: The main application dashboard, jobs, events, usecases, analytics
 - `resources`: A resource portal for docs, prompts, research
 - `design-system`: A resource portal for docs, prompts, research
 - `app-template`: A template to copy when adding a new application into the OS
 
 **Packages**
 
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
-- `ui`: A shared design system
+- `@bitdao/eslint-config-next`: `eslint` configurations for nextjs apps
+- `@bitdao/tsconfig`: `tsconfig.json`s used throughout the monorepo
+- `@bitdao/ui`: A shared design system component library
+- `@bitdao/web-tests`: e2e tests configurable for all projects
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
@@ -32,11 +32,12 @@ The following tools are being used:
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
 - [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
-
+- [Husky](https://typicode.github.io/husky/#/) for for git hooks
+- [Commitlint](https://commitlint.js.org/#/) for cleaner commit messages
 
 ## Getting Started
-You will need to have Node 14 and [pnpm](https://pnpm.io) installed 
 
+You will need to have Node 16.16.0 LTS and [pnpm](https://pnpm.io) installed
 
 ### Build
 
@@ -54,6 +55,12 @@ To develop all apps and packages, run the following command:
 ```
 cd bitdao-os
 pnpm run dev
+```
+
+To develop a specific app you can run
+
+```
+pnpm run dev:app-template
 ```
 
 ### Remote Caching
