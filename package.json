@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "scripts": {
-    "ci": "turbo e2e:test",
+    "ci:app-template": "turbo e2e:test:app-template",
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "dev:app-template": "turbo run dev:app-template",
