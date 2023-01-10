@@ -18,6 +18,9 @@
     "dev:app-template": {
       "cache": false
     },
+    "dev:app-exp": {
+      "cache": false
+    },
     "e2e:test:app-template": {
       "cache": false
     }

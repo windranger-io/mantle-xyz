@@ -2,11 +2,11 @@ module.exports = {
   // Type check TypeScript files
   'apps/**/*.(ts|tsx)': () => 'tsc --noEmit',
   // Lint then format TypeScript and JavaScript files
-  'apps/**/*.(ts|tsx|js)': filenames => [
+  'apps/**/*.(ts|tsx)': filenames => [
     `eslint --fix ${filenames.join(' ')}`,
     `prettier --write ${filenames.join(' ')}`,
   ],
-  'packages/ui/**/*.(ts|tsx|js)': filenames => [
+  'packages/ui/**/*.(ts|tsx)': filenames => [
     `eslint --fix ${filenames.join(' ')}`,
     `prettier --write ${filenames.join(' ')}`,
   ],

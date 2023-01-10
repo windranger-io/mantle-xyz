@@ -11,6 +11,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "dev:app-template": "turbo run dev:app-template",
+    "dev:app-exp": "turbo run dev:app-exp",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
