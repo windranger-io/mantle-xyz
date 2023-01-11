@@ -3,3 +3,31 @@
 @tailwind utilities;
 
 /** The less we use this global style the better! */
+
+.resource-document {
+  article {
+    @apply pt-10;
+    h1 {
+      @apply text-5xl font-bold mb-5;
+    }
+    h2 {
+      @apply text-3xl font-normal mb-3;
+    }
+    h3 {
+      @apply text-2xl font-normal mb-2;
+    }
+    h4 {
+      @apply text-lg font-bold mb-1;
+    }
+    p {
+      @apply font-normal mb-6;
+    }
+
+    ol {
+      @apply list-decimal list-inside mb-6 pl-5;
+    }
+    li {
+      @apply font-normal mb-3;
+    }
+  }
+}
