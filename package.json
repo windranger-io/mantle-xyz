@@ -10,6 +10,7 @@
     "ci:app-template": "turbo e2e:test:app-template",
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "dev:api": "turbo run dev:api",
     "dev:app-template": "turbo run dev:app-template",
     "dev:app-exp": "turbo run dev:app-exp",
     "test": "turbo run test",
