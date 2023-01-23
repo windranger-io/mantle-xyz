@@ -1,6 +1,6 @@
 # BitDAO OS
 
-The offial monorepo for the BitDAO ecosystem. We like to call it the BitDAO Operating System System.
+The offical monorepo for the BitDAO ecosystem. We like to call it the BitDAO Operating System System.
 
 ## Tech Stack
 
