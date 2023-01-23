@@ -8,13 +8,15 @@ This monorepo uses [turborepo](https://turbo.build) for the monorepo build and [
 
 ### Apps and Packages
 
-**Apps**
+**Apps (some apps not created yet)**
 
-- `website`: The main BitDAO.io marketing website and pages
-- `dashboard`: The main application dashboard, jobs, events, usecases, analytics
-- `resources`: A resource portal for docs, prompts, research
-- `design-system`: A resource portal for docs, prompts, research
+- `app-website`: The main BitDAO.io marketing website and pages (TBC)
+- `app-dashboard`: The main application dashboard, jobs, events, usecases, analytics (TBC)
+- `app-resources`: A resource portal for docs, prompts, research (TBC)
+- `app-design-system`: A resource portal for docs, prompts, research
+- `app-experiments`: Experimental app for trying out solutions
 - `app-template`: A template to copy when adding a new application into the OS
+- `api-resources`: A Directus API for resources
 
 **Packages**
 
@@ -50,17 +52,34 @@ pnpm run build
 
 ### Develop
 
-To develop all apps and packages, run the following command:
+To develop specif apps run the command for each app or group:
 
 ```
 cd bitdao-os
-pnpm run dev
 ```
 
-To develop a specific app you can run
+Design System
+
+```
+pnpm run dev:app-ds
+```
+
+App Experiments
+
+```
+pnpm run dev:app-exp
+```
+
+App Template
 
 ```
 pnpm run dev:app-template
+```
+
+API Resources
+
+```
+pnpm run dev:api-res
 ```
 
 ### Remote Caching
