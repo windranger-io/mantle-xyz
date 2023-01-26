@@ -19,7 +19,7 @@ build
 # misc
 .DS_Store
 *.pem
-# data.db
+**/db
 
 # debug
 npm-debug.log*
@@ -37,3 +37,5 @@ yarn-error.log*
 # turbo
 .turbo
 .vercel
+
+**/uploads
