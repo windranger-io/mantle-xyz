@@ -23,7 +23,7 @@ jobs:
       - name: Install Playwright
         run: pnpx playwright@1.29.1 install chromium --with-deps
       - name: Run Playwright tests
-        run: pnpm run ci:app-template
+        run: pnpm run ci:template
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}

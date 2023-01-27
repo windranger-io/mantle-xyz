@@ -10,7 +10,7 @@ This monorepo uses [turborepo](https://turbo.build) for the monorepo build and [
 
 **Apps (some apps not created yet)**
 
-- `mantle-website`: The main [Mantle.xyx](mantle.xyz) marketing website and pages
+- `mantle-website`: The main [Mantle.xyz](https://www.mantle.xyz/) marketing website and pages
 - `mantle-bridge`: The mantle bridge application
 - `mantle-faucet`: The mantle faucet application
 - `mantle-cms`: The mantle cms application
