@@ -1,4 +1,4 @@
-# Contributing to the BitDAO OS
+# Contributing to Mantle XYZ
 
 This guide defines our development processes. Reading and understanding is essential and will help you stay consistent and will ensure your PRs get merged into production faster!
 
