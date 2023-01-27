@@ -1,18 +1,18 @@
 {
-  "name": "@bitdao/web-tests",
+  "name": "@mantle/web-tests",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start-server": "cd ../../ && pnpm dev:app-template",
-    "dev:test:app-template": "playwright test tests/app-template/",
-    "e2e:test:app-template": "start-server-and-test start-server http://localhost:3000 dev:test:app-template"
+    "start-server": "cd ../../ && pnpm dev:template",
+    "dev:test:template": "playwright test tests/template/",
+    "e2e:test:template": "start-server-and-test start-server http://localhost:2999 dev:test:template"
   },
   "dependencies": {
     "start-server-and-test": "^1.14.0",
-    "app-template": "workspace:*"
+    "mantle-template": "workspace:*"
   },
   "devDependencies": {
-    "@bitdao/tsconfig": "workspace:*",
+    "@mantle/tsconfig": "workspace:*",
     "@playwright/test": "^1.29.1",
     "typescript": "^4.9.3"
   }

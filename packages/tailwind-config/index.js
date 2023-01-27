@@ -4,7 +4,7 @@ module.exports = {
   content: [
     './app/**/*.{js,ts,jsx,tsx}',
     './src/**/*.{js,ts,jsx,tsx}',
-    './node_modules/@bitdao/ui/**/*.tsx',
+    './node_modules/@mantle/ui/**/*.tsx',
   ],
   theme: {
     extend: {

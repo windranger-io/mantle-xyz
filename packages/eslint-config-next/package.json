@@ -1,5 +1,5 @@
 {
-  "name": "@bitdao/eslint-config-next",
+  "name": "@mantle/eslint-config-next",
   "version": "0.0.0",
   "main": "index.js",
   "license": "MIT",

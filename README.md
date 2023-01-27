@@ -1,6 +1,6 @@
-# BitDAO OS
+# Mantle XYZ
 
-The offical monorepo for the BitDAO ecosystem Operating System.
+The offical monorepo for the Mantle website, bridge and faucet.
 
 ## Tech Stack
 
@@ -10,20 +10,18 @@ This monorepo uses [turborepo](https://turbo.build) for the monorepo build and [
 
 **Apps (some apps not created yet)**
 
-- `app-website`: The main BitDAO.io marketing website and pages (TBC)
-- `app-dashboard`: The main application dashboard, jobs, events, usecases, analytics (TBC)
-- `app-resources`: A resource portal for docs, prompts, research (TBC)
-- `app-design-system`: A resource portal for docs, prompts, research
-- `app-experiments`: Experimental app for trying out solutions
-- `app-template`: A template to copy when adding a new application into the OS
-- `api-resources`: A Directus API for resources
+- `mantle-website`: The main [Mantle.xyx](mantle.xyz) marketing website and pages
+- `mantle-bridge`: The mantle bridge application
+- `mantle-faucet`: The mantle faucet application
+- `mantle-cms`: The mantle cms application
+- `mantle-template`: A template for other apps
 
 **Packages**
 
-- `@bitdao/eslint-config-next`: `eslint` configurations for nextjs apps
-- `@bitdao/tsconfig`: `tsconfig.json`s used throughout the monorepo
-- `@bitdao/ui`: A shared design system component library
-- `@bitdao/web-tests`: e2e tests configurable for all projects
+- `@mantle/eslint-config-next`: `eslint` configurations for nextjs apps
+- `@mantle/tsconfig`: `tsconfig.json`s used throughout the monorepo
+- `@mantle/ui`: A shared design system component library
+- `@mantle/web-tests`: e2e tests configurable for all projects
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
@@ -46,40 +44,63 @@ You will need to have Node 16.16.0 LTS and [pnpm](https://pnpm.io) installed
 To build all apps and packages, run the following command:
 
 ```
-cd bitdao-os
+cd mantle-xyz
 pnpm run build
 ```
 
 ### Develop
 
-To develop specif apps run the command for each app or group:
+Install dependencies
 
 ```
-cd bitdao-os
+cd mantle-xyz
+pnpm i
 ```
 
-Design System
+**Run all Website, facuet and bridge together:**
 
 ```
-pnpm run dev:app-ds
+pnpm run dev
 ```
 
-App Experiments
+**Run projects alone:**
+
+Mantle Website
 
 ```
-pnpm run dev:app-exp
+pnpm run dev:web
 ```
 
-App Template
+Mantle Faucet
 
 ```
-pnpm run dev:app-template
+pnpm run dev:faucet
 ```
 
-API Resources
+Mantle Bridge
 
 ```
-pnpm run dev:api-res
+pnpm run dev:bridge
+```
+
+Mantle CMS
+
+```
+pnpm run dev:cms
+```
+
+### Adding packages
+
+Add packages to individual apps
+
+```
+pnpm add <PACKAGE_NAME> --filter mantle-website
+```
+
+For dev dependencies
+
+```
+pnpm add <PACKAGE_NAME> -D --filter mantle-website
 ```
 
 ### Remote Caching

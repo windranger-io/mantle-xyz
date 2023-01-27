@@ -1,5 +1,5 @@
 {
-  "name": "@bitdao/tailwind-config",
+  "name": "@mantle/tailwind-config",
   "version": "1.0.0",
   "private": true,
   "main": "index.js",

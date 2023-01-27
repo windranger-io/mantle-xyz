@@ -4,9 +4,9 @@ importers:
 
   .:
     specifiers:
-      '@bitdao/eslint-config-next': workspace:*
       '@commitlint/cli': ^17.4.0
       '@commitlint/config-conventional': ^17.4.0
+      '@mantle/eslint-config-next': workspace:*
       '@types/node': 18.11.3
       husky: ^8.0.3
       lint-staged: ^13.1.0
@@ -14,9 +14,9 @@ importers:
       turbo: ^1.6.3
       typescript: ^4.9.4
     devDependencies:
-      '@bitdao/eslint-config-next': link:packages/eslint-config-next
       '@commitlint/cli': 17.4.0_@types+node@18.11.3
       '@commitlint/config-conventional': 17.4.0
+      '@mantle/eslint-config-next': link:packages/eslint-config-next
       '@types/node': 18.11.3
       husky: 8.0.3
       lint-staged: 13.1.0
@@ -24,7 +24,77 @@ importers:
       turbo: 1.6.3
       typescript: 4.9.4
 
-  apps/api-resources:
+  apps/_template:
+    specifiers:
+      '@mantle/eslint-config-next': workspace:*
+      '@mantle/tailwind-config': workspace:*
+      '@mantle/tsconfig': workspace:*
+      '@mantle/ui': workspace:*
+      '@types/node': 18.11.3
+      '@types/react': 18.0.26
+      '@types/react-dom': 18.0.10
+      autoprefixer: ^10.4.12
+      eslint: ^8.30.0
+      next: 13.1.1
+      postcss: ^8.4.18
+      react: 18.2.0
+      react-dom: 18.2.0
+      tailwindcss: ^3.2.1
+      typescript: 4.8.4
+    dependencies:
+      '@mantle/ui': link:../../packages/ui
+      next: 13.1.1_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    devDependencies:
+      '@mantle/eslint-config-next': link:../../packages/eslint-config-next
+      '@mantle/tailwind-config': link:../../packages/tailwind-config
+      '@mantle/tsconfig': link:../../packages/tsconfig
+      '@types/node': 18.11.3
+      '@types/react': 18.0.26
+      '@types/react-dom': 18.0.10
+      autoprefixer: 10.4.13_postcss@8.4.20
+      eslint: 8.30.0
+      postcss: 8.4.20
+      tailwindcss: 3.2.4_postcss@8.4.20
+      typescript: 4.8.4
+
+  apps/bridge:
+    specifiers:
+      '@mantle/eslint-config-next': workspace:*
+      '@mantle/tailwind-config': workspace:*
+      '@mantle/tsconfig': workspace:*
+      '@mantle/ui': workspace:*
+      '@types/node': 18.11.3
+      '@types/react': 18.0.26
+      '@types/react-dom': 18.0.10
+      autoprefixer: ^10.4.12
+      eslint: ^8.30.0
+      next: 13.1.1
+      postcss: ^8.4.18
+      react: 18.2.0
+      react-dom: 18.2.0
+      tailwindcss: ^3.2.1
+      typescript: 4.8.4
+    dependencies:
+      '@mantle/ui': link:../../packages/ui
+      next: 13.1.1_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    devDependencies:
+      '@mantle/eslint-config-next': link:../../packages/eslint-config-next
+      '@mantle/tailwind-config': link:../../packages/tailwind-config
+      '@mantle/tsconfig': link:../../packages/tsconfig
+      '@types/node': 18.11.3
+      '@types/react': 18.0.26
+      '@types/react-dom': 18.0.10
+      autoprefixer: 10.4.13_postcss@8.4.20
+      eslint: 8.30.0
+      postcss: 8.4.20
+      tailwindcss: 3.2.4_postcss@8.4.20
+      typescript: 4.8.4
+
+  apps/cms:
     specifiers:
       directus: ^9.22.1
       sqlite3: ^5.1.4
@@ -32,12 +102,12 @@ importers:
       directus: 9.22.1
       sqlite3: 5.1.4
 
-  apps/app-design-system:
+  apps/faucet:
     specifiers:
-      '@bitdao/eslint-config-next': workspace:*
-      '@bitdao/tailwind-config': workspace:*
-      '@bitdao/tsconfig': workspace:*
-      '@bitdao/ui': workspace:*
+      '@mantle/eslint-config-next': workspace:*
+      '@mantle/tailwind-config': workspace:*
+      '@mantle/tsconfig': workspace:*
+      '@mantle/ui': workspace:*
       '@types/node': 18.11.3
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.10
@@ -50,14 +120,14 @@ importers:
       tailwindcss: ^3.2.1
       typescript: 4.8.4
     dependencies:
-      '@bitdao/ui': link:../../packages/ui
+      '@mantle/ui': link:../../packages/ui
       next: 13.1.1_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
-      '@bitdao/eslint-config-next': link:../../packages/eslint-config-next
-      '@bitdao/tailwind-config': link:../../packages/tailwind-config
-      '@bitdao/tsconfig': link:../../packages/tsconfig
+      '@mantle/eslint-config-next': link:../../packages/eslint-config-next
+      '@mantle/tailwind-config': link:../../packages/tailwind-config
+      '@mantle/tsconfig': link:../../packages/tsconfig
       '@types/node': 18.11.3
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.10
@@ -67,14 +137,12 @@ importers:
       tailwindcss: 3.2.4_postcss@8.4.20
       typescript: 4.8.4
 
-  apps/app-experiments:
+  apps/website:
     specifiers:
-      '@bitdao/eslint-config-next': workspace:*
-      '@bitdao/tailwind-config': workspace:*
-      '@bitdao/tsconfig': workspace:*
-      '@bitdao/ui': workspace:*
-      '@markdoc/markdoc': ^0.2.1
-      '@tailwindcss/nesting': 0.0.0-insiders.565cd3e
+      '@mantle/eslint-config-next': workspace:*
+      '@mantle/tailwind-config': workspace:*
+      '@mantle/tsconfig': workspace:*
+      '@mantle/ui': workspace:*
       '@types/node': 18.11.3
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.10
@@ -87,51 +155,14 @@ importers:
       tailwindcss: ^3.2.1
       typescript: 4.8.4
     dependencies:
-      '@bitdao/ui': link:../../packages/ui
-      '@markdoc/markdoc': 0.2.1_kzbn2opkn2327fwg5yzwzya5o4
+      '@mantle/ui': link:../../packages/ui
       next: 13.1.1_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
-      '@bitdao/eslint-config-next': link:../../packages/eslint-config-next
-      '@bitdao/tailwind-config': link:../../packages/tailwind-config
-      '@bitdao/tsconfig': link:../../packages/tsconfig
-      '@tailwindcss/nesting': 0.0.0-insiders.565cd3e_postcss@8.4.20
-      '@types/node': 18.11.3
-      '@types/react': 18.0.26
-      '@types/react-dom': 18.0.10
-      autoprefixer: 10.4.13_postcss@8.4.20
-      eslint: 8.30.0
-      postcss: 8.4.20
-      tailwindcss: 3.2.4_postcss@8.4.20
-      typescript: 4.8.4
-
-  apps/app-templates:
-    specifiers:
-      '@bitdao/eslint-config-next': workspace:*
-      '@bitdao/tailwind-config': workspace:*
-      '@bitdao/tsconfig': workspace:*
-      '@bitdao/ui': workspace:*
-      '@types/node': 18.11.3
-      '@types/react': 18.0.26
-      '@types/react-dom': 18.0.10
-      autoprefixer: ^10.4.12
-      eslint: ^8.30.0
-      next: 13.1.1
-      postcss: ^8.4.18
-      react: 18.2.0
-      react-dom: 18.2.0
-      tailwindcss: ^3.2.1
-      typescript: 4.8.4
-    dependencies:
-      '@bitdao/ui': link:../../packages/ui
-      next: 13.1.1_biqbaboplfbrettd7655fr4n2y
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-    devDependencies:
-      '@bitdao/eslint-config-next': link:../../packages/eslint-config-next
-      '@bitdao/tailwind-config': link:../../packages/tailwind-config
-      '@bitdao/tsconfig': link:../../packages/tsconfig
+      '@mantle/eslint-config-next': link:../../packages/eslint-config-next
+      '@mantle/tailwind-config': link:../../packages/tailwind-config
+      '@mantle/tsconfig': link:../../packages/tsconfig
       '@types/node': 18.11.3
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.10
@@ -189,18 +220,18 @@ importers:
 
   packages/ui:
     specifiers:
-      '@bitdao/eslint-config-next': workspace:*
-      '@bitdao/tailwind-config': workspace:*
-      '@bitdao/tsconfig': workspace:*
+      '@mantle/eslint-config-next': workspace:*
+      '@mantle/tailwind-config': workspace:*
+      '@mantle/tsconfig': workspace:*
       '@types/react': ^18.0.26
       '@types/react-dom': ^18.0.10
       eslint: ^7.32.0
       react: ^18.2.0
       typescript: ^4.5.2
     devDependencies:
-      '@bitdao/eslint-config-next': link:../eslint-config-next
-      '@bitdao/tailwind-config': link:../tailwind-config
-      '@bitdao/tsconfig': link:../tsconfig
+      '@mantle/eslint-config-next': link:../eslint-config-next
+      '@mantle/tailwind-config': link:../tailwind-config
+      '@mantle/tsconfig': link:../tsconfig
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.10
       eslint: 7.32.0
@@ -209,16 +240,16 @@ importers:
 
   packages/web-tests:
     specifiers:
-      '@bitdao/tsconfig': workspace:*
+      '@mantle/tsconfig': workspace:*
       '@playwright/test': ^1.29.1
-      app-template: workspace:*
+      mantle-template: workspace:*
       start-server-and-test: ^1.14.0
       typescript: ^4.9.3
     dependencies:
-      app-template: link:../../apps/app-templates
+      mantle-template: link:../../apps/_template
       start-server-and-test: 1.15.2
     devDependencies:
-      '@bitdao/tsconfig': link:../tsconfig
+      '@mantle/tsconfig': link:../tsconfig
       '@playwright/test': 1.29.2
       typescript: 4.9.4
 
@@ -246,7 +277,7 @@ packages:
     resolution: {integrity: sha512-TvE1r2CUueyXOuHdEigYjIZVesInd9KN+K/TFFNfkkxRThiNxO6i4ZqqAVMoEjAamZZ1AA8WXJkjCz7YShHPQA==}
     dependencies:
       '@aws-crypto/util': 2.0.2
-      '@aws-sdk/types': 3.224.0
+      '@aws-sdk/types': 3.226.0
       tslib: 1.14.1
     dev: false
 
@@ -254,7 +285,7 @@ packages:
     resolution: {integrity: sha512-vF0eMdMHx3O3MoOXUfBZry8Y4ZDtcuskjjKgJz8YfIDjLStxTZrYXk+kZqtl6A0uCmmiN/Eb/JbC/CndTV1MHg==}
     dependencies:
       '@aws-crypto/util': 2.0.2
-      '@aws-sdk/types': 3.224.0
+      '@aws-sdk/types': 3.226.0
       tslib: 1.14.1
     dev: false
 
@@ -269,7 +300,7 @@ packages:
     dependencies:
       '@aws-crypto/ie11-detection': 2.0.2
       '@aws-crypto/supports-web-crypto': 2.0.2
-      '@aws-sdk/types': 3.224.0
+      '@aws-sdk/types': 3.226.0
       '@aws-sdk/util-locate-window': 3.208.0
       '@aws-sdk/util-utf8-browser': 3.188.0
       tslib: 1.14.1
@@ -282,7 +313,7 @@ packages:
       '@aws-crypto/sha256-js': 2.0.0
       '@aws-crypto/supports-web-crypto': 2.0.2
       '@aws-crypto/util': 2.0.2
-      '@aws-sdk/types': 3.208.0
+      '@aws-sdk/types': 3.226.0
       '@aws-sdk/util-locate-window': 3.208.0
       '@aws-sdk/util-utf8-browser': 3.188.0
       tslib: 1.14.1
@@ -292,7 +323,7 @@ packages:
     resolution: {integrity: sha512-VZY+mCY4Nmrs5WGfitmNqXzaE873fcIZDu54cbaDaaamsaTOP1DBImV9F4pICc3EHjQXujyE8jig+PFCaew9ig==}
     dependencies:
       '@aws-crypto/util': 2.0.2
-      '@aws-sdk/types': 3.208.0
+      '@aws-sdk/types': 3.226.0
       tslib: 1.14.1
     dev: false
 
@@ -305,7 +336,7 @@ packages:
   /@aws-crypto/util/2.0.2:
     resolution: {integrity: sha512-Lgu5v/0e/BcrZ5m/IWqzPUf3UYFTy/PpeED+uc9SWUR1iZQL8XXbGQg10UfllwwBryO3hFF5dizK+78aoXC1eA==}
     dependencies:
-      '@aws-sdk/types': 3.208.0
+      '@aws-sdk/types': 3.226.0
       '@aws-sdk/util-utf8-browser': 3.188.0
       tslib: 1.14.1
     dev: false
@@ -2807,24 +2838,6 @@ packages:
       - supports-color
     dev: false
 
-  /@markdoc/markdoc/0.2.1_kzbn2opkn2327fwg5yzwzya5o4:
-    resolution: {integrity: sha512-3hr9pggv1h5Q4G50/T3MTnMsl3ejHbk0apVIwxU4x5CFCn+VQnvtJh1vgKZPvMwA+ys67SDUiZz9GD9ccg6LpQ==}
-    engines: {node: '>=14.7.0'}
-    peerDependencies:
-      '@types/react': '*'
-      react: '*'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      react:
-        optional: true
-    dependencies:
-      '@types/react': 18.0.26
-      react: 18.2.0
-    optionalDependencies:
-      '@types/markdown-it': 12.2.3
-    dev: false
-
   /@napi-rs/snappy-android-arm-eabi/7.2.2:
     resolution: {integrity: sha512-H7DuVkPCK5BlAr1NfSU8bDEN7gYs+R78pSHhDng83QxRnCLmVIZk33ymmIwurmoA1HrdTxbkbuNl+lMvNqnytw==}
     engines: {node: '>= 10'}
@@ -3345,15 +3358,6 @@ packages:
       tslib: 2.4.1
     dev: false
 
-  /@tailwindcss/nesting/0.0.0-insiders.565cd3e_postcss@8.4.20:
-    resolution: {integrity: sha512-WhHoFBx19TnH/c+xLwT/sxei6+4RpdfiyG3MYXfmLaMsADmVqBkF7B6lDalgZD9YdM459MF7DtxVbWkOrV7IaQ==}
-    peerDependencies:
-      postcss: ^8.2.15
-    dependencies:
-      postcss: 8.4.20
-      postcss-nested: 5.0.6_postcss@8.4.20
-    dev: true
-
   /@tootallnate/once/1.1.2:
     resolution: {integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==}
     engines: {node: '>= 6'}
@@ -3418,25 +3422,6 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: false
 
-  /@types/linkify-it/3.0.2:
-    resolution: {integrity: sha512-HZQYqbiFVWufzCwexrvh694SOim8z2d+xJl5UNamcvQFejLY/2YUtzXHYi3cHdI7PMlS8ejH2slRAOJQ32aNbA==}
-    dev: false
-    optional: true
-
-  /@types/markdown-it/12.2.3:
-    resolution: {integrity: sha512-GKMHFfv3458yYy+v/N8gjufHO6MSZKCOXpZc5GXIWWy8uldwfmPn98vp81gZ5f9SVw8YYBctgfJ22a2d7AOMeQ==}
-    requiresBuild: true
-    dependencies:
-      '@types/linkify-it': 3.0.2
-      '@types/mdurl': 1.0.2
-    dev: false
-    optional: true
-
-  /@types/mdurl/1.0.2:
-    resolution: {integrity: sha512-eC4U9MlIcu2q0KQmXszyn5Akca/0jrQmwDRgpAMJai7qBWq4amIQhZyNau4VYGtCeALvW1/NtjzJJ567aZxfKA==}
-    dev: false
-    optional: true
-
   /@types/minimist/1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: true
@@ -3461,6 +3446,7 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
+    dev: true
 
   /@types/react-dom/18.0.10:
     resolution: {integrity: sha512-E42GW/JA4Qv15wQdqJq8DL4JhNpB3prJgjgapN3qJT9K2zO5IIAQh4VXvCEDupoqAwnz0cY4RlXeC/ajX5SFHg==}
@@ -3474,6 +3460,7 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.1
+    dev: true
 
   /@types/request/2.48.8:
     resolution: {integrity: sha512-whjk1EDJPcAR2kYHRbFl/lKeeKYTi05A15K9bnLInCVroNDCtXce57xKdI0/rQaA3K+6q0eFyUBPmqfSndUZdQ==}
@@ -3491,6 +3478,7 @@ packages:
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
+    dev: true
 
   /@types/semver/7.3.13:
     resolution: {integrity: sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==}
@@ -4087,7 +4075,7 @@ packages:
   /axios/0.25.0_debug@4.3.4:
     resolution: {integrity: sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: false
@@ -5008,6 +4996,7 @@ packages:
 
   /csstype/3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
+    dev: true
 
   /csv-parser/3.0.0:
     resolution: {integrity: sha512-s6OYSXAK3IdKqYO33y09jhypG/bSDHPuyCme/IdEHfWpLf/jKcpitVFyOC6UemgGk8v7Q5u2XE0vvwmanxhGlQ==}
@@ -6624,6 +6613,18 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: false
+
+  /follow-redirects/1.15.2_debug@4.3.4:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.3.4
     dev: false
 
   /forever-agent/0.6.1:
@@ -9493,16 +9494,6 @@ packages:
       icss-utils: 5.1.0_postcss@8.4.20
       postcss: 8.4.20
     dev: false
-
-  /postcss-nested/5.0.6_postcss@8.4.20:
-    resolution: {integrity: sha512-rKqm2Fk0KbA8Vt3AdGN0FB9OBOMDVajMG6ZCf/GoHgdxUJ4sBFp0A/uMIRm+MJUdo33YXEtjqIz8u7DAp8B7DA==}
-    engines: {node: '>=12.0'}
-    peerDependencies:
-      postcss: ^8.2.14
-    dependencies:
-      postcss: 8.4.20
-      postcss-selector-parser: 6.0.11
-    dev: true
 
   /postcss-nested/6.0.0_postcss@8.4.20:
     resolution: {integrity: sha512-0DkamqrPcmkBDsLn+vQDIrtkSbNkv5AD/M322ySo9kqFkCIYklym2xEmWkwo+Y3/qZo34tzEPNUw4y7yMCdv5w==}

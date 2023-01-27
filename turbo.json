@@ -16,19 +16,22 @@
     "dev": {
       "cache": false
     },
-    "dev:api-resources": {
+    "dev:web": {
       "cache": false
     },
-    "dev:app-design-system": {
+    "dev:bridge": {
       "cache": false
     },
-    "dev:app-template": {
+    "dev:faucet": {
       "cache": false
     },
-    "dev:app-exp": {
+    "dev:cms": {
       "cache": false
     },
-    "e2e:test:app-template": {
+    "dev:template": {
+      "cache": false
+    },
+    "e2e:test:template": {
       "cache": false
     }
   }
