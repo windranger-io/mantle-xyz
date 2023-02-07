@@ -26,3 +26,9 @@ export * from './src/smart/Navigation'
 export * from './src/experimental/CardLink'
 export * from './src/experimental/Page'
 export * from './src/experimental/Container'
+
+/**
+ * Global App Fonts
+ *
+ */
+export * from './src/fonts/ThemeFonts'
