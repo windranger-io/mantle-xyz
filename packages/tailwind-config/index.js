@@ -1,5 +1,6 @@
-const colors = require('tailwindcss/colors')
+const { fontFamily } = require('tailwindcss/defaultTheme')
 const mantleColors = require('./colors')
+
 
 module.exports = {
   content: [
@@ -10,6 +11,9 @@ module.exports = {
   theme: {
     extend: {
       colors: mantleColors, 
+      fontFamily: {
+        sans: ['var(--font-GTWalsheimRegular)', ...fontFamily.sans],
+      },
     },
   },
   plugins: [],
