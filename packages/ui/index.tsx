@@ -3,7 +3,7 @@
  *
  * These components are dumb as f**k
  */
-export * from './src/atoms/Button'
+export * from './src/actions/Button'
 
 /**
  * Dumb Molecule Components

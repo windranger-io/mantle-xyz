@@ -42,11 +42,12 @@ module.exports = {
     primary: baseColors.white,
     secondary: baseColors.gray.silver,
     muted: baseColors.gray.charcoal,
-    error: baseColors.status.error
+    error: baseColors.status.error,
+    inversed: baseColors.black
   },
   stroke: {
     primary: baseColors.gray.blackPearl,
-    hover: baseColors.green.blueDianne,
+    primaryHover: baseColors.green.blueDianne,
     selected: baseColors.white,
     disabled: baseColors.disabled.gray,
     error: baseColors.status.error,
