@@ -1,9 +1,10 @@
 /**
- * Dumb Atomic Components
+ *  Actions
  *
- * These components are dumb as f**k
+ *
  */
-export * from './src/atoms/Button'
+export * from './src/actions/Button'
+export * from './src/actions/Links'
 
 /**
  * Dumb Molecule Components
