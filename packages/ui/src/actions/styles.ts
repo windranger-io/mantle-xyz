@@ -6,6 +6,7 @@ export const classes = {
     small: '',
     regular: 'px-4 py-3',
     large: '',
+    full: 'py-3 w-full rounded-xl',
   },
   variant: {
     primary:

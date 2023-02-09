@@ -14,7 +14,7 @@ interface LinkProps extends LinkHTMLAttributes<HTMLAnchorElement> {
   children: ReactNode
 }
 
-export const MantleLink = ({
+export const Link = ({
   size = 'regular',
   variant = 'primary',
   href,
