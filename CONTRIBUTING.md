@@ -2,14 +2,14 @@
 
 This guide defines our development processes. Reading and understanding is essential and will help you stay consistent and will ensure your PRs get merged into production faster!
 
-## We Use Continous Integration
+## We Use Continuous Integration
 
 The number 1 rule is to make your pull requests easy to review. To help this we use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary). Please read how to use this standard correctly!
 
 Pull requests are opened directly to main where all the e2e tests and linting will run.
 
 - Create feature branch send open draft pr to `main`
-- Use the following standard and inlude the ticket id in the title. Format is lowercase except for some elements like components
+- Use the following standard and include the ticket id in the title. Format is lowercase except for some elements like components
   - feat(design-system): add Button, Card components [core-432]
   - fix(ui): show correct props
   - docs(dashboard): add comments to utility functions
