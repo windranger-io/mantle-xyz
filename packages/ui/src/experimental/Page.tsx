@@ -14,7 +14,7 @@ export const Page = ({
    */
   children: React.ReactNode
 }) => (
-  <div className="flex min-h-screen flex-col items-center justify-center py-2 bg-black">
+  <div className="flex min-h-screen flex-col items-center justify-center py-2">
     {children}
   </div>
 )

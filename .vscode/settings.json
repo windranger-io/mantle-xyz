@@ -1,4 +1,17 @@
 {
   "editor.formatOnSave": true,
-  "cSpell.words": ["Commitlint", "nextjs", "turborepo"]
+  "cSpell.words": [
+    "Bitdao",
+    "clsx",
+    "Commitlint",
+    "ethersproject",
+    "localses",
+    "mantleio",
+    "nextjs",
+    "tailwindcss",
+    "tanstack",
+    "turborepo",
+    "wagmi",
+    "WORKSTREAM"
+  ]
 }
