@@ -10,9 +10,9 @@ module.exports = {
     'airbnb-typescript',
     'plugin:import/recommended',
     'plugin:import/typescript',
-    'prettier',
+    'plugin:prettier/recommended'
   ],
-  plugins: ['@typescript-eslint', 'import'],
+  plugins: ['@typescript-eslint', 'import', 'prettier'],
   settings: {
     next: {
       rootDir: ['apps/*/', 'packages/*/'],
