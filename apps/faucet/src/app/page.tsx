@@ -1,46 +1,45 @@
-import { CardLink, Page as PageWrapper, Container } from '@mantle/ui'
+// Dummy components
+import { Page as PageWrapper, Container } from "@mantle/ui";
+
+// Page components
+import AuthTwitter from "@components/AuthTwtitter";
+import ConnectWallet from "@components/ConnectWallet";
+import MintTokens from "@components/MintTokens";
+
+// Server-side components
+import RecentTweets from "@server/RecentTweets";
+
+// Extract session from caller
+import { headers } from "next/headers";
+import { getSession } from "./session";
 
 /**
  *
  * @todo Updated with real components and content when ready
  */
-export default function Page() {
+export default async function Page() {
+  // * [Passing data between a parent layout and its children is not possible.
+  //   However, you can fetch the same data in a route more than once, and React
+  //   will automatically dedupe the requests without affecting performance.]
+  //   (https://beta.nextjs.org/docs/routing/pages-and-layouts)
+  const session = await getSession(headers().get("cookie") ?? "");
+  // get the tweets server-side so that this can't be manipulated
+  const tweets = await RecentTweets(session);
+
   return (
-    <PageWrapper>
-      <Container>
-        <h1 className="text-6xl font-bold text-white">Mantle Faucet</h1>
-        <p className="mt-5 text-2xl text-white">
-          Get started by editing{' '}
-          <code className="rounded-md bg-gray-800 p-3 font-mono text-lg">
-            app/page.tsx
-          </code>
-        </p>
-        <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
-          <CardLink
-            link="https://github.com/windranger-io"
-            title="Documentation"
-            description="Contributor guidelines & Git Processs and all the good stuff"
-          />
-          <CardLink
-            link="https://github.com/windranger-io"
-            title="Design System"
-            description="Learn how to use the design system to build consistently awesome UI"
-          />
-          <CardLink
-            link="https://github.com/windranger-io"
-            title="Testing"
-            description="Testing your app and making sure you have good e2e tests"
-          />
-          <CardLink
-            link="https://github.com/windranger-io"
-            title="Deploy"
-            description="Deploy your app with Vercel and configure multi zone"
-          />
-        </div>
-      </Container>
-      <footer className="flex h-24 w-full items-center justify-center border-t text-gray-50">
-        Powered by BIT
-      </footer>
-    </PageWrapper>
-  )
+    <div className="text-white">
+      <PageWrapper>
+        <Container className="pb-8">
+          <h1 className="text-6xl font-bold text-white">Mantle Faucet</h1>
+          {/* @todo: Components need to be styled */}
+          <ConnectWallet />
+          <AuthTwitter tweets={tweets} />
+          <MintTokens tweets={tweets} />
+        </Container>
+        <footer className="flex h-24 w-full items-center justify-center border-t text-gray-50">
+          Powered by BIT
+        </footer>
+      </PageWrapper>
+    </div>
+  );
 }

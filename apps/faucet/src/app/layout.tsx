@@ -1,13 +1,18 @@
-import './styles/globals.css'
+import "./styles/globals.css";
 
-export default function RootLayout({
+import Providers from "./providers";
+
+export default async function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {/* @ts-expect-error Server Component */}
+        <Providers>{children}</Providers>
+      </body>
     </html>
-  )
+  );
 }
