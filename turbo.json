@@ -13,6 +13,9 @@
     "lint": {
       "outputs": []
     },
+    "lint:faucet": {
+      "cache": false
+    },
     "dev": {
       "cache": false
     },
@@ -23,6 +26,12 @@
       "cache": false
     },
     "dev:faucet": {
+      "env": [
+        "TWITTER_ID",
+        "TWITTER_SECRET",
+        "NEXTAUTH_URL",
+        "NEXTAUTH_SECRET"
+      ],
       "cache": false
     },
     "dev:cms": {

@@ -17,13 +17,14 @@
     "dev:template": "turbo run dev:template",
     "test": "turbo run test",
     "lint": "turbo run lint",
+    "lint:faucet": "turbo run lint:faucet",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@mantle/eslint-config-next": "workspace:*",
     "@commitlint/cli": "^17.4.0",
     "@commitlint/config-conventional": "^17.4.0",
+    "@mantle/eslint-config-next": "workspace:*",
     "@types/node": "18.11.3",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
