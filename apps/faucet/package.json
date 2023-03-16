@@ -12,6 +12,7 @@
     "lint:faucet": "eslint ./src --fix"
   },
   "dependencies": {
+    "@mantle/constants": "workspace:*",
     "@mantle/ui": "workspace:*",
     "ethers": "^5.7.2",
     "next": "13.1.1",
