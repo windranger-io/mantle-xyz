@@ -2,14 +2,14 @@ import { type ReactNode } from 'react'
 
 import localFont from '@next/font/local'
 
-/**
- * TODO
- * add additional font weight if not variable font
- */
-
 const GTWalsheimRegular = localFont({
   src: './GT-Walsheim-Regular.woff2',
   variable: '--font-GTWalsheimRegular',
+})
+
+const GTWalsheimMedium = localFont({
+  src: './GT-WalsheimMedium.woff2',
+  variable: '--font-GTWalsheiMedium',
 })
 
 interface Props {
@@ -17,5 +17,9 @@ interface Props {
 }
 
 export const ThemeFonts = ({ children }: Props) => (
-  <main className={`${GTWalsheimRegular.variable} font-sans`}>{children}</main>
+  <main
+    className={`${GTWalsheimRegular.variable} ${GTWalsheimMedium.variable} font-sans`}
+  >
+    {children}
+  </main>
 )
