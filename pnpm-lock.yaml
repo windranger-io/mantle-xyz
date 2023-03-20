@@ -64,6 +64,7 @@ importers:
     specifiers:
       '@mantle/constants': workspace:*
       '@ethersproject/bignumber': ^5.7.0
+      '@ethersproject/bytes': ^5.7.0
       '@ethersproject/providers': ^5.7.2
       '@ethersproject/units': ^5.7.0
       '@mantle/eslint-config-next': workspace:*
@@ -91,6 +92,8 @@ importers:
     dependencies:
       '@mantle/constants': link:../../packages/constants
       '@ethersproject/bignumber': 5.7.0
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/providers': 5.7.2
       '@ethersproject/units': 5.7.0
       '@mantle/ui': link:../../packages/ui
       '@tanstack/react-query': 4.24.10_biqbaboplfbrettd7655fr4n2y
@@ -103,7 +106,6 @@ importers:
       react-error-boundary: 3.1.4_react@18.2.0
       wagmi: 0.10.15_bjcqekd4nl4caspyndnezlgu7a
     devDependencies:
-      '@ethersproject/providers': 5.7.2
       '@mantle/eslint-config-next': link:../../packages/eslint-config-next
       '@mantle/tailwind-config': link:../../packages/tailwind-config
       '@mantle/tsconfig': link:../../packages/tsconfig
@@ -8111,7 +8113,7 @@ packages:
         tarball: https://registry.npmjs.com/axios/-/axios-0.21.4.tgz,
       }
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: false
