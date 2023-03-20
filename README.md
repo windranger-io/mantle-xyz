@@ -1,6 +1,6 @@
 # Mantle XYZ
 
-The offical monorepo for the Mantle website, bridge and faucet.
+The official monorepo for the Mantle website, bridge and faucet.
 
 ## Tech Stack
 
@@ -50,14 +50,14 @@ pnpm run build
 
 ### Develop
 
-Install dependencies
+Install dependencies:
 
 ```
 cd mantle-xyz
 pnpm i
 ```
 
-**Run all Website, facuet and bridge together:**
+**Run all Website, faucet and bridge together:**
 
 ```
 pnpm run dev
@@ -110,7 +110,7 @@ Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo
 By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
 
 ```
-cd bitdao-os
+cd mantle-xyz
 pnpm dlx turbo login
 ```
 

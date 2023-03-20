@@ -17,6 +17,7 @@
     "dev:template": "turbo run dev:template",
     "test": "turbo run test",
     "lint": "turbo run lint",
+    "lint:faucet": "turbo run lint:faucet",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky install"
   },

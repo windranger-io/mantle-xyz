@@ -3,7 +3,7 @@ module.exports = {
   extends: '@mantle/eslint-config-next',
   settings: {
     next: {
-      rootDir: ['apps/*/'],
+      rootDir: ['./'],
     },
   },
   rules: {
