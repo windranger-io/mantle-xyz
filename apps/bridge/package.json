@@ -13,7 +13,6 @@
   "dependencies": {
     "@mantle/constants": "workspace:*",
     "@ethersproject/bignumber": "^5.7.0",
-    "@ethersproject/providers": "^5.7.2",
     "@ethersproject/units": "^5.7.0",
     "@mantle/ui": "workspace:*",
     "@tanstack/react-query": "^4.24.4",
@@ -27,6 +26,7 @@
     "wagmi": "^0.10.15"
   },
   "devDependencies": {
+    "@ethersproject/providers": "^5.7.2",
     "@mantle/eslint-config-next": "workspace:*",
     "@mantle/tailwind-config": "workspace:*",
     "@mantle/tsconfig": "workspace:*",
