@@ -62,6 +62,7 @@ importers:
   apps/bridge:
     specifiers:
       '@ethersproject/bignumber': ^5.7.0
+      '@ethersproject/bytes': ^5.7.0
       '@ethersproject/providers': ^5.7.2
       '@ethersproject/units': ^5.7.0
       '@mantle/eslint-config-next': workspace:*
@@ -88,6 +89,8 @@ importers:
       wagmi: ^0.10.15
     dependencies:
       '@ethersproject/bignumber': 5.7.0
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/providers': 5.7.2
       '@ethersproject/units': 5.7.0
       '@mantle/ui': link:../../packages/ui
       '@tanstack/react-query': 4.24.10_biqbaboplfbrettd7655fr4n2y
@@ -100,7 +103,6 @@ importers:
       react-error-boundary: 3.1.4_react@18.2.0
       wagmi: 0.10.15_bjcqekd4nl4caspyndnezlgu7a
     devDependencies:
-      '@ethersproject/providers': 5.7.2
       '@mantle/eslint-config-next': link:../../packages/eslint-config-next
       '@mantle/tailwind-config': link:../../packages/tailwind-config
       '@mantle/tsconfig': link:../../packages/tsconfig
@@ -5980,7 +5982,7 @@ packages:
   /axios/0.21.4:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: false
@@ -9091,16 +9093,6 @@ packages:
 
   /flatted/3.2.7:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
-
-  /follow-redirects/1.15.2:
-    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dev: false
 
   /follow-redirects/1.15.2_debug@4.3.4:
     resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
