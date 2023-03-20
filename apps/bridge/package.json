@@ -11,11 +11,9 @@
     "lint": "eslint src --fix"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@mantle/constants": "workspace:*",
-=======
+    "@ethersproject/providers": "^5.7.2",
     "@ethersproject/units": "^5.7.0",
->>>>>>> d7af77a (chore: update package)
     "@mantle/ui": "workspace:*",
     "@tanstack/react-query": "^4.24.4",
     "@tanstack/react-query-devtools": "^4.24.4",

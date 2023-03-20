@@ -64,8 +64,12 @@ importers:
   apps/bridge:
     specifiers:
 <<<<<<< HEAD
+<<<<<<< HEAD
       '@mantle/constants': workspace:*
 =======
+=======
+      '@ethersproject/providers': ^5.7.2
+>>>>>>> 450cae6 (chore: update package)
       '@ethersproject/units': ^5.7.0
 >>>>>>> d7af77a (chore: update package)
       '@mantle/eslint-config-next': workspace:*
@@ -92,8 +96,12 @@ importers:
       wagmi: ^0.10.15
     dependencies:
 <<<<<<< HEAD
+<<<<<<< HEAD
       '@mantle/constants': link:../../packages/constants
 =======
+=======
+      '@ethersproject/providers': 5.7.2
+>>>>>>> 450cae6 (chore: update package)
       '@ethersproject/units': 5.7.0
 >>>>>>> d7af77a (chore: update package)
       '@mantle/ui': link:../../packages/ui
