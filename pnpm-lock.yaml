@@ -61,6 +61,7 @@ importers:
 
   apps/bridge:
     specifiers:
+      '@ethersproject/providers': ^5.7.2
       '@ethersproject/units': ^5.7.0
       '@mantle/eslint-config-next': workspace:*
       '@mantle/tailwind-config': workspace:*
@@ -85,6 +86,7 @@ importers:
       typescript: 4.9.4
       wagmi: ^0.10.15
     dependencies:
+      '@ethersproject/providers': 5.7.2
       '@ethersproject/units': 5.7.0
       '@mantle/ui': link:../../packages/ui
       '@tanstack/react-query': 4.24.10_biqbaboplfbrettd7655fr4n2y
