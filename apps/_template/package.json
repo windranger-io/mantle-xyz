@@ -10,6 +10,7 @@
     "lint": "eslint src --fix"
   },
   "dependencies": {
+    "@mantle/constants": "workspace:*",
     "@mantle/ui": "workspace:*",
     "next": "13.1.1",
     "react": "18.2.0",
