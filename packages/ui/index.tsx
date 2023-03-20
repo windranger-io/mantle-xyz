@@ -1,7 +1,7 @@
 /**
  *  Actions
  *
- *
+ *  Buttons and links since they share styling
  */
 export * from './src/actions/Button'
 export * from './src/actions/Links'
@@ -13,11 +13,11 @@ export * from './src/actions/Links'
  */
 
 /**
- * Smart Components
+ * Layout Components
  *
  * These components have functionality that needs to be shared across apps
  */
-export * from './src/smart/Navigation'
+export * from './src/layout/Navigation'
 
 /**
  * Experimental Components
