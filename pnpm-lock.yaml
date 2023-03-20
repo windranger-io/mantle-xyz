@@ -61,6 +61,7 @@ importers:
 
   apps/bridge:
     specifiers:
+      '@ethersproject/bignumber': ^5.7.0
       '@ethersproject/providers': ^5.7.2
       '@ethersproject/units': ^5.7.0
       '@mantle/eslint-config-next': workspace:*
@@ -86,6 +87,7 @@ importers:
       typescript: 4.9.4
       wagmi: ^0.10.15
     dependencies:
+      '@ethersproject/bignumber': 5.7.0
       '@ethersproject/providers': 5.7.2
       '@ethersproject/units': 5.7.0
       '@mantle/ui': link:../../packages/ui
