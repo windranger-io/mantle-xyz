@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx directus start",
     "dev:cms": "npx directus start"
   },
   "keywords": [],
