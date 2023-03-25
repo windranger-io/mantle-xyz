@@ -7,9 +7,15 @@ on:
 
 jobs:
   test:
-    name: Test
+    name: Build & Test > Next Template
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      NEXT_PUBLIC_ALCHEMY_API_KEY: ${{ secrets.NEXT_PUBLIC_ALCHEMY_API_KEY }}
+      NEXT_PUBLIC_INFURA_API_KEY: ${{ secrets.NEXT_PUBLIC_INFURA_API_KEY }}
+      I18NEXUS_PRE_BUILD: 'true'
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
@@ -20,28 +26,11 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --prefer-offline --frozen-lockfile
+        env:
+          I18NEXUS_API_KEY: ${{ secrets.I18NEXUS_API_KEY }}
+      - name: Build
+        run: pnpm run build
       - name: Install Playwright
         run: pnpx playwright@1.29.1 install chromium --with-deps
       - name: Run Playwright tests
-        run: pnpm run ci:template
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 7.9.2
-      - uses: actions/setup-node@v3
-        with:
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install --prefer-offline --frozen-lockfile
-      - name: Build
-        run: pnpm run build
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+        run: pnpm run test:ci:template
