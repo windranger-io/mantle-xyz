@@ -1,12 +1,12 @@
-import clsx from 'clsx';
+import clsx from 'clsx'
 
-type Props = React.ComponentPropsWithRef<'button'>;
+type Props = React.ComponentPropsWithRef<'button'>
 
 function BasicButton({
   className,
   ...rest
-  // eslint-disable-next-line arrow-body-style
-}: Props) {
+}: // eslint-disable-next-line arrow-body-style
+Props) {
   return (
     // eslint-disable-next-line react/button-has-type
     <button
@@ -17,13 +17,14 @@ function BasicButton({
         'rounded-md',
         'disabled:border-gray-400',
         'disabled:text-gray-400',
-        className
+        className,
       )}
       // eslint-disable-next-line react/jsx-props-no-spreading
-      {...rest} />
-  );
+      {...rest}
+    />
+  )
 }
 
-export type { Props };
+export type { Props }
 
-export default BasicButton;
+export default BasicButton

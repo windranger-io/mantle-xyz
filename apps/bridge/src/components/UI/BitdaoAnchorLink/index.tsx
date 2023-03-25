@@ -1,29 +1,28 @@
-import * as React from 'react';
-import clsx from 'clsx';
+import * as React from 'react'
+import clsx from 'clsx'
 
 const BitdaoAnchorLink = React.forwardRef<HTMLAnchorElement, Props>(
-  ({
-    // eslint-disable-next-line react/prop-types
-    className,
-    children,
-    ...rest
-  }, ref): JSX.Element => (
+  (
+    {
+      // eslint-disable-next-line react/prop-types
+      className,
+      children,
+      ...rest
+    },
+    ref,
+  ): JSX.Element => (
     <a
       ref={ref}
-      className={clsx(
-        'px-1',
-        'py-0.5',
-        'hover:bg-mantleBlack/5',
-        className
-      )}
+      className={clsx('px-1', 'py-0.5', 'hover:bg-mantleBlack/5', className)}
       // eslint-disable-next-line react/jsx-props-no-spreading
-      {...rest}>
+      {...rest}
+    >
       {children}
     </a>
-  )
-);
-BitdaoAnchorLink.displayName = 'BitdaoAnchorLink';
+  ),
+)
+BitdaoAnchorLink.displayName = 'BitdaoAnchorLink'
 
-export type Props = React.ComponentPropsWithRef<'a'>;
+export type Props = React.ComponentPropsWithRef<'a'>
 
-export default BitdaoAnchorLink;
+export default BitdaoAnchorLink

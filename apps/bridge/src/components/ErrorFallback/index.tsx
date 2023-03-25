@@ -1,16 +1,16 @@
-import clsx from 'clsx';
+import clsx from 'clsx'
 
-import AnchorLink from 'src/components/UI/BitdaoAnchorLink';
+import AnchorLink from 'src/components/UI/BitdaoAnchorLink'
 
 interface Props {
-  error: Error;
+  error: Error
   // eslint-disable-next-line react/require-default-props
-  resetErrorBoundary?: () => void;
+  resetErrorBoundary?: () => void
 }
 
 const handleRefresh = () => {
-  window.location.reload();
-};
+  window.location.reload()
+}
 
 function ErrorFallback({ error, resetErrorBoundary }: Props): JSX.Element {
   return (
@@ -20,13 +20,14 @@ function ErrorFallback({ error, resetErrorBoundary }: Props): JSX.Element {
         Please&nbsp;
         <AnchorLink
           onClick={resetErrorBoundary ?? handleRefresh}
-          className={clsx('underline', 'cursor-pointer')}>
+          className={clsx('underline', 'cursor-pointer')}
+        >
           refresh
         </AnchorLink>
         .
       </span>
     </p>
-  );
+  )
 }
 
-export default ErrorFallback;
+export default ErrorFallback

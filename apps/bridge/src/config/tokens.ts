@@ -1,12 +1,12 @@
 // RE: https://github.com/mantlenetworkio/mantle-token-lists/blob/main/mantle.tokenlist.json
 // RE: https://token-list.mantlenetwork.io/
 
-import { Address } from 'wagmi';
+import { Address } from 'wagmi'
 
 enum ChainID {
   Ethereum = 1,
   Goerli = 5,
-  MantleTestnet = 5001
+  MantleTestnet = 5001,
 }
 
 enum TokenSymbol {
@@ -16,36 +16,32 @@ enum TokenSymbol {
   UNI = 'UNI',
   USDC = 'USDC',
   USDT = 'USDT',
-  WBTC = 'WBTC'
+  WBTC = 'WBTC',
 }
 
 interface Token {
-  chainId: ChainID;
-  address: Address;
-  name: string;
-  symbol: `${TokenSymbol}`;
-  decimals: number;
-  logoURI: string;
+  chainId: ChainID
+  address: Address
+  name: string
+  symbol: `${TokenSymbol}`
+  decimals: number
+  logoURI: string
   extensions: {
-    optimismBridgeAddress: Address;
-  };
+    optimismBridgeAddress: Address
+  }
 }
 
 // TODO: replace with hitting https://token-list.mantle.xyz/mantle.tokenlist.json
 const MANTLE_TOKEN_LIST: {
-  name: string;
-  logoURI: string;
-  keywords: Array<string>;
-  tokens: Array<Token>;
-  timestamp: string;
+  name: string
+  logoURI: string
+  keywords: Array<string>
+  tokens: Array<Token>
+  timestamp: string
 } = {
   name: 'Mantle',
   logoURI: 'https://token-list.mantle.xyz/mantle_logo.svg',
-  keywords: [
-    'scaling',
-    'layer2',
-    'infrastructure'
-  ],
+  keywords: ['scaling', 'layer2', 'infrastructure'],
   timestamp: '2023-02-08T09:38:45.488Z',
   tokens: [
     {
@@ -56,8 +52,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: 'https://token-list.mantle.xyz/data/BitDAO/logo.svg',
       extensions: {
-        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3'
-      }
+        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3',
+      },
     },
     {
       chainId: 5001,
@@ -67,8 +63,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: 'https://token-list.mantle.xyz/data/BitDAO/logo.svg',
       extensions: {
-        optimismBridgeAddress: '0x4200000000000000000000000000000000000010'
-      }
+        optimismBridgeAddress: '0x4200000000000000000000000000000000000010',
+      },
     },
     {
       chainId: 1,
@@ -78,8 +74,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: 'https://token-list.mantle.xyz/data/ETH/logo.svg',
       extensions: {
-        optimismBridgeAddress: '0x99C9fc46f92E8a1c0deC1b1747d010903E884bE1'
-      }
+        optimismBridgeAddress: '0x99C9fc46f92E8a1c0deC1b1747d010903E884bE1',
+      },
     },
     {
       chainId: 5,
@@ -89,8 +85,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: 'https://token-list.mantle.xyz/data/ETH/logo.svg',
       extensions: {
-        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3'
-      }
+        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3',
+      },
     },
     {
       chainId: 5001,
@@ -100,8 +96,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: 'https://token-list.mantle.xyz/data/ETH/logo.svg',
       extensions: {
-        optimismBridgeAddress: '0x4200000000000000000000000000000000000010'
-      }
+        optimismBridgeAddress: '0x4200000000000000000000000000000000000010',
+      },
     },
     {
       chainId: 5,
@@ -111,8 +107,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: 'https://token-list.mantle.xyz/data/LINK/logo.png',
       extensions: {
-        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3'
-      }
+        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3',
+      },
     },
     {
       chainId: 5001,
@@ -122,8 +118,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: 'https://token-list.mantle.xyz/data/LINK/logo.png',
       extensions: {
-        optimismBridgeAddress: '0x4200000000000000000000000000000000000010'
-      }
+        optimismBridgeAddress: '0x4200000000000000000000000000000000000010',
+      },
     },
     {
       chainId: 5,
@@ -133,8 +129,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: 'https://token-list.mantle.xyz/data/UNI/logo.png',
       extensions: {
-        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3'
-      }
+        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3',
+      },
     },
     {
       chainId: 5001,
@@ -144,8 +140,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: 'https://token-list.mantle.xyz/data/UNI/logo.png',
       extensions: {
-        optimismBridgeAddress: '0x4200000000000000000000000000000000000010'
-      }
+        optimismBridgeAddress: '0x4200000000000000000000000000000000000010',
+      },
     },
     {
       chainId: 5,
@@ -155,8 +151,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 6,
       logoURI: 'https://token-list.mantle.xyz/data/USDC/logo.png',
       extensions: {
-        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3'
-      }
+        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3',
+      },
     },
     {
       chainId: 5001,
@@ -166,8 +162,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 6,
       logoURI: 'https://token-list.mantle.xyz/data/USDC/logo.png',
       extensions: {
-        optimismBridgeAddress: '0x4200000000000000000000000000000000000010'
-      }
+        optimismBridgeAddress: '0x4200000000000000000000000000000000000010',
+      },
     },
     {
       chainId: 5,
@@ -177,8 +173,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 6,
       logoURI: 'https://token-list.mantle.xyz/data/USDT/logo.png',
       extensions: {
-        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3'
-      }
+        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3',
+      },
     },
     {
       chainId: 5001,
@@ -188,8 +184,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 6,
       logoURI: 'https://token-list.mantle.xyz/data/USDT/logo.png',
       extensions: {
-        optimismBridgeAddress: '0x4200000000000000000000000000000000000010'
-      }
+        optimismBridgeAddress: '0x4200000000000000000000000000000000000010',
+      },
     },
     {
       chainId: 1,
@@ -199,8 +195,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 8,
       logoURI: 'https://token-list.mantle.xyz/data/WBTC/logo.svg',
       extensions: {
-        optimismBridgeAddress: '0x99C9fc46f92E8a1c0deC1b1747d010903E884bE1'
-      }
+        optimismBridgeAddress: '0x99C9fc46f92E8a1c0deC1b1747d010903E884bE1',
+      },
     },
     {
       chainId: 5,
@@ -210,8 +206,8 @@ const MANTLE_TOKEN_LIST: {
       decimals: 8,
       logoURI: 'https://token-list.mantle.xyz/data/WBTC/logo.svg',
       extensions: {
-        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3'
-      }
+        optimismBridgeAddress: '0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3',
+      },
     },
     {
       chainId: 5001,
@@ -221,16 +217,12 @@ const MANTLE_TOKEN_LIST: {
       decimals: 8,
       logoURI: 'https://token-list.mantle.xyz/data/WBTC/logo.svg',
       extensions: {
-        optimismBridgeAddress: '0x4200000000000000000000000000000000000010'
-      }
-    }
-  ]
-};
+        optimismBridgeAddress: '0x4200000000000000000000000000000000000010',
+      },
+    },
+  ],
+}
 
-export {
-  MANTLE_TOKEN_LIST,
-  ChainID,
-  TokenSymbol
-};
+export { MANTLE_TOKEN_LIST, ChainID, TokenSymbol }
 
-export type { Token };
+export type { Token }
