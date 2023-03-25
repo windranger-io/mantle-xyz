@@ -33,4 +33,4 @@ jobs:
       - name: Install Playwright
         run: pnpx playwright@1.29.1 install chromium --with-deps
       - name: Run Playwright tests
-        run: pnpm run test:ci:template
+        run: pnpm run ci:template
