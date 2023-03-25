@@ -1,16 +1,11 @@
 import * as React from 'react'
 
-/**
- * Example of a component
- * Do use types for props
- * Do use comment to describe what the props are
- *
- */
 export const Container = ({
   children,
   className,
 }: {
   children: React.ReactNode
+  // eslint-disable-next-line react/require-default-props
   className?: string
 }) => (
   <main
@@ -21,7 +16,3 @@ export const Container = ({
     {children}
   </main>
 )
-
-Container.defaultProps = {
-  className: null,
-}
