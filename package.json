@@ -35,8 +35,5 @@
   "engines": {
     "node": ">=16.16.0"
   },
-  "packageManager": "pnpm@7.18.2",
-  "dependencies": {
-    "@next/font": "^13.1.6"
-  }
+  "packageManager": "pnpm@7.18.2"
 }

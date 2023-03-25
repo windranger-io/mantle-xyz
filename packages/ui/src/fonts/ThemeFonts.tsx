@@ -8,8 +8,8 @@ const GTWalsheimRegular = localFont({
 })
 
 const GTWalsheimMedium = localFont({
-  src: './GT-WalsheimMedium.woff2',
-  variable: '--font-GTWalsheiMedium',
+  src: './GT-Walsheim-Medium.woff2',
+  variable: '--font-GTWalsheim-Medium',
 })
 
 interface Props {

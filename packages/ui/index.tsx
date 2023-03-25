@@ -7,10 +7,14 @@ export * from './src/actions/Button'
 export * from './src/actions/Links'
 
 /**
- * Dumb Molecule Components
+ * Base
  *
- * These components are dumb as f**k but composed of Atomic components
+ *
  */
+
+export * from './src/base/Text'
+
+export * from './src/base/T'
 
 /**
  * Layout Components

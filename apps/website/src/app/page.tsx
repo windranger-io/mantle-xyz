@@ -3,6 +3,8 @@ import {
   Page as PageWrapper,
   Container,
   ThemeFonts,
+  Text,
+  T,
 } from '@mantle/ui'
 
 /**
@@ -14,12 +16,22 @@ export default function Page() {
     <ThemeFonts>
       <PageWrapper>
         <Container>
-          <h1 className="text-6xl font-bold text-white">Mantle Website</h1>
+          <T variant="sofiya">Header</T>
+
+          <Text variant="h1" color="primary">
+            jj
+          </Text>
+          <h1 className="text-6xl font-bold text-type-primary">
+            Mantle Website
+          </h1>
           <p className="mt-5 text-2xl text-white">
             Get started by editing{' '}
             <code className="rounded-md bg-gray-800 p-3 font-mono text-lg">
               app/page.tsx
             </code>
+            {/* <Text variant="h1" color="primary">
+              jj
+            </Text> */}
           </p>
           <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
             <CardLink
