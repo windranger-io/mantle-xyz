@@ -7,19 +7,15 @@ const GTWalsheimRegular = localFont({
   variable: '--font-GTWalsheimRegular',
 })
 
-const GTWalsheimMedium = localFont({
-  src: './GT-Walsheim-Medium.woff2',
-  variable: '--font-GTWalsheim-Medium',
-})
+// const GTWalsheimMedium = localFont({
+//   src: './GT-Walsheim-Medium.woff2',
+//   variable: '--font-GTWalsheim-Medium',
+// })
 
 interface Props {
   children: ReactNode
 }
 
 export const ThemeFonts = ({ children }: Props) => (
-  <main
-    className={`${GTWalsheimRegular.variable} ${GTWalsheimMedium.variable} font-sans`}
-  >
-    {children}
-  </main>
+  <main className={`${GTWalsheimRegular.variable} font-sans`}>{children}</main>
 )
