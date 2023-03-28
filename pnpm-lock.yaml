@@ -275,6 +275,7 @@ importers:
 
   packages/ui:
     specifiers:
+      '@mantle/constants': workspace:^0.0.0
       '@mantle/eslint-config-next': workspace:*
       '@mantle/tailwind-config': workspace:*
       '@mantle/tsconfig': workspace:*
@@ -291,6 +292,7 @@ importers:
       tailwind-merge: ^1.10.0
       typescript: ^4.5.2
     dependencies:
+      '@mantle/constants': link:../constants
       classnames: 2.3.2
       clsx: 1.2.1
       react-wrap-balancer: 0.4.0_react@18.2.0
