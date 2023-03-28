@@ -21,7 +21,9 @@ export * from './src/base/T'
  *
  * These components have functionality that needs to be shared across apps
  */
+export * from './src/layout/Header'
 export * from './src/layout/Navigation'
+export * from './src/layout/Footer'
 
 /**
  * Experimental Components

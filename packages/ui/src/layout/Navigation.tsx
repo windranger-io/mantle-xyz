@@ -1,1 +1,1 @@
-export const Navigation = () => <div>Navigation</div>
+export const Navigation = () => <nav>Navigation</nav>
