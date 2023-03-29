@@ -1,36 +1,44 @@
-/* eslint-disable react/require-default-props */
-
 import { LinkHTMLAttributes, type ReactNode } from 'react'
+import clsx from 'clsx'
 
-import { type Variant, type Size } from './types'
+type LinkVariant = 'regular' | 'outline' | 'ghost' | 'link' | 'footer'
+type LinkSize = 'regular' | 'large' | 'small'
 
-import { classes } from './styles'
-import { cls } from './helper'
-
-interface LinkProps extends LinkHTMLAttributes<HTMLAnchorElement> {
-  size?: Size
-  variant?: Variant
+interface Props extends LinkHTMLAttributes<HTMLAnchorElement> {
   href: string
+  // eslint-disable-next-line react/require-default-props
+  target?: any
+  // eslint-disable-next-line react/require-default-props
+  size?: LinkSize
+  // eslint-disable-next-line react/require-default-props
+  variant?: LinkVariant
   children: ReactNode
 }
 
-export const Link = ({
-  size = 'regular',
-  variant = 'primary',
+export const Links = ({
   href,
+  target,
+  size = 'regular',
+  variant = 'regular',
   children,
   className,
   ...props
-}: LinkProps) => (
+}: Props) => (
   // eslint-disable-next-line react/button-has-type
   <a
     href={href}
-    className={cls(`
-    ${classes.base}
-    ${classes.size[size]}
-    ${classes.variant[variant]}
-    ${className}
-  `)}
+    target={target}
+    className={clsx(
+      'text-type-secondary hover:text-type-primary text-sm transition ease-in-out duration-300 cursor-pointer',
+      size === 'large' && '',
+      size === 'regular' && '',
+      size === 'small' && '',
+      variant === 'regular' && '',
+      variant === 'outline' && '',
+      variant === 'ghost' && '',
+      variant === 'link' && '',
+      variant === 'footer' && '',
+    )}
     // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
   >
