@@ -2,7 +2,7 @@ import * as React from 'react'
 import Link from 'next/link'
 
 import CONST from '@mantle/constants'
-import { MantleLogoIcon, MantleLogoText } from '../base/Icons'
+import { MantleLogoIcon, MantleLetterMark } from '../base/Icons'
 import { Links } from '../actions/Links'
 
 const COMMUNITY_ITEMS = [
@@ -126,7 +126,7 @@ export const Footer = () => (
           ))}
         </div>
       </div>
-      <MantleLogoText />
+      <MantleLetterMark />
     </div>
   </footer>
 )
