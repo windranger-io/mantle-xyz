@@ -9,6 +9,9 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import CONST from '@mantle/constants'
 import clsx from 'clsx'
 import { MantleLogoIcon, MantleLockUp } from '../base/Icons'
+import { Links } from '../actions/Links'
+
+import { popoverPanel, popoverPanelInner } from './styles'
 
 const RESOURCE_ITEMS = [
   {
@@ -73,11 +76,11 @@ const COMMUNITY_ITEMS = [
   },
 ]
 
-export const Navigation = () => {
+export const Navigation = ({ children }: { children: React.ReactNode }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="bg-black">
+    <header className="bg-black relative">
       <nav
         className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
         aria-label="Global"
@@ -100,7 +103,7 @@ export const Navigation = () => {
           </button>
         </div>
 
-        <Popover.Group className="hidden lg:flex lg:gap-x-12">
+        <Popover.Group className="hidden lg:flex lg:gap-x-12 ">
           <Link
             href={CONST.NAV_LINKS_ABSOLUTE.DEV_LINK}
             className="text-sm font-semibold leading-6 text-white"
@@ -115,7 +118,7 @@ export const Navigation = () => {
             {/* <span>{t('nav-ecosystem')}</span> */}
             <span>nav-ecosystem</span>
           </Link>
-          <Popover className="relative">
+          <Popover className="">
             <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-white">
               {/* <span>{t('nav-resources')}</span> */}
               <span>nav-resources</span>
@@ -134,15 +137,20 @@ export const Navigation = () => {
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
-              <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
-                <div className="p-4">
+              <Popover.Panel className={clsx(popoverPanel)}>
+                <div
+                  className={clsx(popoverPanelInner)}
+                  style={{ border: '1px solid green' }}
+                >
                   {RESOURCE_ITEMS.map(item => (
                     <div
                       key={item.name}
-                      className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
+                      className="relative  items-center   leading-6 "
+                      style={{ border: '1px solid red' }}
                     >
                       <div className="flex-auto">
-                        <a
+                        <Links
+                          variant="nav"
                           href={item.href}
                           className="block font-semibold text-white"
                           rel="noreferrer noopener"
@@ -150,7 +158,7 @@ export const Navigation = () => {
                         >
                           {item.name}
                           <span className="absolute inset-0" />
-                        </a>
+                        </Links>
                       </div>
                     </div>
                   ))}
@@ -158,7 +166,7 @@ export const Navigation = () => {
               </Popover.Panel>
             </Transition>
           </Popover>
-          <Popover className="relative">
+          <Popover>
             <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-white">
               {/* <span>{t('nav-community')}</span> */}
               <span>nav-community</span>
@@ -177,23 +185,20 @@ export const Navigation = () => {
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
-              <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
-                <div className="p-4">
+              <Popover.Panel className={clsx(popoverPanel)}>
+                <div className={clsx(popoverPanelInner)}>
                   {COMMUNITY_ITEMS.map(item => (
-                    <div
-                      key={item.name}
-                      className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
-                    >
+                    <div key={item.name} className="group ">
                       <div className="flex-auto">
-                        <a
+                        <Links
+                          variant="nav"
                           href={item.href}
                           className="block font-semibold text-white"
                           rel="noreferrer noopener"
                           target={item.internal ? '_self' : '_blank'}
                         >
                           {item.name}
-                          <span className="absolute inset-0" />
-                        </a>
+                        </Links>
                       </div>
                     </div>
                   ))}
@@ -203,9 +208,7 @@ export const Navigation = () => {
           </Popover>
         </Popover.Group>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {/* <a href="#" className="text-sm font-semibold leading-6 text-white">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a> */}
+          {children}
         </div>
       </nav>
       <Dialog

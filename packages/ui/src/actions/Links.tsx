@@ -1,7 +1,7 @@
 import { LinkHTMLAttributes, type ReactNode } from 'react'
 import clsx from 'clsx'
 
-type LinkVariant = 'regular' | 'outline' | 'ghost' | 'link' | 'footer'
+type LinkVariant = 'regular' | 'outline' | 'ghost' | 'link' | 'nav' | 'footer'
 type LinkSize = 'regular' | 'large' | 'small'
 
 interface Props extends LinkHTMLAttributes<HTMLAnchorElement> {
@@ -37,6 +37,7 @@ export const Links = ({
       variant === 'outline' && '',
       variant === 'ghost' && '',
       variant === 'link' && '',
+      variant === 'nav' && '',
       variant === 'footer' && '',
     )}
     // eslint-disable-next-line react/jsx-props-no-spreading

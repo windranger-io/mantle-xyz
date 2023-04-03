@@ -8,13 +8,17 @@ export default {
   },
   NAV_LINKS_RELATIVE: {
     ROLES_LINK: '/jobs',
+    DEV_LINK: '/developers',
     GRANTS_LINK: '/grants',
+    ECOSYSTEM_LINK: '/ecosystem',
     PRIVACY_LINK: '/privacy-policy',
     TERMS_LINK: '/terms'
   },
   NAV_LINKS_ABSOLUTE: {
     ROLES_LINK: 'https://www.mantle.xyz/jobs',
+    DEV_LINK: 'https://www.mantle.xyz/developers',
     GRANTS_LINK: 'https://www.mantle.xyz/grants',
+    ECOSYSTEM_LINK: 'https://www.mantle.xyz/ecosystem',
     PRIVACY_LINK: 'https://www.mantle.xyz/privacy-policy',
     TERMS_LINK: 'https://www.mantle.xyz/terms'
   },

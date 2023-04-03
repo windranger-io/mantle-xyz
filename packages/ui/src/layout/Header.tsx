@@ -11,8 +11,7 @@ export const Header = ({
 }) => (
   <header className={` ${className || ``}`}>
     {/* Logo */}
-    <Navigation />
+    <Navigation>{children}</Navigation>
     {/* Wallet connect and language switcher - to be added per project */}
-    {children}
   </header>
 )
