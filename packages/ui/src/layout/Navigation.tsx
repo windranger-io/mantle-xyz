@@ -118,7 +118,7 @@ export const Navigation = ({ children }: { children: React.ReactNode }) => {
             {/* <span>{t('nav-ecosystem')}</span> */}
             <span>nav-ecosystem</span>
           </Link>
-          <Popover className="">
+          <Popover>
             <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-white">
               {/* <span>{t('nav-resources')}</span> */}
               <span>nav-resources</span>
@@ -138,15 +138,11 @@ export const Navigation = ({ children }: { children: React.ReactNode }) => {
               leaveTo="opacity-0 translate-y-1"
             >
               <Popover.Panel className={clsx(popoverPanel)}>
-                <div
-                  className={clsx(popoverPanelInner)}
-                  style={{ border: '1px solid green' }}
-                >
+                <div className={clsx(popoverPanelInner, 'w-screen')}>
                   {RESOURCE_ITEMS.map(item => (
                     <div
                       key={item.name}
                       className="relative  items-center   leading-6 "
-                      style={{ border: '1px solid red' }}
                     >
                       <div className="flex-auto">
                         <Links
@@ -186,7 +182,7 @@ export const Navigation = ({ children }: { children: React.ReactNode }) => {
               leaveTo="opacity-0 translate-y-1"
             >
               <Popover.Panel className={clsx(popoverPanel)}>
-                <div className={clsx(popoverPanelInner)}>
+                <div className={clsx(popoverPanelInner, 'w-screen')}>
                   {COMMUNITY_ITEMS.map(item => (
                     <div key={item.name} className="group ">
                       <div className="flex-auto">
