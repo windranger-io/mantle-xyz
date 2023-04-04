@@ -12,7 +12,7 @@ module.exports = {
     extend: {
       colors: mantleColors, 
       fontFamily: {
-        sans: ['var(--font-GTWalsheimRegular)', ...fontFamily.sans],
+        'sans': ['var(--font-GTWalsheimRegular)', ...fontFamily.sans],
       },
     },
   },
