@@ -1,7 +1,7 @@
 import { type ButtonHTMLAttributes, type ReactNode } from 'react'
 import clsx from 'clsx'
 
-type ButtonVariant = 'regular' | 'outline' | 'ghost' | 'link'
+type ButtonVariant = 'regular' | 'outline' | 'ghost' | 'link' | 'walletConnect'
 type ButtonSize = 'regular' | 'large' | 'small'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -33,6 +33,8 @@ export const Button = ({
         'border border-brand text-brand hover:border-brand-dark hover:bg-brand-light disabled:border-brand disabled:bg-transparent',
       variant === 'ghost' &&
         'text-brand hover:bg-brand-light disabled:hover:bg-transparent',
+      variant === 'walletConnect' &&
+        'text-black bg-button-primary hover:bg-button-primaryHover disabled:hover:bg-transparent',
       variant === 'link' && 'text-brand hover:underline disabled:no-underline',
     )}
     // eslint-disable-next-line react/jsx-props-no-spreading

@@ -35,6 +35,16 @@ export * from './src/experimental/Page'
 export * from './src/experimental/Container'
 
 /**
+ * Display Components
+ *
+ * Presentational Components
+ */
+export * from './src/display/Avatar'
+
+/**
+ * 
+
+/**
  * Global App Fonts
  *
  */

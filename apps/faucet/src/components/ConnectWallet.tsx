@@ -10,6 +10,8 @@ import { CHAINS, CHAIN_ID } from "@config/constants";
 
 import useIsMounted from "@hooks/useIsMounted";
 import useIsChainID from "@hooks/useIsChainID";
+import { Button } from "@mantle/ui";
+import Avatar from "@mantle/ui/src/display/Avatar";
 
 function ConnectWallet() {
   // only render when mounted
@@ -113,9 +115,12 @@ function ConnectWallet() {
 
   // return connect/disconnect component
   return isMounted() ? (
-    <div className="mt-8">
+    <div className="flex flex-row gap-4">
       {address && isChainID && client.isConnected ? (
-        <>Connected to {truncateAddress(address)}</>
+        <div className="flex flex-row items-center gap-2">
+          <Avatar walletAddress="address" />
+          <p className="text-white text-sm">{truncateAddress(address)}</p>
+        </div>
       ) : (
         ``
       )}
@@ -123,20 +128,27 @@ function ConnectWallet() {
         // eslint-disable-next-line no-nested-ternary
         isChainID || !address ? (
           <>
-            {address ? " - " : ""}
-            <button
+            <Button
+              variant="walletConnect"
+              className="text-white"
+              onClick={() => (!address ? connect() : disconnect())}
+            >
+              {!address ? `Connect Wallet` : `Disconnect`}
+            </Button>
+            {/* <button
               type="button"
+              className="text-white"
               onClick={() => (!address ? connect() : disconnect())}
             >
               {!address ? `Connect Wallet` : `[disconnect]`}
-            </button>
+            </button> */}
           </>
         ) : !isChainID ? (
           <div>
             Unsupported chain -{" "}
-            <button type="button" onClick={() => changeNetwork()}>
+            <Button variant="walletConnect" onClick={() => changeNetwork()}>
               please switch to Goerli
-            </button>
+            </Button>
           </div>
         ) : (
           <div>Loading...</div>
