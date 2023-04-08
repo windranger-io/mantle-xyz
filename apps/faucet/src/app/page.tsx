@@ -1,7 +1,6 @@
 // Dummy components
-
+import Image from "next/image";
 import { Header, Footer, ThemeFonts } from "@mantle/ui";
-
 // Page components
 import AuthTwitter from "@components/AuthTwtitter";
 import ConnectWallet from "@components/ConnectWallet";
@@ -12,6 +11,7 @@ import RecentTweets from "@server/RecentTweets";
 
 // Extract session from caller
 import { headers } from "next/headers";
+import bridgeBG from "../../public/bridge-bg.png";
 import { getSession } from "./session";
 
 /**
@@ -29,11 +29,25 @@ export default async function Page() {
 
   return (
     <ThemeFonts>
+      <div className="fixed h-screen w-screen overflow-hidden z-[-1]">
+        <Image
+          alt="Bridge Background"
+          src={bridgeBG}
+          placeholder="blur"
+          quality={100}
+          fill
+          sizes="100vw"
+          style={{
+            objectFit: "cover",
+          }}
+        />
+      </div>
       <Header>
         <ConnectWallet />
       </Header>
       {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
-      <div className="flex flex-col  min-h-[calc(100vh-68px)]">
+
+      <div className="flex flex-col  min-h-[calc(100vh-68px)] ">
         <h1 className="text-6xl font-bold text-white">Mantle Faucet</h1>
 
         <AuthTwitter tweets={tweets} />

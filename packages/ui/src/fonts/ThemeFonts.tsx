@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const ThemeFonts = ({ children }: Props) => (
-  <main className={clsx(`${GTWalsheimRegular.variable} font-sans`, 'bg-black')}>
+  <main className={clsx(`${GTWalsheimRegular.variable} font-sans`)}>
     {children}
   </main>
 )

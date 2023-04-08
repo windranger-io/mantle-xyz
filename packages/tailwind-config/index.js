@@ -14,6 +14,9 @@ module.exports = {
       fontFamily: {
         'sans': ['var(--font-GTWalsheimRegular)', ...fontFamily.sans],
       },
+      zIndex: {
+        'faucetBg': '-1'
+      }
     },
   },
   plugins: [],
