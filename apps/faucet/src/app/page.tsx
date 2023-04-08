@@ -47,9 +47,9 @@ export default async function Page() {
             <AuthTwitter tweets={tweets} />
             <MintTokens tweets={tweets} />
           </Container>
-          <Footer />
         </PageWrapper>
       </div>
+      <Footer />
     </ThemeFonts>
   );
 }

@@ -96,37 +96,39 @@ const FOOTER_ITEMS = [
 ]
 
 export const Footer = () => (
-  <footer aria-labelledby="footerHeading">
-    <div className="max-w-7xl mx-auto grid gap-10 ">
-      <div className="flex flex-col md:flex-row gap-10 lg:gap-20">
+  <footer
+    aria-labelledby="footerHeading "
+    className="max-w-7xl mx-auto px-4 py-6 lg:py-12 lg:px-8"
+  >
+    <div className="grid grid-cols-1 gap-10 lg:gap-0 lg:grid-cols-4 mb-8">
+      <div className="">
         <Link href="/">
           <MantleLogoIcon width={37} height={37} />
         </Link>
-        <div className="flex flex-wrap gap-10 md:gap-20">
-          {FOOTER_ITEMS.map(item => (
-            <div key={item.title}>
-              <h6 className="text-type-primary text-sm  mb-4 md:mb-6">
-                {item.title}
-              </h6>
-              <ul className="grid gap-1">
-                {item.columnItems.map(columnItem => (
-                  <li key={columnItem.name}>
-                    <Links
-                      variant="footer"
-                      href={`${columnItem.href}`}
-                      rel="noreferrer noopener"
-                      target={columnItem.internal ? '_self' : '_blank'}
-                    >
-                      {columnItem.name}
-                    </Links>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
       </div>
-      <MantleLetterMark />
+
+      {FOOTER_ITEMS.map(item => (
+        <div key={item.title}>
+          <h6 className="text-type-primary text-sm  mb-4 md:mb-6">
+            {item.title}
+          </h6>
+          <ul className="grid gap-1">
+            {item.columnItems.map(columnItem => (
+              <li key={columnItem.name}>
+                <Links
+                  variant="footer"
+                  href={`${columnItem.href}`}
+                  rel="noreferrer noopener"
+                  target={columnItem.internal ? '_self' : '_blank'}
+                >
+                  {columnItem.name}
+                </Links>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
+    <MantleLetterMark />
   </footer>
 )
