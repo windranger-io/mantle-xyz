@@ -1,12 +1,6 @@
 // Dummy components
 
-import {
-  Page as PageWrapper,
-  Header,
-  Container,
-  Footer,
-  ThemeFonts,
-} from "@mantle/ui";
+import { Header, Footer, ThemeFonts } from "@mantle/ui";
 
 // Page components
 import AuthTwitter from "@components/AuthTwtitter";
@@ -38,18 +32,17 @@ export default async function Page() {
       <Header>
         <ConnectWallet />
       </Header>
-      <div className="text-white" style={{ background: "black" }}>
-        <PageWrapper>
-          <Container className="pb-8">
-            <h1 className="text-6xl font-bold text-white">Mantle Faucet</h1>
-            {/* @todo: Components need to be styled */}
+      {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
+      <div className="flex flex-col  min-h-[calc(100vh-68px)]">
+        <h1 className="text-6xl font-bold text-white">Mantle Faucet</h1>
 
-            <AuthTwitter tweets={tweets} />
-            <MintTokens tweets={tweets} />
-          </Container>
-        </PageWrapper>
+        <AuthTwitter tweets={tweets} />
+        <MintTokens tweets={tweets} />
+
+        <div>
+          <Footer />
+        </div>
       </div>
-      <Footer />
     </ThemeFonts>
   );
 }
