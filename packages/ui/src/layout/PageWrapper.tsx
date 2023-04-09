@@ -6,18 +6,11 @@ import React from 'react'
  * Do use comment to describe what the props are
  *
  */
-export const Page = ({
+export const PageWrapper = ({
   children,
 }: {
   /**
    * What this?
    */
   children: React.ReactNode
-}) => (
-  <div
-    className="flex min-h-screen flex-col items-center justify-center "
-    style={{ border: '1px solid red' }}
-  >
-    {children}
-  </div>
-)
+}) => <div className="flex flex-col px-4 lg:px-8">{children}</div>

@@ -100,7 +100,7 @@ export const Footer = () => (
     aria-labelledby="footerHeading "
     className="max-w-7xl mx-auto px-4 py-6 lg:py-12 lg:px-8"
   >
-    <div className="grid grid-cols-1 gap-10 lg:gap-0 lg:grid-cols-4 mb-8">
+    <div className="grid grid-cols-1 gap-10 lg:gap-0 md:grid-cols-4 mb-8">
       <div className="">
         <Link href="/">
           <MantleLogoIcon width={37} height={37} />

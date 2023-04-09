@@ -70,5 +70,6 @@ module.exports = {
   },
   links: {
     // Update with links states
-  }
+  },
+  displayNumbers: baseColors.gray.silver
 }

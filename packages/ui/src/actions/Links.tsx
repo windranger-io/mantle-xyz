@@ -28,18 +28,21 @@ export const Links = ({
   <a
     href={href}
     target={target}
-    className={clsx(
-      'text-type-secondary hover:text-type-primary text-sm transition ease-in-out duration-300 cursor-pointer',
-      size === 'large' && '',
-      size === 'regular' && '',
-      size === 'small' && '',
-      variant === 'regular' && '',
-      variant === 'outline' && '',
-      variant === 'ghost' && '',
-      variant === 'link' && '',
-      variant === 'nav' && '',
-      variant === 'footer' && '',
-    )}
+    className={
+      (clsx(
+        'text-type-secondary hover:text-type-primary text-sm transition ease-in-out duration-300 cursor-pointer',
+        size === 'large' && '',
+        size === 'regular' && '',
+        size === 'small' && '',
+        variant === 'regular' && '',
+        variant === 'outline' && '',
+        variant === 'ghost' && '',
+        variant === 'link' && '',
+        variant === 'nav' && '',
+        variant === 'footer' && '',
+      ),
+      `${className || ``}`)
+    }
     // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
   >

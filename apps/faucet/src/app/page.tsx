@@ -1,6 +1,6 @@
 // Dummy components
 import Image from "next/image";
-import { Header, Footer, ThemeFonts } from "@mantle/ui";
+import { Header, Footer, ThemeFonts, PageWrapper } from "@mantle/ui";
 // Page components
 import AuthTwitter from "@components/AuthTwtitter";
 import ConnectWallet from "@components/ConnectWallet";
@@ -47,11 +47,13 @@ export default async function Page() {
       </Header>
       {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
 
-      <div className="flex flex-col  min-h-[calc(100vh-68px)] ">
-        <h1 className="text-6xl font-bold text-white">Mantle Faucet</h1>
+      <div className="flex flex-col justify-center min-h-[calc(100vh-68px)] ">
+        <PageWrapper>
+          <h1 className="text-5xl text-white text-center">Testnet Faucet</h1>
 
-        <AuthTwitter tweets={tweets} />
-        <MintTokens tweets={tweets} />
+          <AuthTwitter tweets={tweets} />
+          <MintTokens tweets={tweets} />
+        </PageWrapper>
 
         <div>
           <Footer />

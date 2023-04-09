@@ -16,6 +16,9 @@ module.exports = {
       },
       zIndex: {
         'faucetBg': '-1'
+      },
+      borderRadius: {
+        'card': '14px'
       }
     },
   },
