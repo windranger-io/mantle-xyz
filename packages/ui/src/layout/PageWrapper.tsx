@@ -16,4 +16,4 @@ export const PageWrapper = ({
   children: React.ReactNode
   // eslint-disable-next-line react/require-default-props
   className?: string
-}) => <div className={`flex flex-col ${className || ``}`}>{children}</div>
+}) => <main className={`flex flex-col ${className || ``}`}>{children}</main>

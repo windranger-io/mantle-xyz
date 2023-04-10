@@ -11,7 +11,7 @@ import { CHAINS, CHAIN_ID } from "@config/constants";
 import useIsMounted from "@hooks/useIsMounted";
 import useIsChainID from "@hooks/useIsChainID";
 import { Button } from "@mantle/ui";
-import Avatar from "@mantle/ui/src/display/Avatar";
+import Avatar from "@mantle/ui/src/presentational/Avatar";
 
 function ConnectWallet() {
   // only render when mounted
