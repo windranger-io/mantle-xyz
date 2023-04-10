@@ -48,7 +48,7 @@ export default async function Page() {
       {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
 
       <div className="flex flex-col justify-center min-h-[calc(100vh-68px)] ">
-        <PageWrapper>
+        <PageWrapper className="gap-8">
           <h1 className="text-5xl text-white text-center">Testnet Faucet</h1>
 
           <AuthTwitter tweets={tweets} />

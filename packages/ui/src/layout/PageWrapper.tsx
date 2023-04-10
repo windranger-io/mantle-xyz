@@ -8,9 +8,12 @@ import React from 'react'
  */
 export const PageWrapper = ({
   children,
+  className,
 }: {
   /**
    * What this?
    */
   children: React.ReactNode
-}) => <div className="flex flex-col px-4 lg:px-8">{children}</div>
+  // eslint-disable-next-line react/require-default-props
+  className?: string
+}) => <div className={`flex flex-col ${className || ``}`}>{children}</div>

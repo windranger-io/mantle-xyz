@@ -18,9 +18,12 @@ module.exports = {
         'faucetBg': '-1'
       },
       borderRadius: {
-        'card': '14px'
+        'card': '14px',
+        'input': '10px',
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
 }

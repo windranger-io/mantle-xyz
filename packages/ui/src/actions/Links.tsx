@@ -1,7 +1,13 @@
 import { LinkHTMLAttributes, type ReactNode } from 'react'
 import clsx from 'clsx'
 
-type LinkVariant = 'regular' | 'outline' | 'ghost' | 'link' | 'nav' | 'footer'
+type LinkVariant =
+  | 'regular'
+  | 'outline'
+  | 'ghost'
+  | 'website'
+  | 'nav'
+  | 'footer'
 type LinkSize = 'regular' | 'large' | 'small'
 
 interface Props extends LinkHTMLAttributes<HTMLAnchorElement> {
@@ -37,7 +43,7 @@ export const Links = ({
         variant === 'regular' && '',
         variant === 'outline' && '',
         variant === 'ghost' && '',
-        variant === 'link' && '',
+        variant === 'website' && '',
         variant === 'nav' && '',
         variant === 'footer' && '',
       ),
