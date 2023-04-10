@@ -16,7 +16,7 @@ module.exports = {
         'sansSemiBold': ['var(--font-GTWalsheimMedium)', ...fontFamily.sans],
       },
       zIndex: {
-        'faucetBg': '-1'
+        'pageBackgroundImage': '-100'
       },
       borderRadius: {
         'card': '14px',

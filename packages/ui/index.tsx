@@ -39,8 +39,9 @@ export * from './src/experimental/Container'
  *
  * Presentational Components
  */
-export * from './src/display/Avatar'
-export * from './src/display/SimpleCard'
+export * from './src/presentational/Avatar'
+export * from './src/presentational/SimpleCard'
+export * from './src/presentational/PageBackgroundImage'
 
 /**
  * 

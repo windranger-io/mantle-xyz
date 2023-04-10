@@ -1,6 +1,5 @@
 // Dummy components
-import Image from "next/image";
-import { Header, Footer, PageWrapper } from "@mantle/ui";
+import { Header, Footer, PageWrapper, PageBackroundImage } from "@mantle/ui";
 // Page components
 import AuthTwitter from "@components/AuthTwtitter";
 import ConnectWallet from "@components/ConnectWallet";
@@ -11,7 +10,7 @@ import RecentTweets from "@server/RecentTweets";
 
 // Extract session from caller
 import { headers } from "next/headers";
-import bridgeBG from "../../public/bridge-bg.png";
+import faucetBG from "../../public/faucet-bg.png";
 import { getSession } from "./session";
 
 /**
@@ -29,19 +28,7 @@ export default async function Page() {
 
   return (
     <div>
-      <div className="fixed h-screen w-screen overflow-hidden z-[-1]">
-        <Image
-          alt="Bridge Background"
-          src={bridgeBG}
-          placeholder="blur"
-          quality={100}
-          fill
-          sizes="100vw"
-          style={{
-            objectFit: "cover",
-          }}
-        />
-      </div>
+      <PageBackroundImage imgSrc={faucetBG} altDesc="Faucet Background Image" />
       <Header>
         <ConnectWallet />
       </Header>
