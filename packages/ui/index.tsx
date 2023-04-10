@@ -25,6 +25,7 @@ export * from './src/layout/Header'
 export * from './src/layout/Navigation'
 export * from './src/layout/Footer'
 export * from './src/layout/PageWrapper'
+export * from './src/layout/PageContainer'
 
 /**
  * Experimental Components
@@ -32,7 +33,6 @@ export * from './src/layout/PageWrapper'
  * These components are for trying stuff out not ready for production.
  */
 export * from './src/experimental/CardLink'
-export * from './src/experimental/Container'
 
 /**
  * Display Components

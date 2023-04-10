@@ -1,5 +1,11 @@
 // Dummy components
-import { Header, Footer, PageWrapper, PageBackroundImage } from "@mantle/ui";
+import {
+  Header,
+  Footer,
+  PageWrapper,
+  PageBackroundImage,
+  PageContainer,
+} from "@mantle/ui";
 // Page components
 import AuthTwitter from "@components/AuthTwtitter";
 import ConnectWallet from "@components/ConnectWallet";
@@ -38,8 +44,7 @@ export default async function Page() {
       // wallerConnect={<ConnectWallet />}
     >
       {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
-
-      <div className="  min-h-[calc(100vh-68px)] ">
+      <PageContainer className="gap-8">
         <h1 className="text-5xl text-white text-center font-sansSemiBold">
           Testnet Faucet
         </h1>
@@ -47,10 +52,11 @@ export default async function Page() {
         <AuthTwitter tweets={tweets} />
         <MintTokens tweets={tweets} />
 
+        {/* @todo: Take footer out flex order */}
         <div>
           <Footer />
         </div>
-      </div>
+      </PageContainer>
     </PageWrapper>
   );
 }

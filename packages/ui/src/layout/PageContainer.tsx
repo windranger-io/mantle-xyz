@@ -6,7 +6,7 @@ import React from 'react'
  * Margins
  *Padding
  */
-export const Container = ({
+export const PageContainer = ({
   children,
   className,
 }: {
