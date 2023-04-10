@@ -13,6 +13,7 @@ module.exports = {
       colors: mantleColors, 
       fontFamily: {
         'sans': ['var(--font-GTWalsheimRegular)', ...fontFamily.sans],
+        'sansSemiBold': ['var(--font-GTWalsheimMedium)', ...fontFamily.sans],
       },
       zIndex: {
         'faucetBg': '-1'

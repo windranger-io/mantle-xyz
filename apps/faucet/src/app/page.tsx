@@ -1,6 +1,6 @@
 // Dummy components
 import Image from "next/image";
-import { Header, Footer, ThemeFonts, PageWrapper } from "@mantle/ui";
+import { Header, Footer, PageWrapper } from "@mantle/ui";
 // Page components
 import AuthTwitter from "@components/AuthTwtitter";
 import ConnectWallet from "@components/ConnectWallet";
@@ -28,7 +28,7 @@ export default async function Page() {
   const tweets = await RecentTweets(session);
 
   return (
-    <ThemeFonts>
+    <div>
       <div className="fixed h-screen w-screen overflow-hidden z-[-1]">
         <Image
           alt="Bridge Background"
@@ -49,7 +49,9 @@ export default async function Page() {
 
       <div className="flex flex-col justify-center min-h-[calc(100vh-68px)] ">
         <PageWrapper className="gap-8">
-          <h1 className="text-5xl text-white text-center">Testnet Faucet</h1>
+          <h1 className="text-5xl text-white text-center font-sansSemiBold">
+            Testnet Faucet
+          </h1>
 
           <AuthTwitter tweets={tweets} />
           <MintTokens tweets={tweets} />
@@ -59,6 +61,6 @@ export default async function Page() {
           <Footer />
         </div>
       </div>
-    </ThemeFonts>
+    </div>
   );
 }
