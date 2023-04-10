@@ -27,27 +27,30 @@ export default async function Page() {
   const tweets = await RecentTweets(session);
 
   return (
-    <div>
-      <PageBackroundImage imgSrc={faucetBG} altDesc="Faucet Background Image" />
-      <Header>
-        <ConnectWallet />
-      </Header>
+    <PageWrapper
+      siteBackroundImage={
+        <PageBackroundImage
+          imgSrc={faucetBG}
+          altDesc="Faucet Background Image"
+        />
+      }
+      header={<Header walletConnect={<ConnectWallet />} />}
+      // wallerConnect={<ConnectWallet />}
+    >
       {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
 
-      <div className="flex flex-col justify-center min-h-[calc(100vh-68px)] ">
-        <PageWrapper className="gap-8">
-          <h1 className="text-5xl text-white text-center font-sansSemiBold">
-            Testnet Faucet
-          </h1>
+      <div className="  min-h-[calc(100vh-68px)] ">
+        <h1 className="text-5xl text-white text-center font-sansSemiBold">
+          Testnet Faucet
+        </h1>
 
-          <AuthTwitter tweets={tweets} />
-          <MintTokens tweets={tweets} />
-        </PageWrapper>
+        <AuthTwitter tweets={tweets} />
+        <MintTokens tweets={tweets} />
 
         <div>
           <Footer />
         </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

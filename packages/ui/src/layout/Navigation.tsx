@@ -82,7 +82,11 @@ const COMMUNITY_ITEMS = [
   },
 ]
 
-export const Navigation = ({ children }: { children: React.ReactNode }) => {
+export const Navigation = ({
+  walletConnect,
+}: {
+  walletConnect: React.ReactNode
+}) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
@@ -223,7 +227,7 @@ export const Navigation = ({ children }: { children: React.ReactNode }) => {
           </Popover>
         </Popover.Group>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {children}
+          {walletConnect}
         </div>
       </nav>
       <Dialog
