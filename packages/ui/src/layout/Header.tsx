@@ -11,7 +11,8 @@ export const Header = ({
   // eslint-disable-next-line react/require-default-props
   className?: string
 }) => (
-  <div className={clsx('sticky top-0', ` ${className || ``}`)}>
+  // <div className={clsx('sticky top-0', ` ${className || ``}`)}>
+  <div className={clsx('mb-20', ` ${className || ``}`)}>
     {/* Logo */}
     <NavigationLite walletConnect={walletConnect} />
     {/* Wallet connect and language switcher - to be added per project */}
