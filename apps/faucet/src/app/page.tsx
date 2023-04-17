@@ -16,6 +16,7 @@ import RecentTweets from "@server/RecentTweets";
 
 // Extract session from caller
 import { headers } from "next/headers";
+import { GoerliETH } from "@components/GoerliETH";
 import faucetBG from "../../public/faucet-bg.png";
 import { getSession } from "./session";
 
@@ -51,6 +52,7 @@ export default async function Page() {
 
         <AuthTwitter tweets={tweets} />
         <MintTokens tweets={tweets} />
+        <GoerliETH />
 
         {/* @todo: Take footer out flex order */}
         <div>

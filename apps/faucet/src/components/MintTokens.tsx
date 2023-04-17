@@ -11,7 +11,7 @@ import { validate } from "@utils/validateMintData";
 
 import { ABI, NETWORKS, CHAIN_ID, MAX_BALANCE } from "@config/constants";
 import useHasTweeted from "@hooks/useHasTweeted";
-import { Button, Links, SimpleCard } from "@mantle/ui";
+import { Button, SimpleCard } from "@mantle/ui";
 import { Description, Heading } from "./Headings";
 
 function MintTokens({
@@ -305,22 +305,6 @@ function MintTokens({
                 : error
             }
           </div>
-        </div>
-        <div className="flex flex-col items-center gap-2 py-4">
-          <Links
-            className="underline text-[#0A8FF6] hover:text-button-primary transition ease-in-out duration-300 cursor-pointer"
-            target="blank"
-            href="https://faucet.paradigm.xyz/"
-          >
-            Paradigm gETH Faucet
-          </Links>
-          <Links
-            className="underline text-[#0A8FF6] hover:text-button-primary transition ease-in-out duration-300 cursor-pointer"
-            target="blank"
-            href="https://goerlifaucet.com/"
-          >
-            Alchemy gETH Faucet
-          </Links>
         </div>
       </SimpleCard>
     </div>

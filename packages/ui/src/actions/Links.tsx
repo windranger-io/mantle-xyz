@@ -6,6 +6,7 @@ type LinkVariant =
   | 'outline'
   | 'ghost'
   | 'website'
+  | 'faucetGoerli'
   | 'nav'
   | 'footer'
 type LinkSize = 'regular' | 'large' | 'small'
@@ -44,6 +45,8 @@ export const Links = ({
         variant === 'outline' && '',
         variant === 'ghost' && '',
         variant === 'website' && '',
+        variant === 'faucetGoerli' &&
+          'underline text-[#0A8FF6] hover:text-button-primary transition ease-in-out duration-300 cursor-pointer',
         variant === 'nav' && '',
         variant === 'footer' && '',
       ),
