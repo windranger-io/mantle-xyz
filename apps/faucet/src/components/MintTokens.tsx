@@ -34,7 +34,7 @@ function MintTokens({
 
   // record connected wallets bit and eth balance
   const [myBalanceBIT, setmyBalanceBIT] = useState("0.0");
-  const [myBalanceETH, setmyBalanceETH] = useState("0.0");
+  const [, setmyBalanceETH] = useState("0.0");
 
   // set address with useState to avoid hydration errors
   const [address, setAddress] = useState<string>();
@@ -121,24 +121,6 @@ function MintTokens({
           <span className="sr-only">Minting...</span>
         </div>
       </div>
-
-      <SimpleCard className=" max-w-lg grid gap-1">
-        <div className="underline text-left pb-4">
-          Connected Address: {`${truncateAddress(address as `0x${string}`)}`}
-        </div>
-        <div className="flex flex-row px-4 gap-2">
-          <span>ETH Balance:</span>
-          <span>{`${(Math.round(parseFloat(myBalanceETH) * 100) / 100).toFixed(
-            2
-          )} ETH`}</span>
-        </div>
-        <div className="flex flex-row px-4 gap-2">
-          <span>BIT Balance:</span>
-          <span>{`${(Math.round(parseFloat(myBalanceBIT) * 100) / 100).toFixed(
-            2
-          )} BIT`}</span>
-        </div>
-      </SimpleCard>
 
       <SimpleCard className="max-w-lg grid gap-4">
         <Heading numDisplay="2" header="Set your mint address" />
