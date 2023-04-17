@@ -7,73 +7,73 @@ import { Links } from '../actions/Links'
 
 const COMMUNITY_ITEMS = [
   {
-    name: 'footer-discord',
+    name: 'Discord',
     href: CONST.SOCIAL_LINKS.DISCORD_LINK || '#',
     internal: false,
   },
   {
-    name: 'footer-twitter',
+    name: 'Twitter',
     href: CONST.SOCIAL_LINKS.TWITTER_LINK || '#',
     internal: false,
   },
   {
-    name: 'footer-medium',
+    name: 'Medium',
     href: CONST.SOCIAL_LINKS.MEDIUM_LINK || '#',
     internal: false,
   },
   {
-    name: 'footer-telegram',
+    name: 'Telegram',
     href: CONST.SOCIAL_LINKS.TELEGRAM_LINK || '#',
     internal: false,
   },
   {
-    name: 'footer-roles',
+    name: 'Careers',
     href: CONST.NAV_LINKS_ABSOLUTE.ROLES_LINK || '#',
-    internal: true,
+    internal: false,
   },
 ]
 
 const LEGAL_ITEMS = [
   {
-    name: 'footer-privacy-policy',
+    name: 'Privacy Policy',
     href: CONST.NAV_LINKS_ABSOLUTE.PRIVACY_LINK || '#',
-    internal: true,
+    internal: false,
   },
   {
-    name: 'footer-terms',
+    name: 'Terms',
     href: CONST.NAV_LINKS_ABSOLUTE.TERMS_LINK || '#',
-    internal: true,
+    internal: false,
   },
 ]
 
 const RESOURCE_ITEMS = [
   {
-    name: 'footer-docs',
+    name: 'Docs',
     href: CONST.RESOURCE_LINKS.DOC_LINK || '#',
     internal: false,
   },
   {
-    name: 'footer-github',
+    name: 'Github',
     href: CONST.RESOURCE_LINKS.GITHUB_LINK || '#',
     internal: false,
   },
+  // {
+  //   name: 'footer-faucet',
+  //   href: CONST.RESOURCE_LINKS.FAUCET_LINK || '#',
+  //   internal: false,
+  // },
   {
-    name: 'footer-faucet',
-    href: CONST.RESOURCE_LINKS.FAUCET_LINK || '#',
-    internal: false,
-  },
-  {
-    name: 'footer-bridge',
+    name: 'Bridge',
     href: CONST.RESOURCE_LINKS.BRIDGE_LINK || '#',
     internal: false,
   },
   {
-    name: 'footer-explorer',
+    name: 'Explorer',
     href: CONST.RESOURCE_LINKS.EXPLORER_LINK || '#',
     internal: false,
   },
   {
-    name: 'footer-brand',
+    name: 'Brand',
     href: CONST.RESOURCE_LINKS.BRAND_LINK || '#',
     internal: false,
   },
@@ -81,16 +81,16 @@ const RESOURCE_ITEMS = [
 
 const FOOTER_ITEMS = [
   {
-    title: 'footer-community-heading',
+    title: 'Community',
     columnItems: COMMUNITY_ITEMS,
   },
 
   {
-    title: 'footer-resources-heading',
+    title: 'Resources',
     columnItems: RESOURCE_ITEMS,
   },
   {
-    title: 'footer-legal-heading',
+    title: 'Legal',
     columnItems: LEGAL_ITEMS,
   },
 ]
@@ -98,13 +98,15 @@ const FOOTER_ITEMS = [
 export const Footer = () => (
   <footer
     aria-labelledby="footerHeading "
-    className="max-w-7xl mx-auto px-4 py-6 lg:py-12 lg:px-8"
+    // remove uppercase when translations happen
+    className="max-w-7xl mx-auto px-4 py-6 lg:py-12 lg:px-8 uppercase"
   >
     <div className="grid grid-cols-1 gap-10 lg:gap-0 md:grid-cols-4 mb-8">
-      <div className="">
+      <div className="flex flex-col gap-2">
         <Link href="/">
           <MantleLogoIcon width={37} height={37} />
         </Link>
+        <p className="text-xs">{new Date().getFullYear()}&nbsp;&#169;</p>
       </div>
 
       {FOOTER_ITEMS.map(item => (
@@ -117,6 +119,7 @@ export const Footer = () => (
               <li key={columnItem.name}>
                 <Links
                   variant="footer"
+                  className="text-type-secondary hover:text-type-primary text-sm transition ease-in-out duration-300 cursor-pointer"
                   href={`${columnItem.href}`}
                   rel="noreferrer noopener"
                   target={columnItem.internal ? '_self' : '_blank'}
