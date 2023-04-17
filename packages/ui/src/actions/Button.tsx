@@ -45,7 +45,7 @@ export const Button = ({
       variant === 'ghost' &&
         'text-brand hover:bg-brand-light disabled:hover:bg-transparent',
       variant === 'walletConnect' &&
-        'text-black bg-button-primary hover:bg-button-primaryHover disabled:hover:bg-transparent',
+        'text-black bg-button-primary hover:bg-button-primaryHover disabled:hover:bg-transparent text-sm',
       variant === 'link' &&
         'text-brand p-0 hover:underline disabled:no-underline',
       `${className}`,
