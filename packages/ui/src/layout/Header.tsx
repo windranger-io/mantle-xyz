@@ -1,6 +1,6 @@
 import * as React from 'react'
 import clsx from 'clsx'
-import { Navigation } from './Navigation'
+import { NavigationLite } from './NavigationLite'
 
 export const Header = ({
   className,
@@ -13,7 +13,7 @@ export const Header = ({
 }) => (
   <div className={clsx('sticky top-0', ` ${className || ``}`)}>
     {/* Logo */}
-    <Navigation walletConnect={walletConnect} />
+    <NavigationLite walletConnect={walletConnect} />
     {/* Wallet connect and language switcher - to be added per project */}
   </div>
 )
