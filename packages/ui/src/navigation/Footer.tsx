@@ -3,7 +3,8 @@ import Link from 'next/link'
 
 import CONST from '@mantle/constants'
 import { MantleLogoIcon, MantleLetterMark } from '../base/Icons'
-import { Links } from '../actions/Links'
+import { Typography } from '../base/T'
+import { MantleLink } from '../links/MantleLinks'
 
 const COMMUNITY_ITEMS = [
   {
@@ -111,21 +112,20 @@ export const Footer = () => (
 
       {FOOTER_ITEMS.map(item => (
         <div key={item.title}>
-          <h6 className="text-type-primary text-sm  mb-4 md:mb-6">
+          <Typography variant="footerColumnLabel" className="mb-4 md:mb-6">
             {item.title}
-          </h6>
+          </Typography>
           <ul className="grid gap-1">
             {item.columnItems.map(columnItem => (
               <li key={columnItem.name}>
-                <Links
-                  variant="footer"
-                  className="text-type-secondary hover:text-type-primary text-sm transition ease-in-out duration-300 cursor-pointer"
+                <MantleLink
                   href={`${columnItem.href}`}
+                  variant="footer"
                   rel="noreferrer noopener"
                   target={columnItem.internal ? '_self' : '_blank'}
                 >
                   {columnItem.name}
-                </Links>
+                </MantleLink>
               </li>
             ))}
           </ul>
