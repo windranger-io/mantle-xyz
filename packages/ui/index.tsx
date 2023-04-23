@@ -7,6 +7,14 @@ export * from './src/actions/Button'
 export * from './src/actions/Links'
 
 /**
+ *  Links
+ *
+ *  Buttons and links since they share styling
+ */
+
+export * from './src/links/MantleLinks'
+
+/**
  * Base
  *
  *

@@ -16,7 +16,7 @@ import RecentTweets from "@server/RecentTweets";
 
 // Extract session from caller
 import { headers } from "next/headers";
-import { GoerliETH } from "@components/GoerliETH";
+import { AdditionalLinks } from "@components/AdditionalLinks";
 import faucetBG from "../../public/faucet-bg.png";
 import { getSession } from "./session";
 
@@ -41,7 +41,7 @@ export default async function Page() {
           altDesc="Faucet Background Image"
         />
       }
-      header={<Header sticky navLite walletConnect={<ConnectWallet />} />}
+      header={<Header navLite walletConnect={<ConnectWallet />} />}
     >
       {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
       <PageContainer className="gap-8">
@@ -51,7 +51,7 @@ export default async function Page() {
 
         <AuthTwitter tweets={tweets} />
         <MintTokens tweets={tweets} />
-        <GoerliETH />
+        <AdditionalLinks />
 
         {/* @todo: Take footer out flex order */}
         <div>

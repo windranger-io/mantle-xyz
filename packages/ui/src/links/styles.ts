@@ -1,10 +1,9 @@
 export const classes = {
-  base: 'focus:outline-none transition ease-in-out duration-300 rounded-lg',
+  base: 'focus:outline-none transition ease-in-out duration-300 rounded-lg cursor-pointer',
   disabled: '',
   pill: '',
   size: {
     small: '',
-    regular: 'px-4 py-3',
     large: '',
     full: 'py-3 w-full rounded-xl',
   },
@@ -13,6 +12,6 @@ export const classes = {
       'bg-button-primary hover:bg-button-primaryHover text-type-inverse active:ring-stroke-selected active:ring-2',
     secondary: '',
     danger: '',
-    sofiya: 'bg-color-red',
+    additionalLinks: 'text-[#0A8FF6] hover:text-button-primary underline',
   },
 }

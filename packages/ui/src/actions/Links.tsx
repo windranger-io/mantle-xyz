@@ -9,6 +9,7 @@ type LinkVariant =
   | 'faucetGoerli'
   | 'nav'
   | 'footer'
+
 type LinkSize = 'regular' | 'large' | 'small'
 
 interface Props extends LinkHTMLAttributes<HTMLAnchorElement> {
@@ -26,7 +27,7 @@ export const Links = ({
   href,
   target,
   size = 'regular',
-  variant = 'regular',
+  variant,
   children,
   className,
   ...props
@@ -50,7 +51,7 @@ export const Links = ({
         variant === 'nav' && '',
         variant === 'footer' && '',
       ),
-      `${className || ``}`)
+      ``)
     }
     // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
