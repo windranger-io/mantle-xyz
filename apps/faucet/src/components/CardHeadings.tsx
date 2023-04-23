@@ -1,4 +1,4 @@
-export function Heading({
+export function CardHeading({
   numDisplay,
   header,
 }: {
@@ -12,11 +12,5 @@ export function Heading({
       </div>
       <h2 className="text-lg text-center w-full">{header}</h2>
     </div>
-  );
-}
-
-export function Description({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-type-secondary text-center text-sm mb-4">{children}</p>
   );
 }

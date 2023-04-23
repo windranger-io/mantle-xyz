@@ -4,10 +4,10 @@ import React from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 import useHasTweeted from "@hooks/useHasTweeted";
-import { Button, SimpleCard } from "@mantle/ui";
+import { Button, SimpleCard, Typography } from "@mantle/ui";
 import Link from "next/link";
 import { AiOutlineCheckCircle } from "react-icons/ai";
-import { Description, Heading } from "./Headings";
+import { CardHeading } from "./CardHeadings";
 
 function AuthTwitter({
   tweets,
@@ -32,19 +32,20 @@ function AuthTwitter({
 
   return (
     <SimpleCard className="max-w-lg w-full  grid gap-4">
-      <Heading numDisplay="1" header="Make a tweet" />
+      <CardHeading numDisplay="1" header="Make a tweet" />
 
       {!hasTweeted ? (
-        <Description>
+        <Typography variant="body" className="text-center  mb-4">
+          {" "}
           To request funds via Twitter, you should make a tweet first
-        </Description>
+        </Typography>
       ) : (
-        <Description>
+        <Typography variant="body">
           <div className="flex gap-4 items-center justify-center">
             Authenticated: {session?.user.username}{" "}
             <AiOutlineCheckCircle className="text-status-success block text-lg" />{" "}
           </div>
-        </Description>
+        </Typography>
       )}
 
       {hasTweeted ? (

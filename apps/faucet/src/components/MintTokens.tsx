@@ -11,8 +11,8 @@ import { validate } from "@utils/validateMintData";
 
 import { ABI, NETWORKS, CHAIN_ID, MAX_BALANCE } from "@config/constants";
 import useHasTweeted from "@hooks/useHasTweeted";
-import { Button, SimpleCard } from "@mantle/ui";
-import { Description, Heading } from "./Headings";
+import { Button, SimpleCard, Typography } from "@mantle/ui";
+import { CardHeading } from "./CardHeadings";
 
 function MintTokens({
   tweets,
@@ -123,12 +123,12 @@ function MintTokens({
       </div>
 
       <SimpleCard className="max-w-lg grid gap-4">
-        <Heading numDisplay="2" header="Set your mint address" />
-        <Description>
+        <CardHeading numDisplay="2" header="Set your mint address" />
+        <Typography variant="body">
           Each address can mint 1,000 tokens every 1,000 blocks (about 4 hours).
           Additionally, an address can hold a maximum of 1,000 tokens at any
           time.
-        </Description>
+        </Typography>
 
         <div
           className={`text-center text-status-success ${
