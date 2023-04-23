@@ -11,6 +11,7 @@ Props) {
     // eslint-disable-next-line react/button-has-type
     <button
       className={clsx(
+        'text-white',
         'border',
         'border-black',
         'p-3',
