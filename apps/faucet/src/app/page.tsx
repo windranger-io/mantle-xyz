@@ -5,6 +5,7 @@ import {
   PageWrapper,
   PageBackroundImage,
   PageContainer,
+  Typography,
 } from "@mantle/ui";
 // Page components
 import AuthTwitter from "@components/AuthTwtitter";
@@ -72,9 +73,9 @@ export default async function Page() {
     >
       {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
       <PageContainer className="gap-8">
-        <h1 className="text-5xl text-white text-center font-sansSemiBold">
+        <Typography variant="appPageHeading" className="text-center">
           Testnet Faucet
-        </h1>
+        </Typography>
 
         <AuthTwitter tweets={tweets} />
         <MintTokens tweets={tweets} />

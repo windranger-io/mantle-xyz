@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 import Balancer from 'react-wrap-balancer'
 import { twMerge } from 'tailwind-merge'
 
-type TypographyVariant = 'pageHeading' | 'body' | 'footerColumnLabel'
+type TypographyVariant = 'appPageHeading' | 'body' | 'footerColumnLabel'
 
 type HTMLTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p'
 
@@ -28,9 +28,9 @@ const bodyDefault = 'GTWalsheimRegular'
 const typographyMap: {
   [key in TypographyVariant]: { tag: HTMLTag; classNames: string }
 } = {
-  pageHeading: {
+  appPageHeading: {
     tag: 'h1',
-    classNames: classNames(headingDefault, ''),
+    classNames: classNames(headingDefault, 'text-[48px] text-type-primary'),
   },
   body: {
     tag: 'p',
