@@ -13,6 +13,7 @@ export const Header = ({
   walletConnect,
   sticky,
   navLite = false,
+  navItems,
 }: {
   // eslint-disable-next-line react/require-default-props
   walletConnect: React.ReactNode
@@ -22,6 +23,8 @@ export const Header = ({
   sticky?: boolean
   // eslint-disable-next-line react/require-default-props
   navLite?: boolean
+  // eslint-disable-next-line react/require-default-props
+  navItems?: any
 }) => (
   <header
     className={
@@ -31,7 +34,7 @@ export const Header = ({
     }
   >
     {navLite ? (
-      <NavigationLite walletConnect={walletConnect} />
+      <NavigationLite walletConnect={walletConnect} navItems={navItems} />
     ) : (
       <NavigationFull walletConnect={walletConnect} />
     )}

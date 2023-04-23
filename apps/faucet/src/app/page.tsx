@@ -17,13 +17,34 @@ import RecentTweets from "@server/RecentTweets";
 // Extract session from caller
 import { headers } from "next/headers";
 import { AdditionalLinks } from "@components/AdditionalLinks";
+import CONST from "@mantle/constants";
 import faucetBG from "../../public/faucet-bg.png";
 import { getSession } from "./session";
 
 /**
  *
  * @todo Updated with real components and content when ready
+ *
  */
+
+const NAV_ITEMS = [
+  {
+    name: "Docs",
+    href: CONST.RESOURCE_LINKS.DOC_LINK || "#",
+    internal: false,
+  },
+  {
+    name: "Faucet",
+    href: CONST.RESOURCE_LINKS.FAUCET_LINK || "#",
+    internal: false,
+  },
+  {
+    name: "Bridge",
+    href: CONST.RESOURCE_LINKS.BRIDGE_LINK || "#",
+    internal: false,
+  },
+];
+
 export default async function Page() {
   // * [Passing data between a parent layout and its children is not possible.
   //   However, you can fetch the same data in a route more than once, and React
@@ -41,7 +62,13 @@ export default async function Page() {
           altDesc="Faucet Background Image"
         />
       }
-      header={<Header navLite walletConnect={<ConnectWallet />} />}
+      header={
+        <Header
+          navLite
+          walletConnect={<ConnectWallet />}
+          navItems={NAV_ITEMS}
+        />
+      }
     >
       {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
       <PageContainer className="gap-8">

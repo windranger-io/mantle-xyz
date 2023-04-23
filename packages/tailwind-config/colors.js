@@ -71,5 +71,6 @@ module.exports = {
   links: {
     // Update with links states
   },
-  displayNumbers: baseColors.gray.silver
+  displayNumbers: baseColors.gray.silver,
+  mobileNavSeparator: baseColors.green.blueDianne
 }

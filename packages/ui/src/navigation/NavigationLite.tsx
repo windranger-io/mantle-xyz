@@ -5,17 +5,24 @@ import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
-import CONST from '@mantle/constants'
 import clsx from 'clsx'
 import { MantleLogoIcon, MantleLockUp } from '../base/Icons'
-import { Links } from '../actions/Links'
 
-import { mobileNavCat, mobileNavCatText } from './styles'
+import { mobileNavCat } from './styles'
+import { MantleLink } from '../links/MantleLinks'
+
+type NavItems = {
+  name: string
+  href: string
+  internal: boolean
+}
 
 export const NavigationLite = ({
   walletConnect,
+  navItems,
 }: {
   walletConnect: React.ReactNode
+  navItems: NavItems
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -33,29 +40,17 @@ export const NavigationLite = ({
             <MantleLockUp className="h-8 w-auto " />
           </Link>
         </div>
-
         <div className="hidden lg:flex justify-between">
-          <Links
-            href={CONST.RESOURCE_LINKS.BRIDGE_LINK}
-            rel="noreferrer noopener"
-            target="_blank"
-            className="text-type-secondary hover:text-type-primary  transition ease-in-out duration-300 cursor-pointer"
-          >
-            Bridge
-          </Links>
-
-          <Links href="/" className="text-type-primary cursor-pointer relative">
-            Faucet
-            <div className="rounded-full bg-white h-1 w-1  absolute left-[50%] bottom-[-10px]" />
-          </Links>
-          <Links
-            href={CONST.RESOURCE_LINKS.DOC_LINK}
-            rel="noreferrer noopener"
-            target="_blank"
-            className="text-type-secondary hover:text-type-primary  transition ease-in-out duration-300 cursor-pointer"
-          >
-            Docs
-          </Links>
+          {navItems.map(item => (
+            <MantleLink
+              variant="navLink"
+              href={item.href}
+              target={item.target}
+              rel="noreferrer noopener"
+            >
+              {item.name}
+            </MantleLink>
+          ))}
         </div>
 
         <div className="flex justify-end gap-10">
@@ -68,7 +63,7 @@ export const NavigationLite = ({
             >
               <span className="sr-only">Open main menu</span>
               <Bars3Icon
-                className="h-8 w-8 ext-type-secondary hover:text-type-primary transition ease-in-out duration-300"
+                className="h-8 w-8 text-type-secondary hover:text-type-primary transition ease-in-out duration-300"
                 aria-hidden="true"
               />
             </button>
@@ -103,32 +98,21 @@ export const NavigationLite = ({
           </div>
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
-              <div className="space-y-4 py-6 pl-4">
-                <Link
-                  href={CONST.RESOURCE_LINKS.BRIDGE_LINK}
-                  rel="noreferrer noopener"
-                  target="_blank"
-                  className={clsx(mobileNavCat, mobileNavCatText)}
-                >
-                  Bridge
-                </Link>
-                <div style={{ borderBottom: '1px solid #2E524E' }} />
-                <Link
-                  href="/"
-                  rel="noreferrer noopener"
-                  target="_blank"
-                  className={clsx(mobileNavCat, mobileNavCatText)}
-                >
-                  Faucet
-                </Link>
-                <div style={{ borderBottom: '1px solid #2E524E' }} />
-                <Link
-                  href={CONST.NAV_LINKS_ABSOLUTE.ECOSYSTEM_LINK}
-                  className={clsx(mobileNavCat, mobileNavCatText)}
-                >
-                  Docs
-                </Link>
-                <div style={{ borderBottom: '1px solid #2E524E' }} />
+              <div className="space-y-4 py-6 pl-4 ">
+                {navItems.map(item => (
+                  <>
+                    <MantleLink
+                      variant="navLink"
+                      href={item.href}
+                      target={item.target}
+                      rel="noreferrer noopener"
+                      className={clsx(mobileNavCat)}
+                    >
+                      {item.name}
+                    </MantleLink>
+                    <div style={{ borderBottom: '1px solid #2E524E' }} />
+                  </>
+                ))}
               </div>
             </div>
           </div>
