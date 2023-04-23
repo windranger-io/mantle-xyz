@@ -20,8 +20,6 @@ export * from './src/links/MantleLinks'
  *
  */
 
-export * from './src/base/Text'
-
 export * from './src/base/T'
 
 /**

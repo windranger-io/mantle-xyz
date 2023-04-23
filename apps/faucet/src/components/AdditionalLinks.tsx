@@ -1,9 +1,11 @@
-import { MantleLink } from "@mantle/ui";
+import { MantleLink, Typography } from "@mantle/ui";
 
 export function AdditionalLinks() {
   return (
     <div className="flex flex-col items-center gap-4 pb-10">
-      <p>Don’t have enough gas to mint tokens? Get some goerli ETH here:</p>
+      <Typography>
+        Don’t have enough gas to mint tokens? Get some goerli ETH here:
+      </Typography>
       <div className="flex flex-col gap-2">
         <MantleLink
           variant="additionalLinks"
