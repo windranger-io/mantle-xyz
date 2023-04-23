@@ -20,7 +20,7 @@ export const NavigationLite = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="relative">
+    <div className="relative">
       <nav
         className="mx-auto  max-w-7xl  p-4 lg:px-8 items-center grid grid-cols-2 lg:grid-cols-3"
         aria-label="Global"
@@ -134,6 +134,6 @@ export const NavigationLite = ({
           </div>
         </Dialog.Panel>
       </Dialog>
-    </header>
+    </div>
   )
 }

@@ -17,13 +17,18 @@ export * from './src/base/Text'
 export * from './src/base/T'
 
 /**
- * Layout Components
+ * Navigation Components
  *
- * These components have functionality that needs to be shared across apps
+ * Headers, footers and navbars.
  */
-export * from './src/layout/Header'
-export * from './src/layout/Navigation'
-export * from './src/layout/Footer'
+export * from './src/navigation/Header'
+export * from './src/navigation/Footer'
+
+/**
+ *  Single Page Containers shared across all sites
+ *
+ */
+
 export * from './src/layout/PageWrapper'
 export * from './src/layout/PageContainer'
 

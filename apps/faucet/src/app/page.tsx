@@ -41,8 +41,7 @@ export default async function Page() {
           altDesc="Faucet Background Image"
         />
       }
-      header={<Header walletConnect={<ConnectWallet />} />}
-      // wallerConnect={<ConnectWallet />}
+      header={<Header sticky navLite walletConnect={<ConnectWallet />} />}
     >
       {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
       <PageContainer className="gap-8">

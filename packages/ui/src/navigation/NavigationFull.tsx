@@ -82,7 +82,7 @@ const COMMUNITY_ITEMS = [
   },
 ]
 
-export const Navigation = ({
+export const NavigationFull = ({
   walletConnect,
 }: {
   walletConnect: React.ReactNode
@@ -90,7 +90,7 @@ export const Navigation = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="relative backdrop-blur-[50px] bg-black/30">
+    <div className="relative backdrop-blur-[50px] bg-black/30">
       <nav
         className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8"
         aria-label="Global"
@@ -347,6 +347,6 @@ export const Navigation = ({
           </div>
         </Dialog.Panel>
       </Dialog>
-    </header>
+    </div>
   )
 }
