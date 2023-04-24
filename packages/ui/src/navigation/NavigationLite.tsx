@@ -11,7 +11,7 @@ import { MantleLogoIcon, MantleLockUp } from '../base/Icons'
 import { mobileNavCat } from './styles'
 import { MantleLink } from '../links/MantleLinks'
 
-type NavItems = {
+interface NavItems {
   name: string
   href: string
   internal: boolean
@@ -22,7 +22,7 @@ export const NavigationLite = ({
   navItems,
 }: {
   walletConnect: React.ReactNode
-  navItems: NavItems
+  navItems: NavItems[]
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -45,7 +45,7 @@ export const NavigationLite = ({
             <MantleLink
               variant="navLink"
               href={item.href}
-              target={item.target}
+              target={item.internal ? '_self' : '_blank'}
               rel="noreferrer noopener"
             >
               {item.name}
@@ -104,7 +104,7 @@ export const NavigationLite = ({
                     <MantleLink
                       variant="navLink"
                       href={item.href}
-                      target={item.target}
+                      target={item.internal ? '_self' : '_blank'}
                       rel="noreferrer noopener"
                       className={clsx(mobileNavCat)}
                     >
