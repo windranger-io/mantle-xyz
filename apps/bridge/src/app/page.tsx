@@ -41,35 +41,39 @@ const NAV_ITEMS = [
  */
 export default function Page() {
   return (
-    <PageWrapper
-      siteBackroundImage={
-        <PageBackroundImage
-          // UPDATE WITH DIFFERENT IMAGE
-          imgSrc={faucetBG}
-          altDesc="Faucet Background Image"
-        />
-      }
-      header={
-        <Header
-          navLite
-          walletConnect={<Button>Wallet Connect???</Button>}
-          navItems={NAV_ITEMS}
-        />
-      }
-    >
-      <PageContainer className="gap-8">
-        <Typography variant="appPageHeading" className="text-center">
-          Bridge
-        </Typography>
-        <ReactQueryProvider>
-          <WagmiProvider>
-            <Demos />
-          </WagmiProvider>
-        </ReactQueryProvider>
-        <div>
-          <Footer />
-        </div>
-      </PageContainer>
-    </PageWrapper>
+    <div>
+      <PageWrapper
+        siteBackroundImage={
+          <PageBackroundImage
+            imgSrc={faucetBG}
+            altDesc="Faucet Background Image"
+          />
+        }
+        header={
+          <Header
+            navLite
+            walletConnect={<Button>WALLET CONNECT HERE</Button>}
+            navItems={NAV_ITEMS}
+          />
+        }
+      >
+        {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
+        <PageContainer className="gap-8">
+          <Typography variant="appPageHeading" className="text-center">
+            BRIDGE
+          </Typography>
+          <ReactQueryProvider>
+            <WagmiProvider>
+              <Demos />
+            </WagmiProvider>
+          </ReactQueryProvider>
+
+          {/* @todo: Take footer out flex order */}
+          <div>
+            <Footer />
+          </div>
+        </PageContainer>
+      </PageWrapper>
+    </div>
   )
 }
