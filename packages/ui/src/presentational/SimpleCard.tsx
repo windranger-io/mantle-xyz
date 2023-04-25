@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-export const Container = ({
+export const SimpleCard = ({
   children,
   className,
 }: {
@@ -8,11 +8,11 @@ export const Container = ({
   // eslint-disable-next-line react/require-default-props
   className?: string
 }) => (
-  <main
-    className={`flex w-full flex-1 flex-col items-center justify-center px-20 text-center ${
+  <div
+    className={`bg-white/[.06] rounded-card py-10 px-5 mx-auto ${
       className || ``
     }`}
   >
     {children}
-  </main>
+  </div>
 )

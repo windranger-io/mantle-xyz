@@ -51,7 +51,10 @@ function Demos() {
   const { isConnected } = useAccount()
 
   return (
-    <div className="space-y-10">
+    <div
+      className="space-y-10"
+      style={{ backgroundColor: 'black', color: 'white', textAlign: 'center' }}
+    >
       <DynamicWagmi />
       {isConnected && (
         <MantleSDKProvider>

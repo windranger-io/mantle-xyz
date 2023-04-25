@@ -1,6 +1,12 @@
 // Dummy components
-import { Page as PageWrapper, Container } from "@mantle/ui";
-
+import {
+  Header,
+  Footer,
+  PageWrapper,
+  PageBackroundImage,
+  PageContainer,
+  Typography,
+} from "@mantle/ui";
 // Page components
 import AuthTwitter from "@components/AuthTwtitter";
 import ConnectWallet from "@components/ConnectWallet";
@@ -11,12 +17,35 @@ import RecentTweets from "@server/RecentTweets";
 
 // Extract session from caller
 import { headers } from "next/headers";
+import { AdditionalLinks } from "@components/AdditionalLinks";
+import CONST from "@mantle/constants";
+import faucetBG from "../../public/faucet-bg.png";
 import { getSession } from "./session";
 
 /**
  *
  * @todo Updated with real components and content when ready
+ *
  */
+
+const NAV_ITEMS = [
+  {
+    name: "Docs",
+    href: CONST.RESOURCE_LINKS.DOC_LINK || "#",
+    internal: false,
+  },
+  {
+    name: "Faucet",
+    href: CONST.RESOURCE_LINKS.FAUCET_LINK || "#",
+    internal: false,
+  },
+  {
+    name: "Bridge",
+    href: CONST.RESOURCE_LINKS.BRIDGE_LINK || "#",
+    internal: false,
+  },
+];
+
 export default async function Page() {
   // * [Passing data between a parent layout and its children is not possible.
   //   However, you can fetch the same data in a route more than once, and React
@@ -27,19 +56,36 @@ export default async function Page() {
   const tweets = await RecentTweets(session);
 
   return (
-    <div className="text-white">
-      <PageWrapper>
-        <Container className="pb-8">
-          <h1 className="text-6xl font-bold text-white">Mantle Faucet</h1>
-          {/* @todo: Components need to be styled */}
-          <ConnectWallet />
-          <AuthTwitter tweets={tweets} />
-          <MintTokens tweets={tweets} />
-        </Container>
-        <footer className="flex h-24 w-full items-center justify-center border-t text-gray-50">
-          Powered by BIT
-        </footer>
-      </PageWrapper>
-    </div>
+    <PageWrapper
+      siteBackroundImage={
+        <PageBackroundImage
+          imgSrc={faucetBG}
+          altDesc="Faucet Background Image"
+        />
+      }
+      header={
+        <Header
+          navLite
+          walletConnect={<ConnectWallet />}
+          navItems={NAV_ITEMS}
+        />
+      }
+    >
+      {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
+      <PageContainer className="gap-8">
+        <Typography variant="appPageHeading" className="text-center">
+          Testnet Faucet
+        </Typography>
+
+        <AuthTwitter tweets={tweets} />
+        <MintTokens tweets={tweets} />
+        <AdditionalLinks />
+
+        {/* @todo: Take footer out flex order */}
+        <div>
+          <Footer />
+        </div>
+      </PageContainer>
+    </PageWrapper>
   );
 }

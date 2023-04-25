@@ -3,3 +3,8 @@
 @tailwind utilities;
 
 /** The less we use this global style the better! */
+
+
+body {
+  color: white;
+}

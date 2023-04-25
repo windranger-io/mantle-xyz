@@ -12,11 +12,12 @@ Props) {
     <button
       className={clsx(
         'border',
-        'border-black',
+        'border-white',
         'p-3',
         'rounded-md',
         'disabled:border-gray-400',
         'disabled:text-gray-400',
+        'w-auto',
         className,
       )}
       // eslint-disable-next-line react/jsx-props-no-spreading

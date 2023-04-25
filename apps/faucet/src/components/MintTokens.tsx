@@ -11,6 +11,8 @@ import { validate } from "@utils/validateMintData";
 
 import { ABI, NETWORKS, CHAIN_ID, MAX_BALANCE } from "@config/constants";
 import useHasTweeted from "@hooks/useHasTweeted";
+import { Button, SimpleCard, Typography } from "@mantle/ui";
+import { CardHeading } from "./CardHeadings";
 
 function MintTokens({
   tweets,
@@ -32,7 +34,7 @@ function MintTokens({
 
   // record connected wallets bit and eth balance
   const [myBalanceBIT, setmyBalanceBIT] = useState("0.0");
-  const [myBalanceETH, setmyBalanceETH] = useState("0.0");
+  const [, setmyBalanceETH] = useState("0.0");
 
   // set address with useState to avoid hydration errors
   const [address, setAddress] = useState<string>();
@@ -93,7 +95,7 @@ function MintTokens({
   }, [balanceETH, balanceBIT]);
 
   return isChainID && address ? (
-    <div className="flex flex-col gap-4 container mx-auto max-w-md pb-4">
+    <div className="">
       <div
         className={`${
           minting ? `flex` : `hidden`
@@ -119,73 +121,57 @@ function MintTokens({
           <span className="sr-only">Minting...</span>
         </div>
       </div>
-      <div
-        className={`bg-slate-900 p-4 rounded-md font-mono ${
-          !hasTweeted ? `text-gray-400` : ``
-        }`}
-      >
-        <div className="underline text-left pb-4">
-          Connected Address: {`${truncateAddress(address as `0x${string}`)}`}
-        </div>
-        <div className="flex flex-row px-4 gap-2">
-          <span>ETH Balance:</span>
-          <span>{`${(Math.round(parseFloat(myBalanceETH) * 100) / 100).toFixed(
-            2
-          )} ETH`}</span>
-        </div>
-        <div className="flex flex-row px-4 gap-2">
-          <span>BIT Balance:</span>
-          <span>{`${(Math.round(parseFloat(myBalanceBIT) * 100) / 100).toFixed(
-            2
-          )} BIT`}</span>
-        </div>
-      </div>
-      <div
-        className={`inline-flex flex-col text-xs bg-slate-900 p-4 rounded-md gap-4 ${
-          !hasTweeted ? `text-gray-400` : ``
-        }`}
-      >
-        <div>
-          Each address can mint up to 1,000 tokens every 1,000 blocks
-          (approximately 4 hours).
-        </div>
-        <div>
+
+      <SimpleCard className="max-w-lg grid gap-4">
+        <CardHeading numDisplay="2" header="Set your mint address" />
+        <Typography variant="body">
+          Each address can mint 1,000 tokens every 1,000 blocks (about 4 hours).
           Additionally, an address can hold a maximum of 1,000 tokens at any
           time.
+        </Typography>
+
+        <div
+          className={`text-center text-status-success ${
+            !success ? `hidden` : `block`
+          }`}
+        >
+          Success! We minted 1 BIT and sent it to 0xBdd8...B5AB
+          {success}
         </div>
-      </div>
-      <div
-        className={`bg-slate-900 p-4 rounded-md ${
-          !success ? `hidden` : `block`
-        }`}
-      >
-        {success}
-      </div>
-      <div className="bg-slate-900 p-4 rounded-md">
-        <div className="pt-2">
-          <div className="text-right">
-            <button
-              type="button"
-              className="disabled:text-gray-400 mb-0 text-sm"
-              disabled={
-                minting ||
-                !hasTweeted ||
-                (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE) ||
-                address === sendTo
-              }
-              onClick={() => setSendTo(address || "")}
-            >
-              Send to my address
-            </button>
-          </div>
-          <div>
+
+        <div className="grid gap-6">
+          <div className="grid gap-2">
+            <div className="flex flex-row gap-2">
+              <p className="text-sm">Mint address</p>
+
+              <Button
+                variant="link"
+                type="button"
+                className="text-button-primary"
+                style={{
+                  padding: "0px",
+                  fontSize: "0.875rem",
+                  lineHeight: "1.25rem",
+                }}
+                disabled={
+                  minting ||
+                  !hasTweeted ||
+                  (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE) ||
+                  address === sendTo
+                }
+                onClick={() => setSendTo(address || "")}
+              >
+                Send to my address
+              </Button>
+            </div>
+
             <input
               type="text"
               required
               id="sendTo"
               value={sendTo}
               placeholder="0x1234..."
-              className="text-black mt-4 w-full pl-2 rounded-sm py-2"
+              className="bg-black w-full rounded-input"
               disabled={
                 minting ||
                 !hasTweeted ||
@@ -196,114 +182,131 @@ function MintTokens({
               }) => setSendTo(e.target.value as string)}
             />
           </div>
+          <div className="grid gap-2">
+            <p className="text-sm">Mint token amount</p>
+            <input
+              type="number"
+              required
+              id="amount"
+              value={amount || ""}
+              min="1"
+              className="bg-black w-full rounded-input"
+              disabled={
+                minting ||
+                !hasTweeted ||
+                (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE)
+              }
+              onChange={(e: {
+                target: { value: React.SetStateAction<string> };
+              }) => setAmount(parseFloat(`${e.target.value}`))}
+            />
+          </div>
+          <p
+            className={`text-sm ${
+              sendTo !== address ||
+              minting ||
+              !hasTweeted ||
+              (balanceBIT &&
+                parseFloat(myBalanceBIT) + parseFloat(`${amount}`) >
+                  MAX_BALANCE)
+                ? ``
+                : ""
+            }`}
+          >
+            {balanceBIT &&
+            parseFloat(myBalanceBIT) + parseFloat(`${amount}`) > MAX_BALANCE
+              ? `Your BIT balance must not exceed 1000 BIT`
+              : `You will receive ${amount || 0} BIT`}
+          </p>
+
+          <Button
+            type="button"
+            aria-label="Mint"
+            variant="primary"
+            size="full"
+            disabled={
+              sendTo !== address ||
+              minting ||
+              !hasTweeted ||
+              (balanceBIT &&
+                parseFloat(myBalanceBIT) + parseFloat(`${amount}`) >
+                  MAX_BALANCE)
+            }
+            onClick={() => {
+              const { eAddress, eAmount } = validate(
+                address,
+                amount || 0,
+                myBalanceBIT
+              );
+              setError(undefined);
+              setSuccess(undefined);
+              if (!eAddress && !eAmount) {
+                // attempt to mint
+                mint({
+                  recklesslySetUnpreparedArgs: [
+                    parseEther(`${amount}`).toString(),
+                  ],
+                })
+                  .then((tx: { hash: string }) => {
+                    if (tx.hash) {
+                      setTxs([...txs, tx.hash]);
+                    }
+                  })
+                  .catch((err: any) => {
+                    if (!error) {
+                      setError(
+                        err
+                          .toString()
+                          .toLowerCase()
+                          .indexOf("user rejected") !== -1
+                          ? "User rejected transaction"
+                          : JSON.stringify(err).toString()
+                      );
+                    }
+                  });
+              } else {
+                setError(
+                  "Problems with input or minted tokens exceeds 1000 BIT"
+                );
+              }
+            }}
+          >
+            Mint Tokens
+          </Button>
         </div>
-        <input
-          type="number"
-          required
-          id="amount"
-          value={amount || ""}
-          min="1"
-          className="text-black mt-4 w-full pl-2 rounded-sm py-2"
-          disabled={
-            minting ||
-            !hasTweeted ||
-            (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE)
-          }
-          onChange={(e: { target: { value: React.SetStateAction<string> } }) =>
-            setAmount(parseFloat(`${e.target.value}`))
-          }
-        />
-        <p
-          className={`my-4 ${
-            sendTo !== address ||
-            minting ||
-            !hasTweeted ||
-            (balanceBIT &&
-              parseFloat(myBalanceBIT) + parseFloat(`${amount}`) > MAX_BALANCE)
-              ? `text-gray-400`
-              : ""
+        <div
+          className={`bg-slate-900 p-4 rounded-md ${
+            !error ? `hidden` : `block`
           }`}
         >
-          {balanceBIT &&
-          parseFloat(myBalanceBIT) + parseFloat(`${amount}`) > MAX_BALANCE
-            ? `Your BIT balance must not exceed 1000 BIT`
-            : `You will receive ${amount || 0} BIT`}
-        </p>
-        <button
-          type="button"
-          aria-label="Mint"
-          className="my-4 outline rounded p-3 disabled:text-gray-400 hover:bg-slate-900"
-          disabled={
-            sendTo !== address ||
-            minting ||
-            !hasTweeted ||
-            (balanceBIT &&
-              parseFloat(myBalanceBIT) + parseFloat(`${amount}`) > MAX_BALANCE)
-          }
-          onClick={() => {
-            const { eAddress, eAmount } = validate(
-              address,
-              amount || 0,
-              myBalanceBIT
-            );
-            setError(undefined);
-            setSuccess(undefined);
-            if (!eAddress && !eAmount) {
-              // attempt to mint
-              mint({
-                recklesslySetUnpreparedArgs: [
-                  parseEther(`${amount}`).toString(),
-                ],
-              })
-                .then((tx: { hash: string }) => {
-                  if (tx.hash) {
-                    setTxs([...txs, tx.hash]);
-                  }
-                })
-                .catch((err: any) => {
-                  if (!error) {
-                    setError(
-                      err.toString().toLowerCase().indexOf("user rejected") !==
-                        -1
-                        ? "User rejected transaction"
-                        : JSON.stringify(err).toString()
-                    );
-                  }
-                });
-            } else {
-              setError("Problems with input or minted tokens exceeds 1000 BIT");
+          <div className="text-status-error text-sm">
+            {
+              // eslint-disable-next-line no-nested-ternary
+              sendTo !== address
+                ? `Please connect ${
+                    sendTo &&
+                    sendTo.length === 42 &&
+                    (() => {
+                      try {
+                        return getAddress(sendTo);
+                      } catch {
+                        return false;
+                      }
+                    })()
+                      ? `${truncateAddress(
+                          (sendTo as `0x${string}`) || "0x0"
+                        )}s`
+                      : ""
+                  } wallet to mint`
+                : address &&
+                  balanceBIT &&
+                  parseFloat(myBalanceBIT) >= MAX_BALANCE
+                ? `Unable to issue more until balance is spent`
+                : error
             }
-          }}
-        >
-          Mint Tokens
-        </button>
-      </div>
-      <div
-        className={`bg-slate-900 p-4 rounded-md ${!error ? `hidden` : `block`}`}
-      >
-        <div className="text-gray-400 p-2">
-          {
-            // eslint-disable-next-line no-nested-ternary
-            sendTo !== address
-              ? `Please connect ${
-                  sendTo &&
-                  sendTo.length === 42 &&
-                  (() => {
-                    try {
-                      return getAddress(sendTo);
-                    } catch {
-                      return false;
-                    }
-                  })()
-                    ? `${truncateAddress((sendTo as `0x${string}`) || "0x0")}s`
-                    : ""
-                } wallet to mint`
-              : address && balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE
-              ? `Unable to issue more until balance is spent`
-              : error
-          }
+          </div>
         </div>
-      </div>
+      </SimpleCard>
     </div>
   ) : (
     <div />
