@@ -6,7 +6,7 @@ import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import clsx from 'clsx'
-import { MantleLogoIcon, MantleLockUp } from '../base/Icons'
+import { MantleLogoIcon, MantleLockUpByline } from '../base/Icons'
 
 import { mobileNavCat } from './styles'
 import { MantleLink } from '../links/MantleLinks'
@@ -36,8 +36,7 @@ export const NavigationLite = ({
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Mantle</span>
 
-            {/* flex lg:hidden" */}
-            <MantleLockUp className="h-8 w-auto " />
+            <MantleLockUpByline />
           </Link>
         </div>
         <div className="hidden lg:flex justify-between">
