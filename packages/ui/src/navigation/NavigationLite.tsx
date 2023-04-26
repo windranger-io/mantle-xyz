@@ -15,6 +15,7 @@ interface NavItems {
   name: string
   href: string
   internal: boolean
+  active: boolean
 }
 
 export const NavigationLite = ({
@@ -46,8 +47,12 @@ export const NavigationLite = ({
               href={item.href}
               target={item.internal ? '_self' : '_blank'}
               rel="noreferrer noopener"
+              className={item.active ? 'text-type-primary relative' : ``}
             >
               {item.name}
+              {item.active && (
+                <div className="rounded-full bg-white h-1 w-1  absolute left-[50%] -bottom-[10px]" />
+              )}
             </MantleLink>
           ))}
         </div>
