@@ -40,7 +40,7 @@ export const NavigationLite = ({
             <MantleLockUpByline />
           </Link>
         </div>
-        <div className="hidden lg:flex justify-between">
+        <div className="hidden lg:flex justify-center gap-16">
           {navItems.map(item => (
             <MantleLink
               variant="navLink"
@@ -50,6 +50,7 @@ export const NavigationLite = ({
               className={item.active ? 'text-type-primary relative' : ``}
             >
               {item.name}
+              {/* Add dot if current site  */}
               {item.active && (
                 <div className="rounded-full bg-white h-1 w-1  absolute left-[50%] -bottom-[10px]" />
               )}
