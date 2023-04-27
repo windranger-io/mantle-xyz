@@ -2,7 +2,7 @@ import * as React from 'react'
 import Link from 'next/link'
 
 import CONST from '@mantle/constants'
-import { MantleLogoIcon, MantleLetterMark } from '../base/Icons'
+import { MantleLetterMark, MantleLockUpByline } from '../base/Icons'
 import { Typography } from '../base/T'
 import { MantleLink } from '../links/MantleLinks'
 
@@ -103,16 +103,17 @@ export const Footer = () => (
     className="max-w-7xl mx-auto px-4 py-6 lg:py-12 lg:px-8 uppercase"
   >
     <div className="grid grid-cols-1 gap-10 lg:gap-0 md:grid-cols-4 mb-8">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         <Link href="/">
-          <MantleLogoIcon width={37} height={37} />
+          <MantleLockUpByline />
         </Link>
         <p className="text-xs">{new Date().getFullYear()}&nbsp;&#169;</p>
       </div>
 
       {FOOTER_ITEMS.map(item => (
         <div key={item.title}>
-          <Typography variant="footerColumnLabel" className="mb-4 md:mb-6">
+          {/* Approximation of baseline alignment for logo and columns */}
+          <Typography variant="footerColumnLabel" className="mt-2 mb-4 md:mb-6">
             {item.title}
           </Typography>
           <ul className="grid gap-1">
