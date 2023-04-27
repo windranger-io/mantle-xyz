@@ -40,12 +40,17 @@ function AuthTwitter({
           To request funds via Twitter, you should make a tweet first
         </Typography>
       ) : (
-        <Typography variant="body">
-          <div className="flex gap-4 items-center justify-center">
-            Authenticated: {session?.user.username}{" "}
-            <AiOutlineCheckCircle className="text-status-success block text-lg" />{" "}
-          </div>
-        </Typography>
+        <div className="flex flex-col gap-4  items-center justify-center">
+          <AiOutlineCheckCircle className="text-status-success block text-5xl" />{" "}
+          <Typography variant="body">
+            {" "}
+            <div className="flex  gap-2 text-lg">
+              <div>Authenticated:</div>
+
+              <div> {session?.user.username}</div>
+            </div>
+          </Typography>{" "}
+        </div>
       )}
 
       {hasTweeted ? (
@@ -58,7 +63,7 @@ function AuthTwitter({
         <span />
       )}
 
-      <div className="flex flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
         {!hasTweeted ? (
           <>
             <Link
