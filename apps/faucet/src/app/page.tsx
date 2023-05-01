@@ -33,16 +33,19 @@ const NAV_ITEMS = [
     name: "Docs",
     href: CONST.RESOURCE_LINKS.DOC_LINK || "#",
     internal: false,
+    active: false,
   },
   {
     name: "Faucet",
     href: CONST.RESOURCE_LINKS.FAUCET_LINK || "#",
     internal: false,
+    active: true,
   },
   {
     name: "Bridge",
     href: CONST.RESOURCE_LINKS.BRIDGE_LINK || "#",
     internal: false,
+    active: false,
   },
 ];
 

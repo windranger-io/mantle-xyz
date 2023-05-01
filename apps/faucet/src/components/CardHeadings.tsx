@@ -6,8 +6,8 @@ export function CardHeading({
   header: string;
 }) {
   return (
-    <div className="flex mb-2">
-      <div className="bg-displayNumbers/[0.05] inline-block rounded-full leading-0 px-3 pt-0.5">
+    <div className="relative mb-2">
+      <div className="bg-displayNumbers/[0.05] inline-block rounded-full leading-0 px-3 pt-0.5 absolute">
         {numDisplay}
       </div>
       <h2 className="text-lg text-center w-full">{header}</h2>

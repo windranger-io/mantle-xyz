@@ -8,7 +8,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 import CONST from '@mantle/constants'
 import clsx from 'clsx'
-import { MantleLogoIcon, MantleLockUp } from '../base/Icons'
+import { MantleLogoIcon, MantleLockUpByline } from '../base/Icons'
 import { Links } from '../actions/Links'
 
 import {
@@ -99,7 +99,7 @@ export const NavigationFull = ({
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Mantle</span>
 
-            <MantleLockUp className="h-8 w-auto " />
+            <MantleLockUpByline />
           </Link>
         </div>
         <div className="flex lg:hidden">
