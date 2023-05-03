@@ -36,7 +36,7 @@ export default function Tabs() {
         </Tab.List>
         <Tab.Panels className="mt-2">
           {Object.values(categories).map(posts => (
-            <Tab.Panel className={clsx('  p-3')} style={{ color: '#fff' }}>
+            <Tab.Panel className={clsx('')} style={{ color: '#fff' }}>
               {posts}
             </Tab.Panel>
           ))}
