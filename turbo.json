@@ -25,6 +25,9 @@
     "dev:bridge": {
       "cache": false
     },
+    "dev:bridgeui": {
+      "cache": false
+    },
     "dev:faucet": {
       "env": [
         "TWITTER_ID",

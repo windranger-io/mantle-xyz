@@ -13,6 +13,7 @@
     "dev:web": "turbo run dev:web",
     "dev:faucet": "turbo run dev:faucet",
     "dev:bridge": "turbo run dev:bridge",
+    "dev:bridgeui": "turbo run dev:bridgeui",
     "dev:cms": "turbo run dev:cms",
     "dev:template": "turbo run dev:template",
     "test": "turbo run test",
