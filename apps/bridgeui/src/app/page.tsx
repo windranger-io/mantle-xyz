@@ -11,6 +11,7 @@ import {
 // Page components
 
 import CONST from '@mantle/constants'
+import Tabs from 'src/components/Tabs'
 import bridgeBG from '../../public/bridge-bg.png'
 
 /**
@@ -59,8 +60,9 @@ export default async function Page() {
     >
       <PageContainer className="gap-8">
         <Typography variant="appPageHeading" className="text-center">
-          Testnet Faucet
+          Bridge UI
         </Typography>
+        <Tabs />
 
         <div>
           <Footer />
