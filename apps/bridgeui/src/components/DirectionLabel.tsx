@@ -1,0 +1,21 @@
+import { Typography } from '@mantle/ui'
+
+export default function DirectionLabel({
+  direction,
+  logo,
+  chain,
+}: {
+  direction: string
+  logo: React.ReactNode
+  chain: string
+}) {
+  return (
+    <div className="flex space-x-2.5">
+      <Typography variant="body">{direction}:</Typography>
+      <div className="flex space-x-2">
+        {logo}
+        <Typography variant="body"> {chain}</Typography>
+      </div>
+    </div>
+  )
+}
