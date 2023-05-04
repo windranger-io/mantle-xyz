@@ -1,3 +1,4 @@
+import Divider from './Divider'
 import TokenSelect from './TokenSelect'
 
 export default function Withdraw() {
@@ -5,6 +6,7 @@ export default function Withdraw() {
     <div>
       Withdraw Body
       <TokenSelect />
+      <Divider />
     </div>
   )
 }
