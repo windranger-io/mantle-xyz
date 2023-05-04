@@ -1,3 +1,4 @@
+import Divider from './Divider'
 import TokenSelect from './TokenSelect'
 
 export default function Deposit() {
@@ -5,6 +6,7 @@ export default function Deposit() {
     <div>
       Deposit Body
       <TokenSelect />
+      <Divider />
     </div>
   )
 }
