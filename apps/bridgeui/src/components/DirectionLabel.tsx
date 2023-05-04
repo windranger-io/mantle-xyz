@@ -10,7 +10,7 @@ export default function DirectionLabel({
   chain: string
 }) {
   return (
-    <div className="flex space-x-2.5">
+    <div className="flex space-x-2.5 pb-4">
       <Typography variant="body">{direction}:</Typography>
       <div className="flex space-x-2">
         {logo}
