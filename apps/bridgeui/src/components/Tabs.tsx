@@ -14,7 +14,7 @@ export default function Tabs() {
   })
 
   return (
-    <SimpleCard className="max-w-lg w-full  grid gap-4">
+    <SimpleCard className="max-w-lg w-full  grid gap-4 relative">
       <Tab.Group>
         <Tab.List className="flex space-x-5 rounded-[10px] bg-white/[0.05] p-1">
           {Object.keys(categories).map(category => (
