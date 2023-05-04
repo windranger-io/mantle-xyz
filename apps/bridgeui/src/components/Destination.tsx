@@ -8,7 +8,7 @@ export default function Destination() {
       <input
         className="w-full border border-stroke-inputs  rounded-lg  bg-black py-1.5 px-3 "
         disabled
-        placeholder="123.4"
+        placeholder="You will recieve 123.4"
       />
     </div>
   )

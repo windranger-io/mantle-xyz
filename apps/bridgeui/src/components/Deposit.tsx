@@ -1,3 +1,4 @@
+import CTA from './CTA'
 import Destination from './Destination'
 import Divider from './Divider'
 import TokenSelect from './TokenSelect'
@@ -9,6 +10,7 @@ export default function Deposit() {
       <TokenSelect />
       <Divider />
       <Destination />
+      <CTA />
       <TransactionPanel />
     </div>
   )
