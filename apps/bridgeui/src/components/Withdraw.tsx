@@ -5,7 +5,6 @@ import TransactionPanel from './TransactionPanel'
 export default function Withdraw() {
   return (
     <div>
-      Withdraw Body
       <TokenSelect />
       <Divider />
       <TransactionPanel />
