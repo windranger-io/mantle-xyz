@@ -4,7 +4,11 @@ import { ReactNode } from 'react'
 import Balancer from 'react-wrap-balancer'
 import { twMerge } from 'tailwind-merge'
 
-type TypographyVariant = 'appPageHeading' | 'body' | 'footerColumnLabel'
+type TypographyVariant =
+  | 'appPageHeading'
+  | 'body'
+  | 'smallWidget'
+  | 'footerColumnLabel'
 
 type HTMLTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p'
 
@@ -37,6 +41,13 @@ const typographyMap: {
     classNames: classNames(
       bodyDefault,
       'font-normal text-[14px] leading-[20px] text-type-secondary',
+    ),
+  },
+  smallWidget: {
+    tag: 'p',
+    classNames: classNames(
+      bodyDefault,
+      'font-normal text-[16px] leading-[22px] text-type-secondary',
     ),
   },
   footerColumnLabel: {
