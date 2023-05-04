@@ -31,7 +31,7 @@ export default function TokenSelect() {
   const [selected, setSelected] = useState(tokenList[1])
 
   return (
-    <>
+    <div>
       <DirectionLabel
         direction="From"
         logo={<SiEthereum />}
@@ -102,6 +102,6 @@ export default function TokenSelect() {
           </div>
         )}
       </Listbox>
-    </>
+    </div>
   )
 }

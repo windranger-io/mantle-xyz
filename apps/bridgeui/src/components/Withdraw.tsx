@@ -2,6 +2,7 @@ import Destination from './Destination'
 import Divider from './Divider'
 import TokenSelect from './TokenSelect'
 import TransactionPanel from './TransactionPanel'
+import CTA from './CTA'
 
 export default function Withdraw() {
   return (
@@ -9,6 +10,7 @@ export default function Withdraw() {
       <TokenSelect />
       <Divider />
       <Destination />
+      <CTA />
       <TransactionPanel />
     </div>
   )

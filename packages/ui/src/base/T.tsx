@@ -8,6 +8,7 @@ type TypographyVariant =
   | 'appPageHeading'
   | 'body'
   | 'smallWidget'
+  | 'modalHeading'
   | 'footerColumnLabel'
 
 type HTMLTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p'
@@ -41,6 +42,13 @@ const typographyMap: {
     classNames: classNames(
       bodyDefault,
       'font-normal text-[14px] leading-[20px] text-type-secondary',
+    ),
+  },
+  modalHeading: {
+    tag: 'h2',
+    classNames: classNames(
+      headingDefault,
+      'text-[28px] leading-[33px] text-white',
     ),
   },
   smallWidget: {
