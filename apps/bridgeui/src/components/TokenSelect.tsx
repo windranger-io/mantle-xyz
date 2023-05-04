@@ -39,7 +39,7 @@ export default function TokenSelect() {
       />
       <Listbox value={selected} onChange={setSelected}>
         {({ open }) => (
-          <div className="relative mt-2">
+          <div className="relative ">
             <div className="flex text-lg ">
               <input
                 type="text"
