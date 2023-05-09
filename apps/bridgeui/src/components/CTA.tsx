@@ -104,6 +104,7 @@ export default function CTA({
           !isChainID ||
           !destinationTokenAmount ||
           !selectedTokenAmount ||
+          !parseFloat(destinationTokenAmount) ||
           Number.isNaN(parseFloat(destinationTokenAmount)) ||
           Number.isNaN(parseFloat(selectedTokenAmount))
         }

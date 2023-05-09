@@ -39,7 +39,11 @@ export default function Deposit() {
         selectedTokenAmount={selectedTokenAmount}
         destinationTokenAmount={destinationTokenAmount}
       />
-      <TransactionPanel />
+      <TransactionPanel
+        type={type}
+        destinationToken={destinationToken}
+        destinationTokenAmount={destinationTokenAmount}
+      />
     </div>
   );
 }
