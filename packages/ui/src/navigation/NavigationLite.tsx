@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import CONST from '@mantle/constants'
 import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
@@ -34,7 +35,12 @@ export const NavigationLite = ({
         aria-label="Global"
       >
         <div className="flex">
-          <Link href="/" className="-m-1.5 p-1.5">
+          <Link
+            href={CONST.WEBSITE}
+            rel="noreferrer noopener"
+            target="_blank"
+            className="-m-1.5 p-1.5"
+          >
             <span className="sr-only">Mantle</span>
 
             <MantleLockUpByline />

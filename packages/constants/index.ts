@@ -1,4 +1,5 @@
 export default {
+  WEBSITE: 'https://www.mantle.xyz/',
   SOCIAL_LINKS: {
     GITHUB_LINK: 'https://github.com/mantlenetworkio',
     DISCORD_LINK: 'https://discord.com/invite/0xMantle',

@@ -104,7 +104,7 @@ export const Footer = () => (
   >
     <div className="grid grid-cols-1 gap-10 lg:gap-0 md:grid-cols-4 mb-8">
       <div className="flex flex-col gap-4">
-        <Link href="/">
+        <Link href={CONST.WEBSITE} rel="noreferrer noopener" target="_blank">
           <MantleLockUpByline />
         </Link>
         <p className="text-xs">{new Date().getFullYear()}&nbsp;&#169;</p>
