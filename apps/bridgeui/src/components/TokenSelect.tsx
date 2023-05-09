@@ -31,7 +31,7 @@ export default function TokenSelect() {
   const [selected, setSelected] = useState(tokenList[1])
 
   return (
-    <div>
+    <div className="py-6">
       <DirectionLabel
         direction="From"
         logo={<SiEthereum />}

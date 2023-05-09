@@ -41,20 +41,22 @@ export const NavigationLite = ({
           </Link>
         </div>
         <div className="hidden lg:flex justify-center gap-16">
-          {navItems.map(item => (
-            <MantleLink
-              variant="navLink"
-              href={item.href}
-              target={item.internal ? '_self' : '_blank'}
-              rel="noreferrer noopener"
-              className={item.active ? 'text-type-primary relative' : ``}
-            >
-              {item.name}
-              {/* Add dot if current site  */}
-              {item.active && (
-                <div className="rounded-full bg-white h-1 w-1  absolute left-[50%] -bottom-[10px]" />
-              )}
-            </MantleLink>
+          {navItems.map((item, index) => (
+            <span key={`navLink-${item?.name || index}`}>
+              <MantleLink
+                variant="navLink"
+                href={item.href}
+                target={item.internal ? '_self' : '_blank'}
+                rel="noreferrer noopener"
+                className={item.active ? 'text-type-primary relative' : ``}
+              >
+                {item.name}
+                {/* Add dot if current site  */}
+                {item.active && (
+                  <div className="rounded-full bg-white h-1 w-1  absolute left-[50%] -bottom-[10px]" />
+                )}
+              </MantleLink>
+            </span>
           ))}
         </div>
 
@@ -104,8 +106,8 @@ export const NavigationLite = ({
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-4 py-6 pl-4 ">
-                {navItems.map(item => (
-                  <>
+                {navItems.map((item, index) => (
+                  <span key={`navLink-${item?.name || index}`}>
                     <MantleLink
                       variant="navLink"
                       href={item.href}
@@ -116,7 +118,7 @@ export const NavigationLite = ({
                       {item.name}
                     </MantleLink>
                     <div style={{ borderBottom: '1px solid #2E524E' }} />
-                  </>
+                  </span>
                 ))}
               </div>
             </div>

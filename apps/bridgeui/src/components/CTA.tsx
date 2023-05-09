@@ -32,7 +32,7 @@ function Values({
 }
 
 export default function CTA() {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
 
   function closeModal() {
     setIsOpen(false)
@@ -43,7 +43,7 @@ export default function CTA() {
   }
 
   return (
-    <>
+    <div className="my-4">
       <Button type="button" size="full" onClick={openModal}>
         Open dialog
       </Button>
@@ -74,7 +74,7 @@ export default function CTA() {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-black p-6 text-left align-middle shadow-xl transition-all space-y-10">
-                  <Dialog.Title className="flex justify-between align-middle">
+                  <span className="flex justify-between align-middle">
                     <Typography variant="modalHeading">
                       Confirm Transaction
                     </Typography>
@@ -84,7 +84,7 @@ export default function CTA() {
                         className="cursor-pointer"
                       />
                     </Typography>
-                  </Dialog.Title>
+                  </span>
 
                   <Values label="Amount to deposit" value="0.01 Eth" border />
                   <Values label="Time to transfer" value="5 Minutes" border />
@@ -100,6 +100,6 @@ export default function CTA() {
           </div>
         </Dialog>
       </Transition>
-    </>
+    </div>
   )
 }
