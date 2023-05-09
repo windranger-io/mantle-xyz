@@ -6,13 +6,13 @@ import {
   PageBackroundImage,
   PageContainer,
   Typography,
-  Button,
-} from '@mantle/ui'
+} from "@mantle/ui";
 // Page components
-
-import CONST from '@mantle/constants'
-import Tabs from 'src/components/Tabs'
-import bridgeBG from '../../public/bridge-bg.png'
+import Tabs from "@components/Tabs";
+import CONST from "@mantle/constants";
+import bridgeBG from "public/bridge-bg.png";
+import ConnectWallet from "@components/ConnectWallet";
+import { AdditionalLinks } from "@components/AdditionalLinks";
 
 /**
  *
@@ -22,24 +22,24 @@ import bridgeBG from '../../public/bridge-bg.png'
 
 const NAV_ITEMS = [
   {
-    name: 'Docs',
-    href: CONST.RESOURCE_LINKS.DOC_LINK || '#',
+    name: "Docs",
+    href: CONST.RESOURCE_LINKS.DOC_LINK || "#",
     internal: false,
     active: false,
   },
   {
-    name: 'Faucet',
-    href: CONST.RESOURCE_LINKS.FAUCET_LINK || '#',
+    name: "Faucet",
+    href: CONST.RESOURCE_LINKS.FAUCET_LINK || "#",
     internal: false,
     active: false,
   },
   {
-    name: 'Bridge',
-    href: CONST.RESOURCE_LINKS.BRIDGE_LINK || '#',
+    name: "Bridge",
+    href: CONST.RESOURCE_LINKS.BRIDGE_LINK || "#",
     internal: false,
     active: true,
   },
-]
+];
 
 export default async function Page() {
   return (
@@ -53,21 +53,22 @@ export default async function Page() {
       header={
         <Header
           navLite
-          walletConnect={<Button>WALLET CONNECT???</Button>}
+          walletConnect={<ConnectWallet />}
           navItems={NAV_ITEMS}
         />
       }
     >
       <PageContainer className="gap-8">
         <Typography variant="appPageHeading" className="text-center">
-          Bridge UI
+          Testnet Bridge
         </Typography>
         <Tabs />
+        <AdditionalLinks />
 
         <div>
           <Footer />
         </div>
       </PageContainer>
     </PageWrapper>
-  )
+  );
 }

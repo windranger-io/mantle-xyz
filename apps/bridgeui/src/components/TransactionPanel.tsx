@@ -1,4 +1,4 @@
-import { Typography } from '@mantle/ui'
+import { Typography } from "@mantle/ui";
 
 /**
  *
@@ -28,5 +28,5 @@ export default function TransactionPanel() {
         </Typography>
       </div>
     </div>
-  )
+  );
 }
