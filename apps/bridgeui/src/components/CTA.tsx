@@ -1,9 +1,12 @@
-/* eslint-disable react/jsx-no-bind */
-import { Button, Typography } from '@mantle/ui'
-import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+/* eslint-disable react/jsx-no-bind, react/require-default-props */
+import { Button, Typography } from "@mantle/ui";
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useContext, useState, useEffect, useMemo } from "react";
 
-import { MdClear } from 'react-icons/md'
+import { MdClear } from "react-icons/md";
+import useIsChainID from "@hooks/useIsChainID";
+import StateContext from "@context/state";
+import { useAccount } from "wagmi";
 
 /**
  *
@@ -16,36 +19,98 @@ function Values({
   value,
   border = false,
 }: {
-  label: string
-  value: string
-  border: boolean
+  label: string;
+  value: string;
+  border: boolean;
 }) {
   return (
     <div className="flex flex-col  my-5 ">
       <div className="text-type-secondary">{label}</div>
       <div className="text-xl mb-5 text-white">{value}</div>
       {border && (
-        <div className="w-full" style={{ borderBottom: '1px solid #41474D' }} />
+        <div className="w-full" style={{ borderBottom: "1px solid #41474D" }} />
       )}
     </div>
-  )
+  );
 }
 
-export default function CTA() {
-  const [isOpen, setIsOpen] = useState(false)
+type CTAProps = {
+  type: "Deposit" | "Withdraw";
+  selectedToken: string;
+  selectedTokenAmount?: string;
+  destinationToken: string;
+  destinationTokenAmount?: string;
+};
+
+export default function CTA({
+  type,
+  selectedToken,
+  destinationToken,
+  selectedTokenAmount = "",
+  destinationTokenAmount = "",
+}: CTAProps) {
+  // use these to call the mantle-sdk
+  // eslint-disable-next-line no-console
+  console.log(
+    selectedToken,
+    selectedTokenAmount,
+    destinationToken,
+    destinationTokenAmount
+  );
+
+  // unpack the context
+  const { chainId } = useContext(StateContext);
+
+  // pick up connection details from wagmi
+  const { address: wagmiAddress } = useAccount();
+
+  // check that we're connected to the appropriate chain
+  const isGoerliChainID = useIsChainID(5);
+  const isMantleChainID = useIsChainID(5001);
+
+  // set address with useState to avoid hydration errors
+  const [address, setAddress] = useState<`0x${string}`>();
+
+  const isChainID = useMemo(() => {
+    return (
+      (chainId === 5 && isGoerliChainID) ||
+      (chainId === 5001 && isMantleChainID) ||
+      !address
+    );
+  }, [address, chainId, isGoerliChainID, isMantleChainID]);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   function closeModal() {
-    setIsOpen(false)
+    setIsOpen(false);
   }
 
   function openModal() {
-    setIsOpen(true)
+    setIsOpen(true);
   }
+
+  // set wagmi address to address for ssr
+  useEffect(() => {
+    setAddress(wagmiAddress);
+  }, [wagmiAddress]);
 
   return (
     <div className="my-4">
-      <Button type="button" size="full" onClick={openModal}>
-        Open dialog
+      <Button
+        type="button"
+        size="full"
+        onClick={openModal}
+        disabled={
+          !isChainID ||
+          !destinationTokenAmount ||
+          !selectedTokenAmount ||
+          Number.isNaN(parseFloat(destinationTokenAmount)) ||
+          Number.isNaN(parseFloat(selectedTokenAmount))
+        }
+      >
+        {type === "Deposit"
+          ? "Deposit Tokens to L2"
+          : "Withdraw Tokens from L2"}
       </Button>
 
       <Transition appear show={isOpen} as={Fragment}>
@@ -101,5 +166,5 @@ export default function CTA() {
         </Dialog>
       </Transition>
     </div>
-  )
+  );
 }

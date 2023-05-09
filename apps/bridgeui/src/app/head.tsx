@@ -1,8 +1,10 @@
+import { APP_NAME } from "@config/constants";
+
 export default function Head() {
   return (
     <>
-      <title>Bridge UI</title>
+      <title>{APP_NAME}</title>
       <link rel="icon" href="/favicon.ico" />
     </>
-  )
+  );
 }
