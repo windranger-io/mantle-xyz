@@ -12,7 +12,7 @@ export default function DirectionLabel({
   return (
     <div className="flex space-x-2.5 pb-4 items-center">
       <Typography variant="body">{direction}:</Typography>
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 items-center">
         {logo}
         <Typography variant="body"> {chain}</Typography>
       </div>

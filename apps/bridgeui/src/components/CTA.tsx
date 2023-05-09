@@ -24,7 +24,7 @@ function Values({
   border: boolean;
 }) {
   return (
-    <div className="flex flex-col  my-5 ">
+    <div className="flex flex-col my-5">
       <div className="text-type-secondary">{label}</div>
       <div className="text-xl mb-5 text-white">{value}</div>
       {border && (
@@ -165,6 +165,7 @@ export default function CTA({
           </div>
         </Dialog>
       </Transition>
+      <hr className="border border-stroke-inputs mt-6 mb-8" />
     </div>
   );
 }
