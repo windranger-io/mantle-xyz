@@ -44,19 +44,21 @@ type CTAProps = {
 
 export default function CTA({
   type,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   selectedToken,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   destinationToken,
   selectedTokenAmount = "",
   destinationTokenAmount = "",
 }: CTAProps) {
   // use these to call the mantle-sdk
   // eslint-disable-next-line no-console
-  console.log(
-    selectedToken,
-    selectedTokenAmount,
-    destinationToken,
-    destinationTokenAmount
-  );
+  // console.log(
+  //   selectedToken,
+  //   selectedTokenAmount,
+  //   destinationToken,
+  //   destinationTokenAmount
+  // );
 
   // unpack the context
   const { chainId } = useContext(StateContext);
