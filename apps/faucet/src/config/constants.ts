@@ -1,5 +1,23 @@
 // Configure the applications name
-export const APP_NAME = "Mantle - Goerli Testnet Faucet";
+export const APP_NAME = "Mantle Testnet Faucet";
+
+// Configure deta description
+export const META =
+  "Drip tokens from the faucet for your testnet wallet, and test your dApps deployed on Mantle Testnet.";
+
+// Configure OG Title
+export const OG_TITLE = "Get Your Hyperscaling Rocket Fuel";
+
+// Configure OG Desc
+export const OG_DESC =
+  "Fund your testnet wallet here to start to #BuildonMantle.";
+
+// Configure Twiiter
+export const TWITTER_DESC =
+  "Fund your testnet wallet here to start to #BuildonMantle.";
+
+// To be changed before launch
+export const ABSOLUTE_PATH = "https://mantle-faucet-orpin.vercel.app/";
 
 // Configure which chain to use (goerli)
 export const CHAIN_ID = 5;
