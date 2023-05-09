@@ -85,7 +85,7 @@ export default function TokenSelect({
         }}
       >
         {({ open }) => (
-          <div className="relative ">
+          <div className="h-12 relative rounded-lg ring-1 ring-stroke-inputs focus-within:ring-1 focus-within:ring-white/70 ">
             <div className="flex text-lg ">
               <input
                 key={`${type}-amount`}
@@ -101,15 +101,15 @@ export default function TokenSelect({
                 }}
                 type="text"
                 placeholder="0"
-                className="grow  border border-stroke-inputs  focus:outline-none rounded-tl-lg rounded-bl-lg  bg-black py-1.5 px-3  ring-inset ring-stroke-inputs focus:ring-2 focus:ring-white  "
+                className="grow border-0 focus:outline-none rounded-tl-lg rounded-bl-lg bg-black py-1.5 px-3 focus:ring-0 focus:ring-white/70"
               />
-              <Listbox.Button className="relative  cursor-default rounded-br-lg rounded-tr-lg  bg-black py-1.5 pl-5 pr-10 text-left text-white shadow-sm ring-1 ring-inset ring-stroke-inputs focus:outline-none focus:ring-2 focus:ring-white ">
+              <Listbox.Button className="h-12 relative cursor-default rounded-br-lg rounded-tr-lg bg-black py-1.5 pl-5 pr-10 text-left text-white shadow-sm focus:outline-none focus:ring-0 focus:ring-white/70">
                 <span className="flex items-center">
                   <Image
                     alt={`Logo for ${selected?.name}`}
                     src={selected?.logoURI}
-                    width={32}
-                    height={32}
+                    width={24}
+                    height={24}
                   />
                   <span className="ml-2 block truncate">{selected?.name}</span>
                 </span>
@@ -129,7 +129,7 @@ export default function TokenSelect({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute z-10 mt-2.5 max-h-56 w-full overflow-auto rounded-lg bg-black py-0 text-lg shadow-lg ring-2 ring-white  focus:outline-none ">
+              <Listbox.Options className="absolute z-10 mt-2.5 max-h-56 w-full overflow-auto rounded-lg bg-black py-0 text-lg shadow-lg ring-1 ring-white/70 focus:outline-none ">
                 {tokens.map((token) => (
                   <Listbox.Option
                     key={token.name}

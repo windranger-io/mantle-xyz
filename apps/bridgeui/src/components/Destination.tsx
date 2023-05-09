@@ -21,7 +21,7 @@ export default function Destination({
   } ${destinationToken} token${(destinationTokenAmount !== "1" && "s") || ""}`;
 
   return (
-    <div>
+    <div className="pt-6">
       <DirectionLabel
         direction="To"
         logo={
@@ -41,7 +41,7 @@ export default function Destination({
         })`}
       />
       <input
-        className="w-full border border-stroke-inputs rounded-lg bg-black py-1.5 px-3 "
+        className="w-full h-12 border border-stroke-inputs rounded-lg bg-black py-1.5 px-3 "
         disabled
         value={
           (destinationTokenAmount &&
