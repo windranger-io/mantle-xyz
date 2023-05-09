@@ -96,7 +96,12 @@ export const NavigationFull = ({
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <Link href="/" className="-m-1.5 p-1.5">
+          <Link
+            href={CONST.WEBSITE}
+            rel="noreferrer noopener"
+            target="_blank"
+            className="-m-1.5 p-1.5"
+          >
             <span className="sr-only">Mantle</span>
 
             <MantleLockUpByline />

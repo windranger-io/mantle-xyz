@@ -27,6 +27,7 @@ export const MantleLink = ({
   // eslint-disable-next-line react/button-has-type
   <a
     href={href}
+    target={target}
     className={cls(`
     ${classes.base}
     ${classes.size[size]}
