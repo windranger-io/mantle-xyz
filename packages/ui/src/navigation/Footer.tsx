@@ -1,5 +1,4 @@
 import * as React from 'react'
-import Link from 'next/link'
 
 import CONST from '@mantle/constants'
 import { MantleLetterMark, MantleLogoIcon, PoweredByline } from '../base/Icons'
@@ -103,17 +102,24 @@ export const Footer = () => (
     className="max-w-7xl mx-auto px-4 py-6 lg:py-12 lg:px-8 uppercase"
   >
     <div className="grid grid-cols-1 gap-10 lg:gap-0 md:grid-cols-4 mb-8">
-      <Link href={CONST.WEBSITE} rel="noreferrer noopener" target="_blank">
-        <div className="flex flex-row align-center gap-4">
-          <MantleLogoIcon height={40} width={40} />
-          <div>
-            <p className="text-sm ">
-              Mantle {new Date().getFullYear()}&nbsp;&#169;
-            </p>
-            <PoweredByline height={24} width={150} />
+      <div>
+        <a
+          href={CONST.WEBSITE}
+          rel="noreferrer noopener"
+          target="_blank"
+          className="inline-block"
+        >
+          <div className="flex flex-row align-center gap-4">
+            <MantleLogoIcon height={40} width={40} />
+            <div>
+              <p className="text-sm ">
+                Mantle {new Date().getFullYear()}&nbsp;&#169;
+              </p>
+              <PoweredByline height={24} width={150} />
+            </div>
           </div>
-        </div>
-      </Link>
+        </a>
+      </div>
 
       {FOOTER_ITEMS.map(item => (
         <div key={item.title}>
