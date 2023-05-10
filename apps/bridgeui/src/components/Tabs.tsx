@@ -28,9 +28,9 @@ export default function Tabs() {
           }
         }}
       >
-        <Tab.List className="flex space-x-2 rounded-[10px] bg-white/[0.05] p-1 select-none w-fit">
+        <Tab.List className="flex space-x-2 rounded-[10px] bg-white/[0.05] p-1 select-none ">
           {Object.keys(categories).map((category, index) => (
-            <span key={`cat-${category || index}`}>
+            <span key={`cat-${category || index}`} className="w-full">
               <Tab
                 className={({ selected }) =>
                   clsx(
