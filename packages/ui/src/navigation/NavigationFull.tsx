@@ -119,11 +119,19 @@ export const NavigationFull = ({
         </div>
 
         <Popover.Group className="hidden lg:flex lg:gap-x-12 ">
-          <Links variant="nav" href={CONST.NAV_LINKS_ABSOLUTE.DEV_LINK}>
+          <Links
+            variant="nav"
+            href={CONST.NAV_LINKS_ABSOLUTE.DEV_LINK}
+            target="_self"
+          >
             {/* <span>{t('nav-developers')}</span> */}
             <span>nav-developers</span>
           </Links>
-          <Links variant="nav" href={CONST.NAV_LINKS_ABSOLUTE.ECOSYSTEM_LINK}>
+          <Links
+            variant="nav"
+            href={CONST.NAV_LINKS_ABSOLUTE.ECOSYSTEM_LINK}
+            target="_self"
+          >
             {/* <span>{t('nav-ecosystem')}</span> */}
             <span>nav-ecosystem</span>
           </Links>
