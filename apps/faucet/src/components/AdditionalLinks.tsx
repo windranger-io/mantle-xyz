@@ -9,14 +9,17 @@ export function AdditionalLinks() {
       <div className="flex flex-col gap-2">
         <MantleLink
           variant="additionalLinks"
-          target="blank"
+          rel="noreferrer noopener"
+          target="_blank"
           href="https://faucet.paradigm.xyz/"
         >
           Paradigm gETH Faucet
         </MantleLink>
+
         <MantleLink
           variant="additionalLinks"
-          target="blank"
+          rel="noreferrer noopener"
+          target="_blank"
           href="https://goerlifaucet.com/"
         >
           Alchemy gETH Faucet

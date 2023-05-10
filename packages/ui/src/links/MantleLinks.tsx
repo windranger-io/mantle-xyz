@@ -12,7 +12,7 @@ interface LinkProps extends LinkHTMLAttributes<HTMLAnchorElement> {
   variant?: Variant
   href: string
   children: ReactNode
-  target: string
+  target?: string
 }
 
 export const MantleLink = ({
@@ -27,6 +27,7 @@ export const MantleLink = ({
   // eslint-disable-next-line react/button-has-type
   <a
     href={href}
+    target={target}
     className={cls(`
     ${classes.base}
     ${classes.size[size]}
