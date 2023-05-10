@@ -12,7 +12,10 @@ export const OG_TITLE = "Get Your Hyperscaling Rocket Fuel";
 export const OG_DESC =
   "Fund your testnet wallet here to start to #BuildonMantle.";
 
-// Configure Twiiter
+// Configure Twiiter Title
+export const TWITTER_TITLE = "Mantle Testnet Faucet";
+
+// Configure Twiiter Desc
 export const TWITTER_DESC =
   "Fund your testnet wallet here to start to #BuildonMantle.";
 
