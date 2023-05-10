@@ -1,5 +1,6 @@
 import { LinkHTMLAttributes, type ReactNode } from 'react'
 import clsx from 'clsx'
+import Link from 'next/link'
 
 type LinkVariant =
   | 'regular'
@@ -15,7 +16,7 @@ type LinkSize = 'regular' | 'large' | 'small'
 interface Props extends LinkHTMLAttributes<HTMLAnchorElement> {
   href: string
   // eslint-disable-next-line react/require-default-props
-  target?: any
+  target: string
   // eslint-disable-next-line react/require-default-props
   size?: LinkSize
   // eslint-disable-next-line react/require-default-props
@@ -33,7 +34,7 @@ export const Links = ({
   ...props
 }: Props) => (
   // eslint-disable-next-line react/button-has-type
-  <a
+  <Link
     href={href}
     target={target}
     className={
@@ -57,5 +58,5 @@ export const Links = ({
     {...props}
   >
     {children}
-  </a>
+  </Link>
 )

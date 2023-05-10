@@ -5,7 +5,12 @@ import React, { useState, useEffect } from "react";
 import { useAccount, useBalance, useContractWrite } from "wagmi";
 import useIsChainID from "@hooks/useIsChainID";
 
-import { formatEther, getAddress, parseEther } from "ethers/lib/utils.js";
+import {
+  formatEther,
+  getAddress,
+  parseEther,
+  isAddress,
+} from "ethers/lib/utils.js";
 import { truncateAddress } from "@utils/truncateAddress";
 import { validate } from "@utils/validateMintData";
 
@@ -153,12 +158,12 @@ function MintTokens({
                   fontSize: "0.875rem",
                   lineHeight: "1.25rem",
                 }}
-                disabled={
-                  minting ||
-                  !hasTweeted ||
-                  (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE) ||
-                  address === sendTo
-                }
+                // disabled={
+                //   minting ||
+                //   !hasTweeted ||
+                //   (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE) ||
+                //   address === sendTo
+                // }
                 onClick={() => setSendTo(address || "")}
               >
                 Send to my address
@@ -172,15 +177,21 @@ function MintTokens({
               value={sendTo}
               placeholder="0x1234..."
               className="bg-black w-full rounded-input"
-              disabled={
-                minting ||
-                !hasTweeted ||
-                (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE)
-              }
+              // disabled={
+              //   minting ||
+              //   !hasTweeted ||
+              //   (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE)
+              // }
               onChange={(e: {
                 target: { value: React.SetStateAction<string> };
               }) => setSendTo(e.target.value as string)}
             />
+
+            {isAddress(sendTo as string) ? null : (
+              <div className="text-status-error text-sm">
+                Please enter valid address
+              </div>
+            )}
           </div>
           <div className="grid gap-2">
             <p className="text-sm">Mint token amount</p>
@@ -191,11 +202,11 @@ function MintTokens({
               value={amount || ""}
               min="1"
               className="bg-black w-full rounded-input"
-              disabled={
-                minting ||
-                !hasTweeted ||
-                (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE)
-              }
+              // disabled={
+              //   minting ||
+              //   !hasTweeted ||
+              //   (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE)
+              // }
               onChange={(e: {
                 target: { value: React.SetStateAction<string> };
               }) => setAmount(parseFloat(`${e.target.value}`))}
