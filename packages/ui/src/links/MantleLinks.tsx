@@ -12,7 +12,7 @@ interface LinkProps extends LinkHTMLAttributes<HTMLAnchorElement> {
   variant?: Variant
   href: string
   children: ReactNode
-  target: string
+  target?: string
 }
 
 export const MantleLink = ({
