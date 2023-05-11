@@ -140,7 +140,6 @@ function MintTokens({
             !success ? `hidden` : `block`
           }`}
         >
-          Success! We minted 1 BIT and sent it to 0xBdd8...B5AB
           {success}
         </div>
 
