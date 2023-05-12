@@ -10,6 +10,7 @@ type TypographyVariant =
   | 'bodyLongform'
   | 'smallWidget'
   | 'modalHeading'
+  | 'transactionTableHeading'
   | 'footerColumnLabel'
 
 type HTMLTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p'
@@ -50,6 +51,13 @@ const typographyMap: {
     classNames: classNames(
       bodyDefault,
       'font-normal text-[20px] leading-[28px] text-type-primary',
+    ),
+  },
+  transactionTableHeading: {
+    tag: 'h3',
+    classNames: classNames(
+      headingDefault,
+      'text-[28px] leading-[33px] text-white',
     ),
   },
   modalHeading: {
