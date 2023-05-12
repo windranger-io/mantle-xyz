@@ -9,7 +9,6 @@ import {
   PageWrapper,
   PageBackroundImage,
   PageContainer,
-  Typography,
 } from "@mantle/ui";
 
 import CONST from "@mantle/constants";
@@ -67,9 +66,6 @@ export default function RootLayout({
             }
           >
             <PageContainer className="gap-8">
-              <Typography variant="appPageHeading" className="text-center">
-                Testnet Bridge
-              </Typography>
               {children}
               <div>
                 <Footer />
