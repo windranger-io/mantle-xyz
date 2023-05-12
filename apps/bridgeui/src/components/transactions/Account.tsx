@@ -1,4 +1,5 @@
 import useCopyToClipboard from "@hooks/useCopyToClipboard";
+import React from "react";
 import { Typography } from "@mantle/ui";
 import Avatar from "@mantle/ui/src/presentational/Avatar";
 import Link from "next/link";
