@@ -16,4 +16,4 @@ export const PageContainer = ({
   children: React.ReactNode
   // eslint-disable-next-line react/require-default-props
   className?: string
-}) => <div className={`flex flex-col ${className || ``}`}>{children}</div>
+}) => <div className={`flex flex-col px-4 ${className || ``}`}>{children}</div>

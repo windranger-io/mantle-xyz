@@ -104,7 +104,7 @@ function MintTokens({
       <div
         className={`${
           minting ? `flex` : `hidden`
-        } h-full w-full fixed top-0 left-0 bg-[rgba(255,255,255,0.01)] backdrop-blur-[5px] items-center justify-center`}
+        } h-full w-full fixed top-0 left-0 bg-[rgba(255,255,255,0.01)] backdrop-blur-[5px] items-center justify-center z-10`}
       >
         <div role="status">
           <svg
@@ -140,7 +140,6 @@ function MintTokens({
             !success ? `hidden` : `block`
           }`}
         >
-          Success! We minted 1 BIT and sent it to 0xBdd8...B5AB
           {success}
         </div>
 
