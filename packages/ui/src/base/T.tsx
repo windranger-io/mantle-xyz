@@ -7,6 +7,7 @@ import { twMerge } from 'tailwind-merge'
 type TypographyVariant =
   | 'appPageHeading'
   | 'body'
+  | 'bodyLongform'
   | 'smallWidget'
   | 'modalHeading'
   | 'footerColumnLabel'
@@ -42,6 +43,13 @@ const typographyMap: {
     classNames: classNames(
       bodyDefault,
       'font-normal text-[14px] leading-[20px] text-type-secondary',
+    ),
+  },
+  bodyLongform: {
+    tag: 'p',
+    classNames: classNames(
+      bodyDefault,
+      'font-normal text-[20px] leading-[28px] text-type-primary',
     ),
   },
   modalHeading: {
