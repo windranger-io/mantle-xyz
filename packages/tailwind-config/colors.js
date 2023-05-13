@@ -48,6 +48,7 @@ module.exports = {
   stroke: {
     primary: baseColors.gray.blackPearl,
     primaryHover: baseColors.green.blueDianne,
+    secondary: baseColors.green.blueDianne,
     selected: baseColors.white,
     disabled: baseColors.disabled.gray,
     error: baseColors.status.error,
