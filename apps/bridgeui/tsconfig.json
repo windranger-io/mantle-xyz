@@ -1,7 +1,6 @@
 {
   "extends": "@mantle/tsconfig/nextjs.json",
   "compilerOptions": {
-    "jsx": "react",
     "baseUrl": ".",
     "paths": {
       "@*": ["src/*"]

@@ -1,6 +1,9 @@
 /* eslint-disable react/function-component-definition */
 import React from "react";
 import { BigNumberish } from "ethers";
+import { toEtherscan } from "@utils/toEtherscan";
+
+import { MantleLink } from "@mantle/ui";
 
 type Transaction = {
   l1_token: `0x${string}`;
@@ -21,32 +24,41 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
   transactions,
 }) => {
   return (
-    <div className="table w-full ">
-      <div className="table-header-group ">
-        <div className="table-row">
-          <div className="table-cell ">L1 Token</div>
-          <div className="table-cell ">L2 Token</div>
-          <div className="table-cell ">Block Timestamp</div>
-          <div className="table-cell ">Amount</div>
-          <div className="table-cell ">Transaction Hash</div>
-          <div className="table-cell ">Status</div>
-        </div>
-      </div>
-      <div className="table-row-group">
+    <table className="table-auto w-full overflow-x-auto">
+      <thead className="text-left">
+        <tr className="border-b-[1px] border-stroke-secondary text-sm ">
+          <th className="py-4">L1 Token</th>
+          <th>L2 Token</th>
+          <th>Block Timestamp</th>
+          <th>Amount</th>
+          <th>Transaction Hash</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody className="table-row-group">
         {transactions.map((transaction) => (
-          <div className="table-row" key={transaction.transactionHash}>
-            <div className="table-cell">{transaction.l1_token}</div>
-            <div className="table-cell">{transaction.l2_token}</div>
-            <div className="table-cell">
-              {transaction.blockTimeStamp.toString()}
-            </div>
-            <div className="table-cell">{transaction.amount.toString()}</div>
-            <div className="table-cell">{transaction.transactionHash}</div>
-            <div className="table-cell">{transaction.status}</div>
-          </div>
+          <tr
+            className="border-b-[1px] border-stroke-secondary p-4"
+            key={transaction.transactionHash}
+          >
+            <td className="py-4">{transaction.l1_token}</td>
+            <td>{transaction.l2_token}</td>
+            <td>{transaction.blockTimeStamp.toString()}</td>
+            <td>{transaction.amount.toString()}</td>
+            <td>
+              <MantleLink
+                variant="additionalLinks"
+                className="no-underline"
+                href={toEtherscan(transaction.transactionHash)}
+              >
+                {transaction.transactionHash}
+              </MantleLink>
+            </td>
+            <td>{transaction.status}</td>
+          </tr>
         ))}
-      </div>
-    </div>
+      </tbody>
+    </table>
   );
 };
 
