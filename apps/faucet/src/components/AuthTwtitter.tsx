@@ -5,8 +5,8 @@ import { useSession, signIn, signOut } from "next-auth/react";
 
 import useHasTweeted from "@hooks/useHasTweeted";
 import { Button, SimpleCard, Typography } from "@mantle/ui";
-
 import { AiOutlineCheckCircle } from "react-icons/ai";
+import { BsTwitter as BirdIcon } from "react-icons/bs";
 import { CardHeading } from "./CardHeadings";
 
 function AuthTwitter({
@@ -32,24 +32,22 @@ function AuthTwitter({
 
   return (
     <SimpleCard className="max-w-lg w-full  grid gap-4">
-      <CardHeading numDisplay="1" header="Make a tweet" />
+      <CardHeading numDisplay="1" header="Authenticate" />
 
       {!hasTweeted ? (
         <Typography variant="body" className="text-center  mb-4">
-          {" "}
-          To request funds via Twitter, you should make a tweet first
+          Authenticate with your twitter account.
         </Typography>
       ) : (
         <div className="flex flex-col gap-4  items-center justify-center">
           <AiOutlineCheckCircle className="text-status-success block text-5xl" />{" "}
           <Typography variant="body">
-            {" "}
             <div className="flex  gap-2 text-lg">
               <div>Authenticated:</div>
 
               <div> {session?.user.username}</div>
             </div>
-          </Typography>{" "}
+          </Typography>
         </div>
       )}
 
@@ -59,9 +57,8 @@ function AuthTwitter({
             Sign Out
           </Button>
         </div>
-      ) : (
-        <span />
-      )}
+      ) : null}
+
 
       <div className="flex flex-col md:flex-row gap-4">
         {!hasTweeted ? (
