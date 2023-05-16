@@ -5,8 +5,10 @@ import { useSession, signIn, signOut } from "next-auth/react";
 
 import useHasTweeted from "@hooks/useHasTweeted";
 import { Button, SimpleCard, Typography } from "@mantle/ui";
+
 import { AiOutlineCheckCircle } from "react-icons/ai";
-import { BsTwitter as BirdIcon } from "react-icons/bs";
+
+import { BirdIcon } from "@mantle/ui/src/base/Icons";
 import { CardHeading } from "./CardHeadings";
 
 function AuthTwitter({
@@ -59,7 +61,6 @@ function AuthTwitter({
         </div>
       ) : null}
 
-
       <div className="flex flex-col md:flex-row gap-4">
         {!hasTweeted ? (
           <>
@@ -81,14 +82,17 @@ function AuthTwitter({
             </Link> */}
 
             <Button
-              variant="primary"
+              variant="secondary"
               size="full"
               type="button"
               disabled={hasTweeted || false}
               className=""
               onClick={() => signIn("twitter")}
             >
-              Verify Tweet
+              <div className="flex justify-center gap-2 items-center">
+                <BirdIcon />
+                Authenticate
+              </div>
             </Button>
           </>
         ) : null}
