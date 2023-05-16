@@ -5,8 +5,8 @@ import { useSession, signIn, signOut } from "next-auth/react";
 
 import useHasTweeted from "@hooks/useHasTweeted";
 import { Button, SimpleCard, Typography } from "@mantle/ui";
-import Link from "next/link";
 import { AiOutlineCheckCircle } from "react-icons/ai";
+import { BsTwitter as BirdIcon } from "react-icons/bs";
 import { CardHeading } from "./CardHeadings";
 
 function AuthTwitter({
@@ -32,24 +32,22 @@ function AuthTwitter({
 
   return (
     <SimpleCard className="max-w-lg w-full  grid gap-4">
-      <CardHeading numDisplay="1" header="Make a tweet" />
+      <CardHeading numDisplay="1" header="Authenticate" />
 
       {!hasTweeted ? (
         <Typography variant="body" className="text-center  mb-4">
-          {" "}
-          To request funds via Twitter, you should make a tweet first
+          Authenticate with your twitter account.
         </Typography>
       ) : (
         <div className="flex flex-col gap-4  items-center justify-center">
           <AiOutlineCheckCircle className="text-status-success block text-5xl" />{" "}
           <Typography variant="body">
-            {" "}
             <div className="flex  gap-2 text-lg">
               <div>Authenticated:</div>
 
               <div> {session?.user.username}</div>
             </div>
-          </Typography>{" "}
+          </Typography>
         </div>
       )}
 
@@ -59,43 +57,22 @@ function AuthTwitter({
             Sign Out
           </Button>
         </div>
-      ) : (
-        <span />
-      )}
+      ) : null}
 
-      <div className="flex flex-col md:flex-row gap-4">
-        {!hasTweeted ? (
-          <>
-            <Link
-              href="https://twitter.com/intent/tweet?text=To%20%23BuildonMantle%2C%20I%20am%20claiming%20test%20%24BIT%20tokens%20on%20faucet.testnet.mantle.xyz%20for%20%400xMantle%2C%20a%20next%20generation%20high-performance%20modular%20%40Ethereum%20L2%20built%20for%20hyperscaled%20dApps.%0A%0ALearn%20more%3A%20%5Bhttps%3A%2F%2Flinktr.ee%2Fmantle.xyz%5D"
-              target="_blank"
-              rel="noreferrer"
-              passHref
-              className="w-full"
-            >
-              <Button
-                variant="secondary"
-                size="full"
-                disabled={hasTweeted || false}
-                className=""
-              >
-                Send Tweet
-              </Button>
-            </Link>
-
-            <Button
-              variant="primary"
-              size="full"
-              type="button"
-              disabled={hasTweeted || false}
-              className=""
-              onClick={() => signIn("twitter")}
-            >
-              Verify Tweet
-            </Button>
-          </>
-        ) : null}
-      </div>
+      {!hasTweeted ? (
+        <Button
+          variant="secondary"
+          size="full"
+          type="button"
+          disabled={hasTweeted || false}
+          onClick={() => signIn("twitter")}
+        >
+          <div className="flex justify-center gap-2 items-center">
+            <BirdIcon style={{ color: "#0A8FF6", fontSize: "34px" }} />
+            Authenticate
+          </div>
+        </Button>
+      ) : null}
     </SimpleCard>
   );
 }
