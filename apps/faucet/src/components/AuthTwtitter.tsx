@@ -32,16 +32,18 @@ function AuthTwitter({
 
   return (
     <SimpleCard className="max-w-lg w-full  grid gap-4">
-      <CardHeading numDisplay="1" header="Make atweet" />
+      <CardHeading numDisplay="1" header="Make a tweet" />
 
       {!hasTweeted ? (
         <Typography variant="body" className="text-center  mb-4">
+          {" "}
           To request funds via Twitter, you should make a tweet first
         </Typography>
       ) : (
         <div className="flex flex-col gap-4  items-center justify-center">
           <AiOutlineCheckCircle className="text-status-success block text-5xl" />{" "}
           <Typography variant="body">
+            {" "}
             <div className="flex  gap-2 text-lg">
               <div>Authenticated:</div>
 
