@@ -233,8 +233,8 @@ function MintTokens() {
               variant="primary"
               size="full"
               disabled={
+                !(session ?? false) ||
                 sendTo !== address ||
-                session === null ||
                 minting ||
                 (balanceBIT &&
                   parseFloat(myBalanceBIT) + parseFloat(`${amount}`) >
