@@ -3,7 +3,8 @@ import BoringAvatar from 'boring-avatars'
 
 export type AvatarProps = {
   walletAddress: string
-  size: number
+  // eslint-disable-next-line react/require-default-props
+  size?: number
 }
 
 const Avatar = ({ walletAddress, size = 18 }: AvatarProps) => {
