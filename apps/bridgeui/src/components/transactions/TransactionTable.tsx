@@ -6,8 +6,8 @@ import { toEtherscan } from "@utils/toEtherscan";
 import { MantleLink } from "@mantle/ui";
 
 type Transaction = {
-  l1_token: `0x${string}`;
-  l2_token: `0x${string}`;
+  l1_token: string;
+  l2_token: string;
   blockTimeStamp: BigNumberish;
   amount: BigNumberish;
   transactionHash: string;
