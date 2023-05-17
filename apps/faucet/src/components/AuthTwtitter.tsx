@@ -41,7 +41,6 @@ function AuthTwitter() {
               variant="ghost"
               onClick={() => {
                 signOut();
-                setAuthenticated(false);
               }}
             >
               Sign Out
