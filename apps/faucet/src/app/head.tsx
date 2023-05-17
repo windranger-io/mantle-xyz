@@ -12,6 +12,7 @@ export default function Head() {
     <>
       <title>{APP_NAME}</title>
       <link rel="icon" href="/favicon.ico" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
 
       <meta property="og:type" content="website" />
       <meta property="og:title" content={`${OG_TITLE}`} />
