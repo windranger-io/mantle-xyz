@@ -22,34 +22,6 @@ function AuthTwitter() {
   return (
     <SimpleCard className="max-w-lg w-full grid gap-4">
       <CardHeading numDisplay="1" header="Authenticate" />
-
-      {authenticated && session && (
-        <>
-          <div className="flex flex-col gap-4 items-center justify-center">
-            <AiOutlineCheckCircle className="text-status-success block text-5xl" />
-
-            <div className="flex gap-2 text-lg">
-              <div>
-                <Typography variant="body">Authenticated:</Typography>
-              </div>
-              <Typography variant="body">{session?.user?.username}</Typography>
-            </div>
-          </div>
-          <div className="flex flex-row justify-center align-baseline">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => {
-                signOut();
-                setAuthenticated(false);
-              }}
-            >
-              Sign Out
-            </Button>
-          </div>
-        </>
-      )}
-
       {!authenticated && !session && (
         <>
           <Typography variant="body" className="text-center mb-4">
@@ -69,6 +41,29 @@ function AuthTwitter() {
           </Button>
         </>
       )}
+
+      {authenticated ||
+        (session && (
+          <>
+            <div className="flex flex-col gap-4 items-center justify-center">
+              <AiOutlineCheckCircle className="text-status-success block text-5xl" />
+
+              <div className="flex gap-2 text-lg">
+                <div>
+                  <Typography variant="body">Authenticated:</Typography>
+                </div>
+                <Typography variant="body">
+                  {session?.user?.username}
+                </Typography>
+              </div>
+            </div>
+            <div className="flex flex-row justify-center align-baseline">
+              <Button type="button" variant="ghost" onClick={() => signOut()}>
+                Sign Out
+              </Button>
+            </div>
+          </>
+        ))}
     </SimpleCard>
   );
 }
