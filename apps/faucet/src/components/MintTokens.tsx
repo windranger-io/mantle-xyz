@@ -233,7 +233,7 @@ function MintTokens() {
               variant="primary"
               size="full"
               disabled={
-                !(session ?? false) ||
+                !session?.user?.access_token ||
                 sendTo !== address ||
                 minting ||
                 (balanceBIT &&
