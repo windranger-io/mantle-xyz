@@ -11,6 +11,7 @@ type TypographyVariant =
   | 'smallWidget'
   | 'modalHeading'
   | 'transactionTableHeading'
+  | 'modalHeadingSm'
   | 'footerColumnLabel'
 
 type HTMLTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p'
@@ -65,6 +66,13 @@ const typographyMap: {
     classNames: classNames(
       headingDefault,
       'text-[28px] leading-[33px] text-white',
+    ),
+  },
+  modalHeadingSm: {
+    tag: 'h2',
+    classNames: classNames(
+      headingDefault,
+      'text-[24px] leading-[33px] text-white',
     ),
   },
   smallWidget: {

@@ -1,5 +1,8 @@
-import { StateProvider } from "@context/state";
-import { WagmiProvider } from "@providers/wagmi-context";
+import { WagmiProvider } from "@providers/wagmiContext";
+import { MantleSDKProvider } from "@providers/mantleSDKContext";
+import { StateProvider } from "@providers/stateContext";
+
+import { ToastContainer } from "@components/Toast";
 
 export default async function Providers({
   children,
@@ -8,7 +11,11 @@ export default async function Providers({
 }) {
   return (
     <WagmiProvider>
-      <StateProvider>{children}</StateProvider>
+      <MantleSDKProvider>
+        <StateProvider>
+          <ToastContainer>{children}</ToastContainer>
+        </StateProvider>
+      </MantleSDKProvider>
     </WagmiProvider>
   );
 }

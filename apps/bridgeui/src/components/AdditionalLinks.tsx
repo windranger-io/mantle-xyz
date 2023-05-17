@@ -1,8 +1,9 @@
 "use client";
 
-import { MantleLink, Typography } from "@mantle/ui";
 import { useContext } from "react";
-import StateContext from "@context/state";
+import StateContext from "@providers/stateContext";
+
+import { MantleLink, Typography } from "@mantle/ui";
 
 export function AdditionalLinks() {
   // unpack the context

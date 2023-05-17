@@ -1,17 +1,21 @@
 "use client";
 
 import { MANTLE_TESTNET_CHAIN } from "@config/constants";
+
 import { WagmiConfig, configureChains, createClient } from "wagmi";
+
 import { goerli } from "wagmi/chains";
+
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
 
 const { chains, provider, webSocketProvider } = configureChains(
-  // Only goerli is supported here
+  // We support Goerli and Mantle testnet (depending on state of ui)
   [goerli, MANTLE_TESTNET_CHAIN],
   [
     jsonRpcProvider({

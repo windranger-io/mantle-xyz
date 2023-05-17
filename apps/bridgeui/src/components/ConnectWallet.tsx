@@ -2,21 +2,27 @@
 
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import StateContext from "@providers/stateContext";
+
+import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
-import { truncateAddress } from "@utils/truncateAddress";
+import { truncateAddress } from "@utils/formatStrings";
 import { CHAINS } from "@config/constants";
 
-import useIsChainID from "@hooks/useIsChainID";
-import { Button } from "@mantle/ui";
 import Avatar from "@mantle/ui/src/presentational/Avatar";
+import { Button } from "@mantle/ui";
 import { BiError } from "react-icons/bi";
-import StateContext from "@context/state";
+
+import { useIsChainID } from "@hooks/useIsChainID";
+import { useSwitchToNetwork } from "@hooks/useSwitchToNetwork";
 
 function ConnectWallet() {
+  // get the currently connected wallet-selected-chain
+  const { chain: currentChain } = useNetwork();
+
   // unpack the context
-  const { chainId } = useContext(StateContext);
+  const { chainId, client, setClient } = useContext(StateContext);
 
   // check that we're connected to the appropriate chain
   const isGoerliChainID = useIsChainID(5);
@@ -25,6 +31,7 @@ function ConnectWallet() {
   // set address with useState to avoid hydration errors
   const [address, setAddress] = useState<`0x${string}`>();
 
+  // chain is valid if it matches any of these states...
   const isChainID = useMemo(() => {
     return (
       (chainId === 5 && isGoerliChainID) ||
@@ -33,27 +40,30 @@ function ConnectWallet() {
     );
   }, [address, chainId, isGoerliChainID, isMantleChainID]);
 
-  // keep hold of all connection details
-  const [client, setClient] = useState<{
-    isConnected: boolean;
-    chainId?: number;
-    address?: `0x${string}`;
-  }>({
-    isConnected: false,
-  });
-
+  // when disconnecting we want to retain control over whether or not to attempt a reconnect
   const reconnect = useRef(false);
+
+  // pull to network method
+  const { switchToNetwork } = useSwitchToNetwork();
 
   // control wagmi connector
   const { connect, connectAsync } = useConnect({
     connector: new InjectedConnector(),
   });
+
   const { disconnect, disconnectAsync } = useDisconnect({
+    onMutate: () => {
+      if (!reconnect.current && !client.address) {
+        setClient({
+          isConnected: false,
+        });
+      }
+    },
     onSettled: async () => {
       if (reconnect.current) {
         await new Promise((resolve) => {
           setTimeout(() => {
-            resolve(connectAsync());
+            resolve(connectAsync().catch(() => null));
           }, 1000);
         });
       }
@@ -80,29 +90,11 @@ function ConnectWallet() {
     }
   };
 
-  // record change of network
+  // trigger change of network
   const changeNetwork = async () => {
     if (!window.ethereum) throw new Error("No crypto wallet found");
-    try {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: `0x${Number(chainId).toString(16)}` }],
-      });
-    } catch (switchError: any) {
-      // This error code indicates that the chain has not been added to MetaMask.
-      if (switchError && switchError.code === 4902) {
-        await window.ethereum.request({
-          method: "wallet_addEthereumChain",
-          params: [CHAINS[chainId]],
-        });
-      }
-    } finally {
-      if (address) {
-        reconnect.current = true;
-        await disconnectAsync();
-        reconnect.current = false;
-      }
-    }
+    // trigger a change of network
+    await switchToNetwork(chainId);
   };
 
   // check the connection is valid
@@ -128,7 +120,7 @@ function ConnectWallet() {
     onConnect: async () => {
       await checkConnection();
 
-      // auto-switch - ask the wallet to attempt to switch to goerli on first-connect
+      // auto-switch - ask the wallet to attempt to switch to chosen chain on first-connect
       if (!isChainID) {
         // await changeNetwork();
       }
@@ -142,29 +134,56 @@ function ConnectWallet() {
     if (!reconnect.current || wagmiAddress) {
       setAddress(wagmiAddress);
     }
-  }, [wagmiAddress]);
+  }, [reconnect, wagmiAddress]);
+
+  // if the current chain doesnt match the selected chain, we can trigger a reconnect to correct state and to connect to the user to the site again
+  useEffect(
+    () => {
+      if (
+        !wagmiAddress &&
+        ((!currentChain && client.isConnected) ||
+          (client.chainId && currentChain?.id !== client.chainId))
+      ) {
+        reconnect.current = true;
+        disconnectAsync().then(() => {
+          reconnect.current = false;
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentChain]
+  );
 
   // return connect/disconnect component
   return (
     <div className="flex flex-row gap-4">
-      {address && isChainID && client.isConnected ? (
+      {isChainID && client.isConnected && client.address ? (
         <div className="flex flex-row items-center gap-2  text-xs rounded-lg  backdrop-blur-[50px] bg-white/10 w-fit px-4 py-2">
           <Avatar walletAddress="address" />
-          <p className="text-white ">{truncateAddress(address)}</p>
+          <p className="text-white ">{truncateAddress(client.address)}</p>
         </div>
       ) : (
         ``
       )}
       {
         // eslint-disable-next-line no-nested-ternary
-        isChainID || !address ? (
+        isChainID || !client.address ? (
           <>
             <Button
               variant="walletConnect"
               size="regular"
-              onClick={() => (!address ? connect() : disconnect())}
+              onClick={() => {
+                if (!client.address) {
+                  connect();
+                } else {
+                  // clear the client before calling disconnect
+                  client.address = undefined;
+                  // disconnect
+                  disconnect();
+                }
+              }}
             >
-              {!address ? `Connect Wallet` : `Disconnect`}
+              {!client.address ? `Connect Wallet` : `Disconnect`}
             </Button>
             {/* <button
               type="button"
