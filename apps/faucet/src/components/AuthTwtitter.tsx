@@ -36,6 +36,7 @@ function AuthTwitter() {
             </div>
           </div>
           <div className="flex flex-row justify-center align-baseline">
+            <p>Test Build</p>
             <Button type="button" variant="ghost" onClick={() => signOut()}>
               Sign Out
             </Button>
