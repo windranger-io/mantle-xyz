@@ -65,7 +65,7 @@ export const NavigationLite = ({
         </div>
 
         <div className="flex justify-end gap-10">
-          <div className="grid">{walletConnect}</div>
+          <div className="grid hidden md:block">{walletConnect}</div>
           <div className="grid lg:hidden">
             <button
               type="button"
@@ -124,6 +124,7 @@ export const NavigationLite = ({
                     <div style={{ borderBottom: '1px solid #2E524E' }} />
                   </>
                 ))}
+                <div className="nav-mobile-wallet">{walletConnect}</div>
               </div>
             </div>
           </div>
