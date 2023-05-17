@@ -1,48 +1,33 @@
-import { useState } from "react";
-import Destination from "./Destination";
-import Divider from "./Divider";
-import TokenSelect from "./TokenSelect";
-import TransactionPanel from "./TransactionPanel";
-import CTA from "./CTA";
+import { Direction, Token } from "@config/constants";
 
-export default function Withdraw() {
-  const type = "Withdraw";
+// in order of use...
+import TokenSelect from "@components/TokenSelect";
+import Divider from "@components/Divider";
+import Destination from "@components/Destination";
+import CTA from "@components/CTA";
+import TransactionPanel from "@components/TransactionPanel";
 
-  const [selectedToken, setSelectedToken] = useState<string>("BitDAO");
-  const [destinationToken, setDestinationToken] = useState<string>("BitDAO");
-
-  const [selectedTokenAmount, setSelectedTokenAmount] = useState<string>();
-  const [destinationTokenAmount, setDestinationTokenAmount] =
-    useState<string>();
+export default function Withdraw({
+  selected,
+  destination,
+  setIsOpen,
+}: {
+  selected: Token;
+  destination: Token;
+  setIsOpen: (v: boolean) => void;
+}) {
+  const direction = Direction.Withdraw;
 
   return (
     <div>
-      <TokenSelect
-        type={type}
-        selectedToken={selectedToken}
-        selectedTokenAmount={selectedTokenAmount}
-        setSelectedToken={setSelectedToken}
-        setSelectedTokenAmount={setSelectedTokenAmount}
-        setDestinationToken={setDestinationToken}
-        setDestinationTokenAmount={setDestinationTokenAmount}
-      />
+      <TokenSelect selected={selected} direction={direction} />
       <Divider />
-      <Destination
-        type={type}
-        destinationToken={destinationToken}
-        destinationTokenAmount={destinationTokenAmount}
-      />
-      <CTA
-        type={type}
-        selectedToken={selectedToken}
-        destinationToken={destinationToken}
-        selectedTokenAmount={selectedTokenAmount}
-        destinationTokenAmount={destinationTokenAmount}
-      />
+      <Destination direction={direction} />
+      <CTA direction={direction} selected={selected} setIsOpen={setIsOpen} />
       <TransactionPanel
-        type={type}
-        destinationToken={destinationToken}
-        destinationTokenAmount={destinationTokenAmount}
+        selected={selected}
+        destination={destination}
+        direction={direction}
       />
     </div>
   );

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useNetwork } from "wagmi";
 
-function useIsChainID(chainId: string | number) {
+export function useIsChainID(chainId: string | number) {
   const [isChainID, setIsChainId] = useState(false);
   const { chain: givenChain } = useNetwork();
 
