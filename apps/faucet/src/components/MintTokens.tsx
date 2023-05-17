@@ -134,7 +134,7 @@ function MintTokens() {
           </div>
 
           <div
-            className={`text-center text-status-success ${
+            className={`text-center text-status-success mb-4 ${
               !success ? `hidden` : `block`
             }`}
           >
