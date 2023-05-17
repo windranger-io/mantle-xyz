@@ -39,7 +39,7 @@ export const Button = ({
       className={clsx(
         `${
           classNameHasHeight ? '' : 'h-fit '
-        }rounded-lg text-xs font-medium transition-all`,
+        }rounded-lg text-md font-medium transition-all`,
         'disabled:cursor-not-allowed disabled:opacity-50',
         size === 'large' &&
           `${classNameHasWidth ? '' : 'w-fit '} px-5 py-3 text-base`,
