@@ -52,6 +52,7 @@ function AuthTwitter() {
         </div>
       ) : null}
 
+
       {!session && (
         <Button
           variant="secondary"
@@ -66,6 +67,7 @@ function AuthTwitter() {
           </div>
         </Button>
       )}
+
     </SimpleCard>
   );
 }
