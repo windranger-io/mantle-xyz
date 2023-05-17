@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 
 import { useAccount, useBalance, useContractWrite } from "wagmi";
 import useIsChainID from "@hooks/useIsChainID";
+import { useSession } from "next-auth/react";
 
 import {
   formatEther,
@@ -15,23 +16,15 @@ import { truncateAddress } from "@utils/truncateAddress";
 import { validate } from "@utils/validateMintData";
 
 import { ABI, NETWORKS, CHAIN_ID, MAX_BALANCE } from "@config/constants";
-import useHasTweeted from "@hooks/useHasTweeted";
 import { Button, SimpleCard, Typography } from "@mantle/ui";
 import { CardHeading } from "./CardHeadings";
 import ConnectWallet from "./ConnectWallet";
 
-function MintTokens({
-  tweets,
-}: {
-  tweets: {
-    id: string;
-    text: string;
-  }[];
-}) {
+function MintTokens() {
   // check that we're connected to the appropriate chain
   const isChainID = useIsChainID(CHAIN_ID);
-  // check that the tweet has been sent
-  const hasTweeted = useHasTweeted(tweets);
+  // check that user is authenticated
+  const { data: session } = useSession();
 
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
@@ -220,7 +213,7 @@ function MintTokens({
               className={`text-sm ${
                 sendTo !== address ||
                 minting ||
-                !hasTweeted ||
+                // !hasTweeted ||
                 (balanceBIT &&
                   parseFloat(myBalanceBIT) + parseFloat(`${amount}`) >
                     MAX_BALANCE)
@@ -242,7 +235,7 @@ function MintTokens({
               disabled={
                 sendTo !== address ||
                 minting ||
-                !hasTweeted ||
+                !session ||
                 (balanceBIT &&
                   parseFloat(myBalanceBIT) + parseFloat(`${amount}`) >
                     MAX_BALANCE)
@@ -290,7 +283,7 @@ function MintTokens({
             </Button>
           </div>
           <div
-            className={`bg-slate-900 p-4 rounded-md ${
+            className={`bg-slate-900 p-4 mt-4 rounded-md ${
               !error ? `hidden` : `block`
             }`}
           >
