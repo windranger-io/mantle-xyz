@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Button, SimpleCard, Typography } from "@mantle/ui";
 import { AiOutlineCheckCircle } from "react-icons/ai";
@@ -9,20 +8,12 @@ import { CardHeading } from "./CardHeadings";
 
 function AuthTwitter() {
   const { data: session } = useSession();
-  const [authenticated, setAuthenticated] = useState(false);
-
-  useEffect(() => {
-    if (session) {
-      setAuthenticated(true);
-    } else {
-      setAuthenticated(false);
-    }
-  }, [session]);
 
   return (
     <SimpleCard className="max-w-lg w-full grid gap-4">
       <CardHeading numDisplay="1" header="Authenticate" />
-      {!authenticated ? (
+
+      {!session ? (
         <>
           <Typography variant="body" className="text-center mb-4">
             Authenticate with your Twitter account.
