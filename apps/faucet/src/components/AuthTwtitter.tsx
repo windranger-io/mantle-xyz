@@ -66,41 +66,6 @@ function AuthTwitter() {
           </div>
         </Button>
       )}
-      {/* <div className="flex flex-col md:flex-row gap-4">
-        {!hasTweeted ? (
-          <>
-            <Link
-              href="https://twitter.com/intent/tweet?text=To%20%23BuildonMantle%2C%20I%20am%20claiming%20test%20%24BIT%20tokens%20on%20faucet.testnet.mantle.xyz%20for%20%400xMantle%2C%20a%20next%20generation%20high-performance%20modular%20%40Ethereum%20L2%20built%20for%20hyperscaled%20dApps.%0A%0ALearn%20more%3A%20%5Bhttps%3A%2F%2Flinktr.ee%2Fmantle.xyz%5D"
-              target="_blank"
-              rel="noreferrer"
-              passHref
-              className="w-full"
-            >
-              <Button
-                variant="secondary"
-                size="full"
-                disabled={hasTweeted || false}
-                className=""
-              >
-                Send Tweet
-              </Button>
-            </Link>
-
-            <Button
-              variant="secondary"
-              size="full"
-              type="button"
-              className=""
-              onClick={() => signIn("twitter")}
-            >
-              <div className="flex justify-center gap-2 items-center">
-                <BirdIcon />
-                Authenticate
-              </div>
-            </Button>
-          </>
-        ) : null}
-      </div> */}
     </SimpleCard>
   );
 }
