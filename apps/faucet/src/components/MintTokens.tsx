@@ -174,12 +174,11 @@ function MintTokens() {
                 value={sendTo}
                 placeholder="0x1234..."
                 className="bg-black w-full rounded-input"
-                disabled={
-                  !session ||
-                  minting ||
-                  // !hasTweeted ||
-                  (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE)
-                }
+                // disabled={
+                //   minting ||
+                //   !hasTweeted ||
+                //   (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE)
+                // }
                 onChange={(e: {
                   target: { value: React.SetStateAction<string> };
                 }) => setSendTo(e.target.value as string)}
@@ -236,7 +235,7 @@ function MintTokens() {
               disabled={
                 sendTo !== address ||
                 minting ||
-                session === null ||
+                !session ||
                 (balanceBIT &&
                   parseFloat(myBalanceBIT) + parseFloat(`${amount}`) >
                     MAX_BALANCE)
