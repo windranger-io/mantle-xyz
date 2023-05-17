@@ -23,7 +23,7 @@ function AuthTwitter() {
     <SimpleCard className="max-w-lg w-full grid gap-4">
       <CardHeading numDisplay="1" header="Authenticate" />
 
-      {authenticated ? (
+      {authenticated && session && (
         <>
           <div className="flex flex-col gap-4 items-center justify-center">
             <AiOutlineCheckCircle className="text-status-success block text-5xl" />
@@ -36,13 +36,14 @@ function AuthTwitter() {
             </div>
           </div>
           <div className="flex flex-row justify-center align-baseline">
-            <p>Test Build</p>
             <Button type="button" variant="ghost" onClick={() => signOut()}>
               Sign Out
             </Button>
           </div>
         </>
-      ) : (
+      )}
+
+      {!authenticated && !session && (
         <>
           <Typography variant="body" className="text-center mb-4">
             Authenticate with your Twitter account.
