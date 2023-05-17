@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import { type ButtonHTMLAttributes, type ReactNode } from 'react'
 import clsx from 'clsx'
 
@@ -10,13 +12,14 @@ type ButtonVariant =
   | 'walletConnect'
 type ButtonSize = 'regular' | 'large' | 'small' | 'full'
 
-interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  // eslint-disable-next-line react/require-default-props
+interface Props
+  extends Omit<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    'dangerouslySetInnerHTML'
+  > {
   size?: ButtonSize
-  // eslint-disable-next-line react/require-default-props
   variant?: ButtonVariant
   children: ReactNode
-  // eslint-disable-next-line react/require-default-props
   className?: string
 }
 

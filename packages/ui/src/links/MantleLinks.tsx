@@ -7,7 +7,11 @@ import { type Variant, type Size } from './types'
 import { classes } from './styles'
 import { cls } from './helper'
 
-interface LinkProps extends LinkHTMLAttributes<HTMLAnchorElement> {
+interface LinkProps
+  extends Omit<
+    LinkHTMLAttributes<HTMLAnchorElement>,
+    'dangerouslySetInnerHTML'
+  > {
   size?: Size
   variant?: Variant
   href: string

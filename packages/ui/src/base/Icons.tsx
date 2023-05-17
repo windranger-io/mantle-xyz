@@ -1,6 +1,7 @@
 import { SVGProps } from 'react'
 
-export type IconProps = SVGProps<SVGSVGElement>
+interface IconProps
+  extends Omit<SVGProps<SVGSVGElement>, 'dangerouslySetInnerHTML'> {}
 
 export const MantleLockUp = (props: IconProps) => (
   <svg
