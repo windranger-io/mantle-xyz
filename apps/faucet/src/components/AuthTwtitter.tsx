@@ -8,7 +8,7 @@ import { BirdIcon } from "@mantle/ui/src/base/Icons";
 import { CardHeading } from "./CardHeadings";
 
 function AuthTwitter() {
-  const { data: session } = useSession({ required: false });
+  const { data: session } = useSession();
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
