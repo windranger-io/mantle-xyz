@@ -36,7 +36,14 @@ function AuthTwitter() {
             </div>
           </div>
           <div className="flex flex-row justify-center align-baseline">
-            <Button type="button" variant="ghost" onClick={() => signOut()}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => {
+                signOut();
+                setAuthenticated(false);
+              }}
+            >
               Sign Out
             </Button>
           </div>
