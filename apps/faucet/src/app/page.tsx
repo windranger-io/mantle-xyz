@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // Dummy components
 import {
   Header,
@@ -80,8 +81,8 @@ export default async function Page() {
           Testnet Faucet
         </Typography>
 
-        <AuthTwitter tweets={tweets} />
-        <MintTokens tweets={tweets} />
+        <AuthTwitter />
+        <MintTokens />
         <AdditionalLinks />
 
         {/* @todo: Take footer out flex order */}
