@@ -175,6 +175,7 @@ function MintTokens() {
                 placeholder="0x1234..."
                 className="bg-black w-full rounded-input"
                 disabled={
+                  !session ||
                   minting ||
                   // !hasTweeted ||
                   (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE)
