@@ -1,5 +1,4 @@
 import { useContext } from "react";
-
 import StateContext from "@providers/stateContext";
 
 import { MANTLE_TESTNET_CHAIN, Direction } from "@config/constants";

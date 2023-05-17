@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import { LinkHTMLAttributes, type ReactNode } from 'react'
 import clsx from 'clsx'
 import Link from 'next/link'
@@ -13,7 +15,11 @@ type LinkVariant =
 
 type LinkSize = 'regular' | 'large' | 'small'
 
-interface Props extends LinkHTMLAttributes<HTMLAnchorElement> {
+interface Props
+  extends Omit<
+    LinkHTMLAttributes<HTMLAnchorElement>,
+    'dangerouslySetInnerHTML'
+  > {
   href: string
   // eslint-disable-next-line react/require-default-props
   target: string

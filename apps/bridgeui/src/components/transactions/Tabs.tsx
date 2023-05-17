@@ -4,10 +4,10 @@ import React, { useContext, useState } from "react";
 import { Tab } from "@headlessui/react";
 import { clsx } from "clsx";
 import { SimpleCard, Typography } from "@mantle/ui";
-import StateContext from "@context/state";
-import Deposit from "./Deposit";
-import Withdraw from "./Withdraw";
-import Account from "./Account";
+import StateContext from "@providers/stateContext";
+import Deposit from "@components/transactions/Deposit";
+import Withdraw from "@components/transactions/Withdraw";
+import Account from "@components/transactions/Account";
 
 export default function Tabs() {
   // unpack the context
