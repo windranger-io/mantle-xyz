@@ -22,7 +22,7 @@ function AuthTwitter() {
   return (
     <SimpleCard className="max-w-lg w-full grid gap-4">
       <CardHeading numDisplay="1" header="Authenticate" />
-      {!authenticated && !session && (
+      {!authenticated ? (
         <>
           <Typography variant="body" className="text-center mb-4">
             Authenticate with your Twitter account.
@@ -40,30 +40,25 @@ function AuthTwitter() {
             </div>
           </Button>
         </>
-      )}
+      ) : (
+        <>
+          <div className="flex flex-col gap-4 items-center justify-center">
+            <AiOutlineCheckCircle className="text-status-success block text-5xl" />
 
-      {authenticated ||
-        (session && (
-          <>
-            <div className="flex flex-col gap-4 items-center justify-center">
-              <AiOutlineCheckCircle className="text-status-success block text-5xl" />
-
-              <div className="flex gap-2 text-lg">
-                <div>
-                  <Typography variant="body">Authenticated:</Typography>
-                </div>
-                <Typography variant="body">
-                  {session?.user?.username}
-                </Typography>
+            <div className="flex gap-2 text-lg">
+              <div>
+                <Typography variant="body">Authenticated:</Typography>
               </div>
+              <Typography variant="body">{session?.user?.username}</Typography>
             </div>
-            <div className="flex flex-row justify-center align-baseline">
-              <Button type="button" variant="ghost" onClick={() => signOut()}>
-                Sign Out
-              </Button>
-            </div>
-          </>
-        ))}
+          </div>
+          <div className="flex flex-row justify-center align-baseline">
+            <Button type="button" variant="ghost" onClick={() => signOut()}>
+              Sign Out
+            </Button>
+          </div>
+        </>
+      )}
     </SimpleCard>
   );
 }
