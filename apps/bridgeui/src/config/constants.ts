@@ -1,9 +1,36 @@
+import { BigNumberish } from "ethers";
 import { Address, Chain } from "wagmi";
 
 // Configure the applications name
 export const APP_NAME = "Mantle - Goerli Testnet Bridge";
 
+// Base GasFee mul HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS === the approximate gasFee to call message relayer
 export const HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS = (800000).toString();
+
+// Available directions for the transfer to move
+export enum Direction {
+  "Deposit" = 1,
+  "Withdraw",
+}
+
+// Available Page states for the CTA Modal
+export enum CTAPages {
+  "Default" = 1,
+  "Loading",
+  "Deposit",
+  "Withdraw",
+  "Withdrawn",
+  "Error",
+}
+
+// url for withdraw/deposit helper api - I can't find a way to sort the query so this is less helpful than we'd like - see below:
+export const BRIDGE_BACKEND =
+  "https://mantle-bridge-backend.testnet.mantle.xyz";
+
+// how many items to include in the accounts history pages (the sort direction returned from the api means that the oldest entries are
+// on the lowest page numbers (bad)) once we've got the returned sort order under control we can reduce this back to a sensible default
+// and "load more" items
+export const HISTORY_ITEMS_PER_PAGE = Number.MAX_SAFE_INTEGER; // for now we're just going to use js max and fetch everything every time
 
 // set the available chains configuration to allow network to be added
 export const CHAINS: Record<
@@ -16,6 +43,7 @@ export const CHAINS: Record<
       symbol: string;
       decimals: number;
     };
+    bridgeStartBlock: number;
     rpcUrls: string[];
     blockExplorerUrls: string[];
   }
@@ -29,6 +57,7 @@ export const CHAINS: Record<
       symbol: "GoerliETH",
       decimals: 18,
     },
+    bridgeStartBlock: 8220525,
     rpcUrls: ["https://goerli.infura.io/v3/9f0c70345c8d4f9ea915af6a6141cf70"],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
@@ -41,8 +70,9 @@ export const CHAINS: Record<
       symbol: "BIT",
       decimals: 18,
     },
+    bridgeStartBlock: 0,
     rpcUrls: ["https://rpc.testnet.mantle.xyz"],
-    blockExplorerUrls: ["https://explorer.testnet.mantle.xyz"],
+    blockExplorerUrls: ["https://explorer.testnet.mantle.xyz/"],
   },
 };
 
@@ -87,7 +117,22 @@ interface Token {
   extensions: {
     optimismBridgeAddress: Address;
   };
+  balance?: BigNumberish;
+  allowance?: BigNumberish;
 }
+
+// Address for multicall3 contract on each network - Multicall3: https://github.com/mds1/multicall
+export const MULTICALL_CONTRACTS: Record<number, `0x${string}`> = {
+  5: "0xcA11bde05977b3631167028862bE2a173976CA11",
+  5001: "0xcA11bde05977b3631167028862bE2a173976CA11",
+};
+
+// ERC-20 abi for balanceOf && allowanceOf
+export const TOKEN_ABI = [
+  "function balanceOf(address account) external view returns (uint256)",
+  "function allowance(address owner, address spender) external view returns (uint256)",
+  "function approve(address spender, uint256 amount) returns (bool)",
+];
 
 // TODO: replace with hitting https://token-list.mantle.xyz/mantle.tokenlist.json
 export const MANTLE_TOKEN_LIST: {
@@ -110,7 +155,7 @@ export const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: "https://token-list.mantle.xyz/data/BitDAO/logo.svg",
       extensions: {
-        optimismBridgeAddress: "0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3",
+        optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
       },
     },
     {
@@ -143,7 +188,7 @@ export const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: "https://token-list.mantle.xyz/data/ETH/logo.svg",
       extensions: {
-        optimismBridgeAddress: "0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3",
+        optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
       },
     },
     {
@@ -165,7 +210,7 @@ export const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: "https://token-list.mantle.xyz/data/LINK/logo.png",
       extensions: {
-        optimismBridgeAddress: "0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3",
+        optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
       },
     },
     {
@@ -187,7 +232,7 @@ export const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: "https://token-list.mantle.xyz/data/UNI/logo.png",
       extensions: {
-        optimismBridgeAddress: "0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3",
+        optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
       },
     },
     {
@@ -209,7 +254,7 @@ export const MANTLE_TOKEN_LIST: {
       decimals: 6,
       logoURI: "https://token-list.mantle.xyz/data/USDC/logo.png",
       extensions: {
-        optimismBridgeAddress: "0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3",
+        optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
       },
     },
     {
@@ -231,7 +276,7 @@ export const MANTLE_TOKEN_LIST: {
       decimals: 6,
       logoURI: "https://token-list.mantle.xyz/data/USDT/logo.png",
       extensions: {
-        optimismBridgeAddress: "0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3",
+        optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
       },
     },
     {
@@ -264,7 +309,7 @@ export const MANTLE_TOKEN_LIST: {
       decimals: 8,
       logoURI: "https://token-list.mantle.xyz/data/WBTC/logo.svg",
       extensions: {
-        optimismBridgeAddress: "0xe401eA8E74a58C3Bf177e2E31D11DFE6dEb452e3",
+        optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
       },
     },
     {
