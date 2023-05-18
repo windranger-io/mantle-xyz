@@ -342,7 +342,7 @@ export default function CTAPageDefault({
         }
         // reset status on error
         setCTAStatus(false);
-      } else {
+      } else if (txHash) {
         // create a restore checkpoint (this could become a memory issue, but it should be fine to do this for a few tx's)
         const restore = () => {
           setCTAChainId(chainId);
@@ -380,12 +380,12 @@ export default function CTAPageDefault({
           // this buttonClick action should also be associated with the "Try again" button in the error page
           onButtonClick: () => restore(),
         });
-      }
-      // move the page if this the current tx in view
-      if (txHash === l1TxHashRef.current) {
-        // show error modal
-        setCTAPage(CTAPages.Error);
-      } else if (!txHash) {
+        // move the page if this the current tx in view
+        if (txHash === l1TxHashRef.current) {
+          // show error modal
+          setCTAPage(CTAPages.Error);
+        }
+      } else {
         // reset status on error
         setCTAStatus(false);
       }
