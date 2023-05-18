@@ -115,14 +115,19 @@ export function useWaitForRelay({
         waitForMessageStatus(txHash, MessageStatus.RELAYED, {
           pollIntervalMs: 12000, // use the same block time as L1
           timeoutMs: ONE_HOUR_MS, // extreme but it will end
-        }).catch((e) => {
+        }).catch(async (e) => {
           // throw server errors to the outside
           if (
-            e.reason === "failed to meet quorum" &&
-            e.code === "SERVER_ERROR"
+            e.reason === "underlying network changed" ||
+            e.reason === "failed to meet quorum"
           ) {
+            // throw in outer context to stop the await and to move to error state
             throw e;
           }
+          // wait for 12 seconds (1 pollInterval) before trying again
+          await timeout(12000);
+
+          // try again - this will eventually fill the stack, any serious errors should be caught and thrown
           return retryForL2();
         });
       // get the l2Tx
