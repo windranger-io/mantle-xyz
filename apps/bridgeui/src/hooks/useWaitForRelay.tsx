@@ -2,8 +2,6 @@
 
 /* eslint-disable no-await-in-loop */
 
-import { CTAPages, Direction } from "@config/constants";
-
 import { Provider, TransactionReceipt } from "@ethersproject/providers";
 import { MessageReceipt, MessageStatus } from "@mantleio/sdk";
 import { goerli, useProvider } from "wagmi";
@@ -11,14 +9,11 @@ import { goerli, useProvider } from "wagmi";
 import { useContext, useEffect, useRef } from "react";
 import StateContext from "@providers/stateContext";
 
+import { timeout } from "@utils/tools";
 import { useToast } from "@hooks/useToast";
-import MantleToGoerliSVG from "@components/MantleToGoerliSVG";
 
-// returns a promise that resolves after "ms" milliseconds
-const timeout = (ms: number) =>
-  new Promise((res) => {
-    setTimeout(res, ms);
-  });
+import { CTAPages, Direction } from "@config/constants";
+import MantleToGoerliSVG from "@components/MantleToGoerliSVG";
 
 // How long to stay inside the waitForMessageStatus while loop for
 const ONE_HOUR_MS = 3600000;
