@@ -18,6 +18,7 @@ import Values from "@components/CTAPageValues";
 
 import { ToastProps, useToast } from "@hooks/useToast";
 import { useWaitForRelay } from "@hooks/useWaitForRelay";
+import { timeout } from "@utils/tools";
 
 import {
   TransactionReceipt,
@@ -216,23 +217,30 @@ export default function CTAPageDefault({
           !(receipt as TransactionReceipt).status &&
           (receipt as TransactionResponse).wait
         ) {
+          // only throw when we detect network issues
           const retryWait = async (): Promise<TransactionReceipt> => {
             // wait() for the tx to gather confirmations
             receipt = await (receipt as TransactionResponse)
               .wait()
               // keep retrying till we fill the error stack
-              .catch(() => retryWait());
+              .catch(async (e) => {
+                // throw server errors to the outside (we might also want to detect bad transactions here - need to check all possible error reasons)
+                if (e.reason === "underlying network changed") {
+                  // throw in outer context to stop the await and to move to (restorable) error state
+                  throw e;
+                }
+                // wait for 12 seconds (1 pollInterval) before trying again
+                await timeout(12000);
+
+                // retry the await()
+                return retryWait();
+              });
 
             return receipt;
           };
 
           // keep retrying until this goes through (if it fails it should only be because of network connection issues/reorgs(unlikely))...
-          receipt = await retryWait().catch((e) => {
-            // show error modal
-            setCTAPage(CTAPages.Error);
-            // throw in outer
-            throw e;
-          });
+          receipt = await retryWait().catch(errorHandler);
         }
 
         // double check the receipt is set
@@ -334,13 +342,15 @@ export default function CTAPageDefault({
       if (
         (error.receipt as TransactionReceipt).status &&
         error.message.indexOf(`"code":"SERVER_ERROR"`) === -1 &&
-        error.message.indexOf("Error: failed to meet quorum") === -1
+        error.message.indexOf("Error: failed to meet quorum") === -1 &&
+        error.message.indexOf("Error: underlying network changed") === -1
       ) {
         // check the txHash is set...
         if (txHash) {
+          // delete the toast, we won't be able to reuse/await this tx - it has failed.
           deleteToast(`${txHash}`);
         }
-        // reset status on error
+        // reset status to clear loading states
         setCTAStatus(false);
       } else if (txHash) {
         // create a restore checkpoint (this could become a memory issue, but it should be fine to do this for a few tx's)
