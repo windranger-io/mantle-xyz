@@ -14,6 +14,7 @@ import { useToast } from "@hooks/useToast";
 
 import { CTAPages, Direction } from "@config/constants";
 import MantleToGoerliSVG from "@components/MantleToGoerliSVG";
+import { useMantleSDK } from "@providers/mantleSDKContext";
 
 // How long to stay inside the waitForMessageStatus while loop for
 const ONE_HOUR_MS = 3600000;
@@ -27,8 +28,10 @@ export function useWaitForRelay({
   setCTAStatus: (val: string | boolean) => void;
 }) {
   const {
-    crossChainMessenger,
-    waitForMessageStatus,
+    isCTAPageOpenRef: isOpenRef,
+    ctaPageRef,
+    l1TxHashRef,
+    l2TxHashRef,
     resetAllowance,
     resetBalances,
     setL1Tx,
@@ -39,11 +42,10 @@ export function useWaitForRelay({
     setIsCTAPageOpen,
     refetchWithdrawals,
     refetchDeposits,
-    isCTAPageOpenRef: isOpenRef,
-    ctaPageRef,
-    l1TxHashRef,
-    l2TxHashRef,
   } = useContext(StateContext);
+
+  // import sdk comms
+  const { crossChainMessenger, waitForMessageStatus } = useMantleSDK();
 
   // build toast to return to the current page
   const { updateToast, deleteToast } = useToast();
@@ -107,7 +109,7 @@ export function useWaitForRelay({
       refetchDeposits();
       // wait for this status update (we're polling the l2 here - these are usually quicker than the l2-l1 direction)
       const retryForL2 = async (): Promise<MessageReceipt> =>
-        waitForMessageStatus(txHash, MessageStatus.RELAYED, {
+        waitForMessageStatus!(txHash, MessageStatus.RELAYED, {
           pollIntervalMs: 12000, // use the same block time as L1
           timeoutMs: ONE_HOUR_MS, // extreme but it will end
         }).catch(async (e) => {
@@ -186,7 +188,7 @@ export function useWaitForRelay({
         // 12s is approx time it takes to mine a block
         await timeout(12000);
         // check the status now
-        status = await crossChainMessenger
+        status = await crossChainMessenger!
           .getMessageStatus(receipt)
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           .catch((e) => {
@@ -253,7 +255,7 @@ export function useWaitForRelay({
         } else if (status === MessageStatus.RELAYED) {
           try {
             // resolve the cross chain message
-            const resolved = await crossChainMessenger.getMessageReceipt(
+            const resolved = await crossChainMessenger!.getMessageReceipt(
               receipt
             );
             // the message has been relayed and the l1 tx should be onchain

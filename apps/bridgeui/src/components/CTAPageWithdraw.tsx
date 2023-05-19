@@ -1,163 +1,32 @@
-import { debounce } from "lodash";
-import { goerli, useProvider } from "wagmi";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext } from "react";
 
 import StateContext from "@providers/stateContext";
 
-import {
-  TransactionReceipt,
-  TransactionResponse,
-} from "@ethersproject/providers";
-
-import { useSwitchToNetwork } from "@hooks/useSwitchToNetwork";
-import { useIsChainID } from "@hooks/useIsChainID";
 import { MessageLike } from "@mantleio/sdk";
-import { CTAPages } from "@config/constants";
 
 import { MdClear } from "react-icons/md";
 import { Button, Typography } from "@mantle/ui";
 
-import TxLink from "@components/CTAPageTxLink";
-
-// noop to ignore errors
-const noopHandler = () => ({});
-class TxError extends Error {
-  receipt: TransactionReceipt | TransactionResponse;
-
-  constructor(
-    message: string | undefined,
-    receipt: TransactionReceipt | TransactionResponse
-  ) {
-    super(message);
-    this.name = "TxError";
-    this.receipt = receipt;
-  }
-}
+import TxLink from "@components/TxLink";
+import { useCallClaim } from "@hooks/useCallClaim";
 
 export default function CTAPageWithdraw({
   l1Tx,
   l1TxHash,
   l2TxHash,
-  setL2TxHash,
-  setCTAPage,
+
   closeModal,
 }: {
   l1Tx: undefined | MessageLike;
   l1TxHash: string | boolean;
   l2TxHash: string | boolean;
-  setL2TxHash: (hash: string) => void;
-  setCTAPage: (page: CTAPages) => void;
   closeModal: () => void;
 }) {
   // pull state from context
-  const {
-    ctaChainId: chainId,
-    crossChainMessenger,
-    l2TxHashRef,
-  } = useContext(StateContext);
+  const { ctaChainId: chainId } = useContext(StateContext);
 
-  // pull goerli provider
-  const provider = useProvider({ chainId: goerli.id });
-
-  // check for goerli connection
-  const isChainId = useIsChainID(goerli.id);
-
-  // mark loading between callClaim and the useEffect waiting for the finalizeMessage()
-  const [isLoading, setIsLoading] = useState(false);
-
-  // allow the claim checks to be debounced
-  const commitClaimRef = useRef<() => void>();
-
-  // import the network switch
-  const { switchToNetwork } = useSwitchToNetwork();
-
-  // commit claim method...
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const commitClaim = () => {
-    if (l1Tx && isChainId && isLoading && crossChainMessenger) {
-      // create the claim tx
-      crossChainMessenger
-        .finalizeMessage(l1Tx)
-        .catch((e) => {
-          if (
-            e.message ===
-            "execution reverted: Provided message has already been received."
-          ) {
-            setIsLoading(false);
-            // move to error page - this time we mean it
-            setCTAPage(CTAPages.Error);
-          }
-          return noopHandler() as TransactionResponse | TransactionReceipt;
-        })
-        .then(async (tx) => {
-          try {
-            const finalTx = (
-              (tx as TransactionResponse)?.wait
-                ? await (tx as TransactionResponse)?.wait?.()
-                : tx
-            ) as TransactionReceipt;
-            if (finalTx) {
-              setL2TxHash(finalTx.transactionHash);
-              // set immediately into state
-              l2TxHashRef.current = finalTx.transactionHash;
-            }
-            return finalTx;
-          } catch (e) {
-            throw new TxError(e as string | undefined, tx);
-          }
-        })
-        .catch(() => {
-          return noopHandler() as TransactionReceipt;
-        })
-        .then(async (tx) => {
-          // re-enable the button so we can try again
-          setIsLoading(false);
-          // move on if we resolved the tx
-          if (tx && tx.blockHash) {
-            // move to final page
-            setCTAPage(CTAPages.Withdrawn);
-          }
-        });
-    }
-  };
-
-  // debounce the current callback assigned to commitClaimRef
-  const doCommitClaimWithDebounce = useMemo(() => {
-    const callback = () => commitClaimRef.current?.();
-    return debounce(callback, 100);
-  }, []);
-
-  // update the references every render to make sure we have the latest state in the function
-  useEffect(() => {
-    commitClaimRef.current = commitClaim;
-  }, [commitClaim]);
-
-  // initiate claim and make sure we're on the correct network
-  const callClaim = async () => {
-    // initiate loading/claim state
-    setIsLoading(true);
-    // first step is to ensure we're on the correct network - we break this up because we need the correct signer to finalise the message
-    if (l1Tx && !isChainId) {
-      await switchToNetwork(goerli.id).catch(() => {
-        setIsLoading(false);
-      });
-    }
-  };
-
-  // when we're in a loading state and have the correct chainId we can attempt to finalise the message
-  useEffect(() => {
-    doCommitClaimWithDebounce();
-  }, [
-    l1Tx,
-    provider,
-    isChainId,
-    isLoading,
-    crossChainMessenger,
-    setCTAPage,
-    setL2TxHash,
-    // when any of the above props change we debounce a call to commitClaim to hopefully only initiate the one metamask prompt
-    doCommitClaimWithDebounce,
-  ]);
+  // use the claim logic (switch network + send tx)
+  const { isLoading, callClaim } = useCallClaim(l1Tx);
 
   return (
     <>

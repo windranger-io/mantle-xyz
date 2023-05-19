@@ -7,7 +7,7 @@ import { useSwitchToNetwork } from "@hooks/useSwitchToNetwork";
 import { Button, Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
 
-import TxLink from "@components/CTAPageTxLink";
+import TxLink from "@components/TxLink";
 
 export default function CTAPageDeposited({
   l1TxHash,

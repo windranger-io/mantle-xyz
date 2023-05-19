@@ -1,17 +1,24 @@
 import { CHAINS } from "@config/constants";
+import { truncateAddress } from "@utils/formatStrings";
 
 // a link to the networks block explorer
 export default function TxLink({
   chainId,
   txHash,
+  className = "items-center justify-center",
+  asHash = false,
 }: {
   chainId: number;
   txHash: string | boolean;
+  // eslint-disable-next-line react/require-default-props
+  className?: string;
+  // eslint-disable-next-line react/require-default-props
+  asHash?: boolean;
 }) {
   return (
     (txHash && (
       <a
-        className="link text-[#0A8FF6] flex flex-row space-x-2 items-center justify-center"
+        className={`link text-[#0A8FF6] flex flex-row space-x-2 ${className}`}
         href={`${CHAINS[chainId].blockExplorerUrls}tx/${txHash}`}
         target="_blank"
         rel="noreferrer"
@@ -46,7 +53,11 @@ export default function TxLink({
           />
         </svg>
 
-        <span>{CHAINS[chainId].chainName} Explorer</span>
+        <span>
+          {asHash
+            ? truncateAddress(txHash as `0x${string}`)
+            : `${CHAINS[chainId].chainName} Explorer`}
+        </span>
       </a>
     )) || <span />
   );

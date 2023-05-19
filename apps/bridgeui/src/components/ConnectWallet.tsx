@@ -16,13 +16,15 @@ import { BiError } from "react-icons/bi";
 
 import { useIsChainID } from "@hooks/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/useSwitchToNetwork";
+import { useRouter } from "next/navigation";
 
 function ConnectWallet() {
+  const router = useRouter();
   // get the currently connected wallet-selected-chain
   const { chain: currentChain } = useNetwork();
 
   // unpack the context
-  const { chainId, client, setClient } = useContext(StateContext);
+  const { chainId, client, safeChains, setClient } = useContext(StateContext);
 
   // check that we're connected to the appropriate chain
   const isGoerliChainID = useIsChainID(5);
@@ -34,11 +36,21 @@ function ConnectWallet() {
   // chain is valid if it matches any of these states...
   const isChainID = useMemo(() => {
     return (
-      (chainId === 5 && isGoerliChainID) ||
-      (chainId === 5001 && isMantleChainID) ||
-      !address
+      currentChain &&
+      ((safeChains.length === 2 &&
+        safeChains.indexOf(currentChain.id) !== -1) ||
+        (chainId === 5 && isGoerliChainID) ||
+        (chainId === 5001 && isMantleChainID) ||
+        !address)
     );
-  }, [address, chainId, isGoerliChainID, isMantleChainID]);
+  }, [
+    safeChains,
+    currentChain,
+    chainId,
+    isGoerliChainID,
+    isMantleChainID,
+    address,
+  ]);
 
   // when disconnecting we want to retain control over whether or not to attempt a reconnect
   const reconnect = useRef(false);
@@ -158,10 +170,16 @@ function ConnectWallet() {
   return (
     <div className="flex flex-row gap-4">
       {isChainID && client.isConnected && client.address ? (
-        <div className="flex flex-row items-center gap-2  text-xs rounded-lg  backdrop-blur-[50px] bg-white/10 w-fit px-4 py-2">
+        <Button
+          type="button"
+          variant="walletConnect"
+          size="regular"
+          className="flex flex-row items-center gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-pointer"
+          onClick={() => router.push("/transactions")}
+        >
           <Avatar walletAddress="address" />
           <p className="text-white ">{truncateAddress(client.address)}</p>
-        </div>
+        </Button>
       ) : (
         ``
       )}
