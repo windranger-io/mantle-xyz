@@ -94,8 +94,6 @@ export default function CTAPage({
               l1Tx={l1Tx}
               l1TxHash={l1TxHash}
               l2TxHash={l2TxHash}
-              setL2TxHash={setL1TxHash}
-              setCTAPage={setCTAPage}
               closeModal={closeModalAndReset}
             />
           )}

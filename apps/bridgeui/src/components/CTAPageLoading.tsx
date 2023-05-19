@@ -6,7 +6,7 @@ import { Direction } from "@config/constants";
 import { Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
 
-import TxLink from "@components/CTAPageTxLink";
+import TxLink from "@components/TxLink";
 
 export default function CTAPageLoading({
   l1TxHash,

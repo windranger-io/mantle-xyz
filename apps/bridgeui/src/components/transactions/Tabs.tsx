@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Tab } from "@headlessui/react";
 import { clsx } from "clsx";
 import { SimpleCard, Typography } from "@mantle/ui";
@@ -8,30 +8,50 @@ import StateContext from "@providers/stateContext";
 import Deposit from "@components/transactions/Deposit";
 import Withdraw from "@components/transactions/Withdraw";
 import Account from "@components/transactions/Account";
+import { MdClear } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 export default function Tabs() {
-  // unpack the context
-  const { setChainId } = useContext(StateContext);
+  const { setSafeChains } = useContext(StateContext);
+
+  // on first load
+  useEffect(
+    () => {
+      // this will deisable the incorrect network check (but still display if not 5 or 5001)
+      setSafeChains([5, 5001]);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const [categories] = useState({
     Deposit: [<Deposit />],
     Withdraw: [<Withdraw />],
   });
 
+  const router = useRouter();
+
   return (
-    <SimpleCard className="max-w-5xl w-full grid gap-8 relative">
-      <Typography variant="transactionTableHeading">Account</Typography>
+    <SimpleCard className="max-w-5xl w-full grid gap-8 relative px-8">
+      <span className="flex justify-between align-middle">
+        <Typography
+          variant="transactionTableHeading"
+          className="text-left w-full"
+        >
+          Account
+        </Typography>
+        <Typography variant="modalHeading" className="text-white w-auto pt-1">
+          <MdClear
+            onClick={() => {
+              router.push("/");
+            }}
+            className="cursor-pointer"
+          />
+        </Typography>
+      </span>
       <Account />
-      <Tab.Group
-        onChange={(tab) => {
-          if (tab === 0) {
-            setChainId(5);
-          } else {
-            setChainId(5001);
-          }
-        }}
-      >
-        <Tab.List className="flex space-x-2 rounded-[10px] bg-white/[0.05] p-1 select-none w-1/2 m-auto">
+      <Tab.Group>
+        <Tab.List className="flex space-x-2 rounded-[10px] bg-white/[0.05] p-1 select-none md:w-1/2 md:mx-auto">
           {Object.keys(categories).map((category, index) => (
             <span key={`cat-${category || index}`} className="w-full">
               <Tab

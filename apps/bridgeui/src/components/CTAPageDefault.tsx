@@ -24,6 +24,7 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from "@ethersproject/providers";
+import { useMantleSDK } from "@providers/mantleSDKContext";
 
 class TxError extends Error {
   receipt: TransactionReceipt | TransactionResponse;
@@ -62,7 +63,6 @@ export default function CTAPageDefault({
     destinationTokenAmount,
     actualGasFee,
     l1FeeData,
-    crossChainMessenger,
     ctaErrorReset,
     l1TxHashRef,
     l2TxHashRef,
@@ -74,6 +74,9 @@ export default function CTAPageDefault({
     setIsCTAPageOpen,
     isCTAPageOpenRef: isOpenRef,
   } = useContext(StateContext);
+
+  // import crossChain comms
+  const { crossChainMessenger } = useMantleSDK();
 
   // build toast to return to the current page
   const { updateToast, deleteToast } = useToast();
@@ -118,12 +121,12 @@ export default function CTAPageDefault({
           // for each type of interaction...
           if (chainId === 5 && selected.name === "ETH") {
             // depositETH
-            receipt = await crossChainMessenger
+            receipt = await crossChainMessenger!
               .depositETH(parseUnits(destinationTokenAmount, selected.decimals))
               .catch(errorHandler);
           } else if (chainId === 5) {
             // depositERC20
-            receipt = await crossChainMessenger
+            receipt = await crossChainMessenger!
               .depositERC20(
                 selected.address,
                 destination.address,
@@ -132,14 +135,14 @@ export default function CTAPageDefault({
               .catch(errorHandler);
           } else if (selected.name === "ETH") {
             // withdrawETH
-            receipt = await crossChainMessenger
+            receipt = await crossChainMessenger!
               .withdrawETH(
                 parseUnits(destinationTokenAmount, selected.decimals)
               )
               .catch(errorHandler);
           } else {
             // withdrawERC20
-            receipt = await crossChainMessenger
+            receipt = await crossChainMessenger!
               .withdrawERC20(
                 // switch these because the destination is l1 and the selected is l2
                 destination.address,
