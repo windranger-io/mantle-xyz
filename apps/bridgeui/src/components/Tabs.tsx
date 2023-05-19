@@ -10,30 +10,31 @@ import StateContext from "@providers/stateContext";
 import { Tab } from "@headlessui/react";
 import { SimpleCard } from "@mantle/ui";
 
-import { Direction, MANTLE_TOKEN_LIST } from "@config/constants";
+import { Direction, MANTLE_TOKEN_LIST, Views } from "@config/constants";
 
 import Deposit from "@components/Deposit";
 import Withdraw from "@components/Withdraw";
 import CTAPage from "@components/CTAPage";
 
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function Tabs() {
   const { updateToast } = useToast();
   // unpack the context
   const {
+    view,
     chainId,
     selectedToken,
     destinationToken,
     isCTAPageOpen,
     hasClaims,
+    setView,
     setChainId,
     setSafeChains,
     setIsCTAPageOpen,
   } = useContext(StateContext);
 
-  // use router to move to account
-  const router = useRouter();
+  const pathName = usePathname();
 
   // on first load
   useEffect(
@@ -44,6 +45,12 @@ export default function Tabs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+
+  useEffect(() => {
+    if (pathName === "/transactions" && view !== Views.Transactions) {
+      setView(Views.Transactions);
+    }
+  }, [pathName, setView, view]);
 
   // memoise the selected Token instance
   const selected = useMemo(
@@ -253,75 +260,77 @@ export default function Tabs() {
         buttonText: `Go to account`,
         onButtonClick: () => {
           // move the user to the transaction page
-          router.push("./transactions");
+          // router.push("./transactions");
+          setView(Views.Transactions);
 
           return false;
         },
       });
     }
-  }, [hasClaims, router, updateToast]);
+  }, [hasClaims, setView, updateToast]);
 
   return (
-    (isCTAPageOpen && (
-      <CTAPage
-        direction={chainId === 5 ? Direction.Deposit : Direction.Withdraw}
-        selected={selected}
-        destination={destination}
-        isOpen={isCTAPageOpen}
-        setIsOpen={setIsCTAPageOpen}
-      />
-    )) || (
-      <SimpleCard className="max-w-lg w-full grid gap-4 relative">
-        <Tab.Group
-          selectedIndex={chainId === 5 ? 0 : 1}
-          onChange={(tab) => {
-            if (tab === 0) {
-              setChainId(5);
-              setSafeChains([5]);
-            } else {
-              setChainId(5001);
-              setSafeChains([5001]);
-            }
-          }}
-        >
-          <Tab.List className="flex space-x-2 rounded-[10px] bg-white/[0.05] p-1 select-none ">
-            {Object.keys(categories.current).map((category, index) => (
-              <span key={`cat-${category || index}`} className="w-full">
-                <Tab
-                  className={({ selected: isSelected }) =>
-                    clsx(
-                      "w-full rounded-lg py-2.5 text-sm font-medium transition-all px-2.5",
-                      "ring-white ring-opacity-0 ring-offset-0 ring-offset-white focus:outline-none focus:ring-2",
-                      isSelected
-                        ? "text-type-inversed bg-white shadow"
-                        : "text-white hover:bg-white/[0.12] hover:text-white"
-                    )
-                  }
-                >
-                  {category}
-                </Tab>
-              </span>
-            ))}
-          </Tab.List>
-          <Tab.Panels className="mt-2" defaultValue="Withdraw">
-            {Object.keys(categories.current).map((category, index) => (
-              <span key={`tab-${category || index}`}>
-                <Tab.Panel
-                  key={`tabPanel-${category || index}`}
-                  className={clsx("")}
-                  style={{ color: "#fff" }}
-                >
-                  {
-                    categories.current[
-                      category as keyof typeof categories.current
-                    ][0]
-                  }
-                </Tab.Panel>
-              </span>
-            ))}
-          </Tab.Panels>
-        </Tab.Group>
-      </SimpleCard>
-    )
+    (view === Views.Default &&
+      ((isCTAPageOpen && (
+        <CTAPage
+          direction={chainId === 5 ? Direction.Deposit : Direction.Withdraw}
+          selected={selected}
+          destination={destination}
+          isOpen={isCTAPageOpen}
+          setIsOpen={setIsCTAPageOpen}
+        />
+      )) || (
+        <SimpleCard className="max-w-lg w-full grid gap-4 relative">
+          <Tab.Group
+            selectedIndex={chainId === 5 ? 0 : 1}
+            onChange={(tab) => {
+              if (tab === 0) {
+                setChainId(5);
+                setSafeChains([5]);
+              } else {
+                setChainId(5001);
+                setSafeChains([5001]);
+              }
+            }}
+          >
+            <Tab.List className="flex space-x-2 rounded-[10px] bg-white/[0.05] p-1 select-none ">
+              {Object.keys(categories.current).map((category, index) => (
+                <span key={`cat-${category || index}`} className="w-full">
+                  <Tab
+                    className={({ selected: isSelected }) =>
+                      clsx(
+                        "w-full rounded-lg py-2.5 text-sm font-medium transition-all px-2.5",
+                        "ring-white ring-opacity-0 ring-offset-0 ring-offset-white focus:outline-none focus:ring-2",
+                        isSelected
+                          ? "text-type-inversed bg-white shadow"
+                          : "text-white hover:bg-white/[0.12] hover:text-white"
+                      )
+                    }
+                  >
+                    {category}
+                  </Tab>
+                </span>
+              ))}
+            </Tab.List>
+            <Tab.Panels className="mt-2" defaultValue="Withdraw">
+              {Object.keys(categories.current).map((category, index) => (
+                <span key={`tab-${category || index}`}>
+                  <Tab.Panel
+                    key={`tabPanel-${category || index}`}
+                    className={clsx("")}
+                    style={{ color: "#fff" }}
+                  >
+                    {
+                      categories.current[
+                        category as keyof typeof categories.current
+                      ][0]
+                    }
+                  </Tab.Panel>
+                </span>
+              ))}
+            </Tab.Panels>
+          </Tab.Group>
+        </SimpleCard>
+      ))) || <span />
   );
 }

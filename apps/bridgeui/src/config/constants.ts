@@ -7,6 +7,12 @@ export const APP_NAME = "Mantle - Goerli Testnet Bridge";
 // Base GasFee mul HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS === the approximate gasFee to call message relayer
 export const HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS = (800000).toString();
 
+// Available views - were serving this as a spa atm
+export enum Views {
+  "Default" = 1,
+  "Transactions",
+}
+
 // Available directions for the transfer to move
 export enum Direction {
   "Deposit" = 1,
