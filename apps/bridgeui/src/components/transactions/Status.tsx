@@ -89,6 +89,7 @@ export default function Status({
   // use the callClaim methodology to claim the withdrawal and update the status
   const { isLoading: isLoadingClaim, callClaim } = useCallClaim(
     transactionHash,
+    false,
     () => {
       // mark the status as complete in the local cache
       withdrawalStatuses.current[transactionHash] = "complete";

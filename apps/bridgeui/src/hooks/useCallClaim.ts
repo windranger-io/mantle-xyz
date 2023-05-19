@@ -32,6 +32,7 @@ class TxError extends Error {
 // call the claim method with the given tx
 export function useCallClaim(
   l1Tx: undefined | MessageLike,
+  storeProgress: boolean = true,
   onSuccess?: () => void
 ) {
   // pull state from context
@@ -68,8 +69,10 @@ export function useCallClaim(
             "execution reverted: Provided message has already been received."
           ) {
             setIsLoading(false);
-            // move to error page - this time we mean it
-            setCTAPage(CTAPages.Error);
+            if (storeProgress) {
+              // move to error page - this time we mean it
+              setCTAPage(CTAPages.Error);
+            }
           }
           return noopHandler() as TransactionResponse | TransactionReceipt;
         })
@@ -80,7 +83,7 @@ export function useCallClaim(
                 ? await (tx as TransactionResponse)?.wait?.()
                 : tx
             ) as TransactionReceipt;
-            if (finalTx) {
+            if (finalTx && storeProgress) {
               setL2TxHash(finalTx.transactionHash);
               // set immediately into state
               l2TxHashRef.current = finalTx.transactionHash;
@@ -98,8 +101,10 @@ export function useCallClaim(
           setIsLoading(false);
           // move on if we resolved the tx
           if (tx && tx.blockHash) {
-            // move to final page
-            setCTAPage(CTAPages.Withdrawn);
+            if (storeProgress) {
+              // move to final page
+              setCTAPage(CTAPages.Withdrawn);
+            }
             // if provided an onsuccess func
             if (onSuccess) {
               onSuccess();
