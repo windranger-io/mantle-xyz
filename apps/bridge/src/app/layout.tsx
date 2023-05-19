@@ -13,6 +13,7 @@ import {
 
 import CONST from "@mantle/constants";
 import ConnectWallet from "@components/ConnectWallet";
+import Head from "./head";
 import bridgeBG from "../../public/bridge-bg.png";
 import Providers from "./providers";
 
@@ -47,6 +48,7 @@ export default function RootLayout({
       lang="en"
       className={`${GTWalsheimRegular.variable} ${GTWalsheimMedium.variable}`}
     >
+      <Head />
       <body>
         {/* @ts-expect-error Server Component */}
         <Providers>
