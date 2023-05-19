@@ -12,7 +12,7 @@ import { MdClear } from "react-icons/md";
 import { useRouter } from "next/navigation";
 
 export default function Tabs() {
-  const { setSafeChains } = useContext(StateContext);
+  const { chainId, setSafeChains } = useContext(StateContext);
 
   // on first load
   useEffect(
@@ -50,7 +50,7 @@ export default function Tabs() {
         </Typography>
       </span>
       <Account />
-      <Tab.Group>
+      <Tab.Group defaultIndex={chainId === 5 ? 0 : 1}>
         <Tab.List className="flex space-x-2 rounded-[10px] bg-white/[0.05] p-1 select-none md:w-1/2 md:mx-auto">
           {Object.keys(categories).map((category, index) => (
             <span key={`cat-${category || index}`} className="w-full">
