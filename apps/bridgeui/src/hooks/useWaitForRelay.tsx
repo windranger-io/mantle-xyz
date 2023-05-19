@@ -45,7 +45,8 @@ export function useWaitForRelay({
   } = useContext(StateContext);
 
   // import sdk comms
-  const { crossChainMessenger, waitForMessageStatus } = useMantleSDK();
+  const { crossChainMessenger, waitForMessageStatus, getMessageStatus } =
+    useMantleSDK();
 
   // build toast to return to the current page
   const { updateToast, deleteToast } = useToast();
@@ -188,8 +189,7 @@ export function useWaitForRelay({
         // 12s is approx time it takes to mine a block
         await timeout(12000);
         // check the status now
-        status = await crossChainMessenger!
-          .getMessageStatus(receipt)
+        status = await getMessageStatus!(txHash)
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           .catch((e) => {
             // throw server errors to the outside
@@ -203,8 +203,8 @@ export function useWaitForRelay({
               ? status
               : MessageStatus.UNCONFIRMED_L1_TO_L2_MESSAGE;
           })
-          .then((val: MessageStatus) => {
-            return val;
+          .then((val) => {
+            return val as MessageStatus;
           });
         // based on the status update the states status and wait for the relayed message before setting the L1 txHash
         if (status === MessageStatus.IN_CHALLENGE_PERIOD) {
@@ -214,14 +214,16 @@ export function useWaitForRelay({
         } else if (
           status === MessageStatus.READY_FOR_RELAY &&
           // this should prevent page from turning back after the claim has succeeded
-          (ctaPageRef.current || 0) < CTAPages.Withdraw
+          (ctaPageRef.current || 0) < CTAPages.Withdraw &&
+          // if we havent set the l2 ref
+          !l2TxHashRef.current
         ) {
           // update status
           setCTAStatus(
             "In the challenge period, waiting for status READY_FOR_RELAY..."
           );
           // we should only update the toast event if the page is closed
-          if (l1TxHashRef.current === txHash && !l2TxHashRef.current) {
+          if (l1TxHashRef.current === txHash) {
             // refetch to mark the claim available
             refetchWithdrawals();
             // message has been relayed move to the claim page
