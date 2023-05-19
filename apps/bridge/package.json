@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3000",
-    "dev:bridge": "next dev --port 3000",
+    "dev": "next dev --port 3003",
+    "dev:bridge": "next dev --port 3003",
     "build": "next build",
     "test": "echo 'Running website tests'",
-    "start": "next start --port 3000",
+    "start": "next start --port 3003",
     "lint": "eslint src --fix"
   },
   "dependencies": {
