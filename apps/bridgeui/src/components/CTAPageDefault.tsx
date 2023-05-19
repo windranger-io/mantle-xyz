@@ -489,8 +489,8 @@ export default function CTAPageDefault({
               htmlFor="checkbox-understand-1"
               className="ml-2 text-sm font-medium text-gray-300"
             >
-              I understand it will take ~ 5 minutes until my funds are claimable
-              on Goerli Testnet.
+              I understand it will take ~ 20 minutes until my funds are
+              claimable on Goerli Testnet.
             </label>
           </div>
         )}
