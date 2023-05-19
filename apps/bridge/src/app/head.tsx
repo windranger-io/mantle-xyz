@@ -24,7 +24,7 @@ export default function Head() {
       <meta name="twitter:title" content={`${TWITTER_TITLE}`} />
       <meta name="twitter:creator" content="@0xMantle" />
       <meta name="twitter:description" content={`${TWITTER_DESC}`} />
-      <meta name="twitter:image:src" content={`${ABSOLUTE_PATH}/twitter.png`} />
+      <meta name="twitter:image" content={`${ABSOLUTE_PATH}/twitter.png`} />
       <meta name="google" content="nositelinkssearchbox" />
     </>
   );
