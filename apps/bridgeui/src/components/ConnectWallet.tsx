@@ -22,7 +22,7 @@ function ConnectWallet() {
   const { chain: currentChain } = useNetwork();
 
   // unpack the context
-  const { chainId, client, safeChains, setClient, setView } =
+  const { chainId, client, safeChains, setClient, setView, setSafeChains } =
     useContext(StateContext);
 
   // check that we're connected to the appropriate chain
@@ -176,6 +176,7 @@ function ConnectWallet() {
           className="flex flex-row items-center gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-pointer"
           onClick={() => {
             // router.push("/transactions")
+            setSafeChains([5, 5001]);
             setView(Views.Transactions);
           }}
         >

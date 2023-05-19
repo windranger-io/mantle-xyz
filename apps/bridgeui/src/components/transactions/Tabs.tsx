@@ -61,6 +61,7 @@ export default function Tabs() {
                 if (pathName === "/transactions") {
                   router.push("/");
                 } else {
+                  setSafeChains([chainId]);
                   setView(Views.Default);
                 }
               }}
