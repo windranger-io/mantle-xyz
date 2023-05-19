@@ -87,7 +87,7 @@ export default async function Page() {
 
         {/* @todo: Take footer out flex order */}
         <div>
-          <Footer />
+          <Footer page="faucet" />
         </div>
       </PageContainer>
     </PageWrapper>
