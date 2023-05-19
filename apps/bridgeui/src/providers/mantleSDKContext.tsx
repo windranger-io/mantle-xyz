@@ -84,7 +84,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     chainId: GOERLI_CHAIN_ID,
   });
   useErrorHandler(goerliSignerError);
-  // get an infura backed provider so we can search through more blocks
+  // get an infura backed provider so we can search through more blocks - this enables the full sdk to work
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const goerliProvider = new ethers.providers.InfuraProvider(
     "goerli",
@@ -129,11 +129,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     };
 
     /*
-     * These crossChainMessenger functions have problems pulling logs from the rpc in the CrossChainMessenger instance,
-     * we can fix it by adding in a block range to the queryFilters *Note that we're using 2000 as the queryFromBlocksBefore limit,
-     * this is the maximum we can use in the L1 env, but we can query un-constrained on l2
-     *
-     * @TODO - Refactor to this to extend the crossChainMessenger class with these overrides
+     * Exposing new instances of these two methods so that we can return the receipt directly from the call
      */
 
     // allow messageStatus to optionally return the receipt aswell as the status
