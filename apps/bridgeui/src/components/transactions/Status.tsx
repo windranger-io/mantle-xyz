@@ -1,6 +1,6 @@
 import { useCallClaim } from "@hooks/useCallClaim";
 import { Button } from "@mantle/ui";
-import { MessageReceipt, MessageStatus } from "@mantleio/sdk";
+import { MessageStatus } from "@mantleio/sdk";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 import StateContext from "@providers/stateContext";
 import React, { useContext } from "react";
@@ -49,43 +49,28 @@ export default function Status({
       if (getMessageStatus && item && item?.transactionHash) {
         //   we can use getMessageStatus directly and use the response to messageResponse to decide whether or not to show claim
         await (
-          getMessageStatus(item?.transactionHash, {
-            returnReceipt: true,
-          }) as Promise<{
-            receipt: MessageReceipt;
-            status: MessageStatus;
-          }>
+          getMessageStatus(item?.transactionHash) as Promise<MessageStatus>
         )
           .catch(() => {
-            return {
-              status: -1,
-              receipt: null as unknown as MessageReceipt,
-            };
+            return -1;
           })
-          .then(({ receipt, status }) => {
-            if (status !== -1) {
-              if (status === MessageStatus.READY_FOR_RELAY) {
-                // otherwise its still pending
-                item.status = "claim";
-              } else if (status === MessageStatus.RELAYED) {
-                // do we have the transaction hash available?
-                if (receipt?.receiptStatus === 1) {
-                  // do we want to check the tx has completed?
-                  item.status = "complete";
-                } else {
-                  // if not we can issue a claim
-                  item.status = "claiming";
-                }
-              } else {
-                // otherwise it should be pending
-                item.status = "pending";
-              }
-              // this is only storing one value between calls cos of race - we should use a ref to store all the status values
-              if (discover !== -1 && item) {
-                // persist into ref (we don't need to clean this up)
-                withdrawalStatuses.current[item.transactionHash] = item.status;
-                // we could also persist the l1 tx?
-              }
+          .then((status) => {
+            if (status === MessageStatus.READY_FOR_RELAY) {
+              // otherwise its still pending
+              item.status = "claim";
+            } else if (status === MessageStatus.RELAYED) {
+              // do we have the transaction hash available?
+              // do we want to check the tx has completed?
+              item.status = "complete";
+            } else {
+              // otherwise it should be pending
+              item.status = "pending";
+            }
+            // this is only storing one value between calls cos of race - we should use a ref to store all the status values
+            if (discover !== -1 && item) {
+              // persist into ref (we don't need to clean this up)
+              withdrawalStatuses.current[item.transactionHash] = item.status;
+              // we could also persist the l1 tx?
             }
           });
       }

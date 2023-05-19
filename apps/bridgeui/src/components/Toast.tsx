@@ -8,6 +8,7 @@ import StateContext from "@providers/stateContext";
 import { useToast, ToastProps } from "@hooks/useToast";
 import { Button } from "@mantle/ui";
 import { usePathname } from "next/navigation";
+import { Views } from "@config/constants";
 
 const fromTop = true;
 
@@ -120,7 +121,7 @@ export function ToastContainer({ children }: { children: ReactNode }) {
 
   const { toasts, deleteToast } = useToast();
 
-  const { isCTAPageOpen } = useContext(StateContext);
+  const { view, isCTAPageOpen } = useContext(StateContext);
 
   const escFunction = useCallback(
     (event: KeyboardEvent) => {
@@ -143,7 +144,11 @@ export function ToastContainer({ children }: { children: ReactNode }) {
     <>
       {children}
       <FixedToastContainer
-        hidden={isCTAPageOpen || pathName === "/transactions"}
+        hidden={
+          isCTAPageOpen ||
+          pathName === "/transactions" ||
+          view === Views.Transactions
+        }
       >
         <AnimatePresence>
           {toasts.map((toast) => (
