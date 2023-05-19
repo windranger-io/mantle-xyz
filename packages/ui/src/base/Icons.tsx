@@ -383,3 +383,20 @@ export const BirdIcon = (props: IconProps) => (
     />
   </svg>
 )
+
+export const DividerCaret = (props: IconProps) => (
+  <svg
+    // width="342"
+    // height="14"
+    viewBox="0 0 342 14"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    {...props}
+  >
+    <path
+      d="M0 1H158.631C159.566 1 160.447 1.43589 161.015 2.17886L168.425 11.8792C169.626 13.451 171.992 13.451 173.193 11.8792L180.603 2.17885C181.171 1.43589 182.052 1 182.987 1H342"
+      stroke="#2E524E"
+    />
+  </svg>
+)

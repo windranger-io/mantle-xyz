@@ -68,7 +68,7 @@ export default function RootLayout({
             <PageContainer className="gap-8">
               {children}
               <div>
-                <Footer />
+                <Footer page="bridge" />
               </div>
             </PageContainer>
           </PageWrapper>
