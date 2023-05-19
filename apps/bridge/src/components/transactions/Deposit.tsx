@@ -18,8 +18,7 @@ export default function Deposit() {
 
   const pages = useMemo(() => {
     return (
-      (deposits && deposits.length && Math.ceil((deposits.length + 1) / 10)) ||
-      0
+      (deposits && deposits.length && Math.ceil(deposits.length / 10)) || 0
     );
   }, [deposits]);
 
