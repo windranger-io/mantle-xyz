@@ -6,6 +6,34 @@
 
 
 body {
-  color: white;
   background-color: black;
+  color: white;
+}
+
+
+.wallet-full button {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  padding: 0.75rem 1.25rem;
+  width: 100%;
+}
+
+
+
+.nav-mobile-wallet button {
+  width: 100%;
+}
+
+
+.wallet-full button {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  padding: 0.75rem 1.25rem;
+  width: 100%;
+}
+
+
+
+.nav-mobile-wallet button {
+  width: 100%;
 }
