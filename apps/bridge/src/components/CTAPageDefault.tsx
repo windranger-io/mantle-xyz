@@ -6,25 +6,25 @@ import {
 } from "@config/constants";
 
 import { useContext, useEffect, useState } from "react";
-import { MdClear } from "react-icons/md";
 
-import { Button, Typography } from "@mantle/ui";
+import StateContext from "@providers/stateContext";
 
 import { goerli, useMutation } from "wagmi"; // useSigner
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
-
-import StateContext from "@providers/stateContext";
-import Values from "@components/CTAPageValues";
-
-import { ToastProps, useToast } from "@hooks/useToast";
-import { useWaitForRelay } from "@hooks/useWaitForRelay";
-import { timeout } from "@utils/tools";
 
 import {
   TransactionReceipt,
   TransactionResponse,
 } from "@ethersproject/providers";
 import { useMantleSDK } from "@providers/mantleSDKContext";
+
+import { Button, Typography } from "@mantle/ui";
+import { MdClear } from "react-icons/md";
+import Values from "@components/Values";
+
+import { ToastProps, useToast } from "@hooks/useToast";
+import { useWaitForRelay } from "@hooks/useWaitForRelay";
+import { timeout } from "@utils/tools";
 
 class TxError extends Error {
   receipt: TransactionReceipt | TransactionResponse;
@@ -50,10 +50,8 @@ export default function CTAPageDefault({
   direction: Direction;
   selected: Token;
   destination: Token;
-
   ctaStatus: string | boolean;
   setCTAStatus: (val: string | boolean) => void;
-
   closeModal: () => void;
 }) {
   const {
