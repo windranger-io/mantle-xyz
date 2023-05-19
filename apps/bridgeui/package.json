@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3003",
-    "dev:bridgeui": "next dev --port 3003",
+    "dev": "next dev --port 3000",
+    "dev:bridgeui": "next dev --port 3000",
     "build": "next build",
     "test": "echo 'Running website tests'",
-    "start": "next start --port 3003",
+    "start": "next start --port 3000",
     "lint": "eslint src --fix"
   },
   "dependencies": {
@@ -18,7 +18,6 @@
     "@mantleio/core-utils": "^0.1.0",
     "@mantleio/sdk": "^0.1.4",
     "decimal.js": "^10.4.3",
-    "ethereum-block-by-date": "^1.4.7",
     "ethers": "^5.7.2",
     "framer-motion": "^10.12.10",
     "lodash": "^4.17.21",

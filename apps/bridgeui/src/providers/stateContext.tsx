@@ -21,6 +21,7 @@ import {
   MULTICALL_CONTRACTS,
   Token,
   TOKEN_ABI,
+  Views,
 } from "@config/constants";
 import {
   callMulticallContract,
@@ -30,6 +31,7 @@ import {
 import { BigNumber, BigNumberish, constants, Contract } from "ethers";
 import { formatUnits, getAddress, parseUnits } from "ethers/lib/utils.js";
 
+import { usePathname } from "next/navigation";
 import { MessageLike } from "@mantleio/sdk";
 import { useMantleSDK } from "./mantleSDKContext";
 
@@ -68,6 +70,7 @@ export type FeeData = {
 // (L1/L2 is switched depending on which chain your on, Tx1 and Tx2 would make more sense)
 
 export type StateProps = {
+  view: Views;
   client: {
     isConnected: boolean;
     chainId?: number;
@@ -122,6 +125,7 @@ export type StateProps = {
   isLoadingDeposits: boolean;
   isLoadingWithdrawals: boolean;
 
+  setView: (v: Views) => void;
   setChainId: (v: number) => void;
   setClient: (client: {
     isConnected: boolean;
@@ -153,6 +157,13 @@ const StateContext = createContext<StateProps>({} as StateProps);
 
 // create a provider to contain all state
 export function StateProvider({ children }: { children: React.ReactNode }) {
+  const pathName = usePathname();
+
+  // page toggled chainId (set according to Deposit/Withdraw)
+  const [view, setView] = useState(
+    pathName !== "/transactions" ? Views.Default : Views.Transactions
+  );
+
   // page toggled chainId (set according to Deposit/Withdraw)
   const [chainId, setChainId] = useState(5);
 
@@ -658,6 +669,19 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     return debounce(callback, 100);
   }, []);
 
+  // corrent view on page turn
+  useEffect(
+    () => {
+      if (pathName === "/transactions" && view !== Views.Transactions) {
+        setView(Views.Transactions);
+      } else if (pathName !== "/transactions" && view === Views.Transactions) {
+        setView(Views.Default);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pathName]
+  );
+
   // keep updated
   useEffect(() => {
     isCTAPageOpenRef.current = isCTAPageOpen;
@@ -940,6 +964,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     };
 
     return {
+      view,
       client,
       chainId,
       safeChains,
@@ -985,6 +1010,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
       ctaErrorReset,
 
+      setView,
       setClient,
       setChainId,
       setSafeChains,
@@ -1010,6 +1036,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setDestinationToken: setDestinationTokenByType,
     } as StateProps;
   }, [
+    view,
     client,
     chainId,
     safeChains,
@@ -1053,6 +1080,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     destinationTokenAmount,
 
     ctaErrorReset,
+
     refetchDepositsPage,
     refetchWithdrawalsPage,
   ]);
