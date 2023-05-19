@@ -90,6 +90,15 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   // of that frame by ref to avoid an "underlying network changed" error if the user switches chain
   const goerliProviderRef = React.useRef<Provider>();
   const mantleTestnetRef = React.useRef<Provider>();
+  const goerliInfuraRef = React.useRef<Provider>();
+
+  // get an infura backed provider so we can search through more blocks
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const goerliInfuraProvider = new ethers.providers.InfuraProvider(
+    "goerli",
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    process.env["NEXT_PUBLIC_INFURA_API_KEY"]
+  );
 
   // pull all the signers/privders and set handlers and associate boundaries as we go
   const { data: goerliSigner, error: goerliSignerError } = useSigner({
@@ -582,31 +591,17 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
 
     // find the l1 stateBatchAppenedEvent by batch index
     context.crossChainMessenger.getStateBatchAppendedEventByBatchIndex = async (
-      batchIndex,
-      blockNumber?: number
+      batchIndex
     ) => {
-      // if (L2) blockNumber is provided we can use this to constrain the queryFilter by guestimating the corresponding blocknumber on the L1
-      const fromBlock = await (blockNumber
-        ? mantleTestnetRef.current!.getBlock(blockNumber)
-        : goerliProviderRef.current!.getBlock("latest"));
-
-      // get the blockNumber for the given block
-      const fromBlockNumber = blockNumber
-        ? (await Promise.resolve(dater.getDate(fromBlock.timestamp * 1000)))
-            ?.block
-        : fromBlock.number;
-
-      // connect the contract to the read-only provider
+      // connect the contract to the read-only provider but use InfuraRef so that we can search without knowing the expected block
       const stateCommitmentChain =
         context.crossChainMessenger.contracts.l1.StateCommitmentChain.connect(
-          goerliProviderRef.current!
+          goerliInfuraRef.current!
         );
 
       // check for events in either the last 2000 blocks or 1000 blocks either side of the requested block
       const events = await stateCommitmentChain.queryFilter(
-        stateCommitmentChain.filters.StateBatchAppended(batchIndex),
-        fromBlockNumber - (blockNumber ? 1000 : 2000),
-        fromBlockNumber + (blockNumber ? 1000 : 0)
+        stateCommitmentChain.filters.StateBatchAppended(batchIndex)
       );
       if (events.length === 0) {
         return null;
@@ -642,6 +637,10 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   React.useEffect(() => {
     mantleTestnetRef.current = mantleTestnetProvider;
   }, [mantleTestnetProvider]);
+
+  React.useEffect(() => {
+    goerliInfuraRef.current = goerliInfuraProvider;
+  }, [goerliInfuraProvider]);
 
   return (
     <MantleSDKContext.Provider value={crossChainMessenger as SDKContext}>

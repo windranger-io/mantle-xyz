@@ -16,6 +16,8 @@ import Deposit from "@components/Deposit";
 import Withdraw from "@components/Withdraw";
 import CTAPage from "@components/CTAPage";
 
+import { useRouter } from "next/navigation";
+
 export default function Tabs() {
   const { updateToast } = useToast();
   // unpack the context
@@ -26,8 +28,22 @@ export default function Tabs() {
     isCTAPageOpen,
     hasClaims,
     setChainId,
+    setSafeChains,
     setIsCTAPageOpen,
   } = useContext(StateContext);
+
+  // use router to move to account
+  const router = useRouter();
+
+  // on first load
+  useEffect(
+    () => {
+      // this will deisable the incorrect network check (but still display if not 5 or 5001)
+      setSafeChains([chainId]);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   // memoise the selected Token instance
   const selected = useMemo(
@@ -236,13 +252,14 @@ export default function Tabs() {
         id: `claims-available`,
         buttonText: `Go to account`,
         onButtonClick: () => {
-          // eslint-disable-next-line no-console
-          console.log("go to account");
+          // move the user to the transaction page
+          router.push("./transactions");
+
           return false;
         },
       });
     }
-  }, [hasClaims, updateToast]);
+  }, [hasClaims, router, updateToast]);
 
   return (
     (isCTAPageOpen && (
@@ -260,8 +277,10 @@ export default function Tabs() {
           onChange={(tab) => {
             if (tab === 0) {
               setChainId(5);
+              setSafeChains([5]);
             } else {
               setChainId(5001);
+              setSafeChains([5001]);
             }
           }}
         >

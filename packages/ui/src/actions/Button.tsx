@@ -6,6 +6,7 @@ import clsx from 'clsx'
 type ButtonVariant =
   | 'primary'
   | 'secondary'
+  | 'dark'
   | 'outline'
   | 'ghost'
   | 'link'
@@ -60,6 +61,8 @@ export const Button = ({
           'text-black bg-button-primary hover:bg-button-primaryHover disabled:hover:bg-transparent text-sm',
         variant === 'link' &&
           'text-brand p-0 hover:underline disabled:no-underline',
+        variant === 'dark' &&
+          'text-[#65B3AE] bg-white/5 hover:bg-white/10 disabled:hover:bg-white/2',
         `${className}`,
       )}
       // eslint-disable-next-line react/jsx-props-no-spreading

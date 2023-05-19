@@ -58,7 +58,10 @@ export const CHAINS: Record<
       decimals: 18,
     },
     bridgeStartBlock: 8220525,
-    rpcUrls: ["https://goerli.infura.io/v3/9f0c70345c8d4f9ea915af6a6141cf70"],
+    rpcUrls: [
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      `https://goerli.infura.io/v3/${process.env["NEXT_PUBLIC_INFURA_API_KEY"]}`,
+    ],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
   // same for Mantle TestNet
@@ -89,6 +92,22 @@ export const MANTLE_TESTNET_CHAIN: Chain = {
   },
   id: 5001,
   nativeCurrency: CHAINS[5001].nativeCurrency,
+};
+
+export const GOERLI_CHAIN: Chain = {
+  testnet: true,
+  name: CHAINS[5].chainName,
+  network: CHAINS[5].chainName,
+  rpcUrls: {
+    default: {
+      http: CHAINS[5].rpcUrls,
+    },
+    public: {
+      http: CHAINS[5].rpcUrls,
+    },
+  },
+  id: 5,
+  nativeCurrency: CHAINS[5].nativeCurrency,
 };
 
 enum ChainID {

@@ -1,34 +1,43 @@
 import useCopyToClipboard from "@hooks/useCopyToClipboard";
-import React from "react";
+import React, { useContext } from "react";
 import { Typography } from "@mantle/ui";
 import Avatar from "@mantle/ui/src/presentational/Avatar";
 import Link from "next/link";
 import { AiOutlineCopy } from "react-icons/ai";
 import { RxExternalLink } from "react-icons/rx";
+import StateContext from "@providers/stateContext";
+import { getAddress } from "ethers/lib/utils.js";
 
 export default function Account() {
-  const address = "0x71C7656EC7ab88b098defB751B7401B5f6d897";
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [value, copy] = useCopyToClipboard();
-  return (
-    <div className="flex justify-center space-x-3 items-center">
-      <Avatar walletAddress="address" size={54} />
-      <Typography variant="bodyLongform">{address}</Typography>
+  const { client } = useContext(StateContext);
 
-      <div className="flex justify-center space-x-1">
-        <AiOutlineCopy
-          onClick={() => copy(address)}
-          className="cursor-pointer"
-        />
-        <Link
-          href={`https://etherscan.io/address/${address}`}
-          rel="noreferrer noopener"
-          target="_blank"
-        >
-          <RxExternalLink />
-        </Link>
+  const { copy } = useCopyToClipboard();
+
+  return (
+    (client && client.address && (
+      <div className="flex justify-center space-x-3 items-center">
+        <Avatar walletAddress="address" size={54} />
+        <Typography variant="bodyLongform" className="grid">
+          <span className="truncate block m-0">
+            {getAddress(client.address)}
+          </span>
+        </Typography>
+
+        <div className="flex justify-center space-x-1">
+          <AiOutlineCopy
+            onClick={() => copy(getAddress(client.address as string))}
+            className="cursor-pointer"
+          />
+          <Link
+            href={`https://etherscan.io/address/${client.address}`}
+            rel="noreferrer noopener"
+            target="_blank"
+          >
+            <RxExternalLink />
+          </Link>
+        </div>
+        <br />
       </div>
-      <br />
-    </div>
+    )) || <span />
   );
 }

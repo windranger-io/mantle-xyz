@@ -30,15 +30,35 @@ import {
 import { BigNumber, BigNumberish, constants, Contract } from "ethers";
 import { formatUnits, getAddress, parseUnits } from "ethers/lib/utils.js";
 
-import {
-  CrossChainMessenger,
-  MessageLike,
-  MessageReceipt,
-  MessageStatus,
-} from "@mantleio/sdk";
+import { MessageLike } from "@mantleio/sdk";
 import { useMantleSDK } from "./mantleSDKContext";
 
-type FeeData = {
+export type Deposit = {
+  l1Token: {
+    address: string;
+  };
+  l2Token: string;
+  amount: string;
+  transactionHash: string;
+  blockTimestamp: number;
+  blockNumber: number;
+};
+
+export type Withdrawal = {
+  status: string;
+  l1Token: {
+    address: string;
+  };
+  l2Token: string;
+  amount: string;
+  transactionHash: string;
+  ready_for_relay: boolean;
+  is_finalized: boolean;
+  blockTimestamp: number;
+  blockNumber: number;
+};
+
+export type FeeData = {
   data: {
     gasPrice: BigNumber;
   };
@@ -53,6 +73,7 @@ export type StateProps = {
     chainId?: number;
     address?: `0x${string}`;
   };
+  safeChains: number[];
   chainId: number;
   multicall: Contract;
   bridgeAddress: string;
@@ -73,9 +94,9 @@ export type StateProps = {
   ctaStatus: string | boolean;
   isCTAPageOpen: boolean;
   isCTAPageOpenRef: MutableRefObject<boolean>;
+  l1TxHashRef: MutableRefObject<string | undefined>;
+  l2TxHashRef: MutableRefObject<string | undefined>;
   ctaErrorReset: MutableRefObject<(() => void | boolean) | undefined>;
-
-  crossChainMessenger: CrossChainMessenger;
 
   tokens: Token[];
   balances: Record<string, string>;
@@ -90,30 +111,24 @@ export type StateProps = {
   };
   selectedTokenAmount: string;
   destinationTokenAmount: string;
+
+  deposits: Deposit[];
+  withdrawals: Withdrawal[];
+  withdrawalStatuses: MutableRefObject<Record<string, string>>;
   hasClaims: boolean;
   hasPendings: boolean;
-  withdrawals: {
-    transactionHash: string;
-    ready_for_relay: boolean;
-    is_finalized: boolean;
-    blockNumber: number;
-  }[];
-  deposits: {
-    transactionHash: string;
-    ready_for_relay: boolean;
-    is_finalized: boolean;
-    blockNumber: number;
-  }[];
   depositsPage: number;
   withdrawalsPage: number;
-  l1TxHashRef: MutableRefObject<string | undefined>;
-  l2TxHashRef: MutableRefObject<string | undefined>;
+  isLoadingDeposits: boolean;
+  isLoadingWithdrawals: boolean;
+
   setChainId: (v: number) => void;
   setClient: (client: {
     isConnected: boolean;
     chainId?: number;
     address?: `0x${string}`;
   }) => void;
+  setSafeChains: (chains: number[]) => void;
   resetBalances: () => void;
   resetAllowance: () => void;
   refetchWithdrawals: () => void;
@@ -131,14 +146,6 @@ export type StateProps = {
   setDestinationToken: (type: Direction, value: string) => void;
   setSelectedTokenAmount: (amount?: string) => void;
   setDestinationTokenAmount: (amount: string) => void;
-  waitForMessageStatus: (
-    message: MessageLike,
-    status: MessageStatus,
-    opts?: {
-      pollIntervalMs?: number;
-      timeoutMs?: number;
-    }
-  ) => Promise<MessageReceipt>;
 };
 
 // create a context to bind the provider to
@@ -149,11 +156,14 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // page toggled chainId (set according to Deposit/Withdraw)
   const [chainId, setChainId] = useState(5);
 
+  // initially set to just the current chainId (this will control when to show unsupported in the ConnectWallet component)
+  const [safeChains, setSafeChains] = useState([5]);
+
   // get the provider for the chosen chain
   const provider = useProvider({ chainId });
 
   // we'll use the crossChainMessenger here to estimate gas costs
-  const { crossChainMessenger, waitForMessageStatus } = useMantleSDK();
+  const { crossChainMessenger, getMessageStatus } = useMantleSDK();
 
   // keep hold of all wallet connection details
   const [client, setClient] = useState<{
@@ -251,24 +261,11 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const depositsPage = useRef(0);
 
   // combine all results into arrays
-  const [withdrawals, setWithdrawals] = useState<
-    | {
-        transactionHash: string;
-        ready_for_relay: boolean;
-        is_finalized: boolean;
-        blockNumber: number;
-      }[]
-    | undefined
-  >([]);
-  const [deposits, setDeposits] = useState<
-    | {
-        transactionHash: string;
-        ready_for_relay: boolean;
-        is_finalized: boolean;
-        blockNumber: number;
-      }[]
-    | undefined
-  >([]);
+  const [withdrawals, setWithdrawals] = useState<Withdrawal[] | undefined>([]);
+  const [deposits, setDeposits] = useState<Deposit[] | undefined>([]);
+
+  // use a ref to fill the withdrawalStatuses
+  const withdrawalStatuses = useRef({});
 
   // transaction history page urls
   const withdrawalsUrl = useMemo(() => {
@@ -365,70 +362,83 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   );
 
   // query to fetch withdrawals history in batches of HISTORY_ITEMS_PER_PAGE
-  const {
-    refetch: refetchWithdrawalsPage,
-    isLoading: refetchingWithdrawalsPage,
-  } = useQuery(
-    ["HISTORICAL_WITHDRAWALS", { withdrawalsUrl }],
-    async () => {
-      const res = await fetch(withdrawalsUrl);
-      const data = await res.json();
-      const items: {
-        transactionHash: string;
-        ready_for_relay: boolean;
-        is_finalized: boolean;
-        blockNumber: number;
-      }[] = [...(withdrawals || [])];
-      const uniques: Record<
-        string,
-        {
-          transactionHash: string;
-          ready_for_relay: boolean;
-          is_finalized: boolean;
-          blockNumber: number;
-        }
-      > = (withdrawals || []).reduce(
-        (
-          txs: Record<
-            string,
-            {
-              transactionHash: string;
-              ready_for_relay: boolean;
-              is_finalized: boolean;
-              blockNumber: number;
-            }
-          >,
-          tx: {
-            transactionHash: string;
-            ready_for_relay: boolean;
-            is_finalized: boolean;
-            blockNumber: number;
-          }
-        ) => {
-          return {
-            ...txs,
-            [tx.transactionHash]: tx,
-          };
-        },
-        {} as Record<
-          string,
-          {
-            transactionHash: string;
-            ready_for_relay: boolean;
-            is_finalized: boolean;
-            blockNumber: number;
-          }
-        >
-      );
+  const { refetch: refetchWithdrawalsPage, isLoading: isLoadingWithdrawals } =
+    useQuery(
+      ["HISTORICAL_WITHDRAWALS", { withdrawalsUrl }],
+      async () => {
+        const res = await fetch(withdrawalsUrl);
+        const data = await res.json();
+        const items: Withdrawal[] = [...(withdrawals || [])];
+        const uniques: Record<string, Withdrawal> = (withdrawals || []).reduce(
+          (txs: Record<string, Withdrawal>, tx: Withdrawal) => {
+            return {
+              ...txs,
+              [tx.transactionHash]: tx,
+            };
+          },
+          {} as Record<string, Withdrawal>
+        );
 
-      // update old entries and place new ones
-      data.items?.forEach(
-        (tx: {
-          transactionHash: string;
-          ready_for_relay: boolean;
-          is_finalized: boolean;
-          blockNumber: number;
-        }) => {
+        // update old entries and place new ones
+        data.items?.forEach((tx: Withdrawal) => {
+          if (!uniques[tx.transactionHash]) {
+            items.push({
+              ...tx,
+              status: tx.status || "",
+            });
+          } else {
+            const index = items.findIndex(
+              (i) => i.transactionHash === tx.transactionHash
+            );
+            if (index !== -1) {
+              // update the item in place
+              items[index] = {
+                ...tx,
+                status: tx.status || "",
+              };
+            } else {
+              items.push({
+                ...tx,
+                status: tx.status || "",
+              });
+            }
+          }
+        });
+
+        // set the new items
+        setWithdrawals(
+          [...items].sort((a, b) => b.blockNumber - a.blockNumber)
+        );
+
+        // we're not using this response directly atm
+        return data.items;
+      },
+      {
+        enabled: !!client.address && !!withdrawalsUrl && !!getMessageStatus,
+        cacheTime: 30,
+      }
+    );
+
+  // query to fetch deposit history in batches of HISTORY_ITEMS_PER_PAGE
+  const { refetch: refetchDepositsPage, isLoading: isLoadingDeposits } =
+    useQuery(
+      ["HISTORICAL_DEPOSITS", { depositsUrl }],
+      async () => {
+        const res = await fetch(depositsUrl);
+        const data = await res.json();
+        const items: Deposit[] = [...(deposits || [])];
+        const uniques: Record<string, Deposit> = (deposits || []).reduce(
+          (txs: Record<string, Deposit>, tx: Deposit) => {
+            return {
+              ...txs,
+              [tx.transactionHash]: tx,
+            };
+          },
+          {} as Record<string, Deposit>
+        );
+
+        // update old entries and place new ones
+        data.items?.forEach((tx: Deposit) => {
           if (!uniques[tx.transactionHash]) {
             items.push(tx);
           } else {
@@ -442,95 +452,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
               items.push(tx);
             }
           }
-        }
-      );
-
-      // set the new items
-      setWithdrawals([...items].sort((a, b) => b.blockNumber - a.blockNumber));
-
-      return data.items;
-    },
-    { enabled: !!client.address && !!withdrawalsUrl, cacheTime: 30 }
-  );
-
-  // query to fetch deposit history in batches of HISTORY_ITEMS_PER_PAGE
-  const { refetch: refetchDepositsPage, isLoading: refetchingDepositsPage } =
-    useQuery(
-      ["HISTORICAL_DEPOSITS", { depositsUrl }],
-      async () => {
-        const res = await fetch(depositsUrl);
-        const data = await res.json();
-        const items: {
-          transactionHash: string;
-          ready_for_relay: boolean;
-          is_finalized: boolean;
-          blockNumber: number;
-        }[] = [...(deposits || [])];
-        const uniques: Record<
-          string,
-          {
-            transactionHash: string;
-            ready_for_relay: boolean;
-            is_finalized: boolean;
-            blockNumber: number;
-          }
-        > = (deposits || []).reduce(
-          (
-            txs: Record<
-              string,
-              {
-                transactionHash: string;
-                ready_for_relay: boolean;
-                is_finalized: boolean;
-                blockNumber: number;
-              }
-            >,
-            tx: {
-              transactionHash: string;
-              ready_for_relay: boolean;
-              is_finalized: boolean;
-              blockNumber: number;
-            }
-          ) => {
-            return {
-              ...txs,
-              [tx.transactionHash]: tx,
-            };
-          },
-          {} as Record<
-            string,
-            {
-              transactionHash: string;
-              ready_for_relay: boolean;
-              is_finalized: boolean;
-              blockNumber: number;
-            }
-          >
-        );
-
-        // update old entries and place new ones
-        data.items?.forEach(
-          (tx: {
-            transactionHash: string;
-            ready_for_relay: boolean;
-            is_finalized: boolean;
-            blockNumber: number;
-          }) => {
-            if (!uniques[tx.transactionHash]) {
-              items.push(tx);
-            } else {
-              const index = items.findIndex(
-                (i) => i.transactionHash === tx.transactionHash
-              );
-              if (index !== -1) {
-                // update the item in place
-                items[index] = tx;
-              } else {
-                items.push(tx);
-              }
-            }
-          }
-        );
+        });
 
         // set the new items
         setDeposits([...items].sort((a, b) => b.blockNumber - a.blockNumber));
@@ -554,30 +476,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       (withdrawals || []).filter((tx) => !tx.ready_for_relay).length > 0;
     return checkForWaiting;
   }, [withdrawals]);
-
-  useEffect(() => {
-    if (client.address && !refetchingWithdrawalsPage && withdrawals) {
-      // eslint-disable-next-line no-console
-      console.log({
-        hasClaims: !!hasClaims,
-        hasPendings: !!hasPendings,
-        withdrawals,
-      });
-    }
-  }, [
-    client.address,
-    refetchingWithdrawalsPage,
-    hasClaims,
-    hasPendings,
-    withdrawals,
-  ]);
-
-  useEffect(() => {
-    if (client.address && !refetchingDepositsPage && deposits) {
-      // eslint-disable-next-line no-console
-      console.log({ deposits });
-    }
-  }, [client.address, refetchingDepositsPage, deposits]);
 
   // get current gas fees for L1
   const l1FeeData = useFeeData({
@@ -1044,6 +942,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     return {
       client,
       chainId,
+      safeChains,
       multicall,
       bridgeAddress,
 
@@ -1065,8 +964,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       ctaChainId,
       isCTAPageOpen,
       isCTAPageOpenRef,
-      crossChainMessenger,
-      waitForMessageStatus,
 
       hasClaims,
       hasPendings,
@@ -1074,6 +971,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       deposits,
       depositsPage: depositsPage.current,
       withdrawalsPage: withdrawalsPage.current,
+      withdrawalStatuses,
+      isLoadingDeposits,
+      isLoadingWithdrawals,
 
       tokens,
       balances,
@@ -1087,6 +987,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
       setClient,
       setChainId,
+      setSafeChains,
       resetBalances,
       resetAllowance,
 
@@ -1111,6 +1012,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   }, [
     client,
     chainId,
+    safeChains,
     multicall,
     bridgeAddress,
 
@@ -1133,15 +1035,14 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     isCTAPageOpen,
     isCTAPageOpenRef,
 
-    waitForMessageStatus,
-    crossChainMessenger,
-
     hasClaims,
     hasPendings,
     withdrawals,
     deposits,
     depositsPage,
     withdrawalsPage,
+    isLoadingDeposits,
+    isLoadingWithdrawals,
 
     tokens,
     balances,

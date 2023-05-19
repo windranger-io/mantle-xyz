@@ -3,7 +3,13 @@ import { useContext, useState, useEffect, useMemo } from "react";
 
 import StateContext from "@providers/stateContext";
 
-import { TOKEN_ABI, Direction, CHAINS, Token } from "@config/constants";
+import {
+  TOKEN_ABI,
+  Direction,
+  CHAINS,
+  Token,
+  CTAPages,
+} from "@config/constants";
 
 import { useContractWrite } from "wagmi";
 import { parseUnits } from "ethers/lib/utils.js";
@@ -30,6 +36,7 @@ export default function CTA({
     bridgeAddress,
     selectedTokenAmount = "",
     destinationTokenAmount = "",
+    setCTAPage,
     resetAllowance,
   } = useContext(StateContext);
 
@@ -208,6 +215,8 @@ export default function CTA({
             // allocate allowance
             approve();
           } else {
+            // always from the default page
+            setCTAPage(CTAPages.Default);
             // complete the transaction inside the modal
             setIsOpen(true);
           }
