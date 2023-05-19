@@ -2,7 +2,7 @@ import { BigNumberish } from "ethers";
 import { Address, Chain } from "wagmi";
 
 // Configure the applications name
-export const APP_NAME = "Mantle - Goerli Testnet Bridge";
+export const APP_NAME = "Mantle Testnet Bridge";
 
 // Base GasFee mul HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS === the approximate gasFee to call message relayer
 export const HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS = (800000).toString();
