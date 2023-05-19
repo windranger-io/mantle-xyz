@@ -1,5 +1,4 @@
 /* eslint-disable no-await-in-loop */
-/* eslint-disable no-console */
 
 "use client";
 
@@ -12,6 +11,10 @@ import {
   MessageReceipt,
   MessageReceiptStatus,
   MessageLike,
+  CrossChainMessage,
+  StateRoot,
+  TransactionLike,
+  toTransactionHash,
 } from "@mantleio/sdk";
 
 import { ethers } from "ethers";
@@ -20,10 +23,16 @@ import { goerli } from "wagmi/chains";
 import { MANTLE_TESTNET_CHAIN } from "@config/constants";
 
 import { useSigner, useProvider, useNetwork } from "wagmi";
-import type { FallbackProvider, Provider } from "@ethersproject/providers";
+import type {
+  FallbackProvider,
+  Provider,
+  TransactionReceipt,
+  TransactionResponse,
+} from "@ethersproject/providers";
 
 import { withErrorBoundary, useErrorHandler } from "react-error-boundary";
 import ErrorFallback from "@components/ErrorFallback";
+import { hashCrossDomainMessage } from "@mantleio/core-utils";
 
 const GOERLI_CHAIN_ID = goerli.id;
 const MANTLE_CHAIN_ID = MANTLE_TESTNET_CHAIN.id;
@@ -126,6 +135,265 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
               (mantleTestnetProvider as FallbackProvider).providerConfigs[0]
                 .provider,
       }),
+    };
+
+    /*
+     * override these methods to attach to current network ref (avoids underlying network changed error)
+     */
+
+    // read the challengePeriodSeconds from the contract
+    context.crossChainMessenger.getChallengePeriodSeconds =
+      async (): Promise<number> => {
+        const contract =
+          context.crossChainMessenger.contracts.l1.StateCommitmentChain.connect(
+            goerliProviderRef.current!
+          );
+
+        const challengePeriod = await contract.FRAUD_PROOF_WINDOW();
+        return challengePeriod.toNumber();
+      };
+
+    // get the stateRoot for a given message
+    context.crossChainMessenger.getMessageStateRoot = async (
+      message: MessageLike
+    ): Promise<StateRoot | null> => {
+      const resolved = await context.crossChainMessenger.toCrossChainMessage(
+        message
+      );
+
+      // State roots are only a thing for L2 to L1 messages.
+      if (resolved.direction === MessageDirection.L1_TO_L2) {
+        throw new Error(`cannot get a state root for an L1 to L2 message`);
+      }
+
+      // We need the block number of the transaction that triggered the message so we can look up the
+      // state root batch that corresponds to that block number.
+      const messageTxReceipt =
+        await mantleTestnetRef.current!.getTransactionReceipt(
+          resolved.transactionHash
+        );
+
+      // Every block has exactly one transaction in it. Since there's a genesis block, the
+      // transaction index will always be one less than the block number.
+      const messageTxIndex = messageTxReceipt.blockNumber - 1;
+
+      // Pull down the state root batch, we'll try to pick out the specific state root that
+      // corresponds to our message.
+      const stateRootBatch =
+        await context.crossChainMessenger.getStateRootBatchByTransactionIndex(
+          messageTxIndex
+        );
+
+      // No state root batch, no state root.
+      if (stateRootBatch === null) {
+        return null;
+      }
+
+      // We have a state root batch, now we need to find the specific state root for our transaction.
+      // First we need to figure out the index of the state root within the batch we found. This is
+      // going to be the original transaction index offset by the total number of previous state
+      // roots.
+      const indexInBatch =
+        messageTxIndex - stateRootBatch.header.prevTotalElements.toNumber();
+
+      // Just a sanity check.
+      if (stateRootBatch.stateRoots.length <= indexInBatch) {
+        // Should never happen!
+        throw new Error(`state root does not exist in batch`);
+      }
+
+      return {
+        stateRoot: stateRootBatch.stateRoots[indexInBatch],
+        stateRootIndexInBatch: indexInBatch,
+        batch: stateRootBatch,
+      };
+    };
+
+    // find the relayed messageReceipt
+    context.crossChainMessenger.getMessageReceipt = async (
+      message: TransactionResponse
+    ): Promise<MessageReceipt> => {
+      const resolved = await context.crossChainMessenger.toCrossChainMessage(
+        message
+      );
+
+      // memoise the IS_L1_TO_L2 check, we'll do this a few times to make sure we're pulling data from the correct contract/network
+      const IS_L1_TO_L2 = resolved.direction === MessageDirection.L1_TO_L2;
+
+      // we produce a hash of the message which we can use to search the logs
+      const messageHash = hashCrossDomainMessage(
+        resolved.messageNonce,
+        resolved.sender,
+        resolved.target,
+        resolved.value,
+        resolved.minGasLimit,
+        resolved.message
+      );
+
+      // select the correct network/contract
+      const unconnectedMessenger = IS_L1_TO_L2
+        ? context.crossChainMessenger.contracts.l2.L2CrossDomainMessenger
+        : context.crossChainMessenger.contracts.l1.L1CrossDomainMessenger;
+
+      // connect to the fixed provider
+      const messenger = unconnectedMessenger.connect(
+        IS_L1_TO_L2 ? mantleTestnetRef.current! : goerliProviderRef.current!
+      );
+
+      // look for successfully relayed messages
+      const relayedMessageEvents = await messenger
+        .queryFilter(messenger.filters.RelayedMessage(messageHash))
+        .catch(() => []);
+      // if the relay was successful only once then return the receipt
+      if (relayedMessageEvents.length === 1) {
+        return {
+          receiptStatus: MessageReceiptStatus.RELAYED_SUCCEEDED,
+          transactionReceipt:
+            await relayedMessageEvents[0].getTransactionReceipt(),
+        };
+      }
+      // otherwise we have a bad state...[]
+      if (relayedMessageEvents.length > 1) {
+        throw new Error(`multiple successful relays for message`);
+      }
+
+      // if we didn't find any events then look for errors (using the same block constraints)
+      const failedRelayedMessageEvents = await messenger.queryFilter(
+        messenger.filters.FailedRelayedMessage(messageHash)
+      );
+      // if there was an error then return the RELAYED_FAILED state with the appropriate tx receipt
+      if (failedRelayedMessageEvents.length > 0) {
+        return {
+          receiptStatus: MessageReceiptStatus.RELAYED_FAILED,
+          transactionReceipt: await failedRelayedMessageEvents[
+            failedRelayedMessageEvents.length - 1
+          ].getTransactionReceipt(),
+        };
+      }
+
+      return null as unknown as MessageReceipt;
+    };
+
+    // get the messages associated with the tx
+    context.crossChainMessenger.getMessagesByTransaction = async (
+      transaction: TransactionLike,
+      opts: {
+        direction?: MessageDirection;
+      } = {}
+    ): Promise<CrossChainMessage[]> => {
+      // Wait for the transaction receipt if the input is waitable.
+      await (transaction as TransactionResponse).wait?.();
+
+      // Convert the input to a transaction hash.
+      const txHash = toTransactionHash(transaction);
+
+      let receipt: TransactionReceipt;
+      if (opts.direction !== undefined) {
+        // Get the receipt for the requested direction.
+        if (opts.direction === MessageDirection.L1_TO_L2) {
+          receipt = await goerliProviderRef.current!.getTransactionReceipt(
+            txHash
+          );
+        } else {
+          receipt = await mantleTestnetRef.current!.getTransactionReceipt(
+            txHash
+          );
+        }
+      } else {
+        // Try both directions, starting with L1 => L2.
+        receipt = await goerliProviderRef.current!.getTransactionReceipt(
+          txHash
+        );
+        if (receipt) {
+          // eslint-disable-next-line no-param-reassign
+          opts.direction = MessageDirection.L1_TO_L2;
+        } else {
+          receipt = await mantleTestnetRef.current!.getTransactionReceipt(
+            txHash
+          );
+          // eslint-disable-next-line no-param-reassign
+          opts.direction = MessageDirection.L2_TO_L1;
+        }
+      }
+
+      if (!receipt) {
+        throw new Error(`unable to find transaction receipt for ${txHash}`);
+      }
+
+      // By this point opts.direction will always be defined.
+      const contract =
+        opts.direction === MessageDirection.L1_TO_L2
+          ? context.crossChainMessenger.contracts.l1.L1CrossDomainMessenger
+          : context.crossChainMessenger.contracts.l2.L2CrossDomainMessenger;
+
+      // connect the contract to the provider
+      const messenger = contract.connect(
+        opts.direction === MessageDirection.L1_TO_L2
+          ? goerliProviderRef.current!
+          : mantleTestnetRef.current!
+      );
+
+      return receipt.logs
+        .filter((log) => {
+          // Only look at logs emitted by the messenger address
+          return log.address === messenger.address;
+        })
+        .filter((log) => {
+          // Only look at SentMessage logs specifically
+          const parsed = messenger.interface.parseLog(log);
+          return parsed.name === "SentMessage";
+        })
+        .map((log) => {
+          let value = ethers.BigNumber.from(0);
+          if (receipt.logs.length > log.logIndex + 1) {
+            const next = receipt.logs[log.logIndex + 1];
+            if (next.address === messenger.address) {
+              const nextParsed = messenger.interface.parseLog(next);
+              if (nextParsed.name === "SentMessageExtension1") {
+                value = nextParsed.args.value;
+              }
+            }
+          }
+
+          // Convert each SentMessage log into a message object
+          const parsed = messenger.interface.parseLog(log);
+          return {
+            direction: opts.direction,
+            target: parsed.args.target,
+            sender: parsed.args.sender,
+            message: parsed.args.message,
+            messageNonce: parsed.args.messageNonce,
+            value,
+            minGasLimit: parsed.args.gasLimit,
+            logIndex: log.logIndex,
+            blockNumber: log.blockNumber,
+            transactionHash: log.transactionHash,
+          };
+        }) as CrossChainMessage[];
+    };
+
+    // find the l1 stateBatchAppenedEvent by batch index
+    context.crossChainMessenger.getStateBatchAppendedEventByBatchIndex = async (
+      batchIndex
+    ) => {
+      // connect the contract to the read-only provider but use InfuraRef so that we can search without knowing the expected block
+      const stateCommitmentChain =
+        context.crossChainMessenger.contracts.l1.StateCommitmentChain.connect(
+          goerliProviderRef.current!
+        );
+
+      // check for events in either the last 2000 blocks or 1000 blocks either side of the requested block
+      const events = await stateCommitmentChain.queryFilter(
+        stateCommitmentChain.filters.StateBatchAppended(batchIndex)
+      );
+      if (events.length === 0) {
+        return null;
+      }
+      if (events.length > 1) {
+        throw new Error(`found more than one StateBatchAppended event`);
+      } else {
+        return events[0];
+      }
     };
 
     /*
