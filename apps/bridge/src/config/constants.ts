@@ -4,8 +4,27 @@ import { Address, Chain } from "wagmi";
 // Configure the applications name
 export const APP_NAME = "Mantle Testnet Bridge";
 
-// Base GasFee mul HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS === the approximate gasFee to call message relayer
-export const HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS = (800000).toString();
+// Configure deta description
+export const META =
+  "Bridge tokens for your testnet wallet, and test your dApps deployed on Mantle Testnet.";
+
+// Configure OG Title
+export const OG_TITLE = "Bridge Your Hyperscaling Rocket Fuel";
+
+// Configure OG Desc
+export const OG_DESC =
+  "Bridge your testnet assets here to start to #BuildonMantle.";
+
+// Configure Twitter Title
+export const TWITTER_TITLE = "Mantle Testnet Bridge";
+
+// Configure Twitter Desc
+export const TWITTER_DESC =
+  "Bridge your testnet assets here to start to #BuildonMantle.";
+
+// To be changed before launch
+export const ABSOLUTE_PATH =
+  "https://mantle-bridge-git-mntl-bridge-mantle-xyz.vercel.app/";
 
 // Available views - were serving this as a spa atm
 export enum Views {
@@ -28,6 +47,9 @@ export enum CTAPages {
   "Withdrawn",
   "Error",
 }
+
+// Base GasFee mul HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS === the approximate gasFee to call message relayer
+export const HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS = (800000).toString();
 
 // url for withdraw/deposit helper api - I can't find a way to sort the query so this is less helpful than we'd like - see below:
 export const BRIDGE_BACKEND =
@@ -116,13 +138,13 @@ export const GOERLI_CHAIN: Chain = {
   nativeCurrency: CHAINS[5].nativeCurrency,
 };
 
-enum ChainID {
+export enum ChainID {
   Ethereum = 1,
   Goerli = 5,
   MantleTestnet = 5001,
 }
 
-enum TokenSymbol {
+export enum TokenSymbol {
   BIT = "BIT",
   ETH = "ETH",
   LINK = "LINK",
@@ -132,7 +154,7 @@ enum TokenSymbol {
   WBTC = "WBTC",
 }
 
-interface Token {
+export interface Token {
   chainId: ChainID;
   address: Address;
   name: string;
@@ -349,14 +371,4 @@ export const MANTLE_TOKEN_LIST: {
       },
     },
   ],
-};
-
-// named exports
-export { ChainID, TokenSymbol };
-export type { Token };
-
-// everything by default
-export default {
-  APP_NAME,
-  CHAINS,
 };
