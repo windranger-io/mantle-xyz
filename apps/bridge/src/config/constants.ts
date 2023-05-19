@@ -22,9 +22,22 @@ export const TWITTER_TITLE = "Mantle Testnet Bridge";
 export const TWITTER_DESC =
   "Bridge your testnet assets here to start to #BuildonMantle.";
 
-// To be changed before launch
-export const ABSOLUTE_PATH =
-  "https://mantle-bridge-git-mntl-bridge-mantle-xyz.vercel.app/";
+// Get the current absolute path from the env
+export function getBaseUrl() {
+  const vercel =
+    // eslint-disable-next-line turbo/no-undeclared-env-vars
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    // eslint-disable-next-line turbo/no-undeclared-env-vars
+    process.env.NEXT_PUBLIC_VERCEL_URL;
+  // return the fully resolved absolute url
+  return vercel
+    ? `https://${vercel}`
+    : // this should match the port used by the current app
+      "http://localhost:3003";
+}
+
+// export the absolute path
+export const ABSOLUTE_PATH = getBaseUrl();
 
 // Available views - were serving this as a spa atm
 export enum Views {
