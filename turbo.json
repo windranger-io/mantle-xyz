@@ -26,10 +26,6 @@
       "env": ["NEXT_PUBLIC_INFURA_API_KEY"],
       "cache": false
     },
-    "dev:bridgeui": {
-      "env": ["NEXT_PUBLIC_INFURA_API_KEY"],
-      "cache": false
-    },
     "dev:faucet": {
       "env": [
         "TWITTER_ID",
