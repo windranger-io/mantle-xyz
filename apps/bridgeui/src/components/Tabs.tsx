@@ -261,13 +261,14 @@ export default function Tabs() {
         onButtonClick: () => {
           // move the user to the transaction page
           // router.push("./transactions");
+          setSafeChains([5, 5001]);
           setView(Views.Transactions);
 
           return false;
         },
       });
     }
-  }, [hasClaims, setView, updateToast]);
+  }, [hasClaims, setSafeChains, setView, updateToast]);
 
   return (
     (view === Views.Default &&
