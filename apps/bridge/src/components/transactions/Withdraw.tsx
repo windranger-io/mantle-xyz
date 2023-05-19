@@ -22,7 +22,7 @@ export default function Withdraw() {
     return (
       (withdrawals &&
         withdrawals.length &&
-        Math.ceil((withdrawals.length + 1) / 10)) ||
+        Math.ceil(withdrawals.length / 10)) ||
       0
     );
   }, [withdrawals]);
