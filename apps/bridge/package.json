@@ -1,10 +1,10 @@
 {
-  "name": "mantle-bridgeui",
+  "name": "mantle-bridge",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000",
-    "dev:bridgeui": "next dev --port 3000",
+    "dev:bridge": "next dev --port 3000",
     "build": "next build",
     "test": "echo 'Running website tests'",
     "start": "next start --port 3000",
