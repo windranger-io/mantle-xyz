@@ -7,7 +7,7 @@ import StateContext from "@providers/stateContext";
 import { debounce } from "lodash";
 import { useContext, useState, useRef, useMemo, useEffect } from "react";
 import { useProvider, goerli } from "wagmi";
-import { MessageLike } from "@mantleio/sdk";
+import { MessageLike, MessageReceipt, MessageStatus } from "@mantleio/sdk";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 import { useIsChainID } from "./useIsChainID";
 import { useSwitchToNetwork } from "./useSwitchToNetwork";
@@ -39,7 +39,7 @@ export function useCallClaim(
   const { l2TxHashRef, setL2TxHash, setCTAPage } = useContext(StateContext);
 
   // import crosschain comms
-  const { crossChainMessenger } = useMantleSDK();
+  const { crossChainMessenger, getMessageStatus } = useMantleSDK();
 
   // pull goerli provider
   const provider = useProvider({ chainId: goerli.id });
@@ -59,40 +59,89 @@ export function useCallClaim(
   // commit claim method...
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const commitClaim = () => {
-    if (l1Tx && isChainId && isLoading && crossChainMessenger) {
-      // create the claim tx
-      crossChainMessenger
-        .finalizeMessage(l1Tx)
-        .catch((e) => {
-          if (
-            e.message ===
-            "execution reverted: Provided message has already been received."
-          ) {
-            setIsLoading(false);
-            if (storeProgress) {
-              // move to error page - this time we mean it
-              setCTAPage(CTAPages.Error);
+    if (
+      l1Tx &&
+      isChainId &&
+      isLoading &&
+      crossChainMessenger &&
+      getMessageStatus
+    ) {
+      // check if a claim has already been made - if it has - return that instead
+      const checkForClaim = async () => {
+        return getMessageStatus(l1Tx, { returnReceipt: true }).then(
+          async (res) => {
+            const typedRes = res as {
+              status: MessageStatus;
+              receipt: MessageReceipt;
+            };
+            if (typedRes.status === MessageStatus.RELAYED) {
+              if (storeProgress) {
+                setL2TxHash(
+                  typedRes.receipt.transactionReceipt.transactionHash
+                );
+                // set immediately into state
+                l2TxHashRef.current =
+                  typedRes.receipt.transactionReceipt.transactionHash;
+              }
+              // return the completed tx receipt
+              return typedRes.receipt.transactionReceipt;
             }
+            // throw on incomplete
+            throw new Error("incomplete");
           }
-          return noopHandler() as TransactionResponse | TransactionReceipt;
-        })
-        .then(async (tx) => {
-          try {
-            const finalTx = (
-              (tx as TransactionResponse)?.wait
-                ? await (tx as TransactionResponse)?.wait?.()
-                : tx
-            ) as TransactionReceipt;
-            if (finalTx && storeProgress) {
-              setL2TxHash(finalTx.transactionHash);
-              // set immediately into state
-              l2TxHashRef.current = finalTx.transactionHash;
+        );
+      };
+
+      // make a claim if not already claimed
+      const makeClaim = async () => {
+        return crossChainMessenger
+          .finalizeMessage(l1Tx)
+          .catch((e) => {
+            if (
+              e.message ===
+              "execution reverted: Provided message has already been received."
+            ) {
+              setIsLoading(false);
+              if (storeProgress) {
+                // move to error page - this time we mean it
+                setCTAPage(CTAPages.Error);
+              }
             }
-            return finalTx;
-          } catch (e) {
-            throw new TxError(e as string | undefined, tx);
-          }
-        })
+            return noopHandler() as TransactionResponse | TransactionReceipt;
+          })
+          .then(async (tx) => {
+            try {
+              const finalTx = (
+                (tx as TransactionResponse)?.wait
+                  ? await (tx as TransactionResponse)?.wait?.()
+                  : tx
+              ) as TransactionReceipt;
+              if (finalTx && storeProgress) {
+                setL2TxHash(finalTx.transactionHash);
+                // set immediately into state
+                l2TxHashRef.current = finalTx.transactionHash;
+              }
+              return finalTx;
+            } catch (e) {
+              throw new TxError(e as string | undefined, tx);
+            }
+          });
+      };
+
+      // run through the process...
+      (
+        new Promise((resolve) => {
+          resolve(
+            checkForClaim().catch((e) => {
+              // only incomplete bridge tx's need to be caught and made...
+              if (e.message === "incomplete") {
+                return makeClaim();
+              }
+              throw e;
+            })
+          );
+        }) as Promise<TransactionReceipt>
+      )
         .catch(() => {
           return noopHandler() as TransactionReceipt;
         })
