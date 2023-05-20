@@ -78,11 +78,23 @@ export default function Status({
       return (item && item.status) || "";
     },
     {
-      // cache for 30s
-      cacheTime: 60,
-      refetchIntervalInBackground: true,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
+      // cache for 5mins
+      cacheTime: 300000,
+      // stale after 30sec? (never stale after complete)
+      staleTime:
+        withdrawalStatuses.current[transactionHash] === "complete"
+          ? Number.POSITIVE_INFINITY
+          : 30000,
+      // refetch after 30 secs? (never refetch when status is "complete")
+      refetchInterval:
+        withdrawalStatuses.current[transactionHash] === "complete"
+          ? Number.POSITIVE_INFINITY
+          : 30000,
+      // background refetch stale data
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      // if we updated this in another tab we will want to update again now
+      refetchOnWindowFocus: true,
     }
   );
 
