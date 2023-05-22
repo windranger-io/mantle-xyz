@@ -64,6 +64,7 @@ export default function CTAPageDefault({
     ctaErrorReset,
     l1TxHashRef,
     l2TxHashRef,
+    resetBalances,
     setL1Tx,
     setL1TxHash,
     setL2TxHash,
@@ -243,6 +244,9 @@ export default function CTAPageDefault({
           // keep retrying until this goes through (if it fails it should only be because of network connection issues/reorgs(unlikely))...
           receipt = await retryWait().catch(errorHandler);
         }
+
+        // balance should have changed after the first tx
+        resetBalances();
 
         // double check the receipt is set
         if (receipt) {
