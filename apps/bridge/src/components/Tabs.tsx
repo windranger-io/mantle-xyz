@@ -2,7 +2,7 @@
 
 import { clsx } from "clsx";
 
-import { useContext, useEffect, useMemo, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useToast } from "@hooks/useToast";
 
 import StateContext from "@providers/stateContext";
@@ -16,9 +16,10 @@ import Deposit from "@components/Deposit";
 import Withdraw from "@components/Withdraw";
 import CTAPage from "@components/CTAPage";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
-export default function Tabs() {
+export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
   const { updateToast } = useToast();
   // unpack the context
   const {
@@ -28,13 +29,19 @@ export default function Tabs() {
     destinationToken,
     isCTAPageOpen,
     hasClaims,
-    setView,
     setChainId,
     setSafeChains,
     setIsCTAPageOpen,
   } = useContext(StateContext);
 
+  const router = useRouter();
   const pathName = usePathname();
+
+  const [tab, setTab] = useState(
+    pathName?.indexOf("/withdraw") !== -1
+      ? Direction.Withdraw
+      : Direction.Deposit
+  );
 
   // on first load
   useEffect(
@@ -43,14 +50,23 @@ export default function Tabs() {
       setSafeChains([chainId]);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [pathName]
   );
 
-  useEffect(() => {
-    if (pathName === "/transactions" && view !== Views.Transactions) {
-      setView(Views.Transactions);
-    }
-  }, [pathName, setView, view]);
+  useEffect(
+    () => {
+      if (selectedTab === Direction.Withdraw) {
+        setChainId(5001);
+        setTab(Direction.Withdraw);
+      } else {
+        setChainId(5);
+        setTab(Direction.Deposit);
+      }
+    },
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedTab]
+  );
 
   // memoise the selected Token instance
   const selected = useMemo(
@@ -257,18 +273,13 @@ export default function Tabs() {
         ),
         type: "success",
         id: `claims-available`,
-        buttonText: `Go to account`,
+        buttonText: <Link href="/account/withdraw">Go to account</Link>,
         onButtonClick: () => {
-          // move the user to the transaction page
-          // router.push("./transactions");
-          setSafeChains([5, 5001]);
-          setView(Views.Transactions);
-
           return false;
         },
       });
     }
-  }, [hasClaims, setSafeChains, setView, updateToast]);
+  }, [hasClaims, updateToast]);
 
   return (
     (view === Views.Default &&
@@ -283,12 +294,14 @@ export default function Tabs() {
       )) || (
         <SimpleCard className="max-w-lg w-full grid gap-4 relative">
           <Tab.Group
-            selectedIndex={chainId === 5 ? 0 : 1}
-            onChange={(tab) => {
-              if (tab === 0) {
+            selectedIndex={tab === Direction.Deposit ? 0 : 1}
+            onChange={(t) => {
+              if (t === 0) {
+                router.push("/deposit");
                 setChainId(5);
                 setSafeChains([5]);
               } else {
+                router.push("/withdraw");
                 setChainId(5001);
                 setSafeChains([5001]);
               }

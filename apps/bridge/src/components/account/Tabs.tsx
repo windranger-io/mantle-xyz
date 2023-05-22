@@ -7,31 +7,49 @@ import { clsx } from "clsx";
 import { SimpleCard, Typography } from "@mantle/ui";
 
 import StateContext from "@providers/stateContext";
-import Deposit from "@components/transactions/Deposit";
-import Withdraw from "@components/transactions/Withdraw";
-import Account from "@components/transactions/Account";
+import Deposit from "@components/account/Deposit";
+import Withdraw from "@components/account/Withdraw";
+import Account from "@components/account/Account";
 
 import { MdClear } from "react-icons/md";
 
-import { Views } from "@config/constants";
+import Link from "next/link";
+import { Direction, Views } from "@config/constants";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function Tabs() {
-  const { view, chainId, setSafeChains, setView } = useContext(StateContext);
-
-  const router = useRouter();
-  const pathName = usePathname();
+  const { chainId, view, setSafeChains, setView } = useContext(StateContext);
 
   const [categories] = useState({
     Deposit: [<Deposit />],
     Withdraw: [<Withdraw />],
   });
 
+  const router = useRouter();
+  const pathName = usePathname();
+
+  const [selectedTab, setSelectedTab] = useState(
+    pathName?.indexOf("/withdraw") !== -1
+      ? Direction.Withdraw
+      : Direction.Deposit
+  );
+
   // on first load
   useEffect(
     () => {
       // this will deisable the incorrect network check (but still display if not 5 or 5001)
       setSafeChains([5, 5001]);
+      // align the selected tab
+      if (pathName?.indexOf("/account") === 0) {
+        if (pathName?.indexOf("/withdraw") !== -1) {
+          setSelectedTab(Direction.Withdraw);
+        } else {
+          setSelectedTab(Direction.Deposit);
+        }
+        if (view !== Views.Account) {
+          setView(Views.Account);
+        }
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -39,13 +57,13 @@ export default function Tabs() {
 
   // // scroll to the top on open
   // useEffect(() => {
-  //   if (view === Views.Transactions) {
+  //   if (view === Views.Account) {
   //     window.scrollTo(0, 0);
   //   }
   // }, [view]);
 
   return (
-    (view === Views.Transactions && (
+    (view === Views.Account && (
       <SimpleCard className="max-w-5xl w-full grid gap-8 relative px-8">
         <span className="flex justify-between align-middle">
           <Typography
@@ -55,22 +73,23 @@ export default function Tabs() {
             Account
           </Typography>
           <Typography variant="modalHeading" className="text-white w-auto pt-1">
-            <MdClear
-              onClick={() => {
-                // also route if on /transactions page
-                if (pathName === "/transactions") {
-                  router.push("/");
-                } else {
-                  setSafeChains([chainId]);
-                  setView(Views.Default);
-                }
-              }}
-              className="cursor-pointer"
-            />
+            <Link
+              className="text-white "
+              href={`/${chainId === 5 ? "deposit" : "withdraw"}`}
+            >
+              <MdClear className="cursor-pointer" />
+            </Link>
           </Typography>
         </span>
         <Account />
-        <Tab.Group defaultIndex={chainId === 5 ? 0 : 1}>
+        <Tab.Group
+          selectedIndex={selectedTab === 1 ? 0 : 1}
+          onChange={(val) => {
+            router.push(`/account/${val === 0 ? "deposit" : "withdraw"}`);
+            // set the chainId according to the chainId
+            setSelectedTab(val === 0 ? Direction.Deposit : Direction.Withdraw);
+          }}
+        >
           <Tab.List className="flex space-x-2 rounded-[10px] bg-white/[0.05] p-1 select-none md:w-1/2 md:mx-auto">
             {Object.keys(categories).map((category, index) => (
               <span key={`cat-${category || index}`} className="w-full">

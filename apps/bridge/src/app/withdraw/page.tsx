@@ -11,7 +11,7 @@ export default async function Page() {
       <Typography variant="appPageHeading" className="text-center">
         Testnet Bridge
       </Typography>
-      <Tabs selectedTab={Direction.Deposit} />
+      <Tabs selectedTab={Direction.Withdraw} />
       <AdditionalLinks />
     </>
   );
