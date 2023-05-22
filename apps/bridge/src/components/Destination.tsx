@@ -1,9 +1,9 @@
 /* eslint-disable react/require-default-props */
-import Image from "next/image";
 import { SiEthereum } from "react-icons/si";
 
-import { CHAINS, Direction, MANTLE_TOKEN_LIST } from "@config/constants";
+import { CHAINS, Direction } from "@config/constants";
 import DirectionLabel from "@components/DirectionLabel";
+import { MantleLogo } from "./MantleLogo";
 
 export default function Destination({ direction }: { direction: Direction }) {
   return (
@@ -11,16 +11,7 @@ export default function Destination({ direction }: { direction: Direction }) {
       <DirectionLabel
         direction="To"
         logo={
-          direction === Direction.Withdraw ? (
-            <SiEthereum />
-          ) : (
-            <Image
-              alt="Mantle logo"
-              src={MANTLE_TOKEN_LIST.logoURI}
-              height={16}
-              width={16}
-            />
-          )
+          direction === Direction.Withdraw ? <SiEthereum /> : <MantleLogo />
         }
         chain={`${
           direction === Direction.Withdraw
