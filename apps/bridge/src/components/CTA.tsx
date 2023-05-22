@@ -11,11 +11,12 @@ import {
   CTAPages,
 } from "@config/constants";
 
-import { useContractWrite } from "wagmi";
+import { useConnect, useContractWrite } from "wagmi";
 import { parseUnits } from "ethers/lib/utils.js";
 
 import { useSwitchToNetwork } from "@hooks/useSwitchToNetwork";
 import { useIsChainID } from "@hooks/useIsChainID";
+import { InjectedConnector } from "wagmi/connectors/injected";
 
 // Contains a button & a modal to control allowance and deposits/withdrawals
 export default function CTA({
@@ -39,6 +40,19 @@ export default function CTA({
     setCTAPage,
     resetAllowance,
   } = useContext(StateContext);
+
+  // control wagmi connector
+  const { connect, connectors } = useConnect();
+
+  // Find the right connector by ID
+  const connector = useMemo(
+    // we can allow this connection.id to be set in connection modal phase
+    () =>
+      connectors.find((conn) => conn.id === "metamask") ||
+      // fallback to injected provider
+      new InjectedConnector(),
+    [connectors]
+  );
 
   // check that we're connected to the appropriate chain
   const isGoerliChainID = useIsChainID(5);
@@ -118,10 +132,10 @@ export default function CTA({
   const CTAButtonText = useMemo(() => {
     // console.log(spendDetails, destinationTokenAmount);
     let text;
-    if (!isChainID) {
-      text = `Switch to ${CHAINS[chainId].chainName}`;
-    } else if (!client?.address) {
+    if (!client?.address) {
       text = "Please connect your wallet";
+    } else if (!isChainID) {
+      text = `Switch to ${CHAINS[chainId].chainName}`;
     } else if (
       destinationTokenAmount &&
       parseUnits(
@@ -205,7 +219,11 @@ export default function CTA({
         size="full"
         className="h-14"
         onClick={() => {
-          if (!isChainID) {
+          if (!client?.address) {
+            connect({
+              connector,
+            });
+          } else if (!isChainID) {
             switchToNetwork(chainId);
           } else if (
             parseUnits(allowance || "-1", selected.decimals).lt(
@@ -223,8 +241,8 @@ export default function CTA({
         }}
         disabled={
           isChainID &&
+          !!client.address &&
           (!!approvalStatus ||
-            !client?.address ||
             !destinationTokenAmount ||
             !selectedTokenAmount ||
             !parseFloat(destinationTokenAmount) ||
@@ -239,7 +257,12 @@ export default function CTA({
       </Button>
 
       {/* <hr className="border border-stroke-inputs mt-6 mb-8" /> */}
-      {destinationTokenAmount && <div className="my-8" />}
+      {isChainID &&
+        !!client.address &&
+        parseUnits(allowance || "-1", selected.decimals).gte(
+          parseUnits(destinationTokenAmount || "0", selected.decimals)
+        ) &&
+        destinationTokenAmount && <div className="my-8" />}
     </div>
   );
 }

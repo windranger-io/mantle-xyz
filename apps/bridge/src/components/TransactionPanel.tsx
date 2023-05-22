@@ -14,6 +14,7 @@ import {
 import { formatEther, formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { constants } from "ethers";
 import { formatBigNumberString } from "@utils/formatStrings";
+import { useIsChainID } from "@hooks/useIsChainID";
 
 export default function TransactionPanel({
   direction,
@@ -26,6 +27,7 @@ export default function TransactionPanel({
 }) {
   // unpack the context
   const {
+    chainId,
     client,
     balances,
     allowance,
@@ -48,6 +50,30 @@ export default function TransactionPanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [allowance]
   );
+
+  // check that we're connected to the appropriate chain
+  const isGoerliChainID = useIsChainID(5);
+  const isMantleChainID = useIsChainID(5001);
+
+  // set address with useState to avoid hydration errors
+  const [address, setAddress] = useState<`0x${string}`>(client?.address!);
+
+  // check that the chainId is valid for the selected use-case
+  const isChainID = useMemo(() => {
+    return (
+      (chainId === 5 && isGoerliChainID) ||
+      (chainId === 5001 && isMantleChainID) ||
+      !address
+    );
+  }, [address, chainId, isGoerliChainID, isMantleChainID]);
+
+  // set wagmi address to address for ssr
+  useEffect(() => {
+    if (client?.address && client?.address !== address) {
+      setAddress(client?.address);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [client?.address]);
 
   // set the rows according to state
   useEffect(() => {
@@ -151,7 +177,8 @@ export default function TransactionPanel({
   ]);
 
   return (
-    (destinationTokenAmount &&
+    (isChainID &&
+      destinationTokenAmount &&
       parseUnits(allowance || "-1", selected.decimals).gte(
         parseUnits(destinationTokenAmount || "0", selected.decimals)
       ) &&
