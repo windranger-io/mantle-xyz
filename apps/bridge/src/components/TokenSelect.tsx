@@ -35,9 +35,10 @@ export default function TokenSelect({
   } = useContext(StateContext);
 
   const hasBalance = useMemo(() => {
-    return parseUnits(balances[selected.address] || "0", selected.decimals).gte(
-      parseUnits(selectedTokenAmount || "0", selected.decimals)
-    );
+    return parseUnits(
+      balances?.[selected.address] || "0",
+      selected.decimals
+    ).gte(parseUnits(selectedTokenAmount || "0", selected.decimals));
   }, [selected, balances, selectedTokenAmount]);
 
   return (
@@ -284,8 +285,8 @@ export default function TokenSelect({
             type="button"
             className="text-[#0A8FF6]"
             onClick={() => {
-              setSelectedTokenAmount(balances[selected.address] || "0");
-              setDestinationTokenAmount(balances[selected.address] || "0");
+              setSelectedTokenAmount(balances?.[selected.address] || "0");
+              setDestinationTokenAmount(balances?.[selected.address] || "0");
             }}
           >
             Max
@@ -297,9 +298,9 @@ export default function TokenSelect({
           direction="Your balance"
           logo={<span />}
           chain={`${
-            Number.isNaN(parseFloat(balances[selected.address] || ""))
+            Number.isNaN(parseFloat(balances?.[selected.address] || ""))
               ? "0.0"
-              : formatBigNumberString(balances[selected.address]) || "0.0"
+              : formatBigNumberString(balances?.[selected.address]) || "0.0"
           }${" "}${selected.symbol}`}
         />
       )}
