@@ -22,7 +22,7 @@ export default function Page() {
         </Typography>
 
         <div>
-          <Footer />
+          <Footer page="website" />
         </div>
       </PageContainer>
     </PageWrapper>
