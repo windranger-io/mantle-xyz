@@ -1,10 +1,11 @@
 "use client";
 
-import { MANTLE_TESTNET_CHAIN } from "@config/constants";
+// this version of GOERLI_CHAIN will use infura
+import { MANTLE_TESTNET_CHAIN, GOERLI_CHAIN } from "@config/constants";
 
 import { WagmiConfig, configureChains, createClient } from "wagmi";
 
-import { goerli as GOERLI_CHAIN } from "wagmi/chains";
+// import { goerli as GOERLI_CHAIN } from "wagmi/chains";
 
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
