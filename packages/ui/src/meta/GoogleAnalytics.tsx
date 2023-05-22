@@ -1,10 +1,15 @@
 import Script from 'next/script'
 
+type GoogleAnalyticsProps = {
+  GA_TRACKING_ID?: string
+}
+
 export const GoogleAnalytics = ({
   GA_TRACKING_ID,
-}: {
-  GA_TRACKING_ID: string
-}): JSX.Element => {
+}: GoogleAnalyticsProps): JSX.Element => {
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  if (!GA_TRACKING_ID) return <></> // Return an empty fragment instead of null
+
   return (
     <>
       <Script
@@ -21,4 +26,8 @@ export const GoogleAnalytics = ({
       </Script>
     </>
   )
+}
+
+GoogleAnalytics.defaultProps = {
+  GA_TRACKING_ID: undefined,
 }
