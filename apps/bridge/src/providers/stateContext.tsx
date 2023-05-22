@@ -192,20 +192,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // page toggled chainId (set according to Deposit/Withdraw)
   const multicall = useRef<{ network: Network; multicallContract: Contract }>();
 
-  // store each tokens balance
-  // const [balances, setBalances] = useState<Record<string, string>>({});
-  const [allowance, setAllowance] = useState<string>("");
-
-  // state trigger to recall allowance check
-  const [manuallyResetAllowance, setManuallyResetAllowance] = useState<object>(
-    {}
-  );
-
-  // method to call to reset the allowance
-  const resetAllowance = () => {
-    setManuallyResetAllowance({ rand: Math.random() });
-  };
-
   // the selected page within CTAPage to open
   const [ctaPage, setCTAPage] = useState<CTAPages>(CTAPages.Default);
   // a ref to the current page
@@ -230,9 +216,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // l1Tx assoicated with the current action - we use this to carry the tx between pages (Withdraw -> Withdrawn)
   const [l1Tx, setL1Tx] = useState<MessageLike>();
-
-  // allow the allowance checks to be debounced
-  const commitAllowanceRef = useRef<() => void>();
 
   // allow the gasEstimate checks to be debounced
   const gasEstimateRef = useRef<() => void>();
@@ -504,11 +487,26 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const commitAllowance = () => {
-    // check that we're using the corrent network before proceeding
-    provider.getNetwork().then((network) => {
+  const { data: allowance, refetch: resetAllowance } = useQuery(
+    [
+      "ALLOWANCE_CHECK",
+      {
+        address: client?.address,
+        chainId,
+        bridgeAddress,
+        multicall: multicall.current?.network.name,
+      },
+    ],
+    () => {
       // only run the multicall if we're connected to the correct network
-      if (network.chainId === chainId) {
+      if (
+        client?.address &&
+        client?.address !== "0x" &&
+        bridgeAddress &&
+        multicall.current?.network.chainId === chainId
+      ) {
+        // check that we're using the corrent network before proceeding
+        // only run the multicall if we're connected to the correct network
         // direction of the interaction
         const type = chainId === 5 ? Direction.Deposit : Direction.Withdraw;
 
@@ -542,7 +540,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
             multicall.current?.multicallContract.provider
           );
           // check the allowance the user has allocated to the bridge
-          contract
+          return contract
             ?.allowance(client.address, bridgeAddress)
             .catch(() => {
               // eslint-disable-next-line no-console
@@ -555,16 +553,31 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
                 selection.decimals
               ).toString();
               // only trigger an update if we got a new allowance for selected token
-              if (newAllowance !== allowance) setAllowance(newAllowance);
+              return newAllowance;
             });
-        } else if (bridgeAddress) {
-          setAllowance(
-            formatUnits(constants.MaxUint256, selection.decimals).toString()
-          );
+        }
+        if (bridgeAddress) {
+          return formatUnits(
+            constants.MaxUint256,
+            selection.decimals
+          ).toString();
         }
       }
-    });
-  };
+      return "0";
+    },
+    {
+      initialData: "0",
+      // refetch every 60s or when refetched
+      staleTime: 60000,
+      refetchInterval: 60000,
+      // background refetch stale data
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      // if we updated this in another tab we will want to update again now
+      refetchOnWindowFocus: true,
+      refetchIntervalInBackground: true,
+    }
+  );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const gasEstimate = () => {
@@ -650,12 +663,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // debounce the current callback assigned to commitAllowanceRef
-  const doCommitAllowanceWithDebounce = useMemo(() => {
-    const callback = () => commitAllowanceRef.current?.();
-    return debounce(callback, 100);
-  }, []);
-
   // debounce the current callback assigned to gasEstimateRef
   const doGasEstimateWithDebounce = useMemo(() => {
     const callback = () => gasEstimateRef.current?.();
@@ -678,31 +685,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     isCTAPageOpenRef.current = isCTAPageOpen;
   }, [isCTAPageOpen]);
 
-  // update the references every render to make sure we have the latest state in the function
-  useEffect(() => {
-    commitAllowanceRef.current = commitAllowance;
-  }, [commitAllowance]);
-
   useEffect(() => {
     gasEstimateRef.current = gasEstimate;
   }, [gasEstimate]);
-
-  // make the debounced call when any of the following properties update
-  useEffect(
-    doCommitAllowanceWithDebounce,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      chainId,
-      tokens,
-      client,
-      selectedToken,
-      bridgeAddress,
-      multicall.current?.multicallContract.provider,
-      manuallyResetAllowance,
-      // only required one...
-      doCommitAllowanceWithDebounce,
-    ]
-  );
 
   useEffect(
     // we only want to perform this action once per change in params
@@ -884,6 +869,12 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     ctaPageRef.current = ctaPage;
   }, [ctaPage]);
+
+  // reset the allowances and balances once we gather enough intel to make the calls
+  useEffect(() => {
+    resetAllowance();
+    resetBalances();
+  }, [client.address, multicall, bridgeAddress, resetAllowance, resetBalances]);
 
   // combine everything into a context provider
   const context = useMemo(() => {
@@ -1107,6 +1098,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     ctaErrorReset,
 
     resetBalances,
+    resetAllowance,
     refetchDepositsPage,
     refetchWithdrawalsPage,
   ]);
