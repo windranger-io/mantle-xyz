@@ -8,6 +8,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import clsx from 'clsx'
 import { MantleLogoIcon, MantleLockUpByline } from '../base/Icons'
+
 import { mobileNavCat } from './styles'
 import { MantleLink } from '../links/MantleLinks'
 

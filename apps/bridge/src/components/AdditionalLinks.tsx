@@ -10,7 +10,7 @@ export function AdditionalLinks() {
   const { chainId } = useContext(StateContext);
 
   return (
-    <div className="flex flex-col items-center gap-4 pb-10 opacity-60 hover:opacity-100">
+    <div className="flex flex-col items-center gap-4 pb-10 ">
       <Typography>
         Don’t have enough gas to bridge tokens? Get some{" "}
         {chainId !== 5 ? "Mantle Testnet BIT" : "goerli ETH"} here:
