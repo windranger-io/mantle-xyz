@@ -58,9 +58,17 @@ function ConnectWallet() {
   const { switchToNetwork } = useSwitchToNetwork();
 
   // control wagmi connector
-  const { connect, connectAsync } = useConnect({
-    connector: new InjectedConnector(),
-  });
+  const { connect, connectAsync, connectors } = useConnect();
+
+  // Find the right connector by ID
+  const connector = useMemo(
+    // we can allow this connection.id to be set in connection modal phase
+    () =>
+      connectors.find((conn) => conn.id === "metamask") ||
+      // fallback to injected provider
+      new InjectedConnector(),
+    [connectors]
+  );
 
   const { disconnect, disconnectAsync } = useDisconnect({
     onMutate: () => {
@@ -74,7 +82,7 @@ function ConnectWallet() {
       if (reconnect.current) {
         await new Promise((resolve) => {
           setTimeout(() => {
-            resolve(connectAsync().catch(() => null));
+            resolve(connectAsync({ connector }).catch(() => null));
           }, 1000);
         });
       }
@@ -192,7 +200,9 @@ function ConnectWallet() {
               size="regular"
               onClick={() => {
                 if (!client.address) {
-                  connect();
+                  connect({
+                    connector,
+                  });
                 } else {
                   // clear the client before calling disconnect
                   client.address = undefined;
