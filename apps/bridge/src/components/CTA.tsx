@@ -109,7 +109,7 @@ export default function CTA({
   // get the balance/allowanace details
   const spendDetails = useMemo(() => {
     return {
-      balance: balances[selected.address],
+      balance: balances?.[selected.address] || "0",
       allowance,
     };
   }, [selected, balances, allowance]);

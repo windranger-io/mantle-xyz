@@ -171,9 +171,9 @@ export default function TransactionPanel({
                 Current Balance
               </Typography>
               <Typography variant="smallWidget" className="text-type-muted">
-                {Number.isNaN(parseFloat(balances[selected.address] || ""))
+                {Number.isNaN(parseFloat(balances?.[selected.address] || ""))
                   ? "0.0"
-                  : formatBigNumberString(balances[selected.address]) ||
+                  : formatBigNumberString(balances?.[selected.address]) ||
                     "0.0"}{" "}
                 {selected.symbol}
               </Typography>

@@ -33,6 +33,7 @@ import { formatUnits, getAddress, parseUnits } from "ethers/lib/utils.js";
 
 import { usePathname } from "next/navigation";
 import { MessageLike } from "@mantleio/sdk";
+import { Network } from "@ethersproject/providers";
 import { useMantleSDK } from "./mantleSDKContext";
 
 export type Deposit = {
@@ -78,7 +79,10 @@ export type StateProps = {
   };
   safeChains: number[];
   chainId: number;
-  multicall: Contract;
+  multicall: MutableRefObject<{
+    network: Network;
+    multicallContract: Contract;
+  }>;
   bridgeAddress: string;
 
   feeData: FeeData;
@@ -186,10 +190,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   });
 
   // page toggled chainId (set according to Deposit/Withdraw)
-  const [multicall, setMulticall] = useState<Contract>();
+  const multicall = useRef<{ network: Network; multicallContract: Contract }>();
 
   // store each tokens balance
-  const [balances, setBalances] = useState<Record<string, string>>({});
+  // const [balances, setBalances] = useState<Record<string, string>>({});
   const [allowance, setAllowance] = useState<string>("");
 
   // state trigger to recall allowance check
@@ -197,19 +201,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     {}
   );
 
-  // state trigger to recall balance checks
-  const [manuallyResetBalances, setManuallyResetBalances] = useState<object>(
-    {}
-  );
-
   // method to call to reset the allowance
   const resetAllowance = () => {
-    setManuallyResetAllowance({});
-  };
-
-  // method to call to reset the balances
-  const resetBalances = () => {
-    setManuallyResetBalances({});
+    setManuallyResetAllowance({ rand: Math.random() });
   };
 
   // the selected page within CTAPage to open
@@ -545,7 +539,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
           const contract = new Contract(
             selection.address,
             TOKEN_ABI,
-            multicall?.provider
+            multicall.current?.multicallContract.provider
           );
           // check the allowance the user has allocated to the bridge
           contract
@@ -553,11 +547,11 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
             .catch(() => {
               // eslint-disable-next-line no-console
               // console.log("Allowance call error:", e);
-              return parseUnits(allowance, selection.decimals);
+              return parseUnits(allowance || "0", selection.decimals);
             })
             .then((givenAllowance: BigNumberish) => {
               const newAllowance = formatUnits(
-                givenAllowance,
+                givenAllowance || "0",
                 selection.decimals
               ).toString();
               // only trigger an update if we got a new allowance for selected token
@@ -703,7 +697,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       client,
       selectedToken,
       bridgeAddress,
-      multicall?.provider,
+      multicall.current?.multicallContract.provider,
       manuallyResetAllowance,
       // only required one...
       doCommitAllowanceWithDebounce,
@@ -731,107 +725,138 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     getMulticallContract(MULTICALL_CONTRACTS[chainId], provider).then(
       async (multicallContract) => {
-        setMulticall(multicallContract);
+        // check that we're using the corrent network before proceeding
+        const network = await multicallContract.provider.getNetwork();
+        // setMulticall(multicallContract);
+        multicall.current = {
+          network,
+          multicallContract,
+        };
       }
     );
   }, [chainId, provider, client]);
 
   // perform a multicall on the given network to get all token balances for user
-  useEffect(() => {
-    if (multicall && client?.address && client?.address !== "0x") {
-      // check that we're using the corrent network before proceeding
-      multicall.provider.getNetwork().then((network) => {
-        // only run the multicall if we're connected to the correct network
-        if (network.chainId === chainId) {
-          // start loading balances
-          setIsLoadingBalances(true);
-          // filter any native tokens from the selection
-          const filteredTokens = tokens.filter(
-            (v) =>
-              [
-                "0x0000000000000000000000000000000000000000",
-                "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
-              ].indexOf(v.address) === -1
+  const {
+    data: balances,
+    refetch: resetBalances,
+    isFetching: isFetchingBalances,
+    isRefetching: isRefetchingBalances,
+  } = useQuery<{
+    [key: string]: BigNumberish;
+  }>(
+    [
+      "BALANCES_FOR_ADDRESS_ON_CHAINID",
+      {
+        address: client?.address,
+        chainId,
+        multicall: multicall.current?.network.name,
+      },
+    ],
+    async () => {
+      // only run the multicall if we're connected to the correct network
+      if (
+        client?.address &&
+        client?.address !== "0x" &&
+        multicall.current?.network.chainId === chainId
+      ) {
+        // filter any native tokens from the selection
+        const filteredTokens = tokens.filter(
+          (v) =>
+            [
+              "0x0000000000000000000000000000000000000000",
+              "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
+            ].indexOf(v.address) === -1
+        );
+
+        // produce a set of balanceOf calls to check users balance against every token
+        const calls = filteredTokens.map((token) => {
+          return {
+            target: token.address as `0x${string}`,
+            contract: new Contract(
+              token.address,
+              TOKEN_ABI,
+              multicall.current?.multicallContract.provider
+            ),
+            fns: [
+              {
+                fn: "balanceOf",
+                args: [client?.address as string],
+              },
+            ],
+          };
+        });
+        // run all calls...
+        const responses = await callMulticallContract(
+          multicall.current.multicallContract,
+          calls
+        );
+        const newBalances = responses.reduce((fillBalances, value, key) => {
+          // copy of the obj
+          const newFillBalances = { ...fillBalances };
+          // set the balance value in to the token details
+          newFillBalances[filteredTokens[key].address] = formatUnits(
+            value?.toString() || "0",
+            18
           );
 
-          // produce a set of balanceOf calls to check users balance against every token
-          const calls = filteredTokens.map((token) => {
-            return {
-              target: token.address as `0x${string}`,
-              contract: new Contract(
-                token.address,
-                TOKEN_ABI,
-                multicall.provider
-              ),
-              fns: [
-                {
-                  fn: "balanceOf",
-                  args: [client?.address as string],
-                },
-              ],
-            };
-          });
-          // run all calls...
-          callMulticallContract(multicall, calls)
-            .then(async (responses) => {
-              const newBalances = responses.reduce(
-                (fillBalances, value, key) => {
-                  // copy of the obj
-                  const newFillBalances = { ...fillBalances };
-                  // set the balance value in to the token details
-                  newFillBalances[filteredTokens[key].address] = formatUnits(
-                    value.toString(),
-                    18
-                  );
+          return newFillBalances;
+        }, {} as Record<string, string>);
 
-                  return newFillBalances;
-                },
-                {} as Record<string, string>
-              );
+        // update the displayed balances
+        const finalBalances = {
+          ...newBalances,
+          // place the native token balances
+          ...(chainId === 5
+            ? {
+                "0x0000000000000000000000000000000000000000":
+                  (client.address &&
+                    formatUnits(
+                      (await multicall.current.multicallContract.provider.getBalance(
+                        client.address!
+                      )) || "0",
+                      18
+                    )) ||
+                  "0",
+              }
+            : {
+                "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000":
+                  (client.address &&
+                    formatUnits(
+                      (await multicall.current.multicallContract.provider.getBalance(
+                        client.address!
+                      )) || "0",
+                      18
+                    )) ||
+                  "0",
+              }),
+        };
 
-              // update the displayed balances
-              setBalances({
-                ...newBalances,
-                // place the native token balances
-                ...(chainId === 5
-                  ? {
-                      "0x0000000000000000000000000000000000000000":
-                        (client.address &&
-                          formatUnits(
-                            await multicall.provider.getBalance(
-                              client.address!
-                            ),
-                            18
-                          )) ||
-                        "0",
-                    }
-                  : {
-                      "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000":
-                        (client.address &&
-                          formatUnits(
-                            await multicall.provider.getBalance(
-                              client.address!
-                            ),
-                            18
-                          )) ||
-                        "0",
-                    }),
-              });
-            })
-            .finally(() => {
-              // done loading
-              setIsLoadingBalances(false);
-            });
-        } else {
-          // clear the balances
-          setBalances({});
-        }
-      });
-    } else {
+        // do this in next redraw
+        setTimeout(() => {
+          // done loading
+          setIsLoadingBalances(false);
+        });
+
+        // return
+        return finalBalances;
+      }
       // clear the balances
-      setBalances({});
+      return {};
+    },
+    {
+      initialData: {},
+      // refetch every 60s or when refetched
+      staleTime: 60000,
+      refetchInterval: 60000,
+      // background refetch stale data
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      // if we updated this in another tab we will want to update again now
+      refetchOnWindowFocus: true,
+      refetchIntervalInBackground: true,
     }
-  }, [chainId, tokens, client, multicall, manuallyResetBalances]);
+  );
 
   // set the loading state for the TransactionPanel
   useEffect(() => {
@@ -973,7 +998,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       l2FeeData,
       actualGasFee,
       isLoadingFeeData,
-      isLoadingBalances,
+      isLoadingBalances:
+        isLoadingBalances && isFetchingBalances && isRefetchingBalances,
 
       l1Tx,
       ctaPage,
@@ -1046,6 +1072,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     actualGasFee,
     isLoadingFeeData,
     isLoadingBalances,
+    isFetchingBalances,
+    isRefetchingBalances,
 
     l1Tx,
     ctaPage,
@@ -1078,6 +1106,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
     ctaErrorReset,
 
+    resetBalances,
     refetchDepositsPage,
     refetchWithdrawalsPage,
   ]);
