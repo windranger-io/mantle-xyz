@@ -28,7 +28,9 @@ export default function Withdraw() {
   }, [withdrawals]);
 
   const paginated = useMemo(() => {
-    return (withdrawals || []).slice(page * 10, (page + 1) * 10);
+    return (withdrawals || [])
+      .sort((a, b) => b.blockNumber - a.blockNumber)
+      .slice(page * 10, (page + 1) * 10);
   }, [withdrawals, page]);
 
   return (

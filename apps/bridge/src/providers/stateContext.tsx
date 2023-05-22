@@ -318,8 +318,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       {
         chainId,
         destinationToken,
-        isConnected:
-          !!crossChainMessenger && !!multicall?.provider && !!client.address,
+        isConnected: !!crossChainMessenger && !!client.address,
       },
     ],
     async ({ queryKey }) => {
@@ -367,8 +366,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       return false;
     },
     {
-      // cache for 30s
-      cacheTime: 30,
+      // cache forever these shouldnt change
+      cacheTime: Infinity,
     }
   );
 
