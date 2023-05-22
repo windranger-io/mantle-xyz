@@ -9,11 +9,12 @@ import StateContext from "@providers/stateContext";
 import clsx from "clsx";
 import Image from "next/image";
 
-import { CHAINS, Direction, MANTLE_TOKEN_LIST, Token } from "@config/constants";
+import { CHAINS, Direction, Token } from "@config/constants";
 import { formatBigNumberString } from "@utils/formatStrings";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
 import DirectionLabel from "@components/DirectionLabel";
+import { MantleLogo } from "./MantleLogo";
 
 export default function TokenSelect({
   direction,
@@ -45,18 +46,7 @@ export default function TokenSelect({
     <div className="py-6">
       <DirectionLabel
         direction="From"
-        logo={
-          direction === Direction.Deposit ? (
-            <SiEthereum />
-          ) : (
-            <Image
-              alt="Mantle logo"
-              src={MANTLE_TOKEN_LIST.logoURI}
-              height={16}
-              width={16}
-            />
-          )
-        }
+        logo={direction === Direction.Deposit ? <SiEthereum /> : <MantleLogo />}
         chain={
           direction === Direction.Deposit
             ? CHAINS[5].chainName
