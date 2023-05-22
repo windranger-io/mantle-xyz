@@ -8,7 +8,7 @@ import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { truncateAddress } from "@utils/formatStrings";
-import { CHAINS, Views } from "@config/constants";
+import { CHAINS } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
 import { Button } from "@mantle/ui";
@@ -16,14 +16,14 @@ import { BiError } from "react-icons/bi";
 
 import { useIsChainID } from "@hooks/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/useSwitchToNetwork";
+import Link from "next/link";
 
 function ConnectWallet() {
   // get the currently connected wallet-selected-chain
   const { chain: currentChain } = useNetwork();
 
   // unpack the context
-  const { chainId, client, safeChains, setClient, setView, setSafeChains } =
-    useContext(StateContext);
+  const { chainId, client, safeChains, setClient } = useContext(StateContext);
 
   // check that we're connected to the appropriate chain
   const isGoerliChainID = useIsChainID(5);
@@ -174,14 +174,11 @@ function ConnectWallet() {
           variant="walletConnect"
           size="regular"
           className="flex flex-row items-center gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-pointer"
-          onClick={() => {
-            // router.push("/transactions")
-            setSafeChains([5, 5001]);
-            setView(Views.Transactions);
-          }}
         >
           <Avatar walletAddress="address" />
-          <p className="text-white ">{truncateAddress(client.address)}</p>
+          <Link className="text-white " href="/account/desposit">
+            {truncateAddress(client.address)}
+          </Link>
         </Button>
       ) : (
         ``

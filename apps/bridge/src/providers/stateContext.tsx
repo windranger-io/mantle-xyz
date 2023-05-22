@@ -161,7 +161,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // page toggled chainId (set according to Deposit/Withdraw)
   const [view, setView] = useState(
-    pathName !== "/transactions" ? Views.Default : Views.Transactions
+    pathName?.indexOf("/account") === -1 ? Views.Default : Views.Account
   );
 
   // page toggled chainId (set according to Deposit/Withdraw)
@@ -590,7 +590,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       if (type === Direction.Deposit && destinationToken[type] === "ETH") {
         crossChainMessenger?.estimateGas
           ?.depositETH(destinationTokenAmount || 0, {
-            overrides: { from: client?.address } as any,
+            overrides: { from: client?.address },
           })
           ?.catch((e) => errorHandler(e))
           ?.then((val) => {
@@ -612,7 +612,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
               destinationTokenAmount?.toString() || "0",
               l1Token?.decimals
             ), // if we always use zero the tx doesnt revert, but does everything get called?
-            { overrides: { from: client?.address } as any }
+            { overrides: { from: client?.address } }
           )
           ?.catch((e) => errorHandler(e))
           ?.then((val) => {
@@ -625,7 +625,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       ) {
         crossChainMessenger?.estimateGas
           ?.withdrawETH(destinationTokenAmount || 0, {
-            overrides: { from: client?.address } as any,
+            overrides: { from: client?.address },
           })
           ?.catch((e) => errorHandler(e))
           ?.then((val) => {
@@ -647,7 +647,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
               destinationTokenAmount?.toString() || "0",
               l2Token?.decimals
             ),
-            { overrides: { from: client?.address } as any }
+            { overrides: { from: client?.address } }
           )
           ?.catch((e) => errorHandler(e))
           ?.then((val) => {
@@ -672,9 +672,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // corrent view on page turn
   useEffect(
     () => {
-      if (pathName === "/transactions" && view !== Views.Transactions) {
-        setView(Views.Transactions);
-      } else if (pathName !== "/transactions" && view === Views.Transactions) {
+      if (pathName?.indexOf("/account") === -1 && view === Views.Account) {
         setView(Views.Default);
       }
     },
