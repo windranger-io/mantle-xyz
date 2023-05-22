@@ -152,6 +152,9 @@ export default function TransactionPanel({
 
   return (
     (destinationTokenAmount &&
+      parseUnits(allowance || "-1", selected.decimals).gte(
+        parseUnits(destinationTokenAmount || "0", selected.decimals)
+      ) &&
       ((!isLoadingFeeData && (
         <div className="space-y-3" key="tx-panel-0">
           <div className="flex justify-between">

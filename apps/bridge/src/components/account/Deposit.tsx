@@ -23,7 +23,9 @@ export default function Deposit() {
   }, [deposits]);
 
   const paginated = useMemo(() => {
-    return (deposits || []).slice(page * 10, (page + 1) * 10);
+    return (deposits || [])
+      .sort((a, b) => b.blockNumber - a.blockNumber)
+      .slice(page * 10, (page + 1) * 10);
   }, [deposits, page]);
 
   return (

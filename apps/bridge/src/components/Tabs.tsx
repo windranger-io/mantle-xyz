@@ -63,7 +63,6 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
         setTab(Direction.Deposit);
       }
     },
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [selectedTab]
   );
@@ -273,7 +272,11 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
         ),
         type: "success",
         id: `claims-available`,
-        buttonText: <Link href="/account/withdraw">Go to account</Link>,
+        buttonText: (
+          <Link href="/account/withdraw" scroll>
+            Go to account
+          </Link>
+        ),
         onButtonClick: () => {
           return false;
         },
@@ -297,13 +300,15 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
             selectedIndex={tab === Direction.Deposit ? 0 : 1}
             onChange={(t) => {
               if (t === 0) {
-                router.push("/deposit");
-                setChainId(5);
-                setSafeChains([5]);
+                // setChainId(5);
+                // setSafeChains([5]);
+                // setTab(Direction.Deposit);
+                router.push("/deposit", { forceOptimisticNavigation: true });
               } else {
-                router.push("/withdraw");
-                setChainId(5001);
-                setSafeChains([5001]);
+                // setChainId(5001);
+                // setSafeChains([5001]);
+                // setTab(Direction.Withdraw);
+                router.push("/withdraw", { forceOptimisticNavigation: true });
               }
             }}
           >
