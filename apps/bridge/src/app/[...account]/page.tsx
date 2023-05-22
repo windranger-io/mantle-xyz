@@ -1,4 +1,4 @@
-import Tabs from "@components/transactions/Tabs";
+import Tabs from "@components/account/Tabs";
 
 export default async function Transactions() {
   return (

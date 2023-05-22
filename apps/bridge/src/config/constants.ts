@@ -42,7 +42,7 @@ export const ABSOLUTE_PATH = getBaseUrl();
 // Available views - were serving this as a spa atm
 export enum Views {
   "Default" = 1,
-  "Transactions",
+  "Account",
 }
 
 // Available directions for the transfer to move

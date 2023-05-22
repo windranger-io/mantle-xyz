@@ -146,8 +146,8 @@ export function ToastContainer({ children }: { children: ReactNode }) {
       <FixedToastContainer
         hidden={
           isCTAPageOpen ||
-          pathName === "/transactions" ||
-          view === Views.Transactions
+          pathName?.indexOf("/account") !== -1 ||
+          view === Views.Account
         }
       >
         <AnimatePresence>
