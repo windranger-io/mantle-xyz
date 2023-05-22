@@ -35,7 +35,8 @@
         "TWITTER_ID",
         "TWITTER_SECRET",
         "NEXTAUTH_URL",
-        "NEXTAUTH_SECRET"
+        "NEXTAUTH_SECRET",
+        "GA_TRACKING_ID"
       ],
       "cache": false
     },

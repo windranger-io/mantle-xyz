@@ -6,12 +6,14 @@ import {
   TWITTER_DESC,
   TWITTER_TITLE,
 } from "@config/constants";
+import { GoogleAnalytics } from "@mantle/ui";
 
 export default function Head() {
   return (
     <>
       <title>{APP_NAME}</title>
       <link rel="icon" href="/favicon.ico" />
+      <GoogleAnalytics GA_TRACKING_ID={process.env.GA_TRACKING_ID} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
 
       <meta property="og:type" content="website" />
