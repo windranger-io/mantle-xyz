@@ -9,7 +9,6 @@ import {
   useState,
 } from "react";
 import { goerli, useFeeData, useProvider, useQuery } from "wagmi";
-import { debounce } from "lodash";
 
 import {
   BRIDGE_BACKEND,
@@ -217,9 +216,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // l1Tx assoicated with the current action - we use this to carry the tx between pages (Withdraw -> Withdrawn)
   const [l1Tx, setL1Tx] = useState<MessageLike>();
 
-  // allow the gasEstimate checks to be debounced
-  const gasEstimateRef = useRef<() => void>();
-
   // all token selections from both panes
   const [selectedToken, setSelectedToken] = useState<{
     [Direction.Deposit]: string;
@@ -234,9 +230,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [selectedTokenAmount, setSelectedTokenAmount] = useState<string>("");
   const [destinationTokenAmount, setDestinationTokenAmount] =
     useState<string>("");
-
-  // record the actual gas fee as it becomes available
-  const [actualGasFee, setActualGasFee] = useState<string>("");
 
   // when we're loading the balance data we don't want to show error states
   const [isLoadingBalances, setIsLoadingBalances] = useState(false);
@@ -486,7 +479,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     [chainId, l1FeeData, l2FeeData]
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // fetch the allowance for the selected token on the selected chain
   const { data: allowance, refetch: resetAllowance } = useQuery(
     [
       "ALLOWANCE_CHECK",
@@ -494,6 +487,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
         address: client?.address,
         chainId,
         bridgeAddress,
+        selectedToken,
         multicall: multicall.current?.network.name,
       },
     ],
@@ -579,95 +573,117 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     }
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const gasEstimate = () => {
-    const type = chainId === 5 ? Direction.Deposit : Direction.Withdraw;
+  // fetch the gas estimate for the selected operation on in the selected direction
+  const { data: actualGasFee, refetch: resetGasEstimate } = useQuery(
+    [
+      "GAS_ESTIMATE",
+      {
+        chainId,
+        address: client?.address,
+        selectedToken:
+          selectedToken[chainId === 5 ? Direction.Deposit : Direction.Withdraw],
+        destinationToken:
+          destinationToken[
+            chainId === 5 ? Direction.Deposit : Direction.Withdraw
+          ],
+        bridgeAddress,
+        destinationTokenAmount,
+      },
+    ],
+    async () => {
+      const type = chainId === 5 ? Direction.Deposit : Direction.Withdraw;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const errorHandler = (_e: any) => {
-      // invalid state - gas price or 0?
-      // return formatUnits(feeData.data?.gasPrice || "0", "gwei")
-      //   ?.toString()
-      //   .toString();
-      return formatUnits("0", "gwei")?.toString().toString();
-    };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const errorHandler = (_e: any) => {
+        // invalid state - 0 the gas price
+        return formatUnits("0", "gwei")?.toString();
+      };
 
-    if (selectedToken[type] && destinationToken[type] && crossChainMessenger) {
-      if (type === Direction.Deposit && destinationToken[type] === "ETH") {
-        crossChainMessenger?.estimateGas
-          ?.depositETH(destinationTokenAmount || 0, {
-            overrides: { from: client?.address },
-          })
-          ?.catch((e) => errorHandler(e))
-          ?.then((val) => {
-            // console.log(val.toString());
-            setActualGasFee(val.toString());
-          });
-      } else if (type === Direction.Deposit) {
+      if (
+        selectedToken[type] &&
+        destinationToken[type] &&
+        crossChainMessenger
+      ) {
+        if (type === Direction.Deposit && destinationToken[type] === "ETH") {
+          return crossChainMessenger?.estimateGas
+            ?.depositETH(destinationTokenAmount || 0, {
+              overrides: { from: client?.address },
+            })
+            ?.catch((e) => errorHandler(e))
+            ?.then((val) => {
+              // console.log(val.toString());
+              return val.toString();
+            });
+        }
+        if (type === Direction.Withdraw && destinationToken[type] === "ETH") {
+          return crossChainMessenger?.estimateGas
+            ?.withdrawETH(destinationTokenAmount || 0, {
+              overrides: { from: client?.address },
+            })
+            ?.catch((e) => errorHandler(e))
+            ?.then((val) => {
+              // console.log(val.toString());
+              return val.toString();
+            });
+        }
         const l1Token = MANTLE_TOKEN_LIST.tokens.find((v) => {
           return selectedToken[type] === v.name && v.chainId === 5;
         });
         const l2Token = MANTLE_TOKEN_LIST.tokens.find((v) => {
           return destinationToken[type] === v.name && v.chainId === 5001;
         });
-        crossChainMessenger?.estimateGas
-          ?.depositERC20(
-            l1Token!.address,
-            l2Token!.address,
-            parseUnits(
-              destinationTokenAmount?.toString() || "0",
-              l1Token?.decimals
-            ), // if we always use zero the tx doesnt revert, but does everything get called?
-            { overrides: { from: client?.address } }
-          )
-          ?.catch((e) => errorHandler(e))
-          ?.then((val) => {
-            // console.log(val.toString());
-            setActualGasFee(val.toString());
-          });
-      } else if (
-        type === Direction.Withdraw &&
-        destinationToken[type] === "ETH"
-      ) {
-        crossChainMessenger?.estimateGas
-          ?.withdrawETH(destinationTokenAmount || 0, {
-            overrides: { from: client?.address },
-          })
-          ?.catch((e) => errorHandler(e))
-          ?.then((val) => {
-            // console.log(val.toString());
-            setActualGasFee(val.toString());
-          });
-      } else if (type === Direction.Withdraw) {
-        const l1Token = MANTLE_TOKEN_LIST.tokens.find((v) => {
-          return destinationToken[type] === v.name && v.chainId === 5;
-        });
-        const l2Token = MANTLE_TOKEN_LIST.tokens.find((v) => {
-          return selectedToken[type] === v.name && v.chainId === 5001;
-        });
-        crossChainMessenger?.estimateGas
-          ?.withdrawERC20(
-            l1Token!.address,
-            l2Token!.address,
-            parseUnits(
-              destinationTokenAmount?.toString() || "0",
-              l2Token?.decimals
-            ),
-            { overrides: { from: client?.address } }
-          )
-          ?.catch((e) => errorHandler(e))
-          ?.then((val) => {
-            setActualGasFee(val.toString());
-          });
+        if (type === Direction.Deposit) {
+          return crossChainMessenger?.estimateGas
+            ?.depositERC20(
+              l1Token!.address,
+              l2Token!.address,
+              parseUnits(
+                destinationTokenAmount?.toString() || "0",
+                l1Token?.decimals
+              ), // if we always use zero the tx doesnt revert, but does everything get called?
+              { overrides: { from: client?.address } }
+            )
+            ?.catch((e) => errorHandler(e))
+            ?.then((val) => {
+              // console.log(val.toString());
+              return val.toString();
+            });
+        }
+        if (type === Direction.Withdraw) {
+          return crossChainMessenger?.estimateGas
+            ?.withdrawERC20(
+              l1Token!.address,
+              l2Token!.address,
+              parseUnits(
+                destinationTokenAmount?.toString() || "0",
+                l2Token?.decimals
+              ),
+              { overrides: { from: client?.address } }
+            )
+            ?.catch((e) => errorHandler(e))
+            ?.then((val) => {
+              return val.toString();
+            });
+        }
       }
-    }
-  };
 
-  // debounce the current callback assigned to gasEstimateRef
-  const doGasEstimateWithDebounce = useMemo(() => {
-    const callback = () => gasEstimateRef.current?.();
-    return debounce(callback, 100);
-  }, []);
+      // not estimating with a good setup show error state
+      return formatUnits("0", "gwei")?.toString();
+    },
+    {
+      // show infinity while loading...
+      initialData: `${formatUnits(constants.MaxUint256.toString(), "gwei")}`,
+      // refetch every 60s or when refetched
+      staleTime: 60000,
+      refetchInterval: 60000,
+      // background refetch stale data
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      // if we updated this in another tab we will want to update again now
+      refetchOnWindowFocus: true,
+      refetchIntervalInBackground: true,
+    }
+  );
 
   // corrent view on page turn
   useEffect(
@@ -684,27 +700,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     isCTAPageOpenRef.current = isCTAPageOpen;
   }, [isCTAPageOpen]);
-
-  useEffect(() => {
-    gasEstimateRef.current = gasEstimate;
-  }, [gasEstimate]);
-
-  useEffect(
-    // we only want to perform this action once per change in params
-    doGasEstimateWithDebounce,
-    // reperform the gas-estimate if anything changes...
-    [
-      chainId,
-      client.address,
-      selectedToken,
-      destinationToken,
-      destinationTokenAmount,
-      feeData.data?.gasPrice,
-      crossChainMessenger,
-      // only required one...
-      doGasEstimateWithDebounce,
-    ]
-  );
 
   // make sure the multicall contract in the current context is assigned to the current network
   useEffect(() => {
@@ -874,7 +869,28 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     resetAllowance();
     resetBalances();
-  }, [client.address, multicall, bridgeAddress, resetAllowance, resetBalances]);
+  }, [
+    chainId,
+    client?.address,
+    selectedToken,
+    multicall,
+    bridgeAddress,
+    resetAllowance,
+    resetBalances,
+  ]);
+
+  // reset the gas estimate every time we make a change
+  useEffect(() => {
+    resetGasEstimate();
+  }, [
+    chainId,
+    client?.address,
+    selectedToken,
+    destinationToken,
+    bridgeAddress,
+    destinationTokenAmount,
+    resetGasEstimate,
+  ]);
 
   // combine everything into a context provider
   const context = useMemo(() => {

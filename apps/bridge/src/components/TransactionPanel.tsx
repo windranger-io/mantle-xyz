@@ -51,6 +51,15 @@ export default function TransactionPanel({
     [allowance]
   );
 
+  // only update on allowance change to maintain the correct decimals against constants if infinity
+  const isActualGasFeeInfinity = useMemo(
+    () => {
+      return constants.MaxUint256.eq(parseUnits(actualGasFee || "0", "gwei"));
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [actualGasFee]
+  );
+
   // check that we're connected to the appropriate chain
   const isGoerliChainID = useIsChainID(5);
   const isMantleChainID = useIsChainID(5001);
@@ -85,7 +94,11 @@ export default function TransactionPanel({
           title={
             parseInt(actualGasFee || "0", 10) === 0
               ? "This transaction will fail, check approved allowance"
-              : `${actualGasFee || 0} GWEI`
+              : `${
+                  isActualGasFeeInfinity
+                    ? Infinity.toLocaleString()
+                    : actualGasFee || 0
+                } GWEI`
           }
         >
           <Typography variant="smallWidget">Gas fee</Typography>
@@ -98,7 +111,12 @@ export default function TransactionPanel({
             }
           >
             <>
-              {formatEther(parseUnits(actualGasFee || "0", "gwei") || "0")} ETH
+              {isActualGasFeeInfinity
+                ? Infinity.toLocaleString()
+                : formatEther(
+                    parseUnits(actualGasFee || "0", "gwei") || "0"
+                  )}{" "}
+              ETH
             </>
           </Typography>
         </div>,
@@ -111,7 +129,11 @@ export default function TransactionPanel({
           title={
             parseInt(actualGasFee || "0", 10) === 0
               ? "This transaction will fail, withdrawal amount must not exceed your balance"
-              : `${actualGasFee || 0} GWEI`
+              : `${
+                  isActualGasFeeInfinity
+                    ? Infinity.toLocaleString()
+                    : actualGasFee || 0
+                } GWEI`
           }
         >
           <Typography variant="smallWidget">Gas fee to initiate</Typography>
@@ -124,7 +146,12 @@ export default function TransactionPanel({
             }
           >
             <>
-              {formatEther(parseUnits(actualGasFee || "0", "gwei") || "0")} BIT
+              {isActualGasFeeInfinity
+                ? Infinity.toLocaleString()
+                : formatEther(
+                    parseUnits(actualGasFee || "0", "gwei") || "0"
+                  )}{" "}
+              BIT
             </>
           </Typography>
         </div>,
@@ -174,11 +201,15 @@ export default function TransactionPanel({
     actualGasFee,
     feeData.data?.gasPrice,
     l1FeeData.data?.gasPrice,
+    isActualGasFeeInfinity,
   ]);
 
   return (
     (isChainID &&
       destinationTokenAmount &&
+      parseUnits(balances[selected.address] || "-1", selected.decimals).gte(
+        parseUnits(destinationTokenAmount || "0", selected.decimals)
+      ) &&
       parseUnits(allowance || "-1", selected.decimals).gte(
         parseUnits(destinationTokenAmount || "0", selected.decimals)
       ) &&
