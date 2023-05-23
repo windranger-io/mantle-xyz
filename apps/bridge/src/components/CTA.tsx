@@ -145,7 +145,7 @@ export default function CTA({
         selected.decimals
       ).lt(parseUnits(destinationTokenAmount || "0", selected.decimals))
     ) {
-      text = "You do not have enough tokens to bridge this amount";
+      text = "You do not have enough funds to bridge this amount";
     } else if (
       parseUnits(allowance || "-1", selected.decimals).lt(
         parseUnits(destinationTokenAmount || "0", selected.decimals)
@@ -259,6 +259,9 @@ export default function CTA({
       {/* <hr className="border border-stroke-inputs mt-6 mb-8" /> */}
       {isChainID &&
         !!client.address &&
+        parseUnits(balances[selected.address] || "-1", selected.decimals).gte(
+          parseUnits(destinationTokenAmount || "0", selected.decimals)
+        ) &&
         parseUnits(allowance || "-1", selected.decimals).gte(
           parseUnits(destinationTokenAmount || "0", selected.decimals)
         ) &&
