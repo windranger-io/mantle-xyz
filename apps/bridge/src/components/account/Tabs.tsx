@@ -74,8 +74,9 @@ export default function Tabs() {
           </Typography>
           <Typography variant="modalHeading" className="text-white w-auto pt-1">
             <Link
-              className="text-white "
+              className="text-white"
               href={`/${chainId === 5 ? "deposit" : "withdraw"}`}
+              shallow
             >
               <MdClear className="cursor-pointer" />
             </Link>
