@@ -5,7 +5,7 @@ import {
   Token,
 } from "@config/constants";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import StateContext from "@providers/stateContext";
 
@@ -25,6 +25,7 @@ import Values from "@components/Values";
 import { ToastProps, useToast } from "@hooks/useToast";
 import { useWaitForRelay } from "@hooks/useWaitForRelay";
 import { timeout } from "@utils/tools";
+import { constants } from "ethers";
 
 class TxError extends Error {
   receipt: TransactionReceipt | TransactionResponse;
@@ -88,6 +89,15 @@ export default function CTAPageDefault({
     direction,
     setCTAStatus,
   });
+
+  // only update on allowance change to maintain the correct decimals against constants if infinity
+  const isActualGasFeeInfinity = useMemo(
+    () => {
+      return constants.MaxUint256.eq(parseUnits(actualGasFee || "0", "gwei"));
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [actualGasFee]
+  );
 
   // convert the enum direction to a string (but retain strict typings for Deposit | Withdraw)
   const directionString = Direction[direction] as keyof typeof Direction;
@@ -444,14 +454,22 @@ export default function CTAPageDefault({
         {direction === Direction.Deposit && (
           <Values
             label="Expected gas fee"
-            value={`${formatUnits(parseUnits(actualGasFee, "gwei"), 18)} ETH`}
+            value={`${
+              isActualGasFeeInfinity
+                ? Infinity.toLocaleString()
+                : formatUnits(parseUnits(actualGasFee, "gwei"), 18)
+            } ETH`}
             border={false}
           />
         )}
         {direction === Direction.Withdraw && (
           <Values
             label="Gas fee to initiate"
-            value={`${formatUnits(parseUnits(actualGasFee, "gwei"), 18)} BIT`}
+            value={`${
+              isActualGasFeeInfinity
+                ? Infinity.toLocaleString()
+                : formatUnits(parseUnits(actualGasFee, "gwei"), 18)
+            } BIT`}
             border
           />
         )}
