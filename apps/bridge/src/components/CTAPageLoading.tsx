@@ -36,9 +36,9 @@ export default function CTAPageLoading({
       </span>
       <div className="flex items-center justify-center py-4">
         <Image
-          src="/preloader_animation.gif"
-          width="40"
-          height="40"
+          src="/preloader_animation_160.gif"
+          width="80"
+          height="80"
           alt="Mantle loading wheel"
         />
       </div>

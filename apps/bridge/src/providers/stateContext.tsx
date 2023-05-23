@@ -8,12 +8,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { goerli, useFeeData, useProvider, useQuery } from "wagmi";
+import { useProvider, useQuery } from "wagmi";
 
 import {
   BRIDGE_BACKEND,
   CTAPages,
   Direction,
+  GOERLI_CHAIN,
   HISTORY_ITEMS_PER_PAGE,
   MANTLE_TESTNET_CHAIN,
   MANTLE_TOKEN_LIST,
@@ -125,6 +126,7 @@ export type StateProps = {
   hasPendings: boolean;
   depositsPage: number;
   withdrawalsPage: number;
+  hasClosedClaims: boolean;
   isLoadingDeposits: boolean;
   isLoadingWithdrawals: boolean;
 
@@ -153,6 +155,7 @@ export type StateProps = {
   setDestinationToken: (type: Direction, value: string) => void;
   setSelectedTokenAmount: (amount?: string) => void;
   setDestinationTokenAmount: (amount: string) => void;
+  setHasClosedClaims: (closed: boolean) => void;
 };
 
 // create a context to bind the provider to
@@ -175,6 +178,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // get the provider for the chosen chain
   const provider = useProvider({ chainId });
+
+  // get providers
+  const goerliProvider = useProvider({ chainId: GOERLI_CHAIN.id });
+  const mantleProvider = useProvider({ chainId: MANTLE_TESTNET_CHAIN.id });
 
   // we'll use the crossChainMessenger here to estimate gas costs
   const { crossChainMessenger, getMessageStatus } = useMantleSDK();
@@ -205,6 +212,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [ctaStatus, setCTAStatus] = useState<string | boolean>(false);
   // allow resets to start waiting for the bridge tx after network failure
   const ctaErrorReset = useRef<(() => void | boolean) | undefined>();
+
+  // record if the hasClaims notif is closed so that we dont re-open it again every page turn
+  const [hasClosedClaims, setHasClosedClaims] = useState(false);
 
   // txHashes associated with the current action
   const [l1TxHash, setL1TxHash] = useState<string | boolean>(false);
@@ -395,7 +405,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       },
       {
         enabled: !!client.address && !!withdrawalsUrl && !!getMessageStatus,
-        cacheTime: 30,
+        cacheTime: 30000,
       }
     );
 
@@ -439,7 +449,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
         return data.items;
       },
-      { enabled: !!client.address && !!depositsUrl, cacheTime: 30 }
+      { enabled: !!client.address && !!depositsUrl, cacheTime: 30000 }
     );
 
   // does the user have claims available?
@@ -458,24 +468,68 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   }, [withdrawals]);
 
   // get current gas fees for L1
-  const l1FeeData = useFeeData({
-    chainId: goerli.id,
-    formatUnits: "wei",
-    cacheTime: 30,
-  });
+  const { data: l1FeeData, refetch: refetchL1FeeData } = useQuery(
+    ["L1_FEE_DATA", { goerliProvider: goerliProvider?.network.name }],
+    async () => {
+      return {
+        data: {
+          gasPrice: await goerliProvider.getGasPrice(),
+        },
+      };
+    },
+    {
+      initialData: {
+        data: {
+          gasPrice: BigNumber.from("0"),
+        },
+      },
+      // cache for 5 mins
+      cacheTime: 300000,
+      // refetch every 60s or when refetched
+      staleTime: 60000,
+      refetchInterval: 60000,
+      // background refetch stale data
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: true,
+      refetchIntervalInBackground: true,
+    }
+  );
 
   // get current gas fees for l2
-  const l2FeeData = useFeeData({
-    chainId: MANTLE_TESTNET_CHAIN.id,
-    formatUnits: "wei",
-    cacheTime: 30,
-  });
+  const { data: l2FeeData, refetch: refetchL2FeeData } = useQuery(
+    ["L2_FEE_DATA", { mantleProvider: mantleProvider?.network.name }],
+    async () => {
+      return {
+        data: {
+          gasPrice: await mantleProvider.getGasPrice(),
+        },
+      };
+    },
+    {
+      initialData: {
+        data: {
+          gasPrice: BigNumber.from("0"),
+        },
+      },
+      // cache for 5 mins
+      cacheTime: 300000,
+      // refetch every 60s or when refetched
+      staleTime: 60000,
+      refetchInterval: 60000,
+      // background refetch stale data
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: true,
+      refetchIntervalInBackground: true,
+    }
+  );
 
   // get current gas fees on selected network
   const feeData = useMemo(
     () =>
       // return the selected chains feeData as default
-      chainId === goerli.id ? l1FeeData : l2FeeData,
+      chainId === GOERLI_CHAIN.id ? l1FeeData : l2FeeData,
     [chainId, l1FeeData, l2FeeData]
   );
 
@@ -567,7 +621,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       // background refetch stale data
       refetchOnMount: true,
       refetchOnReconnect: true,
-      // if we updated this in another tab we will want to update again now
       refetchOnWindowFocus: true,
       refetchIntervalInBackground: true,
     }
@@ -679,7 +732,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       // background refetch stale data
       refetchOnMount: true,
       refetchOnReconnect: true,
-      // if we updated this in another tab we will want to update again now
       refetchOnWindowFocus: true,
       refetchIntervalInBackground: true,
     }
@@ -832,7 +884,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       // background refetch stale data
       refetchOnMount: true,
       refetchOnReconnect: true,
-      // if we updated this in another tab we will want to update again now
       refetchOnWindowFocus: true,
       refetchIntervalInBackground: true,
     }
@@ -869,6 +920,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     resetAllowance();
     resetBalances();
+    refetchL1FeeData();
+    refetchL2FeeData();
   }, [
     chainId,
     client?.address,
@@ -877,6 +930,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     bridgeAddress,
     resetAllowance,
     resetBalances,
+    refetchL1FeeData,
+    refetchL2FeeData,
   ]);
 
   // reset the gas estimate every time we make a change
@@ -1029,6 +1084,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       withdrawalStatuses,
       isLoadingDeposits,
       isLoadingWithdrawals,
+      hasClosedClaims,
 
       tokens,
       balances,
@@ -1059,6 +1115,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setL2TxHash,
       setCTAStatus,
       setIsCTAPageOpen,
+      setHasClosedClaims,
 
       setSelectedTokenAmount,
       setDestinationTokenAmount,
@@ -1102,6 +1159,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     withdrawalsPage,
     isLoadingDeposits,
     isLoadingWithdrawals,
+    hasClosedClaims,
 
     tokens,
     balances,

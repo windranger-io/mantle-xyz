@@ -177,17 +177,17 @@ function ConnectWallet() {
   return (
     <div className="flex flex-row gap-4">
       {isChainID && client.isConnected && client.address ? (
-        <Button
-          type="button"
-          variant="walletConnect"
-          size="regular"
-          className="flex flex-row items-center gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-pointer"
-        >
-          <Avatar walletAddress="address" />
-          <Link className="text-white " href="/account/desposit" scroll shallow>
+        <Link href="/account/desposit" scroll shallow>
+          <Button
+            type="button"
+            variant="walletConnect"
+            size="regular"
+            className="flex flex-row items-center text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-pointer"
+          >
+            <Avatar walletAddress="address" />
             {truncateAddress(client.address)}
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       ) : (
         ``
       )}
