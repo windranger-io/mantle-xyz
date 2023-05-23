@@ -8,7 +8,7 @@ import { useToast } from "@hooks/useToast";
 import StateContext from "@providers/stateContext";
 
 import { Tab } from "@headlessui/react";
-import { SimpleCard } from "@mantle/ui";
+import { Button, SimpleCard } from "@mantle/ui";
 
 import { Direction, MANTLE_TOKEN_LIST, Views } from "@config/constants";
 
@@ -29,9 +29,11 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
     destinationToken,
     isCTAPageOpen,
     hasClaims,
+    hasClosedClaims,
     setChainId,
     setSafeChains,
     setIsCTAPageOpen,
+    setHasClosedClaims,
   } = useContext(StateContext);
 
   const router = useRouter();
@@ -129,7 +131,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
   }, [chainId, selected, destination, setIsCTAPageOpen]);
 
   useEffect(() => {
-    if (hasClaims) {
+    if (hasClaims && !hasClosedClaims) {
       updateToast({
         borderLeft: "bg-green-600",
         content: (
@@ -272,17 +274,25 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
         ),
         type: "success",
         id: `claims-available`,
-        buttonText: (
-          <Link href="/account/withdraw" scroll shallow>
-            Go to account
-          </Link>
-        ),
-        onButtonClick: () => {
-          return false;
+        // eslint-disable-next-line react/no-unstable-nested-components
+        buttonText: function ButtonText() {
+          return (
+            <Link
+              href="/account/withdraw"
+              onClick={(e) => {
+                setHasClosedClaims(true);
+                e.stopPropagation();
+              }}
+              scroll
+              shallow
+            >
+              <Button variant="primary">Go to account</Button>
+            </Link>
+          );
         },
       });
     }
-  }, [hasClaims, updateToast]);
+  }, [hasClaims, hasClosedClaims, updateToast, setHasClosedClaims]);
 
   return (
     (view === Views.Default &&

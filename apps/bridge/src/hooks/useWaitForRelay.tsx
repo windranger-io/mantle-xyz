@@ -32,6 +32,7 @@ export function useWaitForRelay({
     ctaPageRef,
     l1TxHashRef,
     l2TxHashRef,
+    setSafeChains,
     resetAllowance,
     resetBalances,
     setL1Tx,
@@ -228,6 +229,8 @@ export function useWaitForRelay({
             if (l1TxHashRef.current === txHash) {
               // refetch to mark the claim available
               refetchWithdrawals();
+              // set safeChains until we complete this tx because we'll be in a valid state on either chain
+              setSafeChains([5, 5001]);
               // message has been relayed move to the claim page
               setCTAPage(CTAPages.Withdraw);
             }
@@ -250,6 +253,8 @@ export function useWaitForRelay({
                 setL2TxHash(false);
                 setCTAPage(CTAPages.Withdraw);
                 setIsCTAPageOpen(true);
+                // set safeChains until we complete this tx
+                setSafeChains([5, 5001]);
                 // mark open now
                 isOpenRef.current = true;
 

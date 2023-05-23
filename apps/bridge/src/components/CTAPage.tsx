@@ -29,6 +29,7 @@ export default function CTAPage({
   setIsOpen: (isOpen: boolean) => void;
 }) {
   const {
+    chainId,
     l1Tx,
     l1TxHash,
     l2TxHash,
@@ -38,6 +39,7 @@ export default function CTAPage({
     setCTAStatus,
     setL1TxHash,
     setL2TxHash,
+    setSafeChains,
     isCTAPageOpenRef: isOpenRef,
   } = useContext(StateContext);
 
@@ -49,6 +51,8 @@ export default function CTAPage({
     setCTAStatus(false);
     // return to the default page
     setCTAPage(CTAPages.Default);
+    // restore safeChains to selected chain
+    setSafeChains([chainId]);
   };
 
   const closeModalAndReset = () => {

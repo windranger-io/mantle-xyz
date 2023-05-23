@@ -11,7 +11,7 @@ export type ToastProps = {
   onClose: (id: string) => void;
   type?: "success" | "error" | "onGoing";
   borderLeft?: string;
-  buttonText?: ReactNode;
+  buttonText?: ReactNode | (() => JSX.Element);
   onButtonClick?: false | ((e: React.MouseEvent<HTMLElement>) => boolean);
 };
 
