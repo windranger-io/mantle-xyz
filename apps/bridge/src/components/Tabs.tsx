@@ -273,7 +273,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
         type: "success",
         id: `claims-available`,
         buttonText: (
-          <Link href="/account/withdraw" scroll>
+          <Link href="/account/withdraw" scroll shallow>
             Go to account
           </Link>
         ),

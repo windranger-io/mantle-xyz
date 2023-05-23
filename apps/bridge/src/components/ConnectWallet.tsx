@@ -184,7 +184,7 @@ function ConnectWallet() {
           className="flex flex-row items-center gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-pointer"
         >
           <Avatar walletAddress="address" />
-          <Link className="text-white " href="/account/desposit" scroll>
+          <Link className="text-white " href="/account/desposit" scroll shallow>
             {truncateAddress(client.address)}
           </Link>
         </Button>
