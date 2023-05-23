@@ -12,7 +12,7 @@ import {
 } from "@config/constants";
 
 import { formatEther, formatUnits, parseUnits } from "ethers/lib/utils.js";
-import { constants } from "ethers";
+import { BigNumber, constants } from "ethers";
 import { formatBigNumberString } from "@utils/formatStrings";
 import { useIsChainID } from "@hooks/useIsChainID";
 
@@ -165,10 +165,9 @@ export default function TransactionPanel({
                   parseInt(actualGasFee || "0", 10) === 0
                     ? "0.0"
                     : `~${formatUnits(
-                        parseUnits(
-                          l1FeeData.data?.gasPrice?.toString() || "0",
-                          "wei"
-                        )?.mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) || "0",
+                        BigNumber.from(
+                          l1FeeData.data?.gasPrice?.toString() || "0"
+                        ).mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) || "0",
                         "gwei"
                       )}`
                 } GWEI`
@@ -186,10 +185,9 @@ export default function TransactionPanel({
             {parseInt(actualGasFee || "0", 10) === 0
               ? "0.0"
               : `~${formatEther(
-                  parseUnits(
-                    l1FeeData.data?.gasPrice?.toString() || "0",
-                    "wei"
-                  )?.mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) || "0"
+                  BigNumber.from(l1FeeData.data?.gasPrice || "0").mul(
+                    HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS
+                  ) || "0"
                 )}`}{" "}
             ETH
           </Typography>

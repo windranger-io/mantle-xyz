@@ -75,7 +75,7 @@ export function ToastBody({
 export function Toast({
   content,
   onButtonClick,
-  buttonText,
+  buttonText: ButtonText,
   borderLeft,
   type,
   onClose,
@@ -97,20 +97,24 @@ export function Toast({
       onClick={(e) => handleClose(e)}
     >
       <span className="truncate">{content}</span>
-      <Button
-        variant="primary"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
+      {typeof ButtonText === "function" ? (
+        <ButtonText />
+      ) : (
+        <Button
+          variant="primary"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
 
-          // return button event chain (should we close it?)
-          return onButtonClick
-            ? onButtonClick(e) && type !== "onGoing" && handleClose(e)
-            : type !== "onGoing" && handleClose(e);
-        }}
-      >
-        {buttonText || "Close"}
-      </Button>
+            // return button event chain (should we close it?)
+            return onButtonClick
+              ? onButtonClick(e) && type !== "onGoing" && handleClose(e)
+              : type !== "onGoing" && handleClose(e);
+          }}
+        >
+          {ButtonText || "Close"}
+        </Button>
+      )}
     </ToastBody>
   );
 }
