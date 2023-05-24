@@ -10,7 +10,13 @@ import StateContext from "@providers/stateContext";
 import { Tab } from "@headlessui/react";
 import { Button, SimpleCard } from "@mantle/ui";
 
-import { Direction, MANTLE_TOKEN_LIST, Views } from "@config/constants";
+import {
+  Direction,
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
+  MANTLE_TOKEN_LIST,
+  Views,
+} from "@config/constants";
 
 import Deposit from "@components/Deposit";
 import Withdraw from "@components/Withdraw";
@@ -48,7 +54,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
   // on first load
   useEffect(
     () => {
-      // this will deisable the incorrect network check (but still display if not 5 or 5001)
+      // this will deisable the incorrect network check (but still display if not L1 or L2 chainId)
       setSafeChains([chainId]);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,10 +64,10 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
   useEffect(
     () => {
       if (selectedTab === Direction.Withdraw) {
-        setChainId(5001);
+        setChainId(L2_CHAIN_ID);
         setTab(Direction.Withdraw);
       } else {
-        setChainId(5);
+        setChainId(L1_CHAIN_ID);
         setTab(Direction.Deposit);
       }
     },
@@ -75,9 +81,9 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
       MANTLE_TOKEN_LIST.tokens.find(
         (v) =>
           selectedToken[
-            chainId === 5 ? Direction.Deposit : Direction.Withdraw
+            chainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw
           ] === v.name && v.chainId === chainId
-      ) || MANTLE_TOKEN_LIST.tokens[chainId === 5 ? 0 : 1],
+      ) || MANTLE_TOKEN_LIST.tokens[chainId === L1_CHAIN_ID ? 0 : 1],
     [chainId, selectedToken]
   );
 
@@ -87,9 +93,10 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
       MANTLE_TOKEN_LIST.tokens.find(
         (v) =>
           destinationToken[
-            chainId === 5 ? Direction.Deposit : Direction.Withdraw
-          ] === v.name && v.chainId === (chainId === 5 ? 5001 : 5)
-      ) || MANTLE_TOKEN_LIST.tokens[chainId === 5 ? 1 : 0],
+            chainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw
+          ] === v.name &&
+          v.chainId === (chainId === L1_CHAIN_ID ? L2_CHAIN_ID : L1_CHAIN_ID)
+      ) || MANTLE_TOKEN_LIST.tokens[chainId === L1_CHAIN_ID ? 1 : 0],
 
     [chainId, destinationToken]
   );
@@ -298,7 +305,9 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
     (view === Views.Default &&
       ((isCTAPageOpen && (
         <CTAPage
-          direction={chainId === 5 ? Direction.Deposit : Direction.Withdraw}
+          direction={
+            chainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw
+          }
           selected={selected}
           destination={destination}
           isOpen={isCTAPageOpen}
@@ -310,13 +319,13 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
             selectedIndex={tab === Direction.Deposit ? 0 : 1}
             onChange={(t) => {
               if (t === 0) {
-                // setChainId(5);
-                // setSafeChains([5]);
+                // setChainId(L1_CHAIN_ID);
+                // setSafeChains([L1_CHAIN_ID]);
                 // setTab(Direction.Deposit);
                 router.push("/deposit", { forceOptimisticNavigation: true });
               } else {
-                // setChainId(5001);
-                // setSafeChains([5001]);
+                // setChainId(L2_CHAIN_ID);
+                // setSafeChains([L2_CHAIN_ID]);
                 // setTab(Direction.Withdraw);
                 router.push("/withdraw", { forceOptimisticNavigation: true });
               }

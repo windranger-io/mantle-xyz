@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import StateContext from "@providers/stateContext";
 
-import { MANTLE_TESTNET_CHAIN, Direction } from "@config/constants";
+import { Direction, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 import { useSwitchToNetwork } from "@hooks/useSwitchToNetwork";
 
 import { Button, Typography } from "@mantle/ui";
@@ -16,7 +16,8 @@ export default function CTAPageError({
 }) {
   const { ctaChainId: chainId, ctaErrorReset } = useContext(StateContext);
 
-  const direction = chainId === 5 ? Direction.Deposit : Direction.Withdraw;
+  const direction =
+    chainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw;
 
   const { addNetwork } = useSwitchToNetwork();
 
@@ -53,7 +54,7 @@ export default function CTAPageError({
             type="button"
             size="full"
             className="h-14 flex flex-row gap-4 text-center items-center justify-center my-4"
-            onClick={() => addNetwork(MANTLE_TESTNET_CHAIN.id)}
+            onClick={() => addNetwork(L2_CHAIN_ID)}
           >
             <svg
               width="27"

@@ -9,7 +9,13 @@ import StateContext from "@providers/stateContext";
 import clsx from "clsx";
 import Image from "next/image";
 
-import { CHAINS, Direction, Token } from "@config/constants";
+import {
+  Token,
+  Direction,
+  CHAINS,
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
+} from "@config/constants";
 import { formatBigNumberString } from "@utils/formatStrings";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
@@ -49,8 +55,8 @@ export default function TokenSelect({
         logo={direction === Direction.Deposit ? <SiEthereum /> : <MantleLogo />}
         chain={
           direction === Direction.Deposit
-            ? CHAINS[5].chainName
-            : CHAINS[5001].chainName
+            ? CHAINS[L1_CHAIN_ID].chainName
+            : CHAINS[L2_CHAIN_ID].chainName
         }
       />
       <Listbox

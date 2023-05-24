@@ -8,6 +8,8 @@ import { Typography } from "@mantle/ui";
 import {
   Direction,
   HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS,
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
   Token,
 } from "@config/constants";
 
@@ -61,8 +63,8 @@ export default function TransactionPanel({
   );
 
   // check that we're connected to the appropriate chain
-  const isGoerliChainID = useIsChainID(5);
-  const isMantleChainID = useIsChainID(5001);
+  const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
+  const isMantleChainID = useIsChainID(L2_CHAIN_ID);
 
   // set address with useState to avoid hydration errors
   const [address, setAddress] = useState<`0x${string}`>(client?.address!);
@@ -70,11 +72,11 @@ export default function TransactionPanel({
   // check that the chainId is valid for the selected use-case
   const isChainID = useMemo(() => {
     return (
-      (chainId === 5 && isGoerliChainID) ||
-      (chainId === 5001 && isMantleChainID) ||
+      (chainId === L1_CHAIN_ID && isLayer1ChainID) ||
+      (chainId === L2_CHAIN_ID && isMantleChainID) ||
       !address
     );
-  }, [address, chainId, isGoerliChainID, isMantleChainID]);
+  }, [address, chainId, isLayer1ChainID, isMantleChainID]);
 
   // set wagmi address to address for ssr
   useEffect(() => {

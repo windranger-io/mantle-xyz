@@ -1,7 +1,12 @@
 import { useContext } from "react";
 import StateContext from "@providers/stateContext";
 
-import { Direction } from "@config/constants";
+import {
+  Direction,
+  CHAINS_FORMATTED,
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
+} from "@config/constants";
 
 import Image from "next/image";
 
@@ -21,14 +26,18 @@ export default function CTAPageLoading({
 }) {
   const { ctaChainId: chainId } = useContext(StateContext);
 
-  const direction = chainId === 5 ? Direction.Deposit : Direction.Withdraw;
+  const direction =
+    chainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw;
 
   return (
     <>
       <span className="flex justify-between align-middle">
         <Typography variant="modalHeadingSm" className="text-center w-full">
           {direction === Direction.Deposit ? "Deposit" : "Withdrawal"} is on
-          it’s way to {direction === Direction.Deposit ? "Mantle" : "Goerli"}
+          it’s way to{" "}
+          {direction === Direction.Deposit
+            ? CHAINS_FORMATTED[L2_CHAIN_ID].name
+            : CHAINS_FORMATTED[L1_CHAIN_ID].name}
         </Typography>
         <Typography variant="modalHeading" className="text-white w-auto pt-1">
           <MdClear onClick={closeModal} className="cursor-pointer" />
@@ -44,7 +53,10 @@ export default function CTAPageLoading({
       </div>
       <div className="flex flex-col gap-4">
         <TxLink chainId={chainId} txHash={l1TxHash} />
-        <TxLink chainId={chainId === 5 ? 5001 : 5} txHash={l2TxHash} />
+        <TxLink
+          chainId={chainId === L1_CHAIN_ID ? L2_CHAIN_ID : L1_CHAIN_ID}
+          txHash={l2TxHash}
+        />
       </div>
     </>
   );

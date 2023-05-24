@@ -3,13 +3,16 @@ import {
   HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS,
   CTAPages,
   Token,
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
+  CHAINS_FORMATTED,
 } from "@config/constants";
 
 import { useContext, useEffect, useMemo, useState } from "react";
 
 import StateContext from "@providers/stateContext";
 
-import { goerli, useMutation } from "wagmi"; // useSigner
+import { useMutation } from "wagmi"; // useSigner
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
 import {
@@ -128,12 +131,12 @@ export default function CTAPageDefault({
         // if we've been given a receipt then the tx is already out there...
         if (!givenReceipt) {
           // for each type of interaction...
-          if (chainId === 5 && selected.name === "ETH") {
+          if (chainId === L1_CHAIN_ID && selected.name === "ETH") {
             // depositETH
             receipt = await crossChainMessenger!
               .depositETH(parseUnits(destinationTokenAmount, selected.decimals))
               .catch(errorHandler);
-          } else if (chainId === 5) {
+          } else if (chainId === L1_CHAIN_ID) {
             // depositERC20
             receipt = await crossChainMessenger!
               .depositERC20(
@@ -176,14 +179,15 @@ export default function CTAPageDefault({
           type: "onGoing",
           buttonText: `Restore loading screen`,
           borderLeft:
-            ctaChainId === goerli.id ? "bg-yellow-500" : "bg-blue-600",
+            ctaChainId === L1_CHAIN_ID ? "bg-yellow-500" : "bg-blue-600",
           content: (
             <div>
               <div>
-                {ctaChainId === goerli.id ? "Deposit" : "Withdrawal"} initiated
+                {ctaChainId === L1_CHAIN_ID ? "Deposit" : "Withdrawal"}{" "}
+                initiated
               </div>
               <div className="text-sm">
-                {ctaChainId === goerli.id
+                {ctaChainId === L1_CHAIN_ID
                   ? "Assets will be available on Mantle in ~10 mins"
                   : "Will be available to claim in  ~20mins"}
               </div>
@@ -420,7 +424,9 @@ export default function CTAPageDefault({
   // set the chainId onload
   useEffect(
     () => {
-      setCTAChainId(direction === Direction.Deposit ? 5 : 5001);
+      setCTAChainId(
+        direction === Direction.Deposit ? L1_CHAIN_ID : L2_CHAIN_ID
+      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -510,7 +516,7 @@ export default function CTAPageDefault({
               className="ml-2 text-sm font-medium text-gray-300"
             >
               I understand it will take ~ 20 minutes until my funds are
-              claimable on Goerli Testnet.
+              claimable on {CHAINS_FORMATTED[L1_CHAIN_ID].name}.
             </label>
           </div>
         )}
@@ -530,9 +536,9 @@ export default function CTAPageDefault({
               htmlFor="checkbox-understand-2"
               className="ml-2 text-sm font-medium text-gray-300"
             >
-              I understand that once the funds are claimable Goerli Testnet I
-              will need to send a transaction on L1 (~$ in fees) to receive the
-              funds
+              I understand that once the funds are claimable on{" "}
+              {CHAINS_FORMATTED[L1_CHAIN_ID].name}, I will need to send a second
+              transaction on L1 (~$ in fees) to receive the funds
             </label>
           </div>
         )}
