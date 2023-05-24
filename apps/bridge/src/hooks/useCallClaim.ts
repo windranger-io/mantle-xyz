@@ -1,4 +1,4 @@
-import { CTAPages } from "@config/constants";
+import { CTAPages, L1_CHAIN_ID } from "@config/constants";
 import {
   TransactionResponse,
   TransactionReceipt,
@@ -6,7 +6,7 @@ import {
 import StateContext from "@providers/stateContext";
 import { debounce } from "lodash";
 import { useContext, useState, useRef, useMemo, useEffect } from "react";
-import { useProvider, goerli } from "wagmi";
+import { useProvider } from "wagmi";
 import { MessageLike, MessageReceipt, MessageStatus } from "@mantleio/sdk";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 import { useIsChainID } from "./useIsChainID";
@@ -41,11 +41,11 @@ export function useCallClaim(
   // import crosschain comms
   const { crossChainMessenger, getMessageStatus } = useMantleSDK();
 
-  // pull goerli provider
-  const provider = useProvider({ chainId: goerli.id });
+  // pull l1 provider
+  const provider = useProvider({ chainId: L1_CHAIN_ID });
 
-  // check for goerli connection
-  const isChainId = useIsChainID(goerli.id);
+  // check for l1 connection
+  const isChainId = useIsChainID(L1_CHAIN_ID);
 
   // mark loading between callClaim and the useEffect waiting for the finalizeMessage()
   const [isLoading, setIsLoading] = useState(false);
@@ -180,7 +180,7 @@ export function useCallClaim(
     setIsLoading(true);
     // first step is to ensure we're on the correct network - we break this up because we need the correct signer to finalise the message
     if (l1Tx && !isChainId) {
-      await switchToNetwork(goerli.id).catch(() => {
+      await switchToNetwork(L1_CHAIN_ID).catch(() => {
         setIsLoading(false);
       });
     }

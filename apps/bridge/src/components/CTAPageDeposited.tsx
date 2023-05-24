@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import StateContext from "@providers/stateContext";
 
-import { MANTLE_TESTNET_CHAIN } from "@config/constants";
+import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 import { useSwitchToNetwork } from "@hooks/useSwitchToNetwork";
 
 import { Button, Typography } from "@mantle/ui";
@@ -66,12 +66,12 @@ export default function CTAPageDeposited({
       </div>
       <div className="flex flex-col gap-2">
         <TxLink
-          chainId={chainId === 5 ? 5 : 5001}
-          txHash={chainId === 5 ? l1TxHash : l2TxHash}
+          chainId={chainId === L1_CHAIN_ID ? L1_CHAIN_ID : L2_CHAIN_ID}
+          txHash={chainId === L1_CHAIN_ID ? l1TxHash : l2TxHash}
         />
         <TxLink
-          chainId={chainId === 5 ? 5001 : 5}
-          txHash={chainId === 5 ? l2TxHash : l1TxHash}
+          chainId={chainId === L1_CHAIN_ID ? L2_CHAIN_ID : L1_CHAIN_ID}
+          txHash={chainId === L1_CHAIN_ID ? l2TxHash : l1TxHash}
         />
       </div>
       <div>
@@ -79,7 +79,7 @@ export default function CTAPageDeposited({
           type="button"
           size="full"
           className="h-14 flex flex-row gap-4 text-center items-center justify-center my-4"
-          onClick={() => addNetwork(MANTLE_TESTNET_CHAIN.id)}
+          onClick={() => addNetwork(L2_CHAIN_ID)}
         >
           <svg
             width="27"

@@ -1,6 +1,10 @@
 import { BigNumberish } from "ethers";
 import { Address, Chain } from "wagmi";
 
+// these control which chains we treat as l1/l2 - the rest of the this constants doc will need to be altered for mainnet (we can $ENV most of this)
+export const L1_CHAIN_ID = 5;
+export const L2_CHAIN_ID = 5001;
+
 // Configure the applications name
 export const APP_NAME = "Mantle Testnet Bridge";
 
@@ -84,7 +88,6 @@ export const CHAINS: Record<
       symbol: string;
       decimals: number;
     };
-    bridgeStartBlock: number;
     rpcUrls: string[];
     blockExplorerUrls: string[];
   }
@@ -94,11 +97,10 @@ export const CHAINS: Record<
     chainId: "0x5",
     chainName: "Goerli",
     nativeCurrency: {
-      name: "GoerliETH",
-      symbol: "GoerliETH",
+      name: "ETH",
+      symbol: "ETH",
       decimals: 18,
     },
-    bridgeStartBlock: 8220525,
     rpcUrls: [
       // eslint-disable-next-line @typescript-eslint/dot-notation
       `https://goerli.infura.io/v3/${process.env["NEXT_PUBLIC_INFURA_API_KEY"]}`,
@@ -114,41 +116,41 @@ export const CHAINS: Record<
       symbol: "BIT",
       decimals: 18,
     },
-    bridgeStartBlock: 0,
     rpcUrls: ["https://rpc.testnet.mantle.xyz"],
     blockExplorerUrls: ["https://explorer.testnet.mantle.xyz/"],
   },
 };
 
-export const MANTLE_TESTNET_CHAIN: Chain = {
-  name: CHAINS[5001].chainName,
-  network: CHAINS[5001].chainName,
-  rpcUrls: {
-    default: {
-      http: CHAINS[5001].rpcUrls,
+export const CHAINS_FORMATTED: Record<number, Chain> = {
+  5: {
+    testnet: true,
+    name: CHAINS[5].chainName,
+    network: CHAINS[5].chainName,
+    rpcUrls: {
+      default: {
+        http: CHAINS[5].rpcUrls,
+      },
+      public: {
+        http: CHAINS[5].rpcUrls,
+      },
     },
-    public: {
-      http: CHAINS[5001].rpcUrls,
-    },
+    id: 5,
+    nativeCurrency: CHAINS[5].nativeCurrency,
   },
-  id: 5001,
-  nativeCurrency: CHAINS[5001].nativeCurrency,
-};
-
-export const GOERLI_CHAIN: Chain = {
-  testnet: true,
-  name: CHAINS[5].chainName,
-  network: CHAINS[5].chainName,
-  rpcUrls: {
-    default: {
-      http: CHAINS[5].rpcUrls,
+  5001: {
+    name: CHAINS[5001].chainName,
+    network: CHAINS[5001].chainName,
+    rpcUrls: {
+      default: {
+        http: CHAINS[5001].rpcUrls,
+      },
+      public: {
+        http: CHAINS[5001].rpcUrls,
+      },
     },
-    public: {
-      http: CHAINS[5].rpcUrls,
-    },
+    id: 5001,
+    nativeCurrency: CHAINS[5001].nativeCurrency,
   },
-  id: 5,
-  nativeCurrency: CHAINS[5].nativeCurrency,
 };
 
 export enum ChainID {

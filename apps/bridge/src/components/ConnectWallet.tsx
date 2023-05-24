@@ -8,7 +8,7 @@ import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { truncateAddress } from "@utils/formatStrings";
-import { CHAINS } from "@config/constants";
+import { CHAINS, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
 import { Button } from "@mantle/ui";
@@ -26,8 +26,8 @@ function ConnectWallet() {
   const { chainId, client, safeChains, setClient } = useContext(StateContext);
 
   // check that we're connected to the appropriate chain
-  const isGoerliChainID = useIsChainID(5);
-  const isMantleChainID = useIsChainID(5001);
+  const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
+  const isMantleChainID = useIsChainID(L2_CHAIN_ID);
 
   // set address with useState to avoid hydration errors
   const [address, setAddress] = useState<`0x${string}`>();
@@ -38,15 +38,15 @@ function ConnectWallet() {
       currentChain &&
       ((safeChains.length === 2 &&
         safeChains.indexOf(currentChain.id) !== -1) ||
-        (chainId === 5 && isGoerliChainID) ||
-        (chainId === 5001 && isMantleChainID) ||
+        (chainId === L1_CHAIN_ID && isLayer1ChainID) ||
+        (chainId === L2_CHAIN_ID && isMantleChainID) ||
         !address)
     );
   }, [
     safeChains,
     currentChain,
     chainId,
-    isGoerliChainID,
+    isLayer1ChainID,
     isMantleChainID,
     address,
   ]);
