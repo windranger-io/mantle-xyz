@@ -1,5 +1,5 @@
-// This is used in Toasts to show that we're moving assets from mantle to goerli
-export default function MantleToGoerliSVG() {
+// This is used in Toasts to show that we're moving assets from mantle to L1
+export default function MantleToL1SVG() {
   return (
     <svg
       width="96"

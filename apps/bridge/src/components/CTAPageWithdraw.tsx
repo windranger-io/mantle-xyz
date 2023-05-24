@@ -9,6 +9,7 @@ import { Button, Typography } from "@mantle/ui";
 
 import TxLink from "@components/TxLink";
 import { useCallClaim } from "@hooks/useCallClaim";
+import { CHAINS_FORMATTED, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
 export default function CTAPageWithdraw({
   l1Tx,
@@ -76,13 +77,16 @@ export default function CTAPageWithdraw({
       </Button>
       <div>
         <span className="flex text-center text-md mb-4">
-          Your wallet will prompt you to switch back to Goerli Network to claim
-          your tokens.
+          Your wallet will prompt you to switch back to{" "}
+          {CHAINS_FORMATTED[L1_CHAIN_ID].name} Network to claim your tokens.
         </span>
       </div>
       <div className="flex flex-col gap-4">
         <TxLink chainId={chainId} txHash={l1TxHash} />
-        <TxLink chainId={chainId === 5 ? 5001 : 5} txHash={l2TxHash} />
+        <TxLink
+          chainId={chainId === L1_CHAIN_ID ? L2_CHAIN_ID : L1_CHAIN_ID}
+          txHash={l2TxHash}
+        />
       </div>
     </>
   );

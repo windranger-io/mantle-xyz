@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
 import { SiEthereum } from "react-icons/si";
 
-import { CHAINS, Direction } from "@config/constants";
+import { CHAINS, Direction, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 import DirectionLabel from "@components/DirectionLabel";
 import { MantleLogo } from "./MantleLogo";
 
@@ -15,8 +15,8 @@ export default function Destination({ direction }: { direction: Direction }) {
         }
         chain={`${
           direction === Direction.Withdraw
-            ? CHAINS[5].chainName
-            : CHAINS[5001].chainName
+            ? CHAINS[L1_CHAIN_ID].chainName
+            : CHAINS[L2_CHAIN_ID].chainName
         }`}
       />
     </div>

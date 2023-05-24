@@ -19,8 +19,7 @@ import {
 
 import { ethers } from "ethers";
 
-import { goerli } from "wagmi/chains";
-import { MANTLE_TESTNET_CHAIN } from "@config/constants";
+import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
 import { useSigner, useProvider, useNetwork } from "wagmi";
 import type {
@@ -33,9 +32,6 @@ import type {
 import { withErrorBoundary, useErrorHandler } from "react-error-boundary";
 import ErrorFallback from "@components/ErrorFallback";
 import { hashCrossDomainMessage } from "@mantleio/core-utils";
-
-const GOERLI_CHAIN_ID = goerli.id;
-const MANTLE_CHAIN_ID = MANTLE_TESTNET_CHAIN.id;
 
 type WaitForMessageStatus = (
   message: MessageLike,
@@ -85,38 +81,38 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
 
   // setting providers against refs because we freeze state in a render frame and need to step out
   // of that frame by ref to avoid an "underlying network changed" error if the user switches chain
-  const goerliProviderRef = React.useRef<Provider>();
+  const layer1ProviderRef = React.useRef<Provider>();
   const mantleTestnetRef = React.useRef<Provider>();
 
   // pull all the signers/privders and set handlers and associate boundaries as we go
-  const { data: goerliSigner, error: goerliSignerError } = useSigner({
-    chainId: GOERLI_CHAIN_ID,
+  const { data: layer1Signer, error: layer1SignerError } = useSigner({
+    chainId: L1_CHAIN_ID,
   });
-  useErrorHandler(goerliSignerError);
+  useErrorHandler(layer1SignerError);
   // get an infura backed provider so we can search through more blocks - this enables the full sdk to work
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const goerliProvider = new ethers.providers.InfuraProvider(
-    "goerli",
+  const layer1Provider = new ethers.providers.InfuraProvider(
+    L1_CHAIN_ID,
     // eslint-disable-next-line @typescript-eslint/dot-notation
     process.env["NEXT_PUBLIC_INFURA_API_KEY"]
   );
   const { data: mantleTestnetSigner, error: mantleTestnetSignerError } =
     useSigner({
-      chainId: MANTLE_CHAIN_ID,
+      chainId: L2_CHAIN_ID,
     });
   useErrorHandler(mantleTestnetSignerError);
   const mantleTestnetProvider = useProvider({
-    chainId: MANTLE_CHAIN_ID,
+    chainId: L2_CHAIN_ID,
   });
 
   // construct a crossChainMessenger - this is responsible for nearly all of our web3 interactions
   const crossChainMessenger = React.useMemo(() => {
     if (
-      goerliSigner === undefined ||
-      goerliSigner === null ||
+      layer1Signer === undefined ||
+      layer1Signer === null ||
       mantleTestnetSigner === undefined ||
       mantleTestnetSigner === null ||
-      !goerliProvider ||
+      !layer1Provider ||
       !mantleTestnetProvider
     )
       return { crossChainMessenger: undefined };
@@ -124,12 +120,12 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     // context only stores the manager
     const context = {
       crossChainMessenger: new CrossChainMessenger({
-        l1ChainId: GOERLI_CHAIN_ID,
-        l2ChainId: MANTLE_CHAIN_ID,
+        l1ChainId: L1_CHAIN_ID,
+        l2ChainId: L2_CHAIN_ID,
         l1SignerOrProvider:
-          chain?.id === GOERLI_CHAIN_ID ? goerliSigner : goerliProvider,
+          chain?.id === L1_CHAIN_ID ? layer1Signer : layer1Provider,
         l2SignerOrProvider:
-          chain?.id === MANTLE_CHAIN_ID
+          chain?.id === L2_CHAIN_ID
             ? mantleTestnetSigner
             : // RE: https://github.com/ethers-io/ethers.js/discussions/2703
               (mantleTestnetProvider as FallbackProvider).providerConfigs[0]
@@ -146,7 +142,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       async (): Promise<number> => {
         const contract =
           context.crossChainMessenger.contracts.l1.StateCommitmentChain.connect(
-            goerliProviderRef.current!
+            layer1ProviderRef.current!
           );
 
         const challengePeriod = await contract.FRAUD_PROOF_WINDOW();
@@ -237,7 +233,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
 
       // connect to the fixed provider
       const messenger = unconnectedMessenger.connect(
-        IS_L1_TO_L2 ? mantleTestnetRef.current! : goerliProviderRef.current!
+        IS_L1_TO_L2 ? mantleTestnetRef.current! : layer1ProviderRef.current!
       );
 
       // look for successfully relayed messages
@@ -291,7 +287,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       if (opts.direction !== undefined) {
         // Get the receipt for the requested direction.
         if (opts.direction === MessageDirection.L1_TO_L2) {
-          receipt = await goerliProviderRef.current!.getTransactionReceipt(
+          receipt = await layer1ProviderRef.current!.getTransactionReceipt(
             txHash
           );
         } else {
@@ -301,7 +297,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
         }
       } else {
         // Try both directions, starting with L1 => L2.
-        receipt = await goerliProviderRef.current!.getTransactionReceipt(
+        receipt = await layer1ProviderRef.current!.getTransactionReceipt(
           txHash
         );
         if (receipt) {
@@ -329,7 +325,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       // connect the contract to the provider
       const messenger = contract.connect(
         opts.direction === MessageDirection.L1_TO_L2
-          ? goerliProviderRef.current!
+          ? layer1ProviderRef.current!
           : mantleTestnetRef.current!
       );
 
@@ -379,7 +375,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       // connect the contract to the read-only provider but use InfuraRef so that we can search without knowing the expected block
       const stateCommitmentChain =
         context.crossChainMessenger.contracts.l1.StateCommitmentChain.connect(
-          goerliProviderRef.current!
+          layer1ProviderRef.current!
         );
 
       // check for events in either the last 2000 blocks or 1000 blocks either side of the requested block
@@ -445,11 +441,11 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
         } else {
           // published - find out in which block
           const bn = stateRoot.batch.blockNumber;
-          const block = await goerliProviderRef.current!.getBlock(bn);
+          const block = await layer1ProviderRef.current!.getBlock(bn);
           const { timestamp } = block;
           const challengePeriod =
             await context.crossChainMessenger.getChallengePeriodSeconds();
-          const latestBlock = await goerliProviderRef.current!.getBlock(
+          const latestBlock = await layer1ProviderRef.current!.getBlock(
             "latest"
           );
           // check that the challengePeriod period has ellapsed before marking as ready
@@ -562,9 +558,9 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       waitForMessageStatus,
     };
   }, [
-    goerliSigner,
-    goerliProvider,
-    goerliProviderRef,
+    layer1Signer,
+    layer1Provider,
+    layer1ProviderRef,
     mantleTestnetSigner,
     mantleTestnetProvider,
     chain,
@@ -572,8 +568,8 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
 
   // setting readonly providers fresh on every tick to avoid "underlying network changed" errors
   React.useEffect(() => {
-    goerliProviderRef.current = goerliProvider;
-  }, [goerliProvider]);
+    layer1ProviderRef.current = layer1Provider;
+  }, [layer1Provider]);
 
   React.useEffect(() => {
     mantleTestnetRef.current = mantleTestnetProvider;

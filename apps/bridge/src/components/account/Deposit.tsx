@@ -2,7 +2,7 @@ import React, { useContext, useMemo, useState } from "react";
 import StateContext from "@providers/stateContext";
 import TxLink from "@components/TxLink";
 import { formatUnits, getAddress } from "ethers/lib/utils.js";
-import { MANTLE_TOKEN_LIST, Token } from "@config/constants";
+import { L1_CHAIN_ID, MANTLE_TOKEN_LIST, Token } from "@config/constants";
 import { Button } from "@mantle/ui";
 
 const TOKEN_INDEX = MANTLE_TOKEN_LIST.tokens.reduce((indx, token) => {
@@ -87,7 +87,7 @@ export default function Deposit() {
                 <td className="table-row md:table-cell">
                   <div className="py-2">
                     <TxLink
-                      chainId={5}
+                      chainId={L1_CHAIN_ID}
                       txHash={transaction.transactionHash}
                       className=""
                       asHash

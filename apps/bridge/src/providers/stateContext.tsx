@@ -1,6 +1,23 @@
 "use client";
 
 import {
+  BRIDGE_BACKEND,
+  CTAPages,
+  Direction,
+  HISTORY_ITEMS_PER_PAGE,
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
+  MANTLE_TOKEN_LIST,
+  MULTICALL_CONTRACTS,
+  Token,
+  Views,
+} from "@config/constants";
+
+import { Contract } from "ethers";
+import { MessageLike } from "@mantleio/sdk";
+import { Network } from "@ethersproject/providers";
+
+import {
   createContext,
   MutableRefObject,
   useEffect,
@@ -8,67 +25,24 @@ import {
   useRef,
   useState,
 } from "react";
-import { useProvider, useQuery } from "wagmi";
-
-import {
-  BRIDGE_BACKEND,
-  CTAPages,
-  Direction,
-  GOERLI_CHAIN,
-  HISTORY_ITEMS_PER_PAGE,
-  MANTLE_TESTNET_CHAIN,
-  MANTLE_TOKEN_LIST,
-  MULTICALL_CONTRACTS,
-  Token,
-  TOKEN_ABI,
-  Views,
-} from "@config/constants";
-import {
-  callMulticallContract,
-  getMulticallContract,
-} from "@utils/multicallContract";
-
-import { BigNumber, BigNumberish, constants, Contract } from "ethers";
-import { formatUnits, getAddress, parseUnits } from "ethers/lib/utils.js";
-
+import { useProvider } from "wagmi";
 import { usePathname } from "next/navigation";
-import { MessageLike } from "@mantleio/sdk";
-import { Network } from "@ethersproject/providers";
-import { useMantleSDK } from "./mantleSDKContext";
+import {
+  useAccountBalances,
+  useAllowanceCheck,
+  useTokenPairBridge,
+  useGasEstimate,
+  useL1FeeData,
+  useL2FeeData,
+  useHistoryDeposits,
+  useHistoryWithdrawals,
+  FeeData,
+  Deposit,
+  Withdrawal,
+} from "@hooks/queries";
 
-export type Deposit = {
-  l1Token: {
-    address: string;
-  };
-  l2Token: string;
-  amount: string;
-  transactionHash: string;
-  blockTimestamp: number;
-  blockNumber: number;
-};
-
-export type Withdrawal = {
-  status: string;
-  l1Token: {
-    address: string;
-  };
-  l2Token: string;
-  amount: string;
-  transactionHash: string;
-  ready_for_relay: boolean;
-  is_finalized: boolean;
-  blockTimestamp: number;
-  blockNumber: number;
-};
-
-export type FeeData = {
-  data: {
-    gasPrice: BigNumber;
-  };
-};
-
-// @TODO: This needs breaking up into seperate hooks and some of the names could do with being altered
-// (L1/L2 is switched depending on which chain your on, Tx1 and Tx2 would make more sense)
+import { getAddress } from "ethers/lib/utils.js";
+import { getMulticallContract } from "@utils/multicallContract";
 
 export type StateProps = {
   view: Views;
@@ -109,12 +83,10 @@ export type StateProps = {
   balances: Record<string, string>;
   allowance: string;
   selectedToken: {
-    [Direction.Deposit]: string;
-    [Direction.Withdraw]: string;
+    [key in Direction]: string;
   };
   destinationToken: {
-    [Direction.Deposit]: string;
-    [Direction.Withdraw]: string;
+    [key in Direction]: string;
   };
   selectedTokenAmount: string;
   destinationTokenAmount: string;
@@ -179,13 +151,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // get the provider for the chosen chain
   const provider = useProvider({ chainId });
 
-  // get providers
-  const goerliProvider = useProvider({ chainId: GOERLI_CHAIN.id });
-  const mantleProvider = useProvider({ chainId: MANTLE_TESTNET_CHAIN.id });
-
-  // we'll use the crossChainMessenger here to estimate gas costs
-  const { crossChainMessenger, getMessageStatus } = useMantleSDK();
-
   // keep hold of all wallet connection details
   const [client, setClient] = useState<{
     isConnected: boolean;
@@ -200,17 +165,18 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // the selected page within CTAPage to open
   const [ctaPage, setCTAPage] = useState<CTAPages>(CTAPages.Default);
-  // a ref to the current page
-  const ctaPageRef = useRef<CTAPages>(CTAPages.Default);
   // seperate the ctaChainId from the chainId to dissassociate the tabs from the cta
   const [ctaChainId, setCTAChainId] = useState(chainId);
+  // status from the cta operation (this is currently being logged in the console)
+  const [ctaStatus, setCTAStatus] = useState<string | boolean>(false);
   // setup modal controls - we will open and close the modal based on this state
   const [isCTAPageOpen, setIsCTAPageOpen] = useState(false);
-  // store as a ref
+
+  // a ref to the current page
+  const ctaPageRef = useRef<CTAPages>(CTAPages.Default);
+  // a ref to the ctaPage open state
   const isCTAPageOpenRef = useRef(false);
-  // status from the cta operation
-  const [ctaStatus, setCTAStatus] = useState<string | boolean>(false);
-  // allow resets to start waiting for the bridge tx after network failure
+  // allow resets to start waiting for the bridge tx after network failure by setting a "ctaErrorReset" override
   const ctaErrorReset = useRef<(() => void | boolean) | undefined>();
 
   // record if the hasClaims notif is closed so that we dont re-open it again every page turn
@@ -228,12 +194,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // all token selections from both panes
   const [selectedToken, setSelectedToken] = useState<{
-    [Direction.Deposit]: string;
-    [Direction.Withdraw]: string;
+    [key in Direction]: string;
   }>({ [Direction.Deposit]: "BitDAO", [Direction.Withdraw]: "BitDAO" });
   const [destinationToken, setDestinationToken] = useState<{
-    [Direction.Deposit]: string;
-    [Direction.Withdraw]: string;
+    [key in Direction]: string;
   }>({ [Direction.Deposit]: "BitDAO", [Direction.Withdraw]: "BitDAO" });
 
   // amounts (input and destination supplied to final tx's)
@@ -292,165 +256,24 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   }, [chainId]);
 
   // request the appropriate bridge information from mantlesdk
-  const { data: bridgeAddress } = useQuery(
-    [
-      "GET_BRIDGE_FOR_TOKEN_PAIR",
-      {
-        chainId,
-        destinationToken,
-        isConnected: !!crossChainMessenger && !!client.address,
-      },
-    ],
-    async ({ queryKey }) => {
-      const type = chainId === 5 ? Direction.Deposit : Direction.Withdraw;
-      const layer = chainId === 5 ? "l1Bridge" : "l2Bridge";
-      const keys = queryKey[1] as {
-        destinationToken: {
-          [Direction.Deposit]: string;
-          [Direction.Withdraw]: string;
-        };
-      };
-      if (keys.destinationToken && crossChainMessenger) {
-        const targetChainID = chainId === 5 ? 5001 : 5;
-
-        // get the selection Token
-        const selection =
-          tokens.find((v) => {
-            return selectedToken[type] === v.name && v.chainId === chainId;
-          }) || tokens[chainId === 5 ? 0 : 1];
-
-        // get the destination Token
-        const destination =
-          MANTLE_TOKEN_LIST.tokens.find((v) => {
-            return (
-              selection.logoURI === v.logoURI && v.chainId === targetChainID
-            );
-          }) || tokens[chainId === 5 ? 1 : 0];
-
-        // rearrange the selection/destination
-        const l1Address =
-          chainId === 5 ? selection.address : destination.address;
-        const l2Address =
-          chainId === 5 ? destination.address : selection.address;
-
-        // get the bridge for the given pair
-        const bridge = await crossChainMessenger?.getBridgeForTokenPair(
-          l1Address,
-          l2Address
-        );
-
-        // returns the bridge address
-        return bridge?.[layer].address;
-      }
-
-      return false;
-    },
-    {
-      // cache forever these shouldnt change
-      cacheTime: Infinity,
-    }
+  const { bridgeAddress } = useTokenPairBridge(
+    chainId,
+    selectedToken,
+    destinationToken,
+    tokens
   );
 
   // query to fetch withdrawals history in batches of HISTORY_ITEMS_PER_PAGE
-  const { refetch: refetchWithdrawalsPage, isLoading: isLoadingWithdrawals } =
-    useQuery(
-      ["HISTORICAL_WITHDRAWALS", { withdrawalsUrl }],
-      async () => {
-        const res = await fetch(withdrawalsUrl);
-        const data = await res.json();
-        const items: Withdrawal[] = [...(withdrawals || [])];
-        const uniques: Record<string, Withdrawal> = (withdrawals || []).reduce(
-          (txs: Record<string, Withdrawal>, tx: Withdrawal) => {
-            return {
-              ...txs,
-              [tx.transactionHash]: tx,
-            };
-          },
-          {} as Record<string, Withdrawal>
-        );
-
-        // update old entries and place new ones
-        data.items?.forEach((tx: Withdrawal) => {
-          if (!uniques[tx.transactionHash]) {
-            items.push({
-              ...tx,
-              status: tx.status || "",
-            });
-          } else {
-            const index = items.findIndex(
-              (i) => i.transactionHash === tx.transactionHash
-            );
-            if (index !== -1) {
-              // update the item in place
-              items[index] = {
-                ...tx,
-                status: tx.status || "",
-              };
-            } else {
-              items.push({
-                ...tx,
-                status: tx.status || "",
-              });
-            }
-          }
-        });
-
-        // set the new items
-        setWithdrawals(
-          [...items].sort((a, b) => b.blockNumber - a.blockNumber)
-        );
-
-        // we're not using this response directly atm
-        return data.items;
-      },
-      {
-        enabled: !!client.address && !!withdrawalsUrl && !!getMessageStatus,
-        cacheTime: 30000,
-      }
-    );
+  const { refetchWithdrawalsPage, isLoadingWithdrawals } =
+    useHistoryWithdrawals(client, withdrawalsUrl, withdrawals, setWithdrawals);
 
   // query to fetch deposit history in batches of HISTORY_ITEMS_PER_PAGE
-  const { refetch: refetchDepositsPage, isLoading: isLoadingDeposits } =
-    useQuery(
-      ["HISTORICAL_DEPOSITS", { depositsUrl }],
-      async () => {
-        const res = await fetch(depositsUrl);
-        const data = await res.json();
-        const items: Deposit[] = [...(deposits || [])];
-        const uniques: Record<string, Deposit> = (deposits || []).reduce(
-          (txs: Record<string, Deposit>, tx: Deposit) => {
-            return {
-              ...txs,
-              [tx.transactionHash]: tx,
-            };
-          },
-          {} as Record<string, Deposit>
-        );
-
-        // update old entries and place new ones
-        data.items?.forEach((tx: Deposit) => {
-          if (!uniques[tx.transactionHash]) {
-            items.push(tx);
-          } else {
-            const index = items.findIndex(
-              (i) => i.transactionHash === tx.transactionHash
-            );
-            if (index !== -1) {
-              // update the item in place
-              items[index] = tx;
-            } else {
-              items.push(tx);
-            }
-          }
-        });
-
-        // set the new items
-        setDeposits([...items].sort((a, b) => b.blockNumber - a.blockNumber));
-
-        return data.items;
-      },
-      { enabled: !!client.address && !!depositsUrl, cacheTime: 30000 }
-    );
+  const { refetchDepositsPage, isLoadingDeposits } = useHistoryDeposits(
+    client,
+    depositsUrl,
+    deposits,
+    setDeposits
+  );
 
   // does the user have claims available?
   const hasClaims = useMemo(() => {
@@ -468,273 +291,37 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   }, [withdrawals]);
 
   // get current gas fees for L1
-  const { data: l1FeeData, refetch: refetchL1FeeData } = useQuery(
-    ["L1_FEE_DATA", { goerliProvider: goerliProvider?.network.name }],
-    async () => {
-      return {
-        data: {
-          gasPrice: await goerliProvider.getGasPrice(),
-        },
-      };
-    },
-    {
-      initialData: {
-        data: {
-          gasPrice: BigNumber.from("0"),
-        },
-      },
-      // cache for 5 mins
-      cacheTime: 300000,
-      // refetch every 60s or when refetched
-      staleTime: 60000,
-      refetchInterval: 60000,
-      // background refetch stale data
-      refetchOnMount: true,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
-      refetchIntervalInBackground: true,
-    }
-  );
+  const { l1FeeData, refetchL1FeeData } = useL1FeeData();
 
   // get current gas fees for l2
-  const { data: l2FeeData, refetch: refetchL2FeeData } = useQuery(
-    ["L2_FEE_DATA", { mantleProvider: mantleProvider?.network.name }],
-    async () => {
-      return {
-        data: {
-          gasPrice: await mantleProvider.getGasPrice(),
-        },
-      };
-    },
-    {
-      initialData: {
-        data: {
-          gasPrice: BigNumber.from("0"),
-        },
-      },
-      // cache for 5 mins
-      cacheTime: 300000,
-      // refetch every 60s or when refetched
-      staleTime: 60000,
-      refetchInterval: 60000,
-      // background refetch stale data
-      refetchOnMount: true,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
-      refetchIntervalInBackground: true,
-    }
-  );
+  const { l2FeeData, refetchL2FeeData } = useL2FeeData();
 
   // get current gas fees on selected network
   const feeData = useMemo(
     () =>
       // return the selected chains feeData as default
-      chainId === GOERLI_CHAIN.id ? l1FeeData : l2FeeData,
+      chainId === L1_CHAIN_ID ? l1FeeData : l2FeeData,
     [chainId, l1FeeData, l2FeeData]
   );
 
   // fetch the allowance for the selected token on the selected chain
-  const { data: allowance, refetch: resetAllowance } = useQuery(
-    [
-      "ALLOWANCE_CHECK",
-      {
-        address: client?.address,
-        chainId,
-        bridgeAddress,
-        selectedToken,
-        multicall: multicall.current?.network.name,
-      },
-    ],
-    () => {
-      // only run the multicall if we're connected to the correct network
-      if (
-        client?.address &&
-        client?.address !== "0x" &&
-        bridgeAddress &&
-        multicall.current?.network.chainId === chainId
-      ) {
-        // check that we're using the corrent network before proceeding
-        // only run the multicall if we're connected to the correct network
-        // direction of the interaction
-        const type = chainId === 5 ? Direction.Deposit : Direction.Withdraw;
-
-        // get the selection Token
-        const selection =
-          (tokens &&
-            tokens.find((v) => {
-              return selectedToken[type] === v.name && v.chainId === chainId;
-            })) ||
-          tokens[chainId === 5 ? 0 : 1];
-
-        // native tokens don't need allowance checks (this whole check needs to be moved into a useEffect to update properly)...
-        if (
-          client.address &&
-          bridgeAddress &&
-          // L1 native...
-          !(
-            chainId === 5 &&
-            selection.address === "0x0000000000000000000000000000000000000000"
-          ) &&
-          // L2 native...
-          !(
-            chainId !== 5 &&
-            selection.address === "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
-          )
-        ) {
-          // produce a contract for the selected contract
-          const contract = new Contract(
-            selection.address,
-            TOKEN_ABI,
-            multicall.current?.multicallContract.provider
-          );
-          // check the allowance the user has allocated to the bridge
-          return contract
-            ?.allowance(client.address, bridgeAddress)
-            .catch(() => {
-              // eslint-disable-next-line no-console
-              // console.log("Allowance call error:", e);
-              return parseUnits(allowance || "0", selection.decimals);
-            })
-            .then((givenAllowance: BigNumberish) => {
-              const newAllowance = formatUnits(
-                givenAllowance || "0",
-                selection.decimals
-              ).toString();
-              // only trigger an update if we got a new allowance for selected token
-              return newAllowance;
-            });
-        }
-        if (bridgeAddress) {
-          return formatUnits(
-            constants.MaxUint256,
-            selection.decimals
-          ).toString();
-        }
-      }
-      return "0";
-    },
-    {
-      initialData: "0",
-      // refetch every 60s or when refetched
-      staleTime: 60000,
-      refetchInterval: 60000,
-      // background refetch stale data
-      refetchOnMount: true,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
-      refetchIntervalInBackground: true,
-    }
+  const { allowance, resetAllowance } = useAllowanceCheck(
+    chainId,
+    client,
+    bridgeAddress,
+    selectedToken,
+    tokens,
+    multicall
   );
 
   // fetch the gas estimate for the selected operation on in the selected direction
-  const { data: actualGasFee, refetch: resetGasEstimate } = useQuery(
-    [
-      "GAS_ESTIMATE",
-      {
-        chainId,
-        address: client?.address,
-        selectedToken:
-          selectedToken[chainId === 5 ? Direction.Deposit : Direction.Withdraw],
-        destinationToken:
-          destinationToken[
-            chainId === 5 ? Direction.Deposit : Direction.Withdraw
-          ],
-        bridgeAddress,
-        destinationTokenAmount,
-      },
-    ],
-    async () => {
-      const type = chainId === 5 ? Direction.Deposit : Direction.Withdraw;
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const errorHandler = (_e: any) => {
-        // invalid state - 0 the gas price
-        return formatUnits("0", "gwei")?.toString();
-      };
-
-      if (
-        selectedToken[type] &&
-        destinationToken[type] &&
-        crossChainMessenger
-      ) {
-        if (type === Direction.Deposit && destinationToken[type] === "ETH") {
-          return crossChainMessenger?.estimateGas
-            ?.depositETH(destinationTokenAmount || 0, {
-              overrides: { from: client?.address },
-            })
-            ?.catch((e) => errorHandler(e))
-            ?.then((val) => {
-              // console.log(val.toString());
-              return val.toString();
-            });
-        }
-        if (type === Direction.Withdraw && destinationToken[type] === "ETH") {
-          return crossChainMessenger?.estimateGas
-            ?.withdrawETH(destinationTokenAmount || 0, {
-              overrides: { from: client?.address },
-            })
-            ?.catch((e) => errorHandler(e))
-            ?.then((val) => {
-              // console.log(val.toString());
-              return val.toString();
-            });
-        }
-        const l1Token = MANTLE_TOKEN_LIST.tokens.find((v) => {
-          return selectedToken[type] === v.name && v.chainId === 5;
-        });
-        const l2Token = MANTLE_TOKEN_LIST.tokens.find((v) => {
-          return destinationToken[type] === v.name && v.chainId === 5001;
-        });
-        if (type === Direction.Deposit) {
-          return crossChainMessenger?.estimateGas
-            ?.depositERC20(
-              l1Token!.address,
-              l2Token!.address,
-              parseUnits(
-                destinationTokenAmount?.toString() || "0",
-                l1Token?.decimals
-              ), // if we always use zero the tx doesnt revert, but does everything get called?
-              { overrides: { from: client?.address } }
-            )
-            ?.catch((e) => errorHandler(e))
-            ?.then((val) => {
-              // console.log(val.toString());
-              return val.toString();
-            });
-        }
-        if (type === Direction.Withdraw) {
-          return crossChainMessenger?.estimateGas
-            ?.withdrawERC20(
-              l1Token!.address,
-              l2Token!.address,
-              parseUnits(
-                destinationTokenAmount?.toString() || "0",
-                l2Token?.decimals
-              ),
-              { overrides: { from: client?.address } }
-            )
-            ?.catch((e) => errorHandler(e))
-            ?.then((val) => {
-              return val.toString();
-            });
-        }
-      }
-
-      // not estimating with a good setup show error state
-      return formatUnits("0", "gwei")?.toString();
-    },
-    {
-      // show infinity while loading...
-      initialData: `${formatUnits(constants.MaxUint256.toString(), "gwei")}`,
-      // refetch every 60s or when refetched
-      staleTime: 60000,
-      refetchInterval: 60000,
-      // background refetch stale data
-      refetchOnMount: true,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
-      refetchIntervalInBackground: true,
-    }
+  const { actualGasFee, resetGasEstimate } = useGasEstimate(
+    chainId,
+    client,
+    selectedToken,
+    destinationToken,
+    bridgeAddress,
+    destinationTokenAmount
   );
 
   // corrent view on page turn
@@ -769,125 +356,14 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   }, [chainId, provider, client]);
 
   // perform a multicall on the given network to get all token balances for user
-  const {
-    data: balances,
-    refetch: resetBalances,
-    isFetching: isFetchingBalances,
-    isRefetching: isRefetchingBalances,
-  } = useQuery<{
-    [key: string]: BigNumberish;
-  }>(
-    [
-      "BALANCES_FOR_ADDRESS_ON_CHAINID",
-      {
-        address: client?.address,
-        chainId,
-        multicall: multicall.current?.network.name,
-      },
-    ],
-    async () => {
-      // only run the multicall if we're connected to the correct network
-      if (
-        client?.address &&
-        client?.address !== "0x" &&
-        multicall.current?.network.chainId === chainId
-      ) {
-        // filter any native tokens from the selection
-        const filteredTokens = tokens.filter(
-          (v) =>
-            [
-              "0x0000000000000000000000000000000000000000",
-              "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
-            ].indexOf(v.address) === -1
-        );
-
-        // produce a set of balanceOf calls to check users balance against every token
-        const calls = filteredTokens.map((token) => {
-          return {
-            target: token.address as `0x${string}`,
-            contract: new Contract(
-              token.address,
-              TOKEN_ABI,
-              multicall.current?.multicallContract.provider
-            ),
-            fns: [
-              {
-                fn: "balanceOf",
-                args: [client?.address as string],
-              },
-            ],
-          };
-        });
-        // run all calls...
-        const responses = await callMulticallContract(
-          multicall.current.multicallContract,
-          calls
-        );
-        const newBalances = responses.reduce((fillBalances, value, key) => {
-          // copy of the obj
-          const newFillBalances = { ...fillBalances };
-          // set the balance value in to the token details
-          newFillBalances[filteredTokens[key].address] = formatUnits(
-            value?.toString() || "0",
-            18
-          );
-
-          return newFillBalances;
-        }, {} as Record<string, string>);
-
-        // update the displayed balances
-        const finalBalances = {
-          ...newBalances,
-          // place the native token balances
-          ...(chainId === 5
-            ? {
-                "0x0000000000000000000000000000000000000000":
-                  (client.address &&
-                    formatUnits(
-                      (await multicall.current.multicallContract.provider.getBalance(
-                        client.address!
-                      )) || "0",
-                      18
-                    )) ||
-                  "0",
-              }
-            : {
-                "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000":
-                  (client.address &&
-                    formatUnits(
-                      (await multicall.current.multicallContract.provider.getBalance(
-                        client.address!
-                      )) || "0",
-                      18
-                    )) ||
-                  "0",
-              }),
-        };
-
-        // do this in next redraw
-        setTimeout(() => {
-          // done loading
-          setIsLoadingBalances(false);
-        });
-
-        // return
-        return finalBalances;
-      }
-      // clear the balances
-      return {};
-    },
-    {
-      initialData: {},
-      // refetch every 60s or when refetched
-      staleTime: 60000,
-      refetchInterval: 60000,
-      // background refetch stale data
-      refetchOnMount: true,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
-      refetchIntervalInBackground: true,
-    }
-  );
+  const { balances, resetBalances, isFetchingBalances, isRefetchingBalances } =
+    useAccountBalances(
+      chainId,
+      client,
+      tokens,
+      multicall,
+      setIsLoadingBalances
+    );
 
   // set the loading state for the TransactionPanel
   useEffect(() => {
@@ -955,25 +431,25 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       value: string
     ) => {
       // the opposite of the chain we're working with
-      const targetChainID = chainId === 5 ? 5001 : 5;
+      const targetChainID = chainId === L1_CHAIN_ID ? L2_CHAIN_ID : L1_CHAIN_ID;
 
       // old selection used to build the current selectedTokenAmount
       const oSelection =
         tokens.find((v) => {
           return selectedToken[type] === v.name && v.chainId === chainId;
-        }) || tokens[chainId === 5 ? 0 : 1];
+        }) || tokens[chainId === L1_CHAIN_ID ? 0 : 1];
 
       // new selection as per the currently selected chain
       const selection =
         tokens.find((v) => {
           return value === v.name && v.chainId === chainId;
-        }) || tokens[chainId === 5 ? 0 : 1];
+        }) || tokens[chainId === L1_CHAIN_ID ? 0 : 1];
 
       // new destination as per the opposite chain
       const destination =
         MANTLE_TOKEN_LIST.tokens.find((v) => {
           return selection.logoURI === v.logoURI && v.chainId === targetChainID;
-        }) || tokens[chainId === 5 ? 1 : 0];
+        }) || tokens[chainId === L1_CHAIN_ID ? 1 : 0];
 
       // prevent overflow
       if (

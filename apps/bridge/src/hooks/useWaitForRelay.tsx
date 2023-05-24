@@ -4,7 +4,7 @@
 
 import { Provider, TransactionReceipt } from "@ethersproject/providers";
 import { MessageReceipt, MessageStatus } from "@mantleio/sdk";
-import { goerli, useProvider } from "wagmi";
+import { useProvider } from "wagmi";
 
 import { useContext, useEffect, useRef } from "react";
 import StateContext from "@providers/stateContext";
@@ -12,8 +12,13 @@ import StateContext from "@providers/stateContext";
 import { timeout } from "@utils/tools";
 import { useToast } from "@hooks/useToast";
 
-import { CTAPages, Direction } from "@config/constants";
-import MantleToGoerliSVG from "@components/MantleToGoerliSVG";
+import {
+  CTAPages,
+  Direction,
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
+} from "@config/constants";
+import MantleToL1SVG from "@components/MantleToL1SVG";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 
 // How long to stay inside the waitForMessageStatus while loop for
@@ -53,7 +58,7 @@ export function useWaitForRelay({
   const { updateToast, deleteToast } = useToast();
 
   // get L1 provider
-  const provider = useProvider({ chainId: goerli.id });
+  const provider = useProvider({ chainId: L1_CHAIN_ID });
 
   // assign to a ref so we can use the updated version inside the func
   const providerRef = useRef<Provider>();
@@ -161,7 +166,7 @@ export function useWaitForRelay({
           id: `${txHash}`,
           buttonText: `Restore loading screen`,
           onButtonClick: () => {
-            setCTAChainId(5001);
+            setCTAChainId(L2_CHAIN_ID);
             setL1Tx(receipt);
             setL1TxHash(txHash);
             setL2TxHash(false);
@@ -230,7 +235,7 @@ export function useWaitForRelay({
               // refetch to mark the claim available
               refetchWithdrawals();
               // set safeChains until we complete this tx because we'll be in a valid state on either chain
-              setSafeChains([5, 5001]);
+              setSafeChains([L1_CHAIN_ID, L2_CHAIN_ID]);
               // message has been relayed move to the claim page
               setCTAPage(CTAPages.Withdraw);
             }
@@ -240,21 +245,21 @@ export function useWaitForRelay({
               content: (
                 <div className="flex flex-row items-center gap-2">
                   <span>Withdrawal ready to claim</span>
-                  <MantleToGoerliSVG />
+                  <MantleToL1SVG />
                 </div>
               ),
               type: "onGoing",
               id: `${txHash}`,
               buttonText: `Claim`,
               onButtonClick: () => {
-                setCTAChainId(5001);
+                setCTAChainId(L2_CHAIN_ID);
                 setL1Tx(receipt);
                 setL1TxHash(txHash);
                 setL2TxHash(false);
                 setCTAPage(CTAPages.Withdraw);
                 setIsCTAPageOpen(true);
                 // set safeChains until we complete this tx
-                setSafeChains([5, 5001]);
+                setSafeChains([L1_CHAIN_ID, L2_CHAIN_ID]);
                 // mark open now
                 isOpenRef.current = true;
 

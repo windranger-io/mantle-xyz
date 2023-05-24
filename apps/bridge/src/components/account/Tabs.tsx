@@ -14,7 +14,7 @@ import Account from "@components/account/Account";
 import { MdClear } from "react-icons/md";
 
 import Link from "next/link";
-import { Direction, Views } from "@config/constants";
+import { Direction, L1_CHAIN_ID, L2_CHAIN_ID, Views } from "@config/constants";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function Tabs() {
@@ -37,8 +37,8 @@ export default function Tabs() {
   // on first load
   useEffect(
     () => {
-      // this will deisable the incorrect network check (but still display if not 5 or 5001)
-      setSafeChains([5, 5001]);
+      // this will disable the incorrect network check (but still display if not L1 or L2 chainId)
+      setSafeChains([L1_CHAIN_ID, L2_CHAIN_ID]);
       // align the selected tab
       if (pathName?.indexOf("/account") === 0) {
         if (pathName?.indexOf("/withdraw") !== -1) {
@@ -75,7 +75,7 @@ export default function Tabs() {
           <Typography variant="modalHeading" className="text-white w-auto pt-1">
             <Link
               className="text-white"
-              href={`/${chainId === 5 ? "deposit" : "withdraw"}`}
+              href={`/${chainId === L1_CHAIN_ID ? "deposit" : "withdraw"}`}
               shallow
             >
               <MdClear className="cursor-pointer" />

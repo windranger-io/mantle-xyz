@@ -6,6 +6,7 @@ import { MdClear } from "react-icons/md";
 import { Typography } from "@mantle/ui";
 
 import TxLink from "@components/TxLink";
+import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
 export default function CTAPageDeposited({
   l1TxHash,
@@ -60,7 +61,10 @@ export default function CTAPageDeposited({
       </div>
       <div className="flex flex-col gap-4">
         <TxLink chainId={chainId} txHash={l1TxHash} />
-        <TxLink chainId={chainId === 5 ? 5001 : 5} txHash={l2TxHash} />
+        <TxLink
+          chainId={chainId === L1_CHAIN_ID ? L2_CHAIN_ID : L1_CHAIN_ID}
+          txHash={l2TxHash}
+        />
       </div>
     </>
   );

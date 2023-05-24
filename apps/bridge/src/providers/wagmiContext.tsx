@@ -1,11 +1,10 @@
 "use client";
 
-// this version of GOERLI_CHAIN will use infura
-import { MANTLE_TESTNET_CHAIN, GOERLI_CHAIN } from "@config/constants";
+// this version of L1_CHAIN will use infura
+import { CHAINS_FORMATTED, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
+// Required components for wagmi...
 import { WagmiConfig, configureChains, createClient } from "wagmi";
-
-// import { goerli as GOERLI_CHAIN } from "wagmi/chains";
 
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
@@ -16,8 +15,8 @@ import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
 
 const { chains, provider, webSocketProvider } = configureChains(
-  // We support Goerli and Mantle testnet (depending on state of ui)
-  [GOERLI_CHAIN, MANTLE_TESTNET_CHAIN],
+  // We support L1 and Mantle (depending on state of ui)
+  [CHAINS_FORMATTED[L1_CHAIN_ID], CHAINS_FORMATTED[L2_CHAIN_ID]],
   [
     jsonRpcProvider({
       rpc: (chain) => ({
