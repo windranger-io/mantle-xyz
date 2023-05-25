@@ -19,6 +19,7 @@ function useTokenPairBridge(
   },
   tokens: Token[]
 ) {
+  // use the mantle-sdk crossChainMessenger
   const { crossChainMessenger } = useMantleSDK();
 
   // request the appropriate bridge information from mantlesdk

@@ -4,7 +4,6 @@ import { useContext, useState, useEffect, useMemo } from "react";
 import StateContext from "@providers/stateContext";
 
 import {
-  TOKEN_ABI,
   Direction,
   CHAINS,
   Token,
@@ -13,12 +12,13 @@ import {
   L2_CHAIN_ID,
 } from "@config/constants";
 
-import { useConnect, useContractWrite } from "wagmi";
+import { useConnect } from "wagmi";
 import { parseUnits } from "ethers/lib/utils.js";
-
-import { useSwitchToNetwork } from "@hooks/useSwitchToNetwork";
-import { useIsChainID } from "@hooks/useIsChainID";
 import { InjectedConnector } from "wagmi/connectors/injected";
+
+import { useIsChainID } from "@hooks/web3/read/useIsChainID";
+import { useCallApprove } from "@hooks/web3/bridge/write/useCallApprove";
+import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 
 // Contains a button & a modal to control allowance and deposits/withdrawals
 export default function CTA({
@@ -36,11 +36,9 @@ export default function CTA({
     client,
     balances,
     allowance,
-    bridgeAddress,
     selectedTokenAmount = "",
     destinationTokenAmount = "",
     setCTAPage,
-    resetAllowance,
   } = useContext(StateContext);
 
   // control wagmi connector
@@ -75,52 +73,8 @@ export default function CTA({
     );
   }, [address, chainId, isLayer1ChainID, isMantleChainID]);
 
-  // if we're running an approve tx, we'll track the state on approvalStatus
-  const [approvalStatus, setApprovalStatus] = useState<string | boolean>(false);
-
-  // setup a call to approve an allowance on the selected token
-  const { writeAsync: writeApprove } = useContractWrite({
-    mode: "recklesslyUnprepared",
-    address: selected.address,
-    abi: TOKEN_ABI,
-    functionName: "approve",
-  });
-
-  // construct a method to call and await an approval call to allocate allowance to the bridge
-  const approve = async () => {
-    try {
-      // mark as waiting...
-      setApprovalStatus("Waiting for tx approval...");
-      // perform the tx call
-      const txRes = await writeApprove({
-        recklesslySetUnpreparedArgs: [
-          bridgeAddress,
-          parseUnits(destinationTokenAmount || "0", selected.decimals),
-        ],
-      }).catch((e) => {
-        throw e;
-      });
-      // mark approval...
-      setApprovalStatus("Tx approved, waiting for confirmation...");
-      // wait for one confirmation
-      await txRes.wait(1).catch((e) => {
-        throw e;
-      });
-      // final update
-      setApprovalStatus("Tx settled");
-    } catch {
-      // log the approval was cancelled
-      setApprovalStatus("Approval cancelled");
-    } finally {
-      // call this to reset the allowance in the ui
-      resetAllowance();
-      // stop awaiting
-      setApprovalStatus(false);
-    }
-
-    // token is now approved
-    return true;
-  };
+  // create an allowance approval request on the selected token
+  const { approve, approvalStatus } = useCallApprove(selected);
 
   // get the balance/allowanace details
   const spendDetails = useMemo(() => {

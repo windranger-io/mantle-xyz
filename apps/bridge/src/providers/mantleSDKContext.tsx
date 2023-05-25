@@ -17,10 +17,11 @@ import {
   toTransactionHash,
 } from "@mantleio/sdk";
 
-import { ethers } from "ethers";
+import { hashCrossDomainMessage } from "@mantleio/core-utils";
 
 import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
+import { ethers } from "ethers";
 import { useSigner, useProvider, useNetwork } from "wagmi";
 import type {
   FallbackProvider,
@@ -29,9 +30,10 @@ import type {
   TransactionResponse,
 } from "@ethersproject/providers";
 
-import { withErrorBoundary, useErrorHandler } from "react-error-boundary";
 import ErrorFallback from "@components/ErrorFallback";
-import { hashCrossDomainMessage } from "@mantleio/core-utils";
+import { withErrorBoundary, useErrorHandler } from "react-error-boundary";
+
+import { timeout } from "@utils/toolSet";
 
 type WaitForMessageStatus = (
   message: MessageLike,
@@ -69,12 +71,7 @@ interface MantleSDKProviderProps {
   children: React.ReactNode;
 }
 
-// returns a promise that resolves after "ms" milliseconds
-const timeout = (ms: number) =>
-  new Promise((res) => {
-    setTimeout(res, ms);
-  });
-
+// Exports a provider containing the crossChainMessenger and some additional overridden helper methods
 function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   // currently selected chain according to wagmi (associated with provider/signer combo)
   const { chain } = useNetwork();

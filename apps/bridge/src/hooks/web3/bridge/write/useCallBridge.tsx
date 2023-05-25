@@ -1,34 +1,20 @@
-import {
-  Direction,
-  HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS,
-  CTAPages,
-  Token,
-  L1_CHAIN_ID,
-  L2_CHAIN_ID,
-  CHAINS_FORMATTED,
-} from "@config/constants";
-
-import { useContext, useEffect, useMemo, useState } from "react";
-
-import StateContext from "@providers/stateContext";
-
-import { useMutation } from "wagmi"; // useSigner
-import { formatUnits, parseUnits } from "ethers/lib/utils.js";
-
+import { L1_CHAIN_ID, CTAPages, Direction, Token } from "@config/constants";
 import {
   TransactionReceipt,
   TransactionResponse,
 } from "@ethersproject/providers";
+import { UseMutateFunction } from "@tanstack/react-query";
+
+import { useContext } from "react";
+import StateContext from "@providers/stateContext";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 
-import { Button, Typography } from "@mantle/ui";
-import { MdClear } from "react-icons/md";
-import Values from "@components/Values";
+import { timeout } from "@utils/toolSet";
+import { parseUnits } from "ethers/lib/utils.js";
 
 import { ToastProps, useToast } from "@hooks/useToast";
-import { useWaitForRelay } from "@hooks/useWaitForRelay";
-import { timeout } from "@utils/tools";
-import { constants } from "ethers";
+import { useMutation } from "wagmi";
+import { useWaitForRelay } from "./useWaitForRelay";
 
 class TxError extends Error {
   receipt: TransactionReceipt | TransactionResponse;
@@ -43,40 +29,21 @@ class TxError extends Error {
   }
 }
 
-export default function CTAPageDefault({
-  direction,
-  selected,
-  destination,
-  ctaStatus,
-  setCTAStatus,
-  closeModal,
-}: {
-  direction: Direction;
-  selected: Token;
-  destination: Token;
-  ctaStatus: string | boolean;
-  setCTAStatus: (val: string | boolean) => void;
-  closeModal: () => void;
-}) {
-  const {
-    chainId,
-    ctaChainId,
-    destinationToken,
-    destinationTokenAmount,
-    actualGasFee,
-    l1FeeData,
-    ctaErrorReset,
-    l1TxHashRef,
-    l2TxHashRef,
-    resetBalances,
-    setL1Tx,
-    setL1TxHash,
-    setL2TxHash,
-    setCTAChainId,
-    setCTAPage,
-    setIsCTAPageOpen,
-    isCTAPageOpenRef: isOpenRef,
-  } = useContext(StateContext);
+// call this method to initiate the bridge procedure
+export function useCallBridge(
+  direction: Direction,
+  selected: Token,
+  destination: Token
+): UseMutateFunction<
+  {
+    receipt: TransactionReceipt | TransactionResponse;
+  },
+  TxError,
+  TransactionReceipt | TransactionResponse | undefined,
+  unknown
+> {
+  // get the direction as string
+  const directionString = Direction[direction] as keyof typeof Direction;
 
   // import crossChain comms
   const { crossChainMessenger } = useMantleSDK();
@@ -84,33 +51,30 @@ export default function CTAPageDefault({
   // build toast to return to the current page
   const { updateToast, deleteToast } = useToast();
 
-  // @TODO: we should keep track of which relays we have running
-  // const [openToasts, setOpenToasts] = useState<string[]>([]);
-
-  // waitForRelay function imported as a hook
-  const waitForRelay = useWaitForRelay({
-    direction,
+  // hydrate context into state
+  const {
+    chainId,
+    destinationTokenAmount,
+    ctaChainId,
+    isCTAPageOpenRef,
+    ctaErrorReset,
+    tx1HashRef,
+    tx2HashRef,
+    resetBalances,
+    setCTAChainId,
+    setTx1,
+    setTx1Hash,
+    setTx2Hash,
     setCTAStatus,
-  });
+    setCTAPage,
+    setIsCTAPageOpen,
+  } = useContext(StateContext);
 
-  // only update on allowance change to maintain the correct decimals against constants if infinity
-  const isActualGasFeeInfinity = useMemo(
-    () => {
-      return constants.MaxUint256.eq(parseUnits(actualGasFee || "0", "gwei"));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [actualGasFee]
-  );
-
-  // convert the enum direction to a string (but retain strict typings for Deposit | Withdraw)
-  const directionString = Direction[direction] as keyof typeof Direction;
-
-  // checkboxs need to be selected to continue
-  const [chkbx1, setChkbx1] = useState(false);
-  const [chkbx2, setChkbx2] = useState(false);
+  // setup the waitForRelay with the given direction
+  const waitForRelay = useWaitForRelay({ direction });
 
   // main CTA method - we keep this mutation frame open until it error's or the tx succeeds - this keeps a closure over the current state so that we can return to it (via toasts)
-  const { mutate: callCTA } = useMutation({
+  const { mutate: callBridgeCTA } = useMutation({
     mutationFn: async (
       givenReceipt?: TransactionReceipt | TransactionResponse
     ) => {
@@ -200,13 +164,13 @@ export default function CTAPageDefault({
           ...toastProps,
           onButtonClick: () => {
             setCTAChainId(chainId);
-            setL1Tx(receipt);
-            setL1TxHash(txHash);
-            setL2TxHash(false);
+            setTx1(receipt);
+            setTx1Hash(txHash);
+            setTx2Hash(false);
             setCTAPage(CTAPages.Loading);
             setIsCTAPageOpen(true);
             // mark open now
-            isOpenRef.current = true;
+            isCTAPageOpenRef.current = true;
 
             // don't close the toast when clicked...
             return false;
@@ -214,13 +178,13 @@ export default function CTAPageDefault({
         });
 
         // set the l1 into storage
-        setL1Tx(receipt);
+        setTx1(receipt);
 
         // store the hash as soon as we make the tx
-        setL1TxHash(txHash);
+        setTx1Hash(txHash);
 
         // setting this so that its present without the need for a tick
-        l1TxHashRef.current = (txHash || "").toString();
+        tx1HashRef.current = (txHash || "").toString();
 
         // action was approved now we're waiting for confirmation
         setCTAStatus("Tx approved, waiting for confirmation...");
@@ -288,7 +252,7 @@ export default function CTAPageDefault({
       // reset status on error
       setCTAStatus(false);
       // if the page is open then delete the toast else update it
-      if (isOpenRef.current) {
+      if (isCTAPageOpenRef.current) {
         // delete the toast (or change it to a success message and button to change page to CTAPages[directionString])
         deleteToast(`${txHash}`);
       } else {
@@ -307,17 +271,17 @@ export default function CTAPageDefault({
           ),
         } as ToastProps;
 
-        // store l2Tx into local context
-        const associatedL2TxHash = l2TxHashRef.current;
+        // store tx2 into local context
+        const associatedtx2Hash = tx2HashRef.current;
 
         // update the content and the callbacks
         updateToast({
           ...toastProps,
           onButtonClick: () => {
             setCTAChainId(chainId);
-            setL1Tx(data.receipt);
-            setL1TxHash(txHash);
-            setL2TxHash(associatedL2TxHash || false);
+            setTx1(data.receipt);
+            setTx1Hash(txHash);
+            setTx2Hash(associatedtx2Hash || false);
             setCTAPage(
               direction === Direction.Deposit
                 ? CTAPages.Deposit
@@ -325,7 +289,7 @@ export default function CTAPageDefault({
             );
             setIsCTAPageOpen(true);
             // mark open now
-            isOpenRef.current = true;
+            isCTAPageOpenRef.current = true;
 
             // close the toast when clicked...
             return true;
@@ -335,9 +299,9 @@ export default function CTAPageDefault({
 
       // deposits move on from here, withdrawals will have already been moved on when they reach here
       if (
-        isOpenRef.current &&
+        isCTAPageOpenRef.current &&
         direction === Direction.Deposit &&
-        txHash === l1TxHashRef.current
+        txHash === tx1HashRef.current
       ) {
         // assets have been onchained move to the success page
         setCTAPage(CTAPages[directionString]);
@@ -375,19 +339,19 @@ export default function CTAPageDefault({
         // create a restore checkpoint (this could become a memory issue, but it should be fine to do this for a few tx's)
         const restore = () => {
           setCTAChainId(chainId);
-          setL1Tx(error.receipt);
-          setL1TxHash(txHash);
-          setL2TxHash(false);
+          setTx1(error.receipt);
+          setTx1Hash(txHash);
+          setTx2Hash(false);
           // set the page before opening
           setCTAPage(CTAPages.Loading);
           // this page will now be showing the loading state for the current captured state
           setIsCTAPageOpen(true);
           // this second relay could also fail - we want to reoute this back to the start of the callCTA
-          callCTA(error.receipt);
+          callBridgeCTA(error.receipt);
           // clear this restore point
           ctaErrorReset.current = undefined;
           // mark open now
-          isOpenRef.current = true;
+          isCTAPageOpenRef.current = true;
 
           // we want to close this when its clicked because it will be replaced with the waitForRelay toast
           return true;
@@ -410,7 +374,7 @@ export default function CTAPageDefault({
           onButtonClick: () => restore(),
         });
         // move the page if this the current tx in view
-        if (txHash === l1TxHashRef.current) {
+        if (txHash === tx1HashRef.current) {
           // show error modal
           setCTAPage(CTAPages.Error);
         }
@@ -421,169 +385,7 @@ export default function CTAPageDefault({
     },
   });
 
-  // set the chainId onload
-  useEffect(
-    () => {
-      setCTAChainId(
-        direction === Direction.Deposit ? L1_CHAIN_ID : L2_CHAIN_ID
-      );
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
-  // For the withdrawal direction, this needs to modified to inlcude the different l1 & l2 gasPrice and it also needs the terms and condtions to be accepted before proceeding
-  return (
-    <>
-      <span className="flex justify-between align-middle">
-        <Typography variant="modalHeading">
-          Confirm {directionString}
-        </Typography>
-        <Typography variant="modalHeading" className="text-white pt-1">
-          <MdClear onClick={closeModal} className="cursor-pointer" />
-        </Typography>
-      </span>
-      <div>
-        <Values
-          label={`Amount to ${directionString.toLowerCase()}`}
-          value={`${destinationTokenAmount} ${destinationToken[direction]}`}
-          border
-        />
-        <Values
-          label="Time to transfer"
-          value={
-            direction === Direction.Deposit ? "~10 minutes" : "~20 Minutes"
-          }
-          border
-        />
-        {/* different between chains */}
-        {direction === Direction.Deposit && (
-          <Values
-            label="Expected gas fee"
-            value={`${
-              isActualGasFeeInfinity
-                ? Infinity.toLocaleString()
-                : formatUnits(parseUnits(actualGasFee, "gwei"), 18)
-            } ETH`}
-            border={false}
-          />
-        )}
-        {direction === Direction.Withdraw && (
-          <Values
-            label="Gas fee to initiate"
-            value={`${
-              isActualGasFeeInfinity
-                ? Infinity.toLocaleString()
-                : formatUnits(parseUnits(actualGasFee, "gwei"), 18)
-            } BIT`}
-            border
-          />
-        )}
-        {direction === Direction.Withdraw && (
-          <Values
-            label="Gas fee to complete"
-            value={
-              <>
-                ~
-                {formatUnits(
-                  parseUnits(
-                    l1FeeData.data?.gasPrice?.toString() || "0",
-                    "wei"
-                  )?.mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) || "0",
-                  18
-                )}{" "}
-                ETH
-              </>
-            }
-            border={false}
-          />
-        )}
-        {direction === Direction.Withdraw && (
-          <div className="flex flex-row items-start gap-2 cursor-pointer my-4">
-            <input
-              id="checkbox-understand-1"
-              type="checkbox"
-              checked={chkbx1}
-              onChange={(e) => {
-                setChkbx1(e.currentTarget.checked);
-              }}
-              value=""
-              className="w-4 h-4 m-[0.25rem] rounded focus:ring-blue-500/30 focus:ring-2 focus:ring-offset-gray-800 bg-gray-700 border-gray-600"
-            />
-            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-            <label
-              htmlFor="checkbox-understand-1"
-              className="ml-2 text-sm font-medium text-gray-300"
-            >
-              I understand it will take ~ 20 minutes until my funds are
-              claimable on {CHAINS_FORMATTED[L1_CHAIN_ID].name}.
-            </label>
-          </div>
-        )}
-        {direction === Direction.Withdraw && (
-          <div className="flex flex-row items-start gap-2 cursor-pointer my-4">
-            <input
-              id="checkbox-understand-2"
-              type="checkbox"
-              checked={chkbx2}
-              onChange={(e) => {
-                setChkbx2(e.currentTarget.checked);
-              }}
-              className="w-4 h-4 m-[0.25rem] rounded focus:ring-blue-500/30 focus:ring-2 focus:ring-offset-gray-800 bg-gray-700 border-gray-600"
-            />
-            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-            <label
-              htmlFor="checkbox-understand-2"
-              className="ml-2 text-sm font-medium text-gray-300"
-            >
-              I understand that once the funds are claimable on{" "}
-              {CHAINS_FORMATTED[L1_CHAIN_ID].name}, I will need to send a second
-              transaction on L1 (~$ in fees) to receive the funds
-            </label>
-          </div>
-        )}
-      </div>
-
-      <div>
-        <Button
-          size="full"
-          disabled={
-            !!ctaStatus ||
-            (direction === Direction.Withdraw && (!chkbx1 || !chkbx2))
-          }
-          onClick={() => callCTA(undefined)}
-        >
-          {!ctaStatus ? (
-            "Confirm"
-          ) : (
-            <div className="flex flex-row gap-4 items-center mx-auto w-fit">
-              <span>
-                {direction === Direction.Deposit ? "Depositing" : "Withdrawing"}{" "}
-                Assets{" "}
-              </span>
-              <div role="status">
-                <svg
-                  aria-hidden="true"
-                  className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-                  viewBox="0 0 100 101"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                    fill="currentColor"
-                  />
-                  <path
-                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                    fill="currentFill"
-                  />
-                </svg>
-                <span className="sr-only">Loading...</span>
-              </div>
-            </div>
-          )}
-        </Button>
-      </div>
-    </>
-  );
+  return callBridgeCTA;
 }
+
+export default useCallBridge;

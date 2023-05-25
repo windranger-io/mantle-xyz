@@ -19,8 +19,8 @@ import {
 import { formatBigNumberString } from "@utils/formatStrings";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
-import DirectionLabel from "@components/DirectionLabel";
-import { MantleLogo } from "./MantleLogo";
+import DirectionLabel from "@components/bridge/utils/DirectionLabel";
+import { MantleLogo } from "@components/bridge/utils/MantleLogo";
 
 export default function TokenSelect({
   direction,

@@ -9,8 +9,8 @@ import { useContext, useState, useRef, useMemo, useEffect } from "react";
 import { useProvider } from "wagmi";
 import { MessageLike, MessageReceipt, MessageStatus } from "@mantleio/sdk";
 import { useMantleSDK } from "@providers/mantleSDKContext";
-import { useIsChainID } from "./useIsChainID";
-import { useSwitchToNetwork } from "./useSwitchToNetwork";
+import { useIsChainID } from "@hooks/web3/read/useIsChainID";
+import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 
 // noop to ignore errors
 const noopHandler = () => ({});
@@ -31,12 +31,13 @@ class TxError extends Error {
 
 // call the claim method with the given tx
 export function useCallClaim(
-  l1Tx: undefined | MessageLike,
+  tx1: undefined | MessageLike,
+  checkBeforeClaim: boolean = false,
   storeProgress: boolean = true,
   onSuccess?: () => void
 ) {
   // pull state from context
-  const { l2TxHashRef, setL2TxHash, setCTAPage } = useContext(StateContext);
+  const { tx2HashRef, setTx2Hash, setCTAPage } = useContext(StateContext);
 
   // import crosschain comms
   const { crossChainMessenger, getMessageStatus } = useMantleSDK();
@@ -60,7 +61,7 @@ export function useCallClaim(
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const commitClaim = () => {
     if (
-      l1Tx &&
+      tx1 &&
       isChainId &&
       isLoading &&
       crossChainMessenger &&
@@ -68,7 +69,7 @@ export function useCallClaim(
     ) {
       // check if a claim has already been made - if it has - return that instead
       const checkForClaim = async () => {
-        return getMessageStatus(l1Tx, { returnReceipt: true }).then(
+        return getMessageStatus(tx1, { returnReceipt: true }).then(
           async (res) => {
             const typedRes = res as {
               status: MessageStatus;
@@ -76,11 +77,9 @@ export function useCallClaim(
             };
             if (typedRes.status === MessageStatus.RELAYED) {
               if (storeProgress) {
-                setL2TxHash(
-                  typedRes.receipt.transactionReceipt.transactionHash
-                );
+                setTx2Hash(typedRes.receipt.transactionReceipt.transactionHash);
                 // set immediately into state
-                l2TxHashRef.current =
+                tx2HashRef.current =
                   typedRes.receipt.transactionReceipt.transactionHash;
               }
               // return the completed tx receipt
@@ -95,17 +94,14 @@ export function useCallClaim(
       // make a claim if not already claimed
       const makeClaim = async () => {
         return crossChainMessenger
-          .finalizeMessage(l1Tx)
+          .finalizeMessage(tx1)
           .catch((e) => {
             if (
               e.message ===
               "execution reverted: Provided message has already been received."
             ) {
-              setIsLoading(false);
-              if (storeProgress) {
-                // move to error page - this time we mean it
-                setCTAPage(CTAPages.Error);
-              }
+              // if this claim has already been made we can return the checkFoClaim response (tx2 receipt)
+              return checkForClaim();
             }
             return noopHandler() as TransactionResponse | TransactionReceipt;
           })
@@ -117,9 +113,9 @@ export function useCallClaim(
                   : tx
               ) as TransactionReceipt;
               if (finalTx && storeProgress) {
-                setL2TxHash(finalTx.transactionHash);
+                setTx2Hash(finalTx.transactionHash);
                 // set immediately into state
-                l2TxHashRef.current = finalTx.transactionHash;
+                tx2HashRef.current = finalTx.transactionHash;
               }
               return finalTx;
             } catch (e) {
@@ -132,13 +128,15 @@ export function useCallClaim(
       (
         new Promise((resolve) => {
           resolve(
-            checkForClaim().catch((e) => {
-              // only incomplete bridge tx's need to be caught and made...
-              if (e.message === "incomplete") {
-                return makeClaim();
-              }
-              throw e;
-            })
+            checkBeforeClaim
+              ? checkForClaim().catch((e) => {
+                  // only incomplete bridge tx's need to be caught and made...
+                  if (e.message === "incomplete") {
+                    return makeClaim();
+                  }
+                  throw e;
+                })
+              : makeClaim()
           );
         }) as Promise<TransactionReceipt>
       )
@@ -166,7 +164,7 @@ export function useCallClaim(
   // debounce the current callback assigned to commitClaimRef
   const doCommitClaimWithDebounce = useMemo(() => {
     const callback = () => commitClaimRef.current?.();
-    return debounce(callback, 100);
+    return debounce(callback, 600);
   }, []);
 
   // update the references every render to make sure we have the latest state in the function
@@ -179,7 +177,7 @@ export function useCallClaim(
     // initiate loading/claim state
     setIsLoading(true);
     // first step is to ensure we're on the correct network - we break this up because we need the correct signer to finalise the message
-    if (l1Tx && !isChainId) {
+    if (tx1 && !isChainId) {
       await switchToNetwork(L1_CHAIN_ID).catch(() => {
         setIsLoading(false);
       });
@@ -190,7 +188,7 @@ export function useCallClaim(
   useEffect(() => {
     doCommitClaimWithDebounce();
   }, [
-    l1Tx,
+    tx1,
     provider,
     isLoading,
     isChainId,

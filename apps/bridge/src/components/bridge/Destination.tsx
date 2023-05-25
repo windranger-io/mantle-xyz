@@ -2,8 +2,8 @@
 import { SiEthereum } from "react-icons/si";
 
 import { CHAINS, Direction, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
-import DirectionLabel from "@components/DirectionLabel";
-import { MantleLogo } from "./MantleLogo";
+import DirectionLabel from "@components/bridge/utils/DirectionLabel";
+import { MantleLogo } from "@components/bridge/utils/MantleLogo";
 
 export default function Destination({ direction }: { direction: Direction }) {
   return (

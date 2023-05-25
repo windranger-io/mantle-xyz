@@ -1,9 +1,11 @@
 import React, { useContext, useMemo, useState } from "react";
 import StateContext from "@providers/stateContext";
-import TxLink from "@components/TxLink";
+
 import { formatUnits, getAddress } from "ethers/lib/utils.js";
 import { L1_CHAIN_ID, MANTLE_TOKEN_LIST, Token } from "@config/constants";
 import { Button } from "@mantle/ui";
+
+import TxLink from "@components/bridge/utils/TxLink";
 
 const TOKEN_INDEX = MANTLE_TOKEN_LIST.tokens.reduce((indx, token) => {
   // eslint-disable-next-line no-param-reassign

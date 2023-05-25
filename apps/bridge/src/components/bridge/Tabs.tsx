@@ -18,9 +18,9 @@ import {
   Views,
 } from "@config/constants";
 
-import Deposit from "@components/Deposit";
-import Withdraw from "@components/Withdraw";
-import CTAPage from "@components/CTAPage";
+import Deposit from "@components/bridge/Deposit";
+import Withdraw from "@components/bridge/Withdraw";
+import Dialogue from "@components/bridge/dialogue";
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -304,7 +304,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
   return (
     (view === Views.Default &&
       ((isCTAPageOpen && (
-        <CTAPage
+        <Dialogue
           direction={
             chainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw
           }

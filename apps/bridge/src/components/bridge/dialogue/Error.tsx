@@ -2,12 +2,12 @@ import { useContext } from "react";
 import StateContext from "@providers/stateContext";
 
 import { Direction, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
-import { useSwitchToNetwork } from "@hooks/useSwitchToNetwork";
+import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 
 import { Button, Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
 
-export default function CTAPageError({
+export default function Error({
   reset,
   closeModal,
 }: {

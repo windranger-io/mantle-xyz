@@ -1,23 +1,19 @@
 import { Direction, L1_CHAIN_ID, TOKEN_ABI, Token } from "@config/constants";
-import { Network } from "@ethersproject/providers";
 import { Contract, BigNumberish, constants } from "ethers";
-import { MutableRefObject } from "react";
 
 import { parseUnits, formatUnits } from "ethers/lib/utils.js";
 
-import { useQuery } from "wagmi";
+import { useProvider, useQuery } from "wagmi";
 
 function useAllowanceCheck(
   chainId: number,
   client: { address?: `0x${string}` | undefined },
   bridgeAddress: string | false | undefined,
   selectedToken: { [x: string]: string },
-  tokens: Token[],
-  multicall: MutableRefObject<
-    { network: Network; multicallContract: Contract } | undefined
-  >
+  tokens: Token[]
 ) {
   // fetch the gas estimate for the selected operation on in the selected direction
+  const provider = useProvider({ chainId });
 
   // fetch the allowance for the selected token on the selected chain
   const { data: allowance, refetch: resetAllowance } = useQuery(
@@ -28,7 +24,7 @@ function useAllowanceCheck(
         chainId,
         bridgeAddress,
         selectedToken,
-        multicall: multicall.current?.network.name,
+        provider: provider.network.name,
       },
     ],
     () => {
@@ -37,7 +33,7 @@ function useAllowanceCheck(
         client?.address &&
         client?.address !== "0x" &&
         bridgeAddress &&
-        multicall.current?.network.chainId === chainId
+        provider.network.chainId === chainId
       ) {
         // check that we're using the corrent network before proceeding
         // only run the multicall if we're connected to the correct network
@@ -69,11 +65,7 @@ function useAllowanceCheck(
           )
         ) {
           // produce a contract for the selected contract
-          const contract = new Contract(
-            selection.address,
-            TOKEN_ABI,
-            multicall.current?.multicallContract.provider
-          );
+          const contract = new Contract(selection.address, TOKEN_ABI, provider);
           // check the allowance the user has allocated to the bridge
           return contract
             ?.allowance(client.address, bridgeAddress)

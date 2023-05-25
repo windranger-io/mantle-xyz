@@ -72,6 +72,7 @@ importers:
       '@mantle/ui': workspace:*
       '@mantleio/core-utils': ^0.1.0
       '@mantleio/sdk': ^0.1.4
+      '@tanstack/react-query': ^4.14.5
       '@types/ethereum-block-by-date': ^1.4.1
       '@types/lodash': ^4.14.194
       '@types/node': 18.11.3
@@ -101,6 +102,7 @@ importers:
       '@mantle/ui': link:../../packages/ui
       '@mantleio/core-utils': registry.npmjs.org/@mantleio/core-utils/0.1.0
       '@mantleio/sdk': registry.npmjs.org/@mantleio/sdk/0.1.4_ethers@5.7.2
+      '@tanstack/react-query': registry.npmjs.org/@tanstack/react-query/4.29.7_biqbaboplfbrettd7655fr4n2y
       decimal.js: registry.npmjs.org/decimal.js/10.4.3
       ethers: registry.npmjs.org/ethers/5.7.2
       framer-motion: registry.npmjs.org/framer-motion/10.12.12_biqbaboplfbrettd7655fr4n2y
@@ -257,7 +259,7 @@ importers:
       eslint-config-airbnb-typescript: registry.npmjs.org/eslint-config-airbnb-typescript/17.0.0_2xi2225ncz6z2e4si5x5mq5tnm
       eslint-config-next: registry.npmjs.org/eslint-config-next/13.0.0_jofidmxrjzhj7l6vknpw5ecvfe
       eslint-config-prettier: registry.npmjs.org/eslint-config-prettier/8.8.0_eslint@7.32.0
-      eslint-config-turbo: registry.npmjs.org/eslint-config-turbo/1.9.8_eslint@7.32.0
+      eslint-config-turbo: registry.npmjs.org/eslint-config-turbo/1.9.9_eslint@7.32.0
       eslint-import-resolver-typescript: registry.npmjs.org/eslint-import-resolver-typescript/3.5.5_lewdhodykkgt76ocsqphx5frja
       eslint-plugin-import: registry.npmjs.org/eslint-plugin-import/2.27.5_ek6le2dt723wohkglj7tbwag6u
       eslint-plugin-jsx-a11y: registry.npmjs.org/eslint-plugin-jsx-a11y/6.7.1_eslint@7.32.0
@@ -9954,16 +9956,16 @@ packages:
       eslint: registry.npmjs.org/eslint/7.32.0
     dev: false
 
-  registry.npmjs.org/eslint-config-turbo/1.9.8_eslint@7.32.0:
-    resolution: {integrity: sha512-EaZ3EbWXo7bcnwRKZsV+ckcF5Cjdri9wRBXZd5j49E7mJ3EEPvGw70h77kWeeunu+jM3mxxfy8olmo1Udr7gvQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-config-turbo/-/eslint-config-turbo-1.9.8.tgz}
-    id: registry.npmjs.org/eslint-config-turbo/1.9.8
+  registry.npmjs.org/eslint-config-turbo/1.9.9_eslint@7.32.0:
+    resolution: {integrity: sha512-OQLvRK9Ej/8HIEAW6e9hPu3nk1nCYWJ76voB4eOIaI2fYeIKC++0/r0zJPMOD8puo5V1DH+Gkd0XioKpL14ncg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-config-turbo/-/eslint-config-turbo-1.9.9.tgz}
+    id: registry.npmjs.org/eslint-config-turbo/1.9.9
     name: eslint-config-turbo
-    version: 1.9.8
+    version: 1.9.9
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
       eslint: registry.npmjs.org/eslint/7.32.0
-      eslint-plugin-turbo: registry.npmjs.org/eslint-plugin-turbo/1.9.8_eslint@7.32.0
+      eslint-plugin-turbo: registry.npmjs.org/eslint-plugin-turbo/1.9.9_eslint@7.32.0
     dev: false
 
   registry.npmjs.org/eslint-import-resolver-node/0.3.7:
@@ -10282,11 +10284,11 @@ packages:
       string.prototype.matchall: registry.npmjs.org/string.prototype.matchall/4.0.8
     dev: false
 
-  registry.npmjs.org/eslint-plugin-turbo/1.9.8_eslint@7.32.0:
-    resolution: {integrity: sha512-Alvv3zCkILFfwEJ2aiuUjzYFqZ12qX+2F14ahNOhC9BDwgGZkEh1w19TB2gOPMLeNx2+iBVAU9L+1FTBSOOAJA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-plugin-turbo/-/eslint-plugin-turbo-1.9.8.tgz}
-    id: registry.npmjs.org/eslint-plugin-turbo/1.9.8
+  registry.npmjs.org/eslint-plugin-turbo/1.9.9_eslint@7.32.0:
+    resolution: {integrity: sha512-BgtBMcgNd2YKiHbn1clRiEAmnlpSl19kt9yfIhFEsNIVPg2Gx0O1H++vWXGzMtT19mjHG4Unx0uIMRENKnDYLg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-plugin-turbo/-/eslint-plugin-turbo-1.9.9.tgz}
+    id: registry.npmjs.org/eslint-plugin-turbo/1.9.9
     name: eslint-plugin-turbo
-    version: 1.9.8
+    version: 1.9.9
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
