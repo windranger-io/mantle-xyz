@@ -8,6 +8,7 @@ import StateContext from "@providers/stateContext";
 import { useToast, ToastProps } from "@hooks/useToast";
 import { Button } from "@mantle/ui";
 import { usePathname } from "next/navigation";
+
 import { Views } from "@config/constants";
 
 const fromTop = true;
@@ -119,7 +120,7 @@ export function Toast({
   );
 }
 
-// toast container is essentially the provider
+// toast container is the provider
 export function ToastContainer({ children }: { children: ReactNode }) {
   const pathName = usePathname();
 

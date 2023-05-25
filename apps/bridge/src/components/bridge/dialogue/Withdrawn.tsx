@@ -5,16 +5,16 @@ import StateContext from "@providers/stateContext";
 import { MdClear } from "react-icons/md";
 import { Typography } from "@mantle/ui";
 
-import TxLink from "@components/TxLink";
+import TxLink from "@components/bridge/utils/TxLink";
 import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
-export default function CTAPageDeposited({
-  l1TxHash,
-  l2TxHash,
+export default function Withdrawn({
+  tx1Hash,
+  tx2Hash,
   closeModal,
 }: {
-  l1TxHash: string | boolean;
-  l2TxHash: string | boolean;
+  tx1Hash: string | boolean;
+  tx2Hash: string | boolean;
   closeModal: () => void;
 }) {
   const { ctaChainId: chainId } = useContext(StateContext);
@@ -60,10 +60,10 @@ export default function CTAPageDeposited({
         <div className="mb-4">Your funds are now withdrawn</div>
       </div>
       <div className="flex flex-col gap-4">
-        <TxLink chainId={chainId} txHash={l1TxHash} />
+        <TxLink chainId={chainId} txHash={tx1Hash} />
         <TxLink
           chainId={chainId === L1_CHAIN_ID ? L2_CHAIN_ID : L1_CHAIN_ID}
-          txHash={l2TxHash}
+          txHash={tx2Hash}
         />
       </div>
     </>

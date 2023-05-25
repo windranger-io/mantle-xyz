@@ -17,6 +17,7 @@
     "@mantle/ui": "workspace:*",
     "@mantleio/core-utils": "^0.1.0",
     "@mantleio/sdk": "^0.1.4",
+    "@tanstack/react-query": "^4.14.5",
     "decimal.js": "^10.4.3",
     "ethers": "^5.7.2",
     "framer-motion": "^10.12.10",

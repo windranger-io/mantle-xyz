@@ -14,8 +14,8 @@ import Avatar from "@mantle/ui/src/presentational/Avatar";
 import { Button } from "@mantle/ui";
 import { BiError } from "react-icons/bi";
 
-import { useIsChainID } from "@hooks/useIsChainID";
-import { useSwitchToNetwork } from "@hooks/useSwitchToNetwork";
+import { useIsChainID } from "@hooks/web3/read/useIsChainID";
+import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 import Link from "next/link";
 
 function ConnectWallet() {
