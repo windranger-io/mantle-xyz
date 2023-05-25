@@ -16,7 +16,7 @@ import {
 import { formatEther, formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { BigNumber, constants } from "ethers";
 import { formatBigNumberString } from "@utils/formatStrings";
-import { useIsChainID } from "@hooks/useIsChainID";
+import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 
 export default function TransactionPanel({
   direction,
@@ -33,16 +33,11 @@ export default function TransactionPanel({
     client,
     balances,
     allowance,
-    feeData,
     l1FeeData,
     actualGasFee,
     isLoadingFeeData,
     destinationTokenAmount,
   } = useContext(StateContext);
-
-  // gas calcs are different for deposits/withdrawals
-  const [gasRows, setGasRows] = useState<React.ReactElement[]>([]);
-
   // only update on allowance change to maintain the correct decimals against constants if infinity
   const isAllowanceInfinity = useMemo(
     () =>
@@ -86,124 +81,6 @@ export default function TransactionPanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client?.address]);
 
-  // set the rows according to state
-  useEffect(() => {
-    if (direction === Direction.Deposit) {
-      setGasRows([
-        <div
-          key="tx-panel-1"
-          className="flex justify-between"
-          title={
-            parseInt(actualGasFee || "0", 10) === 0
-              ? "This transaction will fail, check approved allowance"
-              : `${
-                  isActualGasFeeInfinity
-                    ? Infinity.toLocaleString()
-                    : actualGasFee || 0
-                } GWEI`
-          }
-        >
-          <Typography variant="smallWidget">Gas fee</Typography>
-          <Typography
-            variant="smallWidget"
-            className={
-              parseInt(actualGasFee || "0", 10) === 0
-                ? "text-[#E22F3D]"
-                : "text-white"
-            }
-          >
-            <>
-              {isActualGasFeeInfinity
-                ? Infinity.toLocaleString()
-                : formatEther(
-                    parseUnits(actualGasFee || "0", "gwei") || "0"
-                  )}{" "}
-              ETH
-            </>
-          </Typography>
-        </div>,
-      ]);
-    } else {
-      setGasRows([
-        <div
-          className="flex justify-between"
-          key="tx-panel-1"
-          title={
-            parseInt(actualGasFee || "0", 10) === 0
-              ? "This transaction will fail, withdrawal amount must not exceed your balance"
-              : `${
-                  isActualGasFeeInfinity
-                    ? Infinity.toLocaleString()
-                    : actualGasFee || 0
-                } GWEI`
-          }
-        >
-          <Typography variant="smallWidget">Gas fee to initiate</Typography>
-          <Typography
-            variant="smallWidget"
-            className={
-              parseInt(actualGasFee || "0", 10) === 0
-                ? "text-[#E22F3D]"
-                : "text-white"
-            }
-          >
-            <>
-              {isActualGasFeeInfinity
-                ? Infinity.toLocaleString()
-                : formatEther(
-                    parseUnits(actualGasFee || "0", "gwei") || "0"
-                  )}{" "}
-              BIT
-            </>
-          </Typography>
-        </div>,
-        <div
-          className="flex justify-between"
-          key="tx-panel-2"
-          title={
-            parseInt(actualGasFee || "0", 10) === 0
-              ? "This transaction will fail, withdrawal amount must not exceed your balance"
-              : `${
-                  parseInt(actualGasFee || "0", 10) === 0
-                    ? "0.0"
-                    : `~${formatUnits(
-                        BigNumber.from(
-                          l1FeeData.data?.gasPrice?.toString() || "0"
-                        ).mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) || "0",
-                        "gwei"
-                      )}`
-                } GWEI`
-          }
-        >
-          <Typography variant="smallWidget">Gas fee to complete</Typography>
-          <Typography
-            variant="smallWidget"
-            className={
-              parseInt(actualGasFee || "0", 10) === 0
-                ? "text-[#E22F3D]"
-                : "text-white"
-            }
-          >
-            {parseInt(actualGasFee || "0", 10) === 0
-              ? "0.0"
-              : `~${formatEther(
-                  BigNumber.from(l1FeeData.data?.gasPrice || "0").mul(
-                    HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS
-                  ) || "0"
-                )}`}{" "}
-            ETH
-          </Typography>
-        </div>,
-      ]);
-    }
-  }, [
-    direction,
-    actualGasFee,
-    feeData.data?.gasPrice,
-    l1FeeData.data?.gasPrice,
-    isActualGasFeeInfinity,
-  ]);
-
   return (
     (isChainID &&
       destinationTokenAmount &&
@@ -222,7 +99,118 @@ export default function TransactionPanel({
               {/* TELAPORTR takes 1-2 mins */}
             </Typography>
           </div>
-          {gasRows}
+          {/* Place gas rows */}
+          {direction === Direction.Deposit
+            ? [
+                <div
+                  key="tx-panel-1"
+                  className="flex justify-between"
+                  title={
+                    parseInt(actualGasFee || "0", 10) === 0
+                      ? "This transaction will fail, check approved allowance"
+                      : `${
+                          isActualGasFeeInfinity
+                            ? Infinity.toLocaleString()
+                            : actualGasFee || 0
+                        } GWEI`
+                  }
+                >
+                  <Typography variant="smallWidget">Gas fee</Typography>
+                  <Typography
+                    variant="smallWidget"
+                    className={
+                      parseInt(actualGasFee || "0", 10) === 0
+                        ? "text-[#E22F3D]"
+                        : "text-white"
+                    }
+                  >
+                    <>
+                      {isActualGasFeeInfinity
+                        ? Infinity.toLocaleString()
+                        : formatEther(
+                            parseUnits(actualGasFee || "0", "gwei") || "0"
+                          )}{" "}
+                      ETH
+                    </>
+                  </Typography>
+                </div>,
+              ]
+            : [
+                <div
+                  className="flex justify-between"
+                  key="tx-panel-1"
+                  title={
+                    parseInt(actualGasFee || "0", 10) === 0
+                      ? "This transaction will fail, withdrawal amount must not exceed your balance"
+                      : `${
+                          isActualGasFeeInfinity
+                            ? Infinity.toLocaleString()
+                            : actualGasFee || 0
+                        } GWEI`
+                  }
+                >
+                  <Typography variant="smallWidget">
+                    Gas fee to initiate
+                  </Typography>
+                  <Typography
+                    variant="smallWidget"
+                    className={
+                      parseInt(actualGasFee || "0", 10) === 0
+                        ? "text-[#E22F3D]"
+                        : "text-white"
+                    }
+                  >
+                    <>
+                      {isActualGasFeeInfinity
+                        ? Infinity.toLocaleString()
+                        : formatEther(
+                            parseUnits(actualGasFee || "0", "gwei") || "0"
+                          )}{" "}
+                      BIT
+                    </>
+                  </Typography>
+                </div>,
+                <div
+                  className="flex justify-between"
+                  key="tx-panel-2"
+                  title={
+                    parseInt(actualGasFee || "0", 10) === 0
+                      ? "This transaction will fail, withdrawal amount must not exceed your balance"
+                      : `${
+                          parseInt(actualGasFee || "0", 10) === 0
+                            ? "0.0"
+                            : `~${formatUnits(
+                                BigNumber.from(
+                                  l1FeeData.data?.gasPrice?.toString() || "0"
+                                ).mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) ||
+                                  "0",
+                                "gwei"
+                              )}`
+                        } GWEI`
+                  }
+                >
+                  <Typography variant="smallWidget">
+                    Gas fee to complete
+                  </Typography>
+                  <Typography
+                    variant="smallWidget"
+                    className={
+                      parseInt(actualGasFee || "0", 10) === 0
+                        ? "text-[#E22F3D]"
+                        : "text-white"
+                    }
+                  >
+                    {parseInt(actualGasFee || "0", 10) === 0
+                      ? "0.0"
+                      : `~${formatEther(
+                          BigNumber.from(l1FeeData.data?.gasPrice || "0").mul(
+                            HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS
+                          ) || "0"
+                        )}`}{" "}
+                    ETH
+                  </Typography>
+                </div>,
+              ]}
           {client?.address && client?.address !== "0x" && (
             <div className="flex justify-between" key="tx-panel-3">
               <Typography variant="smallWidget" className="text-type-muted">

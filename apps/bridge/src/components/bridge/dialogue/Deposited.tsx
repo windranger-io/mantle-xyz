@@ -2,20 +2,20 @@ import { useContext } from "react";
 import StateContext from "@providers/stateContext";
 
 import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
-import { useSwitchToNetwork } from "@hooks/useSwitchToNetwork";
+import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 
 import { Button, Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
 
-import TxLink from "@components/TxLink";
+import TxLink from "@components/bridge/utils/TxLink";
 
-export default function CTAPageDeposited({
-  l1TxHash,
-  l2TxHash,
+export default function Deposited({
+  tx1Hash,
+  tx2Hash,
   closeModal,
 }: {
-  l1TxHash: string | boolean;
-  l2TxHash: string | boolean;
+  tx1Hash: string | boolean;
+  tx2Hash: string | boolean;
   closeModal: () => void;
 }) {
   const { ctaChainId: chainId } = useContext(StateContext);
@@ -67,11 +67,11 @@ export default function CTAPageDeposited({
       <div className="flex flex-col gap-2">
         <TxLink
           chainId={chainId === L1_CHAIN_ID ? L1_CHAIN_ID : L2_CHAIN_ID}
-          txHash={chainId === L1_CHAIN_ID ? l1TxHash : l2TxHash}
+          txHash={chainId === L1_CHAIN_ID ? tx1Hash : tx2Hash}
         />
         <TxLink
           chainId={chainId === L1_CHAIN_ID ? L2_CHAIN_ID : L1_CHAIN_ID}
-          txHash={chainId === L1_CHAIN_ID ? l2TxHash : l1TxHash}
+          txHash={chainId === L1_CHAIN_ID ? tx2Hash : tx1Hash}
         />
       </div>
       <div>

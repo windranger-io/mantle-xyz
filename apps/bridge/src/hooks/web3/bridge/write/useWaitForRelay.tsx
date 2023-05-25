@@ -9,7 +9,7 @@ import { useProvider } from "wagmi";
 import { useContext, useEffect, useRef } from "react";
 import StateContext from "@providers/stateContext";
 
-import { timeout } from "@utils/tools";
+import { timeout } from "@utils/toolSet";
 import { useToast } from "@hooks/useToast";
 
 import {
@@ -18,33 +18,28 @@ import {
   L1_CHAIN_ID,
   L2_CHAIN_ID,
 } from "@config/constants";
-import MantleToL1SVG from "@components/MantleToL1SVG";
+import MantleToL1SVG from "@components/bridge/utils/MantleToL1SVG";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 
 // How long to stay inside the waitForMessageStatus while loop for
 const ONE_HOUR_MS = 3600000;
 
 // Captures a snapshot of the state and waits for the bridge message to complete on the other side
-export function useWaitForRelay({
-  direction,
-  setCTAStatus,
-}: {
-  direction: Direction;
-  setCTAStatus: (val: string | boolean) => void;
-}) {
+export function useWaitForRelay({ direction }: { direction: Direction }) {
   const {
     isCTAPageOpenRef: isOpenRef,
     ctaPageRef,
-    l1TxHashRef,
-    l2TxHashRef,
+    tx1HashRef,
+    tx2HashRef,
     setSafeChains,
     resetAllowance,
     resetBalances,
-    setL1Tx,
-    setL1TxHash,
-    setL2TxHash,
+    setTx1,
+    setTx1Hash,
+    setTx2Hash,
     setCTAPage,
     setCTAChainId,
+    setCTAStatus,
     setIsCTAPageOpen,
     refetchWithdrawals,
     refetchDeposits,
@@ -74,13 +69,13 @@ export function useWaitForRelay({
       setCTAStatus("Tx settled, waiting for message propagation...");
 
       // hash for the transaction
-      setL1TxHash(txHash);
+      setTx1Hash(txHash);
 
-      // set the l1TxHash directly so that its immediately available
-      l1TxHashRef.current = txHash;
+      // set the tx1Hash directly so that its immediately available
+      tx1HashRef.current = txHash;
 
       // record the action transaction
-      setL1Tx(receipt);
+      setTx1(receipt);
 
       // noop to ignore errors
       const noopHandler = () => ({});
@@ -103,9 +98,9 @@ export function useWaitForRelay({
           buttonText: `Restore loading screen`,
           onButtonClick: () => {
             setCTAChainId(5);
-            setL1Tx(receipt);
-            setL1TxHash(txHash);
-            setL2TxHash(false);
+            setTx1(receipt);
+            setTx1Hash(txHash);
+            setTx2Hash(false);
             setCTAPage(CTAPages.Loading);
             setIsCTAPageOpen(true);
             // mark open now
@@ -136,19 +131,19 @@ export function useWaitForRelay({
             // try again - this will eventually fill the stack, any serious errors should be caught and thrown
             return retryForL2();
           });
-        // get the l2Tx
-        const l2Tx = await retryForL2();
+        // get the tx2
+        const tx2 = await retryForL2();
         // mark as relayed
         setCTAStatus("RELAYED");
         // refetch after updating
         refetchDeposits();
         // storing the l2Hash to show on confirmation page
-        setL2TxHash(
-          (l2Tx as MessageReceipt)?.transactionReceipt?.transactionHash
+        setTx2Hash(
+          (tx2 as MessageReceipt)?.transactionReceipt?.transactionHash
         );
         // set into ref immediately
-        l2TxHashRef.current = (
-          l2Tx as MessageReceipt
+        tx2HashRef.current = (
+          tx2 as MessageReceipt
         )?.transactionReceipt?.transactionHash;
       } else {
         // update the content and the callbacks
@@ -167,9 +162,9 @@ export function useWaitForRelay({
           buttonText: `Restore loading screen`,
           onButtonClick: () => {
             setCTAChainId(L2_CHAIN_ID);
-            setL1Tx(receipt);
-            setL1TxHash(txHash);
-            setL2TxHash(false);
+            setTx1(receipt);
+            setTx1Hash(txHash);
+            setTx2Hash(false);
             setCTAPage(CTAPages.Loading);
             setIsCTAPageOpen(true);
             // mark open now
@@ -224,14 +219,14 @@ export function useWaitForRelay({
             // this should prevent page from turning back after the claim has succeeded
             (ctaPageRef.current || 0) < CTAPages.Withdraw &&
             // if we havent set the l2 ref
-            !l2TxHashRef.current
+            !tx2HashRef.current
           ) {
             // update status
             setCTAStatus(
               "In the challenge period, waiting for status READY_FOR_RELAY..."
             );
             // we should only update the toast event if the page is closed
-            if (l1TxHashRef.current === txHash) {
+            if (tx1HashRef.current === txHash) {
               // refetch to mark the claim available
               refetchWithdrawals();
               // set safeChains until we complete this tx because we'll be in a valid state on either chain
@@ -253,9 +248,9 @@ export function useWaitForRelay({
               buttonText: `Claim`,
               onButtonClick: () => {
                 setCTAChainId(L2_CHAIN_ID);
-                setL1Tx(receipt);
-                setL1TxHash(txHash);
-                setL2TxHash(false);
+                setTx1(receipt);
+                setTx1Hash(txHash);
+                setTx2Hash(false);
                 setCTAPage(CTAPages.Withdraw);
                 setIsCTAPageOpen(true);
                 // set safeChains until we complete this tx
@@ -275,20 +270,20 @@ export function useWaitForRelay({
               // the message has been relayed and the l1 tx should be onchain
               setCTAStatus("RELAYED");
               // restore/store the l1 receipt for final screen
-              setL1Tx(receipt);
+              setTx1(receipt);
               // restore/store the l1 txHash for final screen
-              setL1TxHash(txHash);
+              setTx1Hash(txHash);
               // L1 TX should now be relayed store txHash to show on txPage
-              setL2TxHash(resolved.transactionReceipt.transactionHash);
+              setTx2Hash(resolved.transactionReceipt.transactionHash);
               // set the current reference
-              l2TxHashRef.current = resolved.transactionReceipt.transactionHash;
+              tx2HashRef.current = resolved.transactionReceipt.transactionHash;
               // delete the toast
               deleteToast(`${txHash}`);
               // refetch the withdrawals
               refetchWithdrawals();
               // move to withdrawn page if we hit this before the withdraw page moves us on
               if (
-                l1TxHashRef.current === txHash &&
+                tx1HashRef.current === txHash &&
                 ctaPageRef.current !== CTAPages.Withdrawn
               ) {
                 setCTAPage(CTAPages.Withdrawn);
@@ -322,7 +317,7 @@ export function useWaitForRelay({
       setCTAStatus("Message has been relayed");
     }
 
-    // return the l1TxHash (so we can keep track of this operation)
+    // return the tx1Hash (so we can keep track of this operation)
     return txHash;
   };
 

@@ -4,16 +4,18 @@ import StateContext from "@providers/stateContext";
 
 import { Direction, CTAPages, Token } from "@config/constants";
 
-import CTAPageDefault from "@components/CTAPageDefault";
-import CTAPageDeposited from "@components/CTAPageDeposited";
-import CTAPageLoading from "@components/CTAPageLoading";
-import CTAPageWithdrawn from "@components/CTAPageWithdrawn";
-import CTAPageError from "@components/CTAPageError";
-import CTAPageWithdraw from "@components/CTAPageWithdraw";
+import Default from "@components/bridge/dialogue/Default";
+
+import Loading from "@components/bridge/dialogue/Loading";
+import Error from "@components/bridge/dialogue/Error";
+
+import Deposited from "@components/bridge/dialogue/Deposited";
+import Withdraw from "@components/bridge/dialogue/Withdraw";
+import Withdrawn from "@components/bridge/dialogue/Withdrawn";
 
 import { SimpleCard } from "@mantle/ui";
 
-export default function CTAPage({
+export default function Dialogue({
   direction,
   selected,
   destination,
@@ -30,23 +32,23 @@ export default function CTAPage({
 }) {
   const {
     chainId,
-    l1Tx,
-    l1TxHash,
-    l2TxHash,
+    tx1,
+    tx1Hash,
+    tx2Hash,
     ctaPage,
     ctaStatus,
     setCTAPage,
     setCTAStatus,
-    setL1TxHash,
-    setL2TxHash,
+    setTx1Hash,
+    setTx2Hash,
     setSafeChains,
     isCTAPageOpenRef: isOpenRef,
   } = useContext(StateContext);
 
   const reset = () => {
     // clear the last tx we set
-    setL1TxHash(false);
-    setL2TxHash(false);
+    setTx1Hash(false);
+    setTx2Hash(false);
     // clear the cta status
     setCTAStatus(false);
     // return to the default page
@@ -72,51 +74,45 @@ export default function CTAPage({
       <SimpleCard className="max-w-lg w-full grid gap-4 relative bg-black border border-stroke-primary">
         <div className="w-full max-w-lg transform px-6 text-left align-middle transition-all space-y-10">
           {ctaPage === CTAPages.Default && (
-            <CTAPageDefault
+            <Default
               direction={direction}
               selected={selected}
               destination={destination}
               ctaStatus={ctaStatus}
-              setCTAStatus={(v: string | boolean) => {
-                // eslint-disable-next-line no-console
-                if (v) console.log(v);
-                // store the status - this can control the state of the loading wheel on the CTA page button (but is mostly informative)
-                setCTAStatus(v);
-              }}
               closeModal={closeModalAndReset}
             />
           )}
           {ctaPage === CTAPages.Deposit && (
-            <CTAPageDeposited
-              l1TxHash={l1TxHash}
-              l2TxHash={l2TxHash}
+            <Deposited
+              tx1Hash={tx1Hash}
+              tx2Hash={tx2Hash}
               closeModal={closeModalAndReset}
             />
           )}
           {ctaPage === CTAPages.Withdraw && (
-            <CTAPageWithdraw
-              l1Tx={l1Tx}
-              l1TxHash={l1TxHash}
-              l2TxHash={l2TxHash}
+            <Withdraw
+              tx1={tx1}
+              tx1Hash={tx1Hash}
+              tx2Hash={tx2Hash}
               closeModal={closeModalAndReset}
             />
           )}
           {ctaPage === CTAPages.Withdrawn && (
-            <CTAPageWithdrawn
-              l1TxHash={l1TxHash}
-              l2TxHash={l2TxHash}
+            <Withdrawn
+              tx1Hash={tx1Hash}
+              tx2Hash={tx2Hash}
               closeModal={closeModalAndReset}
             />
           )}
           {ctaPage === CTAPages.Loading && (
-            <CTAPageLoading
-              l1TxHash={l1TxHash}
-              l2TxHash={l2TxHash}
+            <Loading
+              tx1Hash={tx1Hash}
+              tx2Hash={tx2Hash}
               closeModal={closeModalAndReset}
             />
           )}
           {ctaPage === CTAPages.Error && (
-            <CTAPageError reset={reset} closeModal={closeModalAndReset} />
+            <Error reset={reset} closeModal={closeModalAndReset} />
           )}
         </div>
       </SimpleCard>

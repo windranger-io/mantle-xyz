@@ -1,10 +1,13 @@
-import { useCallClaim } from "@hooks/useCallClaim";
-import { Button } from "@mantle/ui";
-import { MessageStatus } from "@mantleio/sdk";
-import { useMantleSDK } from "@providers/mantleSDKContext";
-import StateContext from "@providers/stateContext";
 import React, { useContext } from "react";
 import { useQuery } from "wagmi";
+import StateContext from "@providers/stateContext";
+
+import { Button } from "@mantle/ui";
+
+import { MessageStatus } from "@mantleio/sdk";
+import { useMantleSDK } from "@providers/mantleSDKContext";
+
+import { useCallClaim } from "@hooks/web3/bridge/write/useCallClaim";
 
 export default function Status({
   transactionHash,
@@ -101,6 +104,7 @@ export default function Status({
   // use the callClaim methodology to claim the withdrawal and update the status
   const { isLoading: isLoadingClaim, callClaim } = useCallClaim(
     transactionHash,
+    false,
     false,
     () => {
       // mark the status as complete in the local cache

@@ -1,11 +1,11 @@
 import { Direction, Token } from "@config/constants";
 
-// in order of use...
-import TokenSelect from "@components/TokenSelect";
-import Divider from "@components/Divider";
-import Destination from "@components/Destination";
-import CTA from "@components/CTA";
-import TransactionPanel from "@components/TransactionPanel";
+// by order of use...
+import TokenSelect from "@components/bridge/TokenSelect";
+import Divider from "@components/bridge/Divider";
+import Destination from "@components/bridge/Destination";
+import CTA from "@components/bridge/CTA";
+import TransactionPanel from "@components/bridge/TransactionPanel";
 
 export default function Withdraw({
   selected,
@@ -16,14 +16,14 @@ export default function Withdraw({
   destination: Token;
   setIsOpen: (v: boolean) => void;
 }) {
-  const direction = Direction.Withdraw;
+  const direction = Direction.Deposit;
 
   return (
     <div>
       <TokenSelect selected={selected} direction={direction} />
       <Divider />
       <Destination direction={direction} />
-      <CTA direction={direction} selected={selected} setIsOpen={setIsOpen} />
+      <CTA direction={direction} setIsOpen={setIsOpen} selected={selected} />
       <TransactionPanel
         selected={selected}
         destination={destination}

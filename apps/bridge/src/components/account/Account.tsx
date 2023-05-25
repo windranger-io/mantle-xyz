@@ -1,11 +1,14 @@
-import useCopyToClipboard from "@hooks/useCopyToClipboard";
 import React, { useContext } from "react";
-import { Typography } from "@mantle/ui";
+import useCopyToClipboard from "@hooks/useCopyToClipboard";
+import StateContext from "@providers/stateContext";
+
 import Avatar from "@mantle/ui/src/presentational/Avatar";
 import Link from "next/link";
+
 import { AiOutlineCopy } from "react-icons/ai";
 import { RxExternalLink } from "react-icons/rx";
-import StateContext from "@providers/stateContext";
+import { Typography } from "@mantle/ui";
+
 import { getAddress } from "ethers/lib/utils.js";
 
 export default function Account() {

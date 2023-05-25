@@ -29,17 +29,20 @@ import { useProvider } from "wagmi";
 import { usePathname } from "next/navigation";
 import {
   useAccountBalances,
+  useL1FeeData,
+  useL2FeeData,
+  FeeData,
+} from "@hooks/web3/read";
+
+import {
   useAllowanceCheck,
   useTokenPairBridge,
   useGasEstimate,
-  useL1FeeData,
-  useL2FeeData,
   useHistoryDeposits,
   useHistoryWithdrawals,
-  FeeData,
   Deposit,
   Withdrawal,
-} from "@hooks/queries";
+} from "@hooks/web3/bridge/read";
 
 import { getAddress } from "ethers/lib/utils.js";
 import { getMulticallContract } from "@utils/multicallContract";
@@ -66,17 +69,17 @@ export type StateProps = {
   isLoadingFeeData: boolean;
   isLoadingBalances: boolean;
 
-  l1Tx: MessageLike;
+  tx1: MessageLike;
   ctaPage: CTAPages;
   ctaPageRef: MutableRefObject<CTAPages>;
   ctaChainId: number;
-  l1TxHash: string | boolean;
-  l2TxHash: string | boolean;
+  tx1Hash: string | boolean;
+  tx2Hash: string | boolean;
   ctaStatus: string | boolean;
   isCTAPageOpen: boolean;
   isCTAPageOpenRef: MutableRefObject<boolean>;
-  l1TxHashRef: MutableRefObject<string | undefined>;
-  l2TxHashRef: MutableRefObject<string | undefined>;
+  tx1HashRef: MutableRefObject<string | undefined>;
+  tx2HashRef: MutableRefObject<string | undefined>;
   ctaErrorReset: MutableRefObject<(() => void | boolean) | undefined>;
 
   tokens: Token[];
@@ -116,11 +119,11 @@ export type StateProps = {
   refetchDeposits: () => void;
   loadMoreWithdrawals: () => void;
   loadMoreDeposits: () => void;
-  setL1Tx: (tx: MessageLike) => void;
+  setTx1: (tx: MessageLike) => void;
   setCTAPage: (ctaPage: CTAPages) => void;
   setCTAChainId: (v: number) => void;
-  setL1TxHash: (hash: string | boolean) => void;
-  setL2TxHash: (hash: string | boolean) => void;
+  setTx1Hash: (hash: string | boolean) => void;
+  setTx2Hash: (hash: string | boolean) => void;
   setCTAStatus: (status: string | boolean) => void;
   setIsCTAPageOpen: (isCTAPageOpen: boolean) => void;
   setSelectedToken: (type: Direction, value: string) => void;
@@ -171,6 +174,11 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [ctaStatus, setCTAStatus] = useState<string | boolean>(false);
   // setup modal controls - we will open and close the modal based on this state
   const [isCTAPageOpen, setIsCTAPageOpen] = useState(false);
+  // txHashes associated with the current action
+  const [tx1Hash, setTx1Hash] = useState<string | boolean>(false);
+  const [tx2Hash, setTx2Hash] = useState<string | boolean>(false);
+  // tx1 assoicated with the current action - we use this to carry the tx between pages (Withdraw -> Withdrawn)
+  const [tx1, setTx1] = useState<MessageLike>();
 
   // a ref to the current page
   const ctaPageRef = useRef<CTAPages>(CTAPages.Default);
@@ -178,19 +186,11 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const isCTAPageOpenRef = useRef(false);
   // allow resets to start waiting for the bridge tx after network failure by setting a "ctaErrorReset" override
   const ctaErrorReset = useRef<(() => void | boolean) | undefined>();
-
   // record if the hasClaims notif is closed so that we dont re-open it again every page turn
   const [hasClosedClaims, setHasClosedClaims] = useState(false);
-
-  // txHashes associated with the current action
-  const [l1TxHash, setL1TxHash] = useState<string | boolean>(false);
-  const [l2TxHash, setL2TxHash] = useState<string | boolean>(false);
-  // keep the l1TxHash as a ref so we can tell which tx is currently in focus
-  const l1TxHashRef = useRef<string>();
-  const l2TxHashRef = useRef<string>();
-
-  // l1Tx assoicated with the current action - we use this to carry the tx between pages (Withdraw -> Withdrawn)
-  const [l1Tx, setL1Tx] = useState<MessageLike>();
+  // keep the tx Hashes as a ref so we can tell which tx is currently in focus (tx2 will be set when complete)
+  const tx1HashRef = useRef<string>();
+  const tx2HashRef = useRef<string>();
 
   // all token selections from both panes
   const [selectedToken, setSelectedToken] = useState<{
@@ -205,13 +205,29 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [destinationTokenAmount, setDestinationTokenAmount] =
     useState<string>("");
 
+  // the current chains token list
+  const tokens = useMemo(() => {
+    return MANTLE_TOKEN_LIST.tokens.filter((v) => {
+      return v.chainId === chainId;
+    });
+  }, [chainId]);
+
+  // request the appropriate bridge information from mantlesdk
+  const { bridgeAddress } = useTokenPairBridge(
+    chainId,
+    selectedToken,
+    destinationToken,
+    tokens
+  );
+
   // when we're loading the balance data we don't want to show error states
   const [isLoadingBalances, setIsLoadingBalances] = useState(false);
-
   // loadingState for feeData
   const [isLoadingFeeData, setIsLoadingFeeData] = useState(true);
 
   // control the page to load more items from the history pages
+  // - we're not using this style of pagination
+  // - its cheaper to just request everything in 1 req because the sort order of the pagination is reversed
   const withdrawalsPage = useRef(0);
   const depositsPage = useRef(0);
 
@@ -247,21 +263,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       ""
     );
   }, [client.address, depositsPage]);
-
-  // the current chains token list
-  const tokens = useMemo(() => {
-    return MANTLE_TOKEN_LIST.tokens.filter((v) => {
-      return v.chainId === chainId;
-    });
-  }, [chainId]);
-
-  // request the appropriate bridge information from mantlesdk
-  const { bridgeAddress } = useTokenPairBridge(
-    chainId,
-    selectedToken,
-    destinationToken,
-    tokens
-  );
 
   // query to fetch withdrawals history in batches of HISTORY_ITEMS_PER_PAGE
   const { refetchWithdrawalsPage, isLoadingWithdrawals } =
@@ -310,8 +311,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     client,
     bridgeAddress,
     selectedToken,
-    tokens,
-    multicall
+    tokens
   );
 
   // fetch the gas estimate for the selected operation on in the selected direction
@@ -323,6 +323,16 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     bridgeAddress,
     destinationTokenAmount
   );
+
+  // perform a multicall on the given network to get all token balances for user
+  const { balances, resetBalances, isFetchingBalances, isRefetchingBalances } =
+    useAccountBalances(
+      chainId,
+      client,
+      tokens,
+      multicall,
+      setIsLoadingBalances
+    );
 
   // corrent view on page turn
   useEffect(
@@ -355,16 +365,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     );
   }, [chainId, provider, client]);
 
-  // perform a multicall on the given network to get all token balances for user
-  const { balances, resetBalances, isFetchingBalances, isRefetchingBalances } =
-    useAccountBalances(
-      chainId,
-      client,
-      tokens,
-      multicall,
-      setIsLoadingBalances
-    );
-
   // set the loading state for the TransactionPanel
   useEffect(() => {
     setIsLoadingFeeData(true);
@@ -377,15 +377,15 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     }
   }, [actualGasFee]);
 
-  // keep the l1TxHash ref up to data
+  // keep the tx1Hash ref up to data
   useEffect(() => {
-    l1TxHashRef.current = (l1TxHash || "").toString();
-  }, [l1TxHash]);
+    tx1HashRef.current = (tx1Hash || "").toString();
+  }, [tx1Hash]);
 
-  // keep the l2TxHash ref up to data
+  // keep the tx2Hash ref up to data
   useEffect(() => {
-    l2TxHashRef.current = (l2TxHash || "").toString();
-  }, [l2TxHash]);
+    tx2HashRef.current = (tx2Hash || "").toString();
+  }, [tx2Hash]);
 
   // tied to the current page being viewed
   useEffect(() => {
@@ -393,22 +393,16 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   }, [ctaPage]);
 
   // reset the allowances and balances once we gather enough intel to make the calls
-  useEffect(() => {
-    resetAllowance();
-    resetBalances();
-    refetchL1FeeData();
-    refetchL2FeeData();
-  }, [
-    chainId,
-    client?.address,
-    selectedToken,
-    multicall,
-    bridgeAddress,
-    resetAllowance,
-    resetBalances,
-    refetchL1FeeData,
-    refetchL2FeeData,
-  ]);
+  useEffect(
+    () => {
+      resetAllowance();
+      resetBalances();
+      refetchL1FeeData();
+      refetchL2FeeData();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [chainId, client?.address, selectedToken, multicall, bridgeAddress]
+  );
 
   // reset the gas estimate every time we make a change
   useEffect(() => {
@@ -422,6 +416,14 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     destinationTokenAmount,
     resetGasEstimate,
   ]);
+
+  // log the new status to ctaStatus
+  useEffect(() => {
+    if (ctaStatus) {
+      // eslint-disable-next-line no-console
+      console.log(ctaStatus);
+    }
+  }, [ctaStatus]);
 
   // combine everything into a context provider
   const context = useMemo(() => {
@@ -539,13 +541,13 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       isLoadingBalances:
         isLoadingBalances && isFetchingBalances && isRefetchingBalances,
 
-      l1Tx,
+      tx1,
       ctaPage,
       ctaPageRef,
-      l1TxHash,
-      l2TxHash,
-      l1TxHashRef,
-      l2TxHashRef,
+      tx1Hash,
+      tx2Hash,
+      tx1HashRef,
+      tx2HashRef,
       ctaStatus,
       ctaChainId,
       isCTAPageOpen,
@@ -584,11 +586,11 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       loadMoreDeposits,
       loadMoreWithdrawals,
 
-      setL1Tx,
+      setTx1,
       setCTAPage,
       setCTAChainId,
-      setL1TxHash,
-      setL2TxHash,
+      setTx1Hash,
+      setTx2Hash,
       setCTAStatus,
       setIsCTAPageOpen,
       setHasClosedClaims,
@@ -615,13 +617,13 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     isFetchingBalances,
     isRefetchingBalances,
 
-    l1Tx,
+    tx1,
     ctaPage,
     ctaPageRef,
-    l1TxHash,
-    l2TxHash,
-    l1TxHashRef,
-    l2TxHashRef,
+    tx1Hash,
+    tx2Hash,
+    tx1HashRef,
+    tx2HashRef,
     ctaStatus,
     ctaChainId,
     isCTAPageOpen,

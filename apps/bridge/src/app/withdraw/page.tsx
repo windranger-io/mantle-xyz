@@ -1,7 +1,7 @@
 // Page components
-import Tabs from "@components/Tabs";
+import Tabs from "@components/bridge/Tabs";
 
-import { AdditionalLinks } from "@components/AdditionalLinks";
+import { AdditionalLinks } from "@components/bridge/utils/AdditionalLinks";
 import { Typography } from "@mantle/ui";
 import { Direction } from "@config/constants";
 

@@ -7,27 +7,27 @@ import { MessageLike } from "@mantleio/sdk";
 import { MdClear } from "react-icons/md";
 import { Button, Typography } from "@mantle/ui";
 
-import TxLink from "@components/TxLink";
-import { useCallClaim } from "@hooks/useCallClaim";
+import TxLink from "@components/bridge/utils/TxLink";
+import { useCallClaim } from "@hooks/web3/bridge/write/useCallClaim";
 import { CHAINS_FORMATTED, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
-export default function CTAPageWithdraw({
-  l1Tx,
-  l1TxHash,
-  l2TxHash,
+export default function Withdraw({
+  tx1,
+  tx1Hash,
+  tx2Hash,
 
   closeModal,
 }: {
-  l1Tx: undefined | MessageLike;
-  l1TxHash: string | boolean;
-  l2TxHash: string | boolean;
+  tx1: undefined | MessageLike;
+  tx1Hash: string | boolean;
+  tx2Hash: string | boolean;
   closeModal: () => void;
 }) {
   // pull state from context
   const { ctaChainId: chainId } = useContext(StateContext);
 
   // use the claim logic (switch network + send tx)
-  const { isLoading, callClaim } = useCallClaim(l1Tx);
+  const { isLoading, callClaim } = useCallClaim(tx1);
 
   return (
     <>
@@ -82,10 +82,10 @@ export default function CTAPageWithdraw({
         </span>
       </div>
       <div className="flex flex-col gap-4">
-        <TxLink chainId={chainId} txHash={l1TxHash} />
+        <TxLink chainId={chainId} txHash={tx1Hash} />
         <TxLink
           chainId={chainId === L1_CHAIN_ID ? L2_CHAIN_ID : L1_CHAIN_ID}
-          txHash={l2TxHash}
+          txHash={tx2Hash}
         />
       </div>
     </>

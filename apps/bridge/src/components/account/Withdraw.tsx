@@ -1,9 +1,11 @@
 import React, { useContext, useMemo, useState } from "react";
 import StateContext from "@providers/stateContext";
-import TxLink from "@components/TxLink";
+
 import { Button } from "@mantle/ui";
 import { formatUnits, getAddress } from "ethers/lib/utils.js";
 import { L2_CHAIN_ID, MANTLE_TOKEN_LIST, Token } from "@config/constants";
+
+import TxLink from "@components/bridge/utils/TxLink";
 
 import Status from "./Status";
 
