@@ -155,6 +155,7 @@ export default function Withdraw() {
                   <div className="py-2 pb-4 md:pb-2">
                     <Status
                       transactionHash={transaction.transactionHash}
+                      tx2Hashes={tx2Hashes}
                       setTx2Hashes={setTx2Hashes}
                     />
                   </div>
