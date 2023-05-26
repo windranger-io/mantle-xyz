@@ -128,7 +128,9 @@ export default function Default({
                 ~
                 {formatUnits(
                   parseUnits(
-                    l1FeeData.data?.gasPrice?.toString() || "0",
+                    (
+                      l1FeeData.data?.maxFeePerGas || l1FeeData.data?.gasPrice
+                    )?.toString() || "0",
                     "wei"
                   )?.mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) || "0",
                   18
