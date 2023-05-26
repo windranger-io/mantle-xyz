@@ -1,14 +1,14 @@
 import { useQuery } from "wagmi";
 
 export type Deposit = {
-  l1Token: {
-    address: string;
-  };
-  l2Token: string;
+  l1_token: string;
+  l2_token: string;
+  l1_hash: string;
+  l2_hash: string;
   amount: string;
   transactionHash: string;
   blockTimestamp: number;
-  blockNumber: number;
+  status: string;
 };
 
 function useHistoryDeposits(
@@ -53,7 +53,9 @@ function useHistoryDeposits(
         });
 
         // set the new items
-        setDeposits([...items].sort((a, b) => b.blockNumber - a.blockNumber));
+        setDeposits(
+          [...items].sort((a, b) => b.blockTimestamp - a.blockTimestamp)
+        );
 
         return data.items;
       },

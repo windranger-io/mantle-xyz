@@ -2,7 +2,12 @@ import React, { useContext, useMemo, useState } from "react";
 import StateContext from "@providers/stateContext";
 
 import { formatUnits, getAddress } from "ethers/lib/utils.js";
-import { L1_CHAIN_ID, MANTLE_TOKEN_LIST, Token } from "@config/constants";
+import {
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
+  MANTLE_TOKEN_LIST,
+  Token,
+} from "@config/constants";
 import { Button } from "@mantle/ui";
 
 import TxLink from "@components/bridge/utils/TxLink";
@@ -26,7 +31,7 @@ export default function Deposit() {
 
   const paginated = useMemo(() => {
     return (deposits || [])
-      .sort((a, b) => b.blockNumber - a.blockNumber)
+      .sort((a, b) => b.blockTimestamp - a.blockTimestamp)
       .slice(page * 10, (page + 1) * 10);
   }, [deposits, page]);
 
@@ -37,7 +42,8 @@ export default function Deposit() {
           <tr className="border-b-[1px] border-stroke-secondary text-sm ">
             <th className="py-4">Block Timestamp</th>
             <th>Amount</th>
-            <th>Transaction Hash</th>
+            <th>Transaction 1</th>
+            <th>Transaction 2</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -74,16 +80,16 @@ export default function Deposit() {
               >
                 <td className="py-4 table-row md:table-cell">
                   <div className="pt-4 py-2 md:pt-2">
-                    {new Date(transaction.blockTimestamp * 1000).toUTCString()}
+                    {new Date(transaction.blockTimestamp).toUTCString()}
                   </div>
                 </td>
                 <td className="table-row md:table-cell">
                   <div className="py-2">
                     {formatUnits(
                       transaction.amount,
-                      TOKEN_INDEX?.[getAddress(transaction.l2Token)]?.decimals
+                      TOKEN_INDEX?.[getAddress(transaction.l2_token)]?.decimals
                     ).toString()}{" "}
-                    {TOKEN_INDEX?.[getAddress(transaction.l2Token)]?.symbol}
+                    {TOKEN_INDEX?.[getAddress(transaction.l2_token)]?.symbol}
                   </div>
                 </td>
                 <td className="table-row md:table-cell">
@@ -97,17 +103,54 @@ export default function Deposit() {
                   </div>
                 </td>
                 <td className="table-row md:table-cell">
+                  <div className="py-2">
+                    {(transaction.l2_hash && (
+                      <TxLink
+                        chainId={L2_CHAIN_ID}
+                        txHash={transaction.l2_hash}
+                        className=""
+                        asHash
+                      />
+                    )) || <span />}
+                  </div>
+                </td>
+                <td className="table-row md:table-cell">
                   <div className="flex pb-4 py-2 flex-row gap-2 items-center md:pb-2">
-                    <svg
-                      width="11"
-                      height="11"
-                      viewBox="0 0 11 11"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <circle cx="5.5" cy="5.5" r="5.5" fill="#3EB66A" />
-                    </svg>
-                    <span>Complete</span>
+                    {
+                      // eslint-disable-next-line no-nested-ternary
+                      transaction.status === "Relayed" ? (
+                        <>
+                          <svg
+                            width="11"
+                            height="11"
+                            viewBox="0 0 11 11"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <circle cx="5.5" cy="5.5" r="5.5" fill="#3EB66A" />
+                          </svg>
+                          <span>Complete</span>
+                        </>
+                      ) : (
+                        <div className="flex flex-row gap-2 items-center">
+                          <svg
+                            width="11"
+                            height="11"
+                            viewBox="0 0 11 11"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <circle
+                              cx="5.5"
+                              cy="5.50098"
+                              r="5.5"
+                              fill="#F26A1D"
+                            />
+                          </svg>
+                          <span>Pending</span>
+                        </div>
+                      )
+                    }
                   </div>
                 </td>
               </tr>

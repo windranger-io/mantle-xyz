@@ -6,6 +6,7 @@ import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 
 import { Button, Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
+import { useNetwork } from "wagmi";
 
 export default function Error({
   reset,
@@ -14,12 +15,14 @@ export default function Error({
   reset: () => void;
   closeModal: () => void;
 }) {
-  const { ctaChainId: chainId, ctaErrorReset } = useContext(StateContext);
+  const { ctaChainId, ctaErrorReset } = useContext(StateContext);
 
   const direction =
-    chainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw;
+    ctaChainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw;
 
   const { addNetwork } = useSwitchToNetwork();
+
+  const { chain: givenChain } = useNetwork();
 
   return (
     <>
@@ -53,6 +56,7 @@ export default function Error({
           <Button
             type="button"
             size="full"
+            disabled={givenChain?.id === L2_CHAIN_ID}
             className="h-14 flex flex-row gap-4 text-center items-center justify-center my-4"
             onClick={() => addNetwork(L2_CHAIN_ID)}
           >

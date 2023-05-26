@@ -70,7 +70,7 @@ export const HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS = (800000).toString();
 
 // url for withdraw/deposit helper api - I can't find a way to sort the query so this is less helpful than we'd like - see below:
 export const BRIDGE_BACKEND =
-  "https://mantle-bridge-backend.testnet.mantle.xyz";
+  "https://mantle-blockscout-syncdata.testnet.mantle.xyz";
 
 // how many items to include in the accounts history pages (the sort direction returned from the api means that the oldest entries are
 // on the lowest page numbers (bad)) once we've got the returned sort order under control we can reduce this back to a sensible default

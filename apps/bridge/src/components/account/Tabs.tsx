@@ -18,7 +18,14 @@ import { Direction, L1_CHAIN_ID, L2_CHAIN_ID, Views } from "@config/constants";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function Tabs() {
-  const { chainId, view, setSafeChains, setView } = useContext(StateContext);
+  const {
+    chainId,
+    view,
+    setSafeChains,
+    setView,
+    refetchWithdrawals,
+    refetchDeposits,
+  } = useContext(StateContext);
 
   const [categories] = useState({
     Deposit: [<Deposit />],
@@ -42,8 +49,10 @@ export default function Tabs() {
       // align the selected tab
       if (pathName?.indexOf("/account") === 0) {
         if (pathName?.indexOf("/withdraw") !== -1) {
+          refetchWithdrawals();
           setSelectedTab(Direction.Withdraw);
         } else {
+          refetchDeposits();
           setSelectedTab(Direction.Deposit);
         }
         if (view !== Views.Account) {
@@ -54,13 +63,6 @@ export default function Tabs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-
-  // // scroll to the top on open
-  // useEffect(() => {
-  //   if (view === Views.Account) {
-  //     window.scrollTo(0, 0);
-  //   }
-  // }, [view]);
 
   return (
     (view === Views.Account && (
@@ -87,7 +89,7 @@ export default function Tabs() {
           selectedIndex={selectedTab === 1 ? 0 : 1}
           onChange={(val) => {
             router.push(`/account/${val === 0 ? "deposit" : "withdraw"}`);
-            // set the chainId according to the chainId
+            // set the selected tab according to the direction
             setSelectedTab(val === 0 ? Direction.Deposit : Direction.Withdraw);
           }}
         >
