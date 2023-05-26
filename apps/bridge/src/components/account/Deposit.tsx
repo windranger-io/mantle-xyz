@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import StateContext from "@providers/stateContext";
 
 import { formatUnits, getAddress } from "ethers/lib/utils.js";
@@ -11,6 +11,7 @@ import {
 import { Button } from "@mantle/ui";
 
 import TxLink from "@components/bridge/utils/TxLink";
+import useKeyPress from "@hooks/useKeyPress";
 
 const TOKEN_INDEX = MANTLE_TOKEN_LIST.tokens.reduce((indx, token) => {
   // eslint-disable-next-line no-param-reassign
@@ -34,6 +35,28 @@ export default function Deposit() {
       .sort((a, b) => b.blockTimestamp - a.blockTimestamp)
       .slice(page * 10, (page + 1) * 10);
   }, [deposits, page]);
+
+  // control page navigation with left/right arrow keys
+  const leftPress = useKeyPress("ArrowLeft");
+  const rightPress = useKeyPress("ArrowRight");
+  useEffect(
+    () => {
+      if (leftPress) {
+        setPage(Math.max(0, page - 1));
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [leftPress]
+  );
+  useEffect(
+    () => {
+      if (rightPress) {
+        setPage(Math.min(pages - 1, page + 1));
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [rightPress]
+  );
 
   return (
     <div>
