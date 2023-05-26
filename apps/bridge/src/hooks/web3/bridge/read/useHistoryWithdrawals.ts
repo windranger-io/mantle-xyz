@@ -1,17 +1,14 @@
 import { useQuery } from "wagmi";
 
 export type Withdrawal = {
-  status: string;
-  l1Token: {
-    address: string;
-  };
-  l2Token: string;
-  amount: string;
   transactionHash: string;
-  ready_for_relay: boolean;
-  is_finalized: boolean;
+  l1_token: string;
+  l2_token: string;
+  l1_hash: string;
+  l2_hash: string;
+  amount: string;
+  status: string;
   blockTimestamp: number;
-  blockNumber: number;
 };
 
 function useHistoryWithdrawals(
@@ -66,7 +63,7 @@ function useHistoryWithdrawals(
 
         // set the new items
         setWithdrawals(
-          [...items].sort((a, b) => b.blockNumber - a.blockNumber)
+          [...items].sort((a, b) => b.blockTimestamp - a.blockTimestamp)
         );
 
         // we're not using this response directly atm

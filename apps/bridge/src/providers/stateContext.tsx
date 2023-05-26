@@ -97,6 +97,7 @@ export type StateProps = {
   deposits: Deposit[];
   withdrawals: Withdrawal[];
   withdrawalStatuses: MutableRefObject<Record<string, string>>;
+  withdrawalTx2Hashes: MutableRefObject<Record<string, string>>;
   hasClaims: boolean;
   hasPendings: boolean;
   depositsPage: number;
@@ -237,6 +238,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // use a ref to fill the withdrawalStatuses
   const withdrawalStatuses = useRef({});
+  const withdrawalTx2Hashes = useRef({});
 
   // transaction history page urls
   const withdrawalsUrl = useMemo(() => {
@@ -279,7 +281,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // does the user have claims available?
   const hasClaims = useMemo(() => {
     const checkForClaims =
-      (withdrawals || []).filter((tx) => tx.ready_for_relay && !tx.is_finalized)
+      (withdrawals || []).filter((tx) => tx.status === "Ready for Relay")
         .length > 0;
     return checkForClaims;
   }, [withdrawals]);
@@ -287,7 +289,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // is the user waiting for a relay to complete?
   const hasPendings = useMemo(() => {
     const checkForWaiting =
-      (withdrawals || []).filter((tx) => !tx.ready_for_relay).length > 0;
+      (withdrawals || []).filter((tx) => tx.status === "Waiting").length > 0;
     return checkForWaiting;
   }, [withdrawals]);
 
@@ -560,6 +562,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       depositsPage: depositsPage.current,
       withdrawalsPage: withdrawalsPage.current,
       withdrawalStatuses,
+      withdrawalTx2Hashes,
       isLoadingDeposits,
       isLoadingWithdrawals,
       hasClosedClaims,
