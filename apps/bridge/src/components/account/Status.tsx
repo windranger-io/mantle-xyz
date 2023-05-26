@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { useQuery } from "wagmi";
 import StateContext from "@providers/stateContext";
 
@@ -8,12 +8,15 @@ import { MessageReceipt, MessageStatus } from "@mantleio/sdk";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 
 import { useCallClaim } from "@hooks/web3/bridge/write/useCallClaim";
+import { Withdrawal } from "@hooks/web3/bridge/read";
 
 export default function Status({
   transactionHash,
+  tx2Hashes,
   setTx2Hashes,
 }: {
   transactionHash: string;
+  tx2Hashes: Record<string, string>;
   setTx2Hashes: (tx2Hashes: Record<string, string>) => void;
 }) {
   const { withdrawals, withdrawalStatuses, withdrawalTx2Hashes } =
@@ -28,8 +31,8 @@ export default function Status({
   }, [transactionHash, withdrawals]);
 
   // shallow copy if discovered
-  const item = useMemo(() => {
-    return discover !== -1 && { ...withdrawals[discover] };
+  const item = useMemo<Withdrawal | undefined>(() => {
+    return discover !== -1 ? { ...withdrawals[discover] } : undefined;
   }, [discover, withdrawals]);
 
   // request the appropriate status information from mantle-sdk
@@ -39,7 +42,7 @@ export default function Status({
     refetch,
   } = useQuery<{
     status: string;
-    tx: string | false;
+    tx: string | undefined;
   }>(
     [
       "WITHDRAWAL_STATUS",
@@ -51,7 +54,7 @@ export default function Status({
       queryKey,
     }): Promise<{
       status: string;
-      tx: string | false;
+      tx: string | undefined;
     }> => {
       const keys = queryKey[1] as {
         transactionHash: string;
@@ -94,22 +97,28 @@ export default function Status({
             };
           })
           .then((res) => {
-            // check for status
-            if (res.status === MessageStatus.READY_FOR_RELAY) {
-              // otherwise its still pending
-              item.status = "claim";
-            } else if (res.status === MessageStatus.RELAYED) {
-              // do we have the transaction hash available?
-              // do we want to check the tx has completed?
-              item.status = "complete";
-            } else {
-              // otherwise it should be pending
-              item.status = "pending";
+            if (
+              withdrawalStatuses.current[item.transactionHash] !== "complete" &&
+              withdrawalStatuses.current[item.transactionHash] !== "Relayed"
+            ) {
+              // check for status
+              if (res.status === MessageStatus.READY_FOR_RELAY) {
+                // otherwise its still pending
+                item.status = "claim";
+              } else if (res.status === MessageStatus.RELAYED) {
+                // do we have the transaction hash available?
+                // do we want to check the tx has completed?
+                item.status = "complete";
+              } else {
+                // otherwise it should be pending
+                item.status = "pending";
+              }
             }
             // this is only storing one value between calls cos of race - we should use a ref to store all the status values
             if (discover !== -1 && item) {
               // persist the new status
-              withdrawalStatuses.current[item.transactionHash] = item.status;
+              withdrawalStatuses.current[item.transactionHash] =
+                item.status || withdrawalStatuses.current[item.transactionHash];
               // persist the l1 txhash
               if (res.receipt) {
                 withdrawalTx2Hashes.current[item.transactionHash] =
@@ -120,7 +129,10 @@ export default function Status({
       }
 
       return {
-        status: (item && item.status) || "",
+        status:
+          (item && item.status) ||
+          (item && withdrawalStatuses.current[item?.transactionHash]) ||
+          "",
         tx:
           (item && item?.l1_hash) ||
           (item && withdrawalTx2Hashes.current[item?.transactionHash]),
@@ -131,14 +143,14 @@ export default function Status({
       cacheTime: 300000,
       // stale after 30sec? (never stale after complete)
       staleTime:
-        withdrawalStatuses.current[transactionHash] === "complete" ||
-        (item && item?.status === "Relayed")
+        (item && item?.status === "Relayed") ||
+        withdrawalStatuses.current[transactionHash] === "complete"
           ? Number.POSITIVE_INFINITY
           : 30000,
       // refetch after 30 secs? (never refetch when status is "complete")
       refetchInterval:
-        withdrawalStatuses.current[transactionHash] === "complete" ||
-        (item && item?.status === "Relayed")
+        (item && item?.status === "Relayed") ||
+        withdrawalStatuses.current[transactionHash] === "complete"
           ? Number.POSITIVE_INFINITY
           : 30000,
       // background refetch stale data
@@ -165,24 +177,40 @@ export default function Status({
   );
 
   // make sure any cached tx2's are restored from the cache
-  useEffect(
+  const status = useMemo(
     () => {
       if (currentStatus?.tx) {
-        // update local ref cache
-        withdrawalStatuses.current[transactionHash] = currentStatus.status;
-        withdrawalTx2Hashes.current[transactionHash] = currentStatus.tx;
+        // check if we already have an l1 hash in the cache
+        const l1Hash = tx2Hashes[transactionHash];
+
+        // update local ref cache - double check for completes
+        withdrawalStatuses.current[transactionHash] =
+          item?.l1_hash || currentStatus.tx || l1Hash
+            ? "complete"
+            : currentStatus.status;
+
+        // restore the transaction hash for l1
+        withdrawalTx2Hashes.current[transactionHash] =
+          l1Hash || currentStatus.tx;
+
         // update the tx2Hash store with cached values (using a ref to collect these values to avoid race conditions when setting to tx2Hashes)
-        setTx2Hashes({ ...withdrawalTx2Hashes.current });
+        if (l1Hash !== withdrawalTx2Hashes.current[transactionHash]) {
+          setTx2Hashes({ ...withdrawalTx2Hashes.current });
+        }
+
+        // return the withdrawalStatus
+        return withdrawalStatuses.current[transactionHash];
       }
+      return item?.status;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentStatus, transactionHash]
+    [item, currentStatus, transactionHash]
   );
 
   return (
     <div key={transactionHash}>
       {(() => {
-        switch (isLoading || currentStatus?.status) {
+        switch (isLoading || status) {
           case "pending":
           case "Waiting":
             return (
