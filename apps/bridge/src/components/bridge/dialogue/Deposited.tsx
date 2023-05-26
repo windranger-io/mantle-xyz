@@ -8,6 +8,7 @@ import { Button, Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
 
 import TxLink from "@components/bridge/utils/TxLink";
+import { useNetwork } from "wagmi";
 
 export default function Deposited({
   tx1Hash,
@@ -18,9 +19,11 @@ export default function Deposited({
   tx2Hash: string | boolean;
   closeModal: () => void;
 }) {
-  const { ctaChainId: chainId } = useContext(StateContext);
+  const { ctaChainId } = useContext(StateContext);
 
   const { addNetwork } = useSwitchToNetwork();
+
+  const { chain: givenChain } = useNetwork();
 
   return (
     <>
@@ -66,18 +69,19 @@ export default function Deposited({
       </div>
       <div className="flex flex-col gap-2">
         <TxLink
-          chainId={chainId === L1_CHAIN_ID ? L1_CHAIN_ID : L2_CHAIN_ID}
-          txHash={chainId === L1_CHAIN_ID ? tx1Hash : tx2Hash}
+          chainId={ctaChainId === L1_CHAIN_ID ? L1_CHAIN_ID : L2_CHAIN_ID}
+          txHash={ctaChainId === L1_CHAIN_ID ? tx1Hash : tx2Hash}
         />
         <TxLink
-          chainId={chainId === L1_CHAIN_ID ? L2_CHAIN_ID : L1_CHAIN_ID}
-          txHash={chainId === L1_CHAIN_ID ? tx2Hash : tx1Hash}
+          chainId={ctaChainId === L1_CHAIN_ID ? L2_CHAIN_ID : L1_CHAIN_ID}
+          txHash={ctaChainId === L1_CHAIN_ID ? tx2Hash : tx1Hash}
         />
       </div>
       <div>
         <Button
           type="button"
           size="full"
+          disabled={givenChain?.id === L2_CHAIN_ID}
           className="h-14 flex flex-row gap-4 text-center items-center justify-center my-4"
           onClick={() => addNetwork(L2_CHAIN_ID)}
         >

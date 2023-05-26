@@ -34,7 +34,7 @@ export function useCallClaim(
   tx1: undefined | MessageLike,
   checkBeforeClaim: boolean = false,
   storeProgress: boolean = true,
-  onSuccess?: () => void
+  onSuccess?: (tx: TransactionReceipt) => void
 ) {
   // pull state from context
   const { tx2HashRef, setTx2Hash, setCTAPage } = useContext(StateContext);
@@ -154,7 +154,7 @@ export function useCallClaim(
             }
             // if provided an onsuccess func
             if (onSuccess) {
-              onSuccess();
+              onSuccess(tx);
             }
           }
         });
