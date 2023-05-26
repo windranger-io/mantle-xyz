@@ -181,7 +181,11 @@ export default function TransactionPanel({
                             ? "0.0"
                             : `~${formatUnits(
                                 BigNumber.from(
-                                  l1FeeData.data?.gasPrice?.toString() || "0"
+                                  (
+                                    l1FeeData.data?.maxFeePerGas ||
+                                    l1FeeData.data?.gasPrice ||
+                                    "0"
+                                  ).toString()
                                 ).mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) ||
                                   "0",
                                 "gwei"
@@ -203,9 +207,11 @@ export default function TransactionPanel({
                     {parseInt(actualGasFee || "0", 10) === 0
                       ? "0.0"
                       : `~${formatEther(
-                          BigNumber.from(l1FeeData.data?.gasPrice || "0").mul(
-                            HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS
-                          ) || "0"
+                          BigNumber.from(
+                            l1FeeData.data?.maxFeePerGas ||
+                              l1FeeData.data?.gasPrice ||
+                              "0"
+                          ).mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) || "0"
                         )}`}{" "}
                     ETH
                   </Typography>
