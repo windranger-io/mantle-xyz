@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import StateContext from "@providers/stateContext";
 
 import { Button } from "@mantle/ui";
@@ -12,6 +12,7 @@ import {
 
 import TxLink from "@components/bridge/utils/TxLink";
 
+import useKeyPress from "@hooks/useKeyPress";
 import Status from "./Status";
 
 const TOKEN_INDEX = MANTLE_TOKEN_LIST.tokens.reduce((indx, token) => {
@@ -42,6 +43,28 @@ export default function Withdraw() {
   }, [withdrawals, page]);
 
   const [tx2Hashes, setTx2Hashes] = useState(withdrawalTx2Hashes.current);
+
+  // control page navigation with left/right arrow keys
+  const leftPress = useKeyPress("ArrowLeft");
+  const rightPress = useKeyPress("ArrowRight");
+  useEffect(
+    () => {
+      if (leftPress) {
+        setPage(Math.max(0, page - 1));
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [leftPress]
+  );
+  useEffect(
+    () => {
+      if (rightPress) {
+        setPage(Math.min(pages - 1, page + 1));
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [rightPress]
+  );
 
   return (
     <div>

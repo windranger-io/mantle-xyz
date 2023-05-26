@@ -131,13 +131,13 @@ export default function Status({
       cacheTime: 300000,
       // stale after 30sec? (never stale after complete)
       staleTime:
-        (!item && withdrawalStatuses.current[transactionHash] === "complete") ||
+        withdrawalStatuses.current[transactionHash] === "complete" ||
         (item && item?.status === "Relayed")
           ? Number.POSITIVE_INFINITY
           : 30000,
       // refetch after 30 secs? (never refetch when status is "complete")
       refetchInterval:
-        (!item && withdrawalStatuses.current[transactionHash] === "complete") ||
+        withdrawalStatuses.current[transactionHash] === "complete" ||
         (item && item?.status === "Relayed")
           ? Number.POSITIVE_INFINITY
           : 30000,
@@ -171,7 +171,7 @@ export default function Status({
         // update local ref cache
         withdrawalStatuses.current[transactionHash] = currentStatus.status;
         withdrawalTx2Hashes.current[transactionHash] = currentStatus.tx;
-        // update the tx2Hash store with cached values
+        // update the tx2Hash store with cached values (using a ref to collect these values to avoid race conditions when setting to tx2Hashes)
         setTx2Hashes({ ...withdrawalTx2Hashes.current });
       }
     },
