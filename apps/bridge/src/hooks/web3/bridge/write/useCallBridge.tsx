@@ -140,7 +140,7 @@ export function useCallBridge(
         // load toast as soon as the tx is approved
         const toastProps = {
           id: `${txHash}`,
-          type: "onGoing",
+          type: "success",
           buttonText: `Restore loading screen`,
           borderLeft:
             ctaChainId === L1_CHAIN_ID ? "bg-yellow-500" : "bg-blue-600",
@@ -367,7 +367,7 @@ export function useCallBridge(
               <div className="text-sm">Reattempt the relay process.</div>
             </div>
           ),
-          type: "onGoing",
+          type: "success",
           id: `${txHash}`,
           buttonText: `Retry`,
           // this buttonClick action should also be associated with the "Try again" button in the error page

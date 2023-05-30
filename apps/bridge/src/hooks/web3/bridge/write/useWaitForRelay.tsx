@@ -93,7 +93,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
               </div>
             </div>
           ),
-          type: "onGoing",
+          type: "success",
           id: `${txHash}`,
           buttonText: `Restore loading screen`,
           onButtonClick: () => {
@@ -157,7 +157,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
               </div>
             </div>
           ),
-          type: "onGoing",
+          type: "success",
           id: `${txHash}`,
           buttonText: `Restore loading screen`,
           onButtonClick: () => {
@@ -243,7 +243,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
                   <MantleToL1SVG />
                 </div>
               ),
-              type: "onGoing",
+              type: "success",
               id: `${txHash}`,
               buttonText: `Claim`,
               onButtonClick: () => {
