@@ -106,7 +106,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
             // mark open now
             isOpenRef.current = true;
 
-            return false;
+            return true;
           },
         });
         // get the new deposits
@@ -170,7 +170,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
             // mark open now
             isOpenRef.current = true;
 
-            return false;
+            return true;
           },
         });
 
@@ -258,7 +258,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
                 // mark open now
                 isOpenRef.current = true;
 
-                return false;
+                return true;
               },
             });
           } else if (status === MessageStatus.RELAYED) {

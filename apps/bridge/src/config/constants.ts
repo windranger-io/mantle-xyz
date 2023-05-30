@@ -270,7 +270,7 @@ export const MANTLE_TOKEN_LIST: {
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
-      logoURI: "https://token-list.mantle.xyz/data/LINK/logo.png",
+      logoURI: "/chainlink-link-logo.png",
       extensions: {
         optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
       },
@@ -281,7 +281,7 @@ export const MANTLE_TOKEN_LIST: {
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
-      logoURI: "https://token-list.mantle.xyz/data/LINK/logo.png",
+      logoURI: "/chainlink-link-logo.png",
       extensions: {
         optimismBridgeAddress: "0x4200000000000000000000000000000000000010",
       },
@@ -336,7 +336,7 @@ export const MANTLE_TOKEN_LIST: {
       name: "Tether USD",
       symbol: "USDT",
       decimals: 6,
-      logoURI: "https://token-list.mantle.xyz/data/USDT/logo.png",
+      logoURI: "/tether-usdt-logo.png",
       extensions: {
         optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
       },
@@ -347,7 +347,7 @@ export const MANTLE_TOKEN_LIST: {
       name: "Tether USD",
       symbol: "USDT",
       decimals: 6,
-      logoURI: "https://token-list.mantle.xyz/data/USDT/logo.png",
+      logoURI: "/tether-usdt-logo.png",
       extensions: {
         optimismBridgeAddress: "0x4200000000000000000000000000000000000010",
       },

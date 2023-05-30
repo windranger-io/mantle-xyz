@@ -172,8 +172,8 @@ export function useCallBridge(
             // mark open now
             isCTAPageOpenRef.current = true;
 
-            // don't close the toast when clicked...
-            return false;
+            // close the toast when clicked...
+            return true;
           },
         });
 
@@ -353,7 +353,7 @@ export function useCallBridge(
           // mark open now
           isCTAPageOpenRef.current = true;
 
-          // we want to close this when its clicked because it will be replaced with the waitForRelay toast
+          // we can close this when its clicked because it will be replaced with every new waitForRelay toast
           return true;
         };
         // set the restoration point

@@ -33,8 +33,8 @@ export default function Loading({
     <>
       <span className="flex justify-between align-middle">
         <Typography variant="modalHeadingSm" className="text-center w-full">
-          {direction === Direction.Deposit ? "Deposit" : "Withdrawal"} is on
-          it’s way to{" "}
+          {direction === Direction.Deposit ? "Deposit" : "Withdrawal"} is on its
+          way to{" "}
           {direction === Direction.Deposit
             ? CHAINS_FORMATTED[L2_CHAIN_ID].name
             : CHAINS_FORMATTED[L1_CHAIN_ID].name}

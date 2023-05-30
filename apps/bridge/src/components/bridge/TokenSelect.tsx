@@ -276,7 +276,7 @@ export default function TokenSelect({
               />
             </svg>
           </span>
-          <span className="text-[#E22F3D]">You do not have enough funds.</span>
+          <span className="text-[#E22F3D]">Insufficient balance.</span>
           <button
             type="button"
             className="text-[#0A8FF6]"

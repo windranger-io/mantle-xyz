@@ -78,7 +78,7 @@ export default function Default({
     <>
       <span className="flex justify-between align-middle">
         <Typography variant="modalHeading">
-          Confirm {directionString}
+          Confirm {direction === Direction.Deposit ? "Deposit" : "Withdrawal"}
         </Typography>
         <Typography variant="modalHeading" className="text-white pt-1">
           <MdClear onClick={closeModal} className="cursor-pointer" />
