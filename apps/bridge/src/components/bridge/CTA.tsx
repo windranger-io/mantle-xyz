@@ -101,7 +101,7 @@ export default function CTA({
         selected.decimals
       ).lt(parseUnits(destinationTokenAmount || "0", selected.decimals))
     ) {
-      text = "You do not have enough funds to bridge this amount";
+      text = "Insufficient balance";
     } else if (
       parseUnits(allowance || "-1", selected.decimals).lt(
         parseUnits(destinationTokenAmount || "0", selected.decimals)
