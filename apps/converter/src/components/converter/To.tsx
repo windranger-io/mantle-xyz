@@ -25,7 +25,7 @@ export default function Destination() {
   }, [amount]);
 
   return (
-    <div className="pt-6 pb-2">
+    <div className="pt-4 pb-2">
       <div className="flex flex-row w-full justify-between items-center pt-4">
         <div className="flex flex-row items-center gap-3">
           <MantleLogo />
