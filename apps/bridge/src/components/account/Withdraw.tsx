@@ -12,7 +12,7 @@ import {
 
 import TxLink from "@components/bridge/utils/TxLink";
 
-import useKeyPress from "@hooks/useKeyPress";
+import { useKeyPress } from "@hooks/useKeyPress";
 import Status from "./Status";
 
 const TOKEN_INDEX = MANTLE_TOKEN_LIST.tokens.reduce((indx, token) => {
