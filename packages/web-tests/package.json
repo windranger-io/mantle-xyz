@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@mantle/tsconfig": "workspace:*",
-    "@playwright/test": "^1.29.1",
+    "@playwright/test": "1.29.2",
     "typescript": "^4.9.3"
   }
 }
