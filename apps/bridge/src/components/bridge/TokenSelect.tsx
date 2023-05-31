@@ -184,7 +184,7 @@ export default function TokenSelect({
                     width={24}
                     height={24}
                   />
-                  <span className="ml-2 block truncate">
+                  <span className="ml-2 truncate hidden md:block">
                     {selected?.symbol}
                   </span>
                 </span>
