@@ -10,6 +10,7 @@ type ButtonVariant =
   | 'outline'
   | 'ghost'
   | 'link'
+  | 'walletLabel'
   | 'walletConnect'
 type ButtonSize = 'regular' | 'large' | 'small' | 'full'
 
@@ -38,6 +39,7 @@ export const Button = ({
     // eslint-disable-next-line react/button-has-type
     <button
       className={clsx(
+        `${className}`,
         `${
           classNameHasHeight ? '' : 'h-fit '
         }rounded-lg text-md font-medium transition-all`,
@@ -45,7 +47,9 @@ export const Button = ({
         size === 'large' &&
           `${classNameHasWidth ? '' : 'w-fit '} px-5 py-3 text-base`,
         size === 'regular' &&
-          `${classNameHasWidth ? '' : 'w-fit '} px-4 py-2 text-sm`,
+          `${classNameHasWidth ? '' : 'w-fit '} px-4 py-2 ${
+            className && className?.indexOf('text-xs') !== -1 ? `` : `text-sm`
+          }`,
         size === 'small' && `${classNameHasWidth ? '' : 'w-fit '} px-2 py-2`,
         size === 'full' &&
           `${classNameHasWidth ? '' : 'w-full '}px-5 py-3 text-base`,
@@ -57,6 +61,8 @@ export const Button = ({
           'border border-brand text-brand hover:border-brand-dark hover:bg-brand-light disabled:border-brand disabled:bg-transparent',
         variant === 'ghost' &&
           'text-brand hover:bg-brand-light disabled:hover:bg-transparent',
+        variant === 'walletLabel' &&
+          'text-white hover:bg-button-primaryHover hover:text-black disabled:hover:bg-transparent text-xs',
         variant === 'walletConnect' &&
           'text-black bg-button-primary hover:bg-button-primaryHover disabled:hover:bg-transparent text-sm',
         variant === 'link' &&

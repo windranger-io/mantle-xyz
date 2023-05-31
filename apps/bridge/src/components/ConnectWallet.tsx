@@ -17,6 +17,7 @@ import { BiError } from "react-icons/bi";
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 import Link from "next/link";
+import { getAddress } from "ethers/lib/utils";
 
 function ConnectWallet() {
   // get the currently connected wallet-selected-chain
@@ -180,12 +181,12 @@ function ConnectWallet() {
         <Link href="/account/desposit" scroll shallow>
           <Button
             type="button"
-            variant="walletConnect"
+            variant="walletLabel"
             size="regular"
-            className="flex flex-row items-center text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-pointer"
+            className="flex flex-row items-center text-xs h-full text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-pointer"
           >
             <Avatar walletAddress="address" />
-            {truncateAddress(client.address)}
+            {truncateAddress(getAddress(client.address))}
           </Button>
         </Link>
       ) : (
