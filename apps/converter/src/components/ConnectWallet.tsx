@@ -17,6 +17,8 @@ import { BiError } from "react-icons/bi";
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 
+import { getAddress } from "ethers/lib/utils";
+
 function ConnectWallet() {
   // get the currently connected wallet-selected-chain
   const { chain: currentChain } = useNetwork();
@@ -169,12 +171,12 @@ function ConnectWallet() {
       {isChainID && client.isConnected && client.address ? (
         <Button
           type="button"
-          variant="walletConnect"
+          variant="walletLabel"
           size="regular"
-          className="flex flex-row items-center text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-default"
+          className="flex flex-row items-center text-xs h-full text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-default"
         >
           <Avatar walletAddress="address" />
-          {truncateAddress(client.address)}
+          {truncateAddress(getAddress(client.address) as `0x${string}`)}
         </Button>
       ) : (
         ``
