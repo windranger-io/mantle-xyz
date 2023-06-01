@@ -84,7 +84,7 @@ export default function Tabs() {
             </Link>
           </Typography>
         </span>
-        <Account />
+        <Account selectedTab={selectedTab} />
         <Tab.Group
           selectedIndex={selectedTab === 1 ? 0 : 1}
           onChange={(val) => {

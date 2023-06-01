@@ -10,8 +10,9 @@ import { RxExternalLink } from "react-icons/rx";
 import { Typography } from "@mantle/ui";
 
 import { getAddress } from "ethers/lib/utils.js";
+import { CHAINS, Direction, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
-export default function Account() {
+export default function Account({ selectedTab }: { selectedTab: Direction }) {
   const { client } = useContext(StateContext);
 
   const { copy } = useCopyToClipboard();
@@ -32,7 +33,11 @@ export default function Account() {
             className="cursor-pointer"
           />
           <Link
-            href={`https://etherscan.io/address/${client.address}`}
+            href={`${
+              CHAINS[
+                selectedTab === Direction.Deposit ? L1_CHAIN_ID : L2_CHAIN_ID
+              ].blockExplorerUrls[0]
+            }address/${client.address}`}
             rel="noreferrer noopener"
             target="_blank"
           >
