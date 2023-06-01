@@ -19,9 +19,9 @@ import {
 
 import { hashCrossDomainMessage } from "@mantleio/core-utils";
 
-import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
+import { CHAINS_FORMATTED, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
-import { ethers } from "ethers";
+import { ethers, providers } from "ethers";
 import { useSigner, useProvider, useNetwork } from "wagmi";
 import type {
   FallbackProvider,
@@ -78,6 +78,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
 
   // setting providers against refs because we freeze state in a render frame and need to step out
   // of that frame by ref to avoid an "underlying network changed" error if the user switches chain
+  const layer1InfuraRef = React.useRef<Provider>();
   const layer1ProviderRef = React.useRef<Provider>();
   const mantleTestnetRef = React.useRef<Provider>();
 
@@ -88,10 +89,18 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   useErrorHandler(layer1SignerError);
   // get an infura backed provider so we can search through more blocks - this enables the full sdk to work
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const layer1Provider = new ethers.providers.InfuraProvider(
+  const layer1Infura = new ethers.providers.InfuraProvider(
     L1_CHAIN_ID,
     // eslint-disable-next-line @typescript-eslint/dot-notation
     process.env["NEXT_PUBLIC_INFURA_API_KEY"]
+  );
+  // use public l1 Provider for gernal lookups (gas etc)
+  const layer1Provider = React.useMemo(
+    () =>
+      new providers.JsonRpcProvider(
+        CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
+      ),
+    []
   );
   const { data: mantleTestnetSigner, error: mantleTestnetSignerError } =
     useSigner({
@@ -230,7 +239,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
 
       // connect to the fixed provider
       const messenger = unconnectedMessenger.connect(
-        IS_L1_TO_L2 ? mantleTestnetRef.current! : layer1ProviderRef.current!
+        IS_L1_TO_L2 ? mantleTestnetRef.current! : layer1InfuraRef.current!
       );
 
       // look for successfully relayed messages
@@ -372,7 +381,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       // connect the contract to the read-only provider but use InfuraRef so that we can search without knowing the expected block
       const stateCommitmentChain =
         context.crossChainMessenger.contracts.l1.StateCommitmentChain.connect(
-          layer1ProviderRef.current!
+          layer1InfuraRef.current!
         );
 
       // check for events in either the last 2000 blocks or 1000 blocks either side of the requested block
@@ -557,6 +566,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   }, [
     layer1Signer,
     layer1Provider,
+    layer1InfuraRef,
     layer1ProviderRef,
     mantleTestnetSigner,
     mantleTestnetProvider,
@@ -564,6 +574,10 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   ]);
 
   // setting readonly providers fresh on every tick to avoid "underlying network changed" errors
+  React.useEffect(() => {
+    layer1InfuraRef.current = layer1Infura;
+  }, [layer1Infura]);
+
   React.useEffect(() => {
     layer1ProviderRef.current = layer1Provider;
   }, [layer1Provider]);
