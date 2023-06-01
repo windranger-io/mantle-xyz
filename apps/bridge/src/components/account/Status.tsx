@@ -167,10 +167,16 @@ export default function Status({
     false,
     false,
     (tx) => {
+      // check if we already have an l1 hash in the cache
+      const l1Hash = tx2Hashes[transactionHash];
       // persist the l2 txhash
       withdrawalTx2Hashes.current[transactionHash] = tx.transactionHash;
       // mark the status as complete in the local cache
       withdrawalStatuses.current[transactionHash] = "complete";
+      // update the tx2Hash store with cached values (using a ref to collect these values to avoid race conditions when setting to tx2Hashes)
+      if (l1Hash !== tx.transactionHash) {
+        setTx2Hashes({ ...withdrawalTx2Hashes.current });
+      }
       // now refetch this now
       refetch();
     }
