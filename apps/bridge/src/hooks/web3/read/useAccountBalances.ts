@@ -81,7 +81,8 @@ function useAccountBalances(
         });
         // run all calls...
         const responses = await callMulticallContract(
-          multicall.current.multicallContract,
+          // connect to provider if different multicallContract default
+          multicall.current.multicallContract.connect(provider!),
           calls
         );
         const newBalances = responses.reduce((fillBalances, value, key) => {

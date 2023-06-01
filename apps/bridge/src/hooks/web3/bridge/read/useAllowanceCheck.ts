@@ -1,19 +1,35 @@
-import { Direction, L1_CHAIN_ID, TOKEN_ABI, Token } from "@config/constants";
-import { Contract, BigNumberish, constants } from "ethers";
+/* eslint-disable no-underscore-dangle */
+import {
+  CHAINS_FORMATTED,
+  Direction,
+  L1_CHAIN_ID,
+  TOKEN_ABI,
+  Token,
+} from "@config/constants";
+import { BaseProvider } from "@ethersproject/providers";
+import { Contract, BigNumberish, constants, providers } from "ethers";
 
 import { parseUnits, formatUnits } from "ethers/lib/utils.js";
+import { useMemo } from "react";
 
-import { useProvider, useQuery } from "wagmi";
+import { useQuery } from "wagmi";
 
 function useAllowanceCheck(
   chainId: number,
   client: { address?: `0x${string}` | undefined },
   bridgeAddress: string | false | undefined,
   selectedToken: { [x: string]: string },
-  tokens: Token[]
+  tokens: Token[],
+  connectedProvider: BaseProvider
 ) {
-  // fetch the gas estimate for the selected operation on in the selected direction
-  const provider = useProvider({ chainId });
+  // connect to L1 on public gateway but use default rpc for L2
+  const provider = useMemo(() => {
+    return chainId === L1_CHAIN_ID
+      ? new providers.JsonRpcProvider(
+          CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
+        )
+      : connectedProvider;
+  }, [chainId, connectedProvider]);
 
   // fetch the allowance for the selected token on the selected chain
   const { data: allowance, refetch: resetAllowance } = useQuery(
@@ -24,7 +40,7 @@ function useAllowanceCheck(
         chainId,
         bridgeAddress,
         selectedToken,
-        provider: provider.network.name,
+        provider: connectedProvider?.network?.name,
       },
     ],
     () => {
@@ -33,7 +49,8 @@ function useAllowanceCheck(
         client?.address &&
         client?.address !== "0x" &&
         bridgeAddress &&
-        provider.network.chainId === chainId
+        connectedProvider?.network?.chainId === chainId &&
+        provider
       ) {
         // check that we're using the corrent network before proceeding
         // only run the multicall if we're connected to the correct network
