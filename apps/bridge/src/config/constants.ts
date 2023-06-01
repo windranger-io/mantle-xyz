@@ -104,6 +104,8 @@ export const CHAINS: Record<
     rpcUrls: [
       // eslint-disable-next-line @typescript-eslint/dot-notation
       `https://goerli.infura.io/v3/${process.env["NEXT_PUBLIC_INFURA_API_KEY"]}`,
+      // public gateway
+      `https://rpc.ankr.com/eth_goerli`,
     ],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
@@ -128,10 +130,10 @@ export const CHAINS_FORMATTED: Record<number, Chain> = {
     network: CHAINS[5].chainName,
     rpcUrls: {
       default: {
-        http: CHAINS[5].rpcUrls,
+        http: [CHAINS[5].rpcUrls[0]],
       },
       public: {
-        http: CHAINS[5].rpcUrls,
+        http: [CHAINS[5].rpcUrls[1]],
       },
     },
     id: 5,
@@ -142,10 +144,10 @@ export const CHAINS_FORMATTED: Record<number, Chain> = {
     network: CHAINS[5001].chainName,
     rpcUrls: {
       default: {
-        http: CHAINS[5001].rpcUrls,
+        http: [CHAINS[5001].rpcUrls[0]],
       },
       public: {
-        http: CHAINS[5001].rpcUrls,
+        http: [CHAINS[5001].rpcUrls[0]],
       },
     },
     id: 5001,

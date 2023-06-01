@@ -2,11 +2,10 @@
 
 /* eslint-disable no-await-in-loop */
 
-import { Provider, TransactionReceipt } from "@ethersproject/providers";
+import { TransactionReceipt } from "@ethersproject/providers";
 import { MessageReceipt, MessageStatus } from "@mantleio/sdk";
-import { useProvider } from "wagmi";
 
-import { useContext, useEffect, useRef } from "react";
+import { useContext } from "react";
 import StateContext from "@providers/stateContext";
 
 import { timeout } from "@utils/toolSet";
@@ -51,12 +50,6 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
 
   // build toast to return to the current page
   const { updateToast, deleteToast } = useToast();
-
-  // get L1 provider
-  const provider = useProvider({ chainId: L1_CHAIN_ID });
-
-  // assign to a ref so we can use the updated version inside the func
-  const providerRef = useRef<Provider>();
 
   // wait for the message to be relayed
   const waitForRelay = async (receipt: TransactionReceipt) => {
@@ -177,18 +170,13 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
         // refetch to mark the claim available
         refetchWithdrawals();
 
-        // record the block we start on so that we can exit the loop if we don't get a response within the 2000 block window we have
-        const startBlock = await providerRef.current!.getBlockNumber();
-
         // manually perform the waiting procedure and call getMessage
         let status: MessageStatus = MessageStatus.UNCONFIRMED_L1_TO_L2_MESSAGE;
-        let block = startBlock;
+        let iterations = 0;
         let stopped = false;
 
         // loop for 2000 blocks or until stopped
-        while (!stopped && block < startBlock + 2000) {
-          // get the current block number (make sure we never exceed 2000 blocks)
-          block = await providerRef.current!.getBlockNumber();
+        while (!stopped && iterations < 2000) {
           // 12s is approx time it takes to mine a block
           await timeout(12000);
           // check the status now
@@ -295,13 +283,15 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
               noopHandler();
             }
           }
+          // never exceed 2000 blocks
+          iterations += 1;
           // eslint-disable-next-line no-console
           // console.log({
           //   txHash,
           //   stopped,
           //   status,
-          //   block,
-          //   isOkay: block < startBlock + 1999,
+          //   iterations,
+          //   isOkay: iterations < 1999,
           // });
         }
       }
@@ -320,11 +310,6 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
     // return the tx1Hash (so we can keep track of this operation)
     return txHash;
   };
-
-  // update the refs so we can access them inside the loop
-  useEffect(() => {
-    providerRef.current = provider;
-  }, [provider]);
 
   return waitForRelay;
 }
