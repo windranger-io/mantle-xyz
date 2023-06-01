@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import CONST from '@mantle/constants'
-import { MantleLetterMark, MantleLogoIcon, PoweredByline } from '../base/Icons'
+import { MantleLetterMark, MantleLogoIcon } from '../base/Icons'
 import { Typography } from '../base/T'
 import { MantleLink } from '../links/MantleLinks'
 
@@ -112,11 +112,8 @@ export const Footer = ({ page }: { page: string }) => {
           >
             <div className="flex flex-row align-center gap-4">
               <MantleLogoIcon height={40} width={40} />
-              <div>
-                <p className="text-sm ">
-                  Mantle {new Date().getFullYear()}&nbsp;&#169;
-                </p>
-                <PoweredByline height={24} width={150} />
+              <div className="flex items-center">
+                Mantle {new Date().getFullYear()}&nbsp;&#169;
               </div>
             </div>
           </a>
