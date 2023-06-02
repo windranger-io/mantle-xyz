@@ -10,7 +10,6 @@ import { BaseProvider } from "@ethersproject/providers";
 import { Contract, BigNumberish, constants, providers } from "ethers";
 
 import { parseUnits, formatUnits } from "ethers/lib/utils.js";
-import { useMemo } from "react";
 
 import { useQuery } from "wagmi";
 
@@ -22,15 +21,6 @@ function useAllowanceCheck(
   tokens: Token[],
   connectedProvider: BaseProvider
 ) {
-  // connect to L1 on public gateway but use default rpc for L2
-  const provider = useMemo(() => {
-    return chainId === L1_CHAIN_ID
-      ? new providers.JsonRpcProvider(
-          CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
-        )
-      : connectedProvider;
-  }, [chainId, connectedProvider]);
-
   // fetch the allowance for the selected token on the selected chain
   const { data: allowance, refetch: resetAllowance } = useQuery(
     [
@@ -44,12 +34,19 @@ function useAllowanceCheck(
       },
     ],
     () => {
+      // connect to L1 on public gateway but use default rpc for L2
+      const provider =
+        chainId === L1_CHAIN_ID
+          ? new providers.JsonRpcProvider(
+              CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
+            )
+          : connectedProvider;
+      // const useProvider = chainId === L1_CHAIN_ID ? provider : connectedProvider;
       // only run the multicall if we're connected to the correct network
       if (
         client?.address &&
         client?.address !== "0x" &&
         bridgeAddress &&
-        connectedProvider?.network?.chainId === chainId &&
         provider
       ) {
         // check that we're using the corrent network before proceeding
@@ -110,7 +107,6 @@ function useAllowanceCheck(
       return "0";
     },
     {
-      enabled: !!provider,
       initialData: "0",
       // refetch every 60s or when refetched
       staleTime: 60000,

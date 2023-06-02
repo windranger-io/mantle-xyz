@@ -6,7 +6,7 @@ import {
 } from "@config/constants";
 import { Network } from "@ethersproject/providers";
 import { BigNumberish, Contract, providers } from "ethers";
-import { MutableRefObject, useMemo } from "react";
+import { MutableRefObject } from "react";
 
 import { callMulticallContract } from "@utils/multicallContract";
 import { formatUnits } from "ethers/lib/utils.js";
@@ -22,17 +22,6 @@ function useAccountBalances(
   >,
   setIsLoadingBalances: (arg: boolean) => void
 ) {
-  // connect to L1 on public gateway but use default rpc for L2
-  const provider = useMemo(
-    () =>
-      chainId === L1_CHAIN_ID
-        ? new providers.JsonRpcProvider(
-            CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
-          )
-        : multicall.current?.multicallContract.provider,
-    [chainId, multicall]
-  );
-
   // perform a multicall on the given network to get all token balances for user
   const {
     data: balances,
@@ -51,6 +40,13 @@ function useAccountBalances(
       },
     ],
     async () => {
+      // connect to L1 on public gateway but use default rpc for L2
+      const provider =
+        chainId === L1_CHAIN_ID
+          ? new providers.JsonRpcProvider(
+              CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
+            )
+          : multicall.current?.multicallContract.provider;
       // only run the multicall if we're connected to the correct network
       if (
         client?.address &&
@@ -136,7 +132,6 @@ function useAccountBalances(
       return {};
     },
     {
-      enabled: !!provider,
       initialData: {},
       // refetch every 60s or when refetched
       staleTime: 60000,
