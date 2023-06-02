@@ -110,6 +110,7 @@ function useAllowanceCheck(
       return "0";
     },
     {
+      enabled: !!provider,
       initialData: "0",
       // refetch every 60s or when refetched
       staleTime: 60000,

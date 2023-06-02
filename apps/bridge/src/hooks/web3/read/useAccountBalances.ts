@@ -55,7 +55,8 @@ function useAccountBalances(
       if (
         client?.address &&
         client?.address !== "0x" &&
-        multicall.current?.network.chainId === chainId
+        multicall.current?.network.chainId === chainId &&
+        provider
       ) {
         // filter any native tokens from the selection
         const filteredTokens = tokens.filter(
@@ -82,7 +83,7 @@ function useAccountBalances(
         // run all calls...
         const responses = await callMulticallContract(
           // connect to provider if different multicallContract default
-          multicall.current.multicallContract.connect(provider!),
+          multicall.current.multicallContract.connect(provider),
           calls
         );
         const newBalances = responses.reduce((fillBalances, value, key) => {
@@ -135,6 +136,7 @@ function useAccountBalances(
       return {};
     },
     {
+      enabled: !!provider,
       initialData: {},
       // refetch every 60s or when refetched
       staleTime: 60000,
