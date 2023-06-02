@@ -34,7 +34,7 @@ function useAllowanceCheck(
   // fetch the allowance for the selected token on the selected chain
   const { data: allowance, refetch: resetAllowance } = useQuery(
     [
-      "ALLOWANCE_CHECK",
+      "ALLOWANCE_CHECK_BY_CHAINID",
       {
         address: client?.address,
         chainId,
