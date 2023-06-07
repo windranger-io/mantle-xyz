@@ -13,7 +13,6 @@ This monorepo uses [turborepo](https://turbo.build) for the monorepo build and [
 - `mantle-website`: The main [Mantle.xyz](https://www.mantle.xyz/) marketing website and pages
 - `mantle-bridge`: The mantle bridge application
 - `mantle-faucet`: The mantle faucet application
-- `mantle-cms`: The mantle cms application
 - `mantle-template`: A template for other apps
 
 **Packages**
@@ -81,12 +80,6 @@ Mantle Bridge
 
 ```
 pnpm run dev:bridge
-```
-
-Mantle CMS
-
-```
-pnpm run dev:cms
 ```
 
 ### Adding packages

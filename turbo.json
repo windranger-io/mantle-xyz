@@ -40,9 +40,6 @@
       ],
       "cache": false
     },
-    "dev:cms": {
-      "cache": false
-    },
     "dev:template": {
       "cache": false
     },
