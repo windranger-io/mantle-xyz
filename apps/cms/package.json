@@ -14,5 +14,8 @@
   "dependencies": {
     "directus": "^10.2.1",
     "sqlite3": "^5.1.4"
+  },
+  "engines": {
+    "node": "18.16.0"
   }
 }
