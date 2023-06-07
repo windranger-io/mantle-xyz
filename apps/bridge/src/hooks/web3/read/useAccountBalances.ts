@@ -1,6 +1,11 @@
-import { L1_CHAIN_ID, TOKEN_ABI, Token } from "@config/constants";
+import {
+  CHAINS_FORMATTED,
+  L1_CHAIN_ID,
+  TOKEN_ABI,
+  Token,
+} from "@config/constants";
 import { Network } from "@ethersproject/providers";
-import { BigNumberish, Contract } from "ethers";
+import { BigNumberish, Contract, providers } from "ethers";
 import { MutableRefObject } from "react";
 
 import { callMulticallContract } from "@utils/multicallContract";
@@ -27,7 +32,7 @@ function useAccountBalances(
     [key: string]: BigNumberish;
   }>(
     [
-      "BALANCES_FOR_ADDRESS_ON_CHAINID",
+      "ADDRESS_BALANCES_FOR_ON_CHAINID",
       {
         address: client?.address,
         chainId,
@@ -35,11 +40,19 @@ function useAccountBalances(
       },
     ],
     async () => {
+      // connect to L1 on public gateway but use default rpc for L2
+      const provider =
+        chainId === L1_CHAIN_ID
+          ? new providers.JsonRpcProvider(
+              CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
+            )
+          : multicall.current?.multicallContract.provider;
       // only run the multicall if we're connected to the correct network
       if (
         client?.address &&
         client?.address !== "0x" &&
-        multicall.current?.network.chainId === chainId
+        multicall.current?.network.chainId === chainId &&
+        provider
       ) {
         // filter any native tokens from the selection
         const filteredTokens = tokens.filter(
@@ -54,11 +67,7 @@ function useAccountBalances(
         const calls = filteredTokens.map((token: { address: string }) => {
           return {
             target: token.address as `0x${string}`,
-            contract: new Contract(
-              token.address,
-              TOKEN_ABI,
-              multicall.current?.multicallContract.provider
-            ),
+            contract: new Contract(token.address, TOKEN_ABI, provider),
             fns: [
               {
                 fn: "balanceOf",
@@ -69,7 +78,8 @@ function useAccountBalances(
         });
         // run all calls...
         const responses = await callMulticallContract(
-          multicall.current.multicallContract,
+          // connect to provider if different multicallContract default
+          multicall.current.multicallContract.connect(provider),
           calls
         );
         const newBalances = responses.reduce((fillBalances, value, key) => {
@@ -93,9 +103,7 @@ function useAccountBalances(
                 "0x0000000000000000000000000000000000000000":
                   (client.address &&
                     formatUnits(
-                      (await multicall.current.multicallContract.provider.getBalance(
-                        client.address!
-                      )) || "0",
+                      (await provider?.getBalance(client.address!)) || "0",
                       18
                     )) ||
                   "0",
@@ -104,9 +112,7 @@ function useAccountBalances(
                 "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000":
                   (client.address &&
                     formatUnits(
-                      (await multicall.current.multicallContract.provider.getBalance(
-                        client.address!
-                      )) || "0",
+                      (await provider?.getBalance(client.address!)) || "0",
                       18
                     )) ||
                   "0",

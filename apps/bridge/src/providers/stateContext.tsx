@@ -313,7 +313,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     client,
     bridgeAddress,
     selectedToken,
-    tokens
+    tokens,
+    provider
   );
 
   // fetch the gas estimate for the selected operation on in the selected direction

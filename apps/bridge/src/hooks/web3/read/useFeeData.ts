@@ -9,7 +9,7 @@ export type FeeData = {
 function useFeeData(provider: BaseProvider) {
   // fetch the gas estimate for the selected operation on in the selected direction
   const { data: feeData, refetch: refetchFeeData } = useQuery<FeeData>(
-    ["FEE_DATA", { network: provider?.network.name }],
+    ["FEE_DATA", { network: provider?.network?.name }],
     async () => {
       return {
         data: await provider.getFeeData(),
