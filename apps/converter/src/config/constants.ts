@@ -5,14 +5,14 @@ import { Address, Chain } from "wagmi";
 export const L1_CHAIN_ID = 5;
 export const L2_CHAIN_ID = 5001;
 
-// export the conversion rate (this will be 1:1 when we go live)
-export const CONVERSION_RATE = 3.14;
+// export the conversion rate
+export const CONVERSION_RATE = 1;
 
 // Convert BitDAO tokens to Mantle tokens on L1
 export const L1_BITDAO_TOKEN_ADDRESS =
-  "0x219B65b403BEF47dC15aA394347C9f570BfA5920";
+  "0x5a94Dc6cc85fdA49d8E9A8b85DDE8629025C42be";
 export const L1_MANTLE_TOKEN_ADDRESS =
-  "0xE65011Ed033F4154C9352db665Cb72b356225F05";
+  "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604";
 
 // Use L1 Converter contract to carryout the conversion
 export const L1_CONVERTER_CONTRACT_ABI = [
@@ -20,12 +20,12 @@ export const L1_CONVERTER_CONTRACT_ABI = [
   "function migrateAllBIT()",
 ];
 export const L1_CONVERTER_CONTRACT_ADDRESS =
-  "0x40D7eaA1e253AEB2279a740368115F6FDc00AF63";
+  "0x144D9B7F34a4e3133C6F347886fBe2700c4cb268";
 
 // Token constructs for dummy contracts on goerli
 export const L1_BITDAO_TOKEN: Token = {
   chainId: 5,
-  address: "0x219B65b403BEF47dC15aA394347C9f570BfA5920",
+  address: L1_BITDAO_TOKEN_ADDRESS,
   name: "BitDAO",
   symbol: "BIT",
   decimals: 18,
@@ -33,7 +33,7 @@ export const L1_BITDAO_TOKEN: Token = {
 };
 export const L1_MANTLE_TOKEN: Token = {
   chainId: 5,
-  address: "0xE65011Ed033F4154C9352db665Cb72b356225F05",
+  address: L1_MANTLE_TOKEN_ADDRESS,
   name: "Mantle",
   symbol: "MNT",
   decimals: 18,

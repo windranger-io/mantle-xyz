@@ -17,9 +17,13 @@ export default function Destination() {
 
   const value = useMemo(() => {
     return formatUnits(
-      parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals)
-        .mul(CONVERSION_RATE * 100)
-        .div(100),
+      (() => {
+        let bn = parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals);
+        if (CONVERSION_RATE !== 1) {
+          bn = bn.mul(CONVERSION_RATE * 100).div(100);
+        }
+        return bn;
+      })(),
       L1_BITDAO_TOKEN.decimals
     );
   }, [amount]);
