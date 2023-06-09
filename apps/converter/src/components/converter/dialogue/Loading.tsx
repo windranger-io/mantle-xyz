@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import StateContext from "@providers/stateContext";
 
 import Image from "next/image";
@@ -24,6 +24,24 @@ export default function Loading({
 }) {
   const { amount } = useContext(StateContext);
 
+  const from = useMemo(() => {
+    const formatted = formatUnits(
+      parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals),
+      L1_BITDAO_TOKEN.decimals
+    );
+    return formatted.replace(/\.0$/, "");
+  }, [amount]);
+
+  const to = useMemo(() => {
+    let bn = parseUnits(amount || "0", L1_MANTLE_TOKEN.decimals);
+    if (CONVERSION_RATE !== 1) {
+      bn = bn.mul(CONVERSION_RATE * 100).div(100);
+    }
+    const formatted = formatUnits(bn, L1_MANTLE_TOKEN.decimals).toString();
+
+    return formatted.replace(/\.0$/, "");
+  }, [amount]);
+
   return (
     <>
       <span className="flex justify-between align-middle">
@@ -44,23 +62,7 @@ export default function Loading({
       </div>
       <div className="text-center">
         <div>
-          You are converting{" "}
-          {formatUnits(
-            parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals),
-            L1_BITDAO_TOKEN.decimals
-          )}{" "}
-          $BIT to{" "}
-          {formatUnits(
-            (() => {
-              let bn = parseUnits(amount || "0", L1_MANTLE_TOKEN.decimals);
-              if (CONVERSION_RATE !== 1) {
-                bn = bn.mul(CONVERSION_RATE * 100).div(100);
-              }
-              return bn;
-            })(),
-            L1_MANTLE_TOKEN.decimals
-          ).toString()}{" "}
-          $MNT.
+          You are converting {from} $BIT to {to} $MNT.
         </div>
         <div>Go grab some coffee, I promise it&apos;ll be done by then!</div>
       </div>

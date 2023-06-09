@@ -38,7 +38,7 @@ export default function Destination() {
               className="max-w-[min(346px,100vw)] truncate"
               title={`${value} MNT`}
             >
-              {value}
+              {formatBigNumberString(value, L1_MANTLE_TOKEN.decimals, false)}
             </div>
             <span className="text-[#C4C4C4] font-bold">MNT</span>
           </div>
@@ -56,9 +56,9 @@ export default function Destination() {
               Number.isNaN(
                 parseFloat(balances?.[L1_MANTLE_TOKEN.address] || "")
               )
-                ? "0.0"
+                ? "0"
                 : formatBigNumberString(balances?.[L1_MANTLE_TOKEN.address]) ||
-                  "0.0"
+                  "0"
             }${" "}${L1_MANTLE_TOKEN.symbol}`}
           />
         </div>
