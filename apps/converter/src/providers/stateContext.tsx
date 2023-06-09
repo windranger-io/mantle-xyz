@@ -14,6 +14,7 @@ import { Contract } from "ethers";
 import { Network } from "@ethersproject/providers";
 
 import {
+  Context,
   createContext,
   MutableRefObject,
   useEffect,
@@ -92,7 +93,9 @@ export type StateProps = {
 };
 
 // create a context to bind the provider to
-const StateContext = createContext<StateProps>({} as StateProps);
+const StateContext: Context<StateProps> = createContext<StateProps>(
+  {} as StateProps
+);
 
 // create a provider to contain all state
 export function StateProvider({ children }: { children: React.ReactNode }) {
