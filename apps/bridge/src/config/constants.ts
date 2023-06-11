@@ -114,8 +114,8 @@ export const CHAINS: Record<
     chainId: "0x1389",
     chainName: "Mantle Testnet",
     nativeCurrency: {
-      name: "BitDAO",
-      symbol: "BIT",
+      name: "Mantle",
+      symbol: "MNT",
       decimals: 18,
     },
     rpcUrls: ["https://rpc.testnet.mantle.xyz"],
@@ -162,7 +162,7 @@ export enum ChainID {
 }
 
 export enum TokenSymbol {
-  BIT = "BIT",
+  MNT = "MNT",
   ETH = "ETH",
   LINK = "LINK",
   UNI = "UNI",
@@ -213,11 +213,11 @@ export const MANTLE_TOKEN_LIST: {
   tokens: [
     {
       chainId: 5,
-      address: "0x5a94Dc6cc85fdA49d8E9A8b85DDE8629025C42be",
-      name: "BitDAO",
-      symbol: "BIT",
+      address: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
+      name: "Mantle",
+      symbol: "MNT",
       decimals: 18,
-      logoURI: "https://token-list.mantle.xyz/data/BitDAO/logo.svg",
+      logoURI: "/mantle-logo.svg",
       extensions: {
         optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
       },
@@ -225,10 +225,10 @@ export const MANTLE_TOKEN_LIST: {
     {
       chainId: 5001,
       address: "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
-      name: "BitDAO",
-      symbol: "BIT",
+      name: "Mantle",
+      symbol: "MNT",
       decimals: 18,
-      logoURI: "https://token-list.mantle.xyz/data/BitDAO/logo.svg",
+      logoURI: "/mantle-logo.svg",
       extensions: {
         optimismBridgeAddress: "0x4200000000000000000000000000000000000010",
       },
