@@ -29,7 +29,7 @@ export const L1_BITDAO_TOKEN: Token = {
   name: "BitDAO",
   symbol: "BIT",
   decimals: 18,
-  logoURI: "https://token-list.mantle.xyz/data/BitDAO/logo.svg",
+  logoURI: "/bitdao.svg",
 };
 export const L1_MANTLE_TOKEN: Token = {
   chainId: 5,

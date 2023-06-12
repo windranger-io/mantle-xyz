@@ -20,7 +20,7 @@ export const formatBigNumberString = (
   const fractionPart = new Decimal(`0.${str?.split(".")?.[1] || 0}`)
     .toFixed(precision)
     .toString()
-    // remove first 0 repeated 00's at the end
+    // remove first 0 and repeated 00's at the end
     .replace(/^0|0+$/g, "")
     // match the decimal and place a 0 if decimals are absent
     .replace(/^(\.)$/, ".0")
