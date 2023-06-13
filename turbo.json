@@ -42,6 +42,9 @@
     "dev:cms": {
       "cache": false
     },
+    "dev:nft": {
+      "cache": false
+    },
     "dev:template": {
       "cache": false
     },
