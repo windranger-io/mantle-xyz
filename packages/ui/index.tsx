@@ -19,7 +19,7 @@ export * from './src/links/MantleLinks'
  *
  *
  */
-
+export * from './src/base/Icons'
 export * from './src/base/T'
 
 /**

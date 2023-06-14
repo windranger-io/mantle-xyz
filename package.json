@@ -14,6 +14,7 @@
     "dev:faucet": "turbo run dev:faucet",
     "dev:bridge": "turbo run dev:bridge",
     "dev:cms": "turbo run dev:cms",
+    "dev:nft": "turbo run dev:nft",
     "dev:template": "turbo run dev:template",
     "test": "turbo run test",
     "lint": "turbo run lint",
