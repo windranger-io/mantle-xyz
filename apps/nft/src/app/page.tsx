@@ -54,7 +54,7 @@ export default function Page() {
       <div className="grid grid-col-1 md:grid-cols-2 md:gap-10 lg:gap-20 mx-auto max-w-7xl w-full p-4 lg:px-8">
         <div>
           <video autoPlay loop muted playsInline poster="/animation.png">
-            <source src="/herobg.webm" type="video/webm" />
+            <source src="/animation.webm" type="video/webm" />
             <source src="/animation.mp4" type="video/mp4" />
           </video>
         </div>
