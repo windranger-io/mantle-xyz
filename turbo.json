@@ -1,11 +1,19 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["GITHUB_TOKEN"],
+  "globalEnv": [
+    "GITHUB_TOKEN",
+    "I18NEXUS_API_KEY",
+    "I18NEXUS_VERSION",
+    "I18NEXUS_API_URL",
+    "I18NEXUS_PRE_BUILD",
+    "VERCEL_ENV"
+  ],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"]
     },
+    "build:locales": {},
     "test": {
       "outputs": ["coverage/"],
       "dependsOn": []

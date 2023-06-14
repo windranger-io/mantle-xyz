@@ -32,5 +32,11 @@ export default {
     GITHUB_LINK: 'https://github.com/mantlenetworkio',
     DOC_LINK: 'https://docs.mantle.xyz/introducing-mantle/a-gentle-introduction'
 
-  }
+  },
+  TRANSLATION: {
+    NAMESPACES: [
+      'default'
+    ],
+  },
+  LOCALES: ['en', 'ko', 'zh', 'ru', 'ja'],
 }
