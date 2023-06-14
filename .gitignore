@@ -39,3 +39,6 @@ yarn-error.log*
 .vercel
 
 **/uploads
+
+# translations
+**/src/i18n
