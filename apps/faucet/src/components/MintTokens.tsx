@@ -32,7 +32,7 @@ function MintTokens() {
   const [txs, setTxs] = useState<string[]>([]);
 
   // record connected wallets bit and eth balance
-  const [myBalanceBIT, setmyBalanceBIT] = useState("0.0");
+  const [myBalanceMNT, setmyBalanceMNT] = useState("0.0");
   const [, setmyBalanceETH] = useState("0.0");
 
   // set address with useState to avoid hydration errors
@@ -46,7 +46,7 @@ function MintTokens() {
     watch: true,
     chainId: CHAIN_ID,
   });
-  const { data: balanceBIT } = useBalance({
+  const { data: balanceMNT } = useBalance({
     address: wagmiAddress,
     watch: true,
     token: NETWORKS[CHAIN_ID],
@@ -74,7 +74,7 @@ function MintTokens() {
 
       setAmount(undefined);
       setSuccess(
-        `Success! We minted ${amount} BIT and sent ${
+        `Success! We minted ${amount} MNT and sent ${
           (amount || 0) === 1 ? "it" : "them"
         } to ${truncateAddress(address as `0x${string}`)}`
       );
@@ -90,8 +90,8 @@ function MintTokens() {
 
   useEffect(() => {
     setmyBalanceETH(formatEther(balanceETH?.value || "0"));
-    setmyBalanceBIT(formatEther(balanceBIT?.value || "0"));
-  }, [balanceETH, balanceBIT]);
+    setmyBalanceMNT(formatEther(balanceMNT?.value || "0"));
+  }, [balanceETH, balanceMNT]);
 
   return (
     <SimpleCard className="max-w-lg grid gap-4">
@@ -158,7 +158,7 @@ function MintTokens() {
                   // disabled={
                   //   minting ||
                   //   !hasTweeted ||
-                  //   (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE) ||
+                  //   (balanceMNT && parseFloat(myBalanceMNT) >= MAX_BALANCE) ||
                   //   address === sendTo
                   // }
                   onClick={() => setSendTo(address || "")}
@@ -177,7 +177,7 @@ function MintTokens() {
                 // disabled={
                 //   minting ||
                 //   !hasTweeted ||
-                //   (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE)
+                //   (balanceMNT && parseFloat(myBalanceMNT) >= MAX_BALANCE)
                 // }
                 onChange={(e: {
                   target: { value: React.SetStateAction<string> };
@@ -202,7 +202,7 @@ function MintTokens() {
                 // disabled={
                 //   minting ||
                 //   !hasTweeted ||
-                //   (balanceBIT && parseFloat(myBalanceBIT) >= MAX_BALANCE)
+                //   (balanceMNT && parseFloat(myBalanceMNT) >= MAX_BALANCE)
                 // }
                 onChange={(e: {
                   target: { value: React.SetStateAction<string> };
@@ -214,17 +214,17 @@ function MintTokens() {
                 sendTo !== address ||
                 minting ||
                 // !hasTweeted ||
-                (balanceBIT &&
-                  parseFloat(myBalanceBIT) + parseFloat(`${amount}`) >
+                (balanceMNT &&
+                  parseFloat(myBalanceMNT) + parseFloat(`${amount}`) >
                     MAX_BALANCE)
                   ? ``
                   : ""
               }`}
             >
-              {balanceBIT &&
-              parseFloat(myBalanceBIT) + parseFloat(`${amount}`) > MAX_BALANCE
-                ? `Your BIT balance must not exceed 1000 BIT`
-                : `You will receive ${amount || 0} BIT`}
+              {balanceMNT &&
+              parseFloat(myBalanceMNT) + parseFloat(`${amount}`) > MAX_BALANCE
+                ? `Your MNT balance must not exceed 1000 MNT`
+                : `You will receive ${amount || 0} MNT`}
             </p>
 
             <Button
@@ -236,15 +236,15 @@ function MintTokens() {
                 !session?.user?.access_token ||
                 sendTo !== address ||
                 minting ||
-                (balanceBIT &&
-                  parseFloat(myBalanceBIT) + parseFloat(`${amount}`) >
+                (balanceMNT &&
+                  parseFloat(myBalanceMNT) + parseFloat(`${amount}`) >
                     MAX_BALANCE)
               }
               onClick={() => {
                 const { eAddress, eAmount } = validate(
                   address,
                   amount || 0,
-                  myBalanceBIT
+                  myBalanceMNT
                 );
                 setError(undefined);
                 setSuccess(undefined);
@@ -274,7 +274,7 @@ function MintTokens() {
                     });
                 } else {
                   setError(
-                    "Problems with input or minted tokens exceeds 1000 BIT"
+                    "Problems with input or minted tokens exceeds 1000 MNT"
                   );
                 }
               }}
@@ -307,8 +307,8 @@ function MintTokens() {
                         : ""
                     } wallet to mint`
                   : address &&
-                    balanceBIT &&
-                    parseFloat(myBalanceBIT) >= MAX_BALANCE
+                    balanceMNT &&
+                    parseFloat(myBalanceMNT) >= MAX_BALANCE
                   ? `Unable to issue more until balance is spent`
                   : error
               }

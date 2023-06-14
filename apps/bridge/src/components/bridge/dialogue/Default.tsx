@@ -116,7 +116,7 @@ export default function Default({
               isActualGasFeeInfinity
                 ? Infinity.toLocaleString()
                 : formatUnits(parseUnits(actualGasFee, "gwei"), 18)
-            } BIT`}
+            } MNT`}
             border
           />
         )}
