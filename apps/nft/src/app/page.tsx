@@ -5,11 +5,14 @@ import {
   Links,
   MantleLogoIcon,
   MantleLogo,
+  LocaleSwitcher,
 } from "@mantle/ui";
 import Link from "next/link";
 import Image from "next/image";
 import Marquee from "react-fast-marquee";
 import CONST from "@mantle/constants";
+
+import { useLocale } from "next-intl";
 
 import { FaDiscord, FaTelegramPlane, FaTwitter } from "react-icons/fa";
 
@@ -20,6 +23,7 @@ import BACKGROUND from "../../public/background.png";
  * @todo Updated with real components and content when ready
  */
 export default function Page() {
+  const locale = useLocale();
   return (
     <PageWrapper
       className="flex-stretch"
@@ -48,6 +52,7 @@ export default function Page() {
           >
             Mantle.xyz
           </Link>
+          <LocaleSwitcher locales={CONST.LOCALES} locale={locale} />
         </nav>
       }
     >

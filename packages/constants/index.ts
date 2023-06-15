@@ -1,5 +1,6 @@
 export default {
   WEBSITE: 'https://www.mantle.xyz/',
+  LOCALES: ['en', 'ko', 'zh', 'ru', 'ja'],
   SOCIAL_LINKS: {
     GITHUB_LINK: 'https://github.com/mantlenetworkio',
     DISCORD_LINK: 'https://discord.com/invite/0xMantle',
@@ -35,8 +36,8 @@ export default {
   },
   TRANSLATION: {
     NAMESPACES: [
-      'default'
+      'default',
+      'LocaleSwitcher'
     ],
-  },
-  LOCALES: ['en', 'ko', 'zh', 'ru', 'ja'],
+  }
 }
