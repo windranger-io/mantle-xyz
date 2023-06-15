@@ -9,7 +9,7 @@ import CONST from "@mantle/constants";
 // to components in your app.
 export default createIntlMiddleware({
   locales: CONST.LOCALES,
-  defaultLocale: "en",
+  defaultLocale: "ru",
 });
 
 export const config = {

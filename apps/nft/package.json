@@ -17,6 +17,7 @@
     "@mantle/constants": "workspace:*",
     "@mantle/ui": "workspace:*",
     "ethers": "^5.7.2",
+    "framer-motion": "^10.12.10",
     "next": "13.4.5",
     "next-auth": "^4.19.2",
     "next-intl": "2.12.0-beta.1",

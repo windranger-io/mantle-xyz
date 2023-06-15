@@ -36,9 +36,9 @@ export const LocaleSwitcher = ({
   useOnClickOutside(dropdownRef, handleClickOutside)
 
   return (
-    <div className="flex flex-col relative" ref={dropdownRef}>
+    <div className="" ref={dropdownRef}>
       {open && (
-        <div className="flex flex-column w-16 absolute top-10 md:top-auto md:bottom-10 border-x border md:border-b-0 border-ds-stroke-secondary text-ds-text-primary rounded-xl md:rounded-b-none z-50 overflow-clip md:bg-ds-bg-body backdrop-blur">
+        <div className="">
           <div className="bg-ds-bg-card">
             {locales &&
               locales.map(
@@ -51,7 +51,7 @@ export const LocaleSwitcher = ({
                       className="rounded-none w-full border-0"
                     >
                       <span className="ml-3">{l.toUpperCase()}</span>
-                      down carret
+                      {/* down carret */}
                     </Button>
                   ),
               )}
@@ -65,7 +65,7 @@ export const LocaleSwitcher = ({
         onClick={() => setOpen(!open)}
       >
         {locale.toUpperCase()}
-        carret down
+        {/* carret down */}
         {/* <IconCaretDown
           className={classNames('w-3 h-3', { 'rotate-180': open })}
         /> */}

@@ -51,6 +51,7 @@
       "cache": false
     },
     "dev:nft": {
+      "env": ["GA_TRACKING_ID"],
       "cache": false
     },
     "dev:template": {
