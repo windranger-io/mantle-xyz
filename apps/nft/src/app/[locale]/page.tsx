@@ -16,7 +16,7 @@ import { useLocale } from "next-intl";
 
 import { FaDiscord, FaTelegramPlane, FaTwitter } from "react-icons/fa";
 
-import BACKGROUND from "../../public/background.png";
+import BACKGROUND from "../../../public/background.png";
 
 /**
  *

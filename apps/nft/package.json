@@ -10,7 +10,8 @@
     "test": "echo 'Running nft tests'",
     "start": "next start",
     "lint": "eslint ./src --fix",
-    "lint:nft": "eslint ./src --fix"
+    "lint:nft": "eslint ./src --fix",
+    "postinstall": "pnpm build:locales"
   },
   "dependencies": {
     "@mantle/constants": "workspace:*",
