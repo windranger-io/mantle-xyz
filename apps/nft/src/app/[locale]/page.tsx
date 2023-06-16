@@ -12,7 +12,7 @@ import Image from "next/image";
 import Marquee from "react-fast-marquee";
 import CONST from "@mantle/constants";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { FaDiscord, FaTelegramPlane, FaTwitter } from "react-icons/fa";
 
@@ -24,7 +24,6 @@ import BACKGROUND from "../../../public/background.png";
  *
  */
 export default function Page() {
-  const locale = useLocale();
   const t = useTranslations("default");
 
   return (
