@@ -62,9 +62,15 @@ export default function Page() {
       <div className="grid grid-col-1 lg:grid-cols-2 gap-20 lg:gap-10 2xl:gap-20  mx-auto max-w-7xl w-full p-4 lg:px-8 flex-grow-2">
         <div className="w-1/2 lg:w-full m-auto">
           <MotionBox y={20} delay={0.2}>
-            <video autoPlay loop muted playsInline poster="/animation.png">
-              <source src="/animation.webm" type="video/webm" />
-              <source src="/animation.mp4" type="video/mp4" />
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              poster="/assets/animation.png"
+            >
+              <source src="/assets/animation.webm" type="video/webm" />
+              <source src="/assets/animation.mp4" type="video/mp4" />
             </video>
           </MotionBox>
         </div>
@@ -77,18 +83,30 @@ export default function Page() {
               {t("teaser-heading")}
             </Typography>
           </MotionBox>
-          <div className="space-y-5 mb-10 lg:mb-20 w-full sm:w-2/3  lg:w-full mx-auto lg:ml-0">
+          <div className=" mb-10 lg:mb-20 w-full sm:w-2/3  lg:w-full mx-auto lg:ml-0">
             <MotionBox y={30} delay={0.4}>
-              <Typography variant="body" className="text-[14px] md:text-[18px]">
+              <Typography
+                variant="body"
+                className="text-[14px] md:text-[18px] mb-5"
+              >
                 {t("teaser-body-p-1")}
               </Typography>
-              <Typography variant="body" className="text-[14px] md:text-[18px]">
+              <Typography
+                variant="body"
+                className="text-[14px] md:text-[18px] mb-5"
+              >
                 {t("teaser-body-p-2")}
               </Typography>
-              <Typography variant="body" className="text-[14px] md:text-[18px]">
+              <Typography
+                variant="body"
+                className="text-[14px] md:text-[18px] mb-5"
+              >
                 {t("teaser-body-p-3")}
               </Typography>
-              <Typography variant="body" className="text-[14px] md:text-[18px]">
+              <Typography
+                variant="body"
+                className="text-[14px] md:text-[18px] mb-5"
+              >
                 {t("teaser-body-p-4")}
               </Typography>
             </MotionBox>
