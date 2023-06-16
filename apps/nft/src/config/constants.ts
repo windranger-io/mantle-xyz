@@ -7,18 +7,18 @@ export const META =
   "A new journey awaits. Enter into an ecosystem filled with never ending rainforest, rich minerals and gemstones, and adventure around every corner. ";
 
 // Configure OG Title
-export const OG_TITLE = "Get Your Hyperscaling Rocket Fuel";
+export const OG_TITLE = "The Gateway to Mantle Will Open Soon";
 
 // Configure OG Desc
 export const OG_DESC =
-  "Fund your testnet wallet here to start to #BuildonMantle.";
+  "Get ready to enter into Mantle's adventure filled ecosystem.";
 
 // Configure Twiiter Title
-export const TWITTER_TITLE = "Mantle Testnet Faucet";
+export const TWITTER_TITLE = "The Gateway to Mantle Will Open Soon";
 
 // Configure Twiiter Desc
 export const TWITTER_DESC =
-  "Fund your testnet wallet here to start to #BuildonMantle.";
+  "Get ready to enter into Mantle's adventure filled ecosystem.";
 
 // To be changed before launch
 export const ABSOLUTE_PATH = "https://mantle-faucet-orpin.vercel.app/";
