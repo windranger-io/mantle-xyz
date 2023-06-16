@@ -1,9 +1,10 @@
 import { getRequestConfig } from "next-intl/server";
 import CONST from "@mantle/constants";
+import { AbstractIntlMessages, Formats } from "use-intl";
 
 const { I18NEXUS_API_URL, I18NEXUS_API_KEY, I18NEXUS_PRE_BUILD } = process.env;
 
-const getMessages = async (locale: string) => {
+const getMessages = async (locale: string): Promise<AbstractIntlMessages> => {
   const NEXUS_LIVE_URL = `${I18NEXUS_API_URL}/translations.json?api_key=${I18NEXUS_API_KEY}`;
 
   /**
@@ -37,4 +38,4 @@ const getMessages = async (locale: string) => {
 
 export default getRequestConfig(async ({ locale }) => ({
   messages: await getMessages(locale),
-}));
+})) as unknown as Formats;

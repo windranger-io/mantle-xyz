@@ -218,6 +218,7 @@ importers:
       react-icons: ^4.8.0
       tailwindcss: ^3.2.1
       typescript: 4.9.4
+      use-intl: ^2.14.6
     dependencies:
       '@mantle/constants': link:../../packages/constants
       '@mantle/ui': link:../../packages/ui
@@ -229,6 +230,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       react-fast-marquee: 1.6.0_biqbaboplfbrettd7655fr4n2y
       react-icons: 4.8.0_react@18.2.0
+      use-intl: 2.14.6_react@18.2.0
     devDependencies:
       '@babel/core': 7.21.0
       '@mantle/eslint-config-next': link:../../packages/eslint-config-next
