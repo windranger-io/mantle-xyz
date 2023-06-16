@@ -21,7 +21,7 @@ export const TWITTER_DESC =
   "Get ready to enter into Mantle's adventure filled ecosystem.";
 
 // To be changed before launch
-export const ABSOLUTE_PATH = "https://mantle-faucet-orpin.vercel.app/";
+export const ABSOLUTE_PATH = "https://mint.mantle.xyz/";
 
 // Google Tag
 export const GOOGLE_TAG = "GTM-PX2HN6L";

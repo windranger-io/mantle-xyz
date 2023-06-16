@@ -17,7 +17,10 @@ export default function Head() {
 
       <meta property="og:type" content="website" />
       <meta property="og:title" content={`${OG_TITLE}`} />
-      <meta property="og:image" content={`${ABSOLUTE_PATH}/opengraph.png`} />
+      <meta
+        property="og:image"
+        content={`${ABSOLUTE_PATH}/assets/opengraph.png`}
+      />
       <meta name="description" content={`${META}`} />
 
       <meta name="twitter:card" content="summary" />
@@ -25,7 +28,10 @@ export default function Head() {
       <meta name="twitter:title" content={`${TWITTER_TITLE}`} />
       <meta name="twitter:creator" content="@0xMantle" />
       <meta name="twitter:description" content={`${TWITTER_DESC}`} />
-      <meta name="twitter:image:src" content={`${ABSOLUTE_PATH}/twitter.png`} />
+      <meta
+        name="twitter:image:src"
+        content={`${ABSOLUTE_PATH}/assets/twitter.png`}
+      />
       <meta name="google" content="nositelinkssearchbox" />
       <GoogleAnalytics GA_TRACKING_ID={process.env.GA_TRACKING_ID} />
     </>

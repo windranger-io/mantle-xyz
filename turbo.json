@@ -13,7 +13,6 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"]
     },
-    "build:locales": {},
     "test": {
       "outputs": ["coverage/"],
       "dependsOn": []
