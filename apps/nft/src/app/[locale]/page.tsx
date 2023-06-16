@@ -17,7 +17,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { FaDiscord, FaTelegramPlane, FaTwitter } from "react-icons/fa";
 
 import { MotionBox } from "@src/components/Motion";
-import BACKGROUND from "../../../public/background.png";
+import BACKGROUND from "../../../public/assets/background.png";
 
 /**
  *
@@ -147,7 +147,12 @@ export default function Page() {
             // eslint-disable-next-line react/jsx-boolean-value
             autoFill={true}
           >
-            <Image src="/mantle.png" alt="My Image" width={956} height={120} />
+            <Image
+              src="/assets/mantle.png"
+              alt="Mantle"
+              width={956}
+              height={120}
+            />
           </Marquee>
         </MotionBox>
       </div>
