@@ -17,7 +17,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { FaDiscord, FaTelegramPlane, FaTwitter } from "react-icons/fa";
 
 import { MotionBox } from "@src/components/Motion";
-import useMediaQuery from "@hooks/useMediaQuery";
 import BACKGROUND from "../../../public/background.png";
 
 /**
@@ -25,7 +24,6 @@ import BACKGROUND from "../../../public/background.png";
  *
  */
 export default function Page() {
-  const isLg = useMediaQuery("(max-width: 1024px)");
   const locale = useLocale();
   const t = useTranslations("default");
 
@@ -34,7 +32,7 @@ export default function Page() {
       className="gap-0 lg:gap-10 min-h-[100vh]"
       siteBackroundImage={
         <PageBackroundImage
-          className={isLg ? "hidden" : ""}
+          className="hidden lg:flex"
           imgSrc={BACKGROUND}
           altDesc="NFT Background Image"
         />

@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from './Button'
 
 import { useOnClickOutside } from './useOnClickOutside'
+import { IconCaretDown } from '../base/Icons'
 
 export const LocaleSwitcher = ({
   locales,
@@ -36,23 +37,25 @@ export const LocaleSwitcher = ({
   useOnClickOutside(dropdownRef, handleClickOutside)
 
   return (
-    <div className="" ref={dropdownRef}>
+    <div className="flex flex-col relative " ref={dropdownRef}>
       {open && (
-        <div className="">
-          <div className="bg-ds-bg-card">
+        <div className="absolute top-10 w-16  backdrop-blur ">
+          <div className="">
             {locales &&
               locales.map(
                 l =>
                   l !== locale && (
-                    <Button
-                      onClick={handleChangeLocale(`/${l}${pathname}`)}
-                      key={l}
-                      disabled={l === locale || !open}
-                      className="rounded-none w-full border-0"
-                    >
-                      <span className="ml-3">{l.toUpperCase()}</span>
-                      {/* down carret */}
-                    </Button>
+                    <div className="hover:bg-[rgba(0,0,0,0.3)] border-b border-[rgba(255,255,255,0.05)] hover:border-[rgba(255,255,255,0.1)] last:border-b-0 first:rounded-t-lg last:rounded-b-lg transition duration-150 ">
+                      <Button
+                        onClick={handleChangeLocale(`/${l}${pathname}`)}
+                        key={l}
+                        disabled={l === locale || !open}
+                        className="rounded-none w-full border-0 "
+                      >
+                        <span className="">{l.toUpperCase()}</span>
+                        <IconCaretDown className="opacity-0" />
+                      </Button>
+                    </div>
                   ),
               )}
           </div>
@@ -65,10 +68,9 @@ export const LocaleSwitcher = ({
         onClick={() => setOpen(!open)}
       >
         {locale.toUpperCase()}
-        {/* carret down */}
-        {/* <IconCaretDown
+        <IconCaretDown
           className={classNames('w-3 h-3', { 'rotate-180': open })}
-        /> */}
+        />
       </Button>
     </div>
   )
