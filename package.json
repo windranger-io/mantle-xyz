@@ -9,6 +9,7 @@
   "scripts": {
     "ci:template": "turbo e2e:test:template",
     "build": "turbo run build",
+    "build:locales": "turbo run build:locales",
     "dev": "turbo run dev",
     "dev:web": "turbo run dev:web",
     "dev:faucet": "turbo run dev:faucet",

@@ -63,3 +63,5 @@ export * from './src/presentational/PageBackgroundImage'
  */
 
 export * from './src/fonts/ThemeFonts'
+
+export * from './src/LocaleSwitcher'

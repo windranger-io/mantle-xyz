@@ -6,22 +6,25 @@
     "dev": "next dev --port 3005",
     "dev:nft": "next dev --port 3005",
     "build": "next build",
+    "build:locales": "i18nexus pull -p ./src/i18n",
     "test": "echo 'Running nft tests'",
     "start": "next start",
     "lint": "eslint ./src --fix",
-    "lint:nft": "eslint ./src --fix"
+    "lint:nft": "eslint ./src --fix",
+    "postinstall": "pnpm build:locales"
   },
   "dependencies": {
     "@mantle/constants": "workspace:*",
     "@mantle/ui": "workspace:*",
-    "ethers": "^5.7.2",
-    "next": "13.1.1",
+    "framer-motion": "^10.12.10",
+    "next": "13.4.0",
     "next-auth": "^4.19.2",
+    "next-intl": "2.15.0-beta.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-fast-marquee": "^1.6.0",
     "react-icons": "^4.8.0",
-    "wagmi": "^0.11.6"
+    "use-intl": "^2.14.6"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
@@ -32,7 +35,9 @@
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.10",
     "autoprefixer": "^10.4.12",
+    "dotenv": "^16.1.4",
     "eslint": "^8.30.0",
+    "i18nexus-cli": "^3.1.0",
     "lokijs": "^1.5.12",
     "postcss": "^8.4.18",
     "tailwindcss": "^3.2.1",

@@ -16,6 +16,7 @@
     "@types/react-dom": "^18.0.10",
     "eslint": "^7.32.0",
     "next": "^13.2.3",
+    "next-intl": "2.12.0-beta.1",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "typescript": "^4.5.2"

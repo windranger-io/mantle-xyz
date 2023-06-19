@@ -236,3 +236,22 @@ export const DividerCaret = (props: IconProps) => (
     />
   </svg>
 )
+
+export const IconCaretDown = (props: IconProps) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 10 6"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M0.646447 0.646447C0.841709 0.451184 1.15829 0.451184 1.35355 0.646447L5.18292 4.47582L9.01229 0.646447C9.20755 0.451184 9.52414 0.451184 9.7194 0.646447C9.91466 0.841709 9.91466 1.15829 9.7194 1.35355L5.53648 5.53648C5.34121 5.73174 5.02463 5.73174 4.82937 5.53648L0.646447 1.35355C0.451184 1.15829 0.451184 0.841709 0.646447 0.646447Z"
+      fill="currentColor"
+    />
+  </svg>
+)

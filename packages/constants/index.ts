@@ -1,5 +1,6 @@
 export default {
   WEBSITE: 'https://www.mantle.xyz/',
+  LOCALES: ['en', 'ko', 'zh', 'ru', 'ja', ],
   SOCIAL_LINKS: {
     GITHUB_LINK: 'https://github.com/mantlenetworkio',
     DISCORD_LINK: 'https://discord.com/invite/0xMantle',
@@ -32,5 +33,10 @@ export default {
     GITHUB_LINK: 'https://github.com/mantlenetworkio',
     DOC_LINK: 'https://docs.mantle.xyz/introducing-mantle/a-gentle-introduction'
 
+  },
+  TRANSLATION: {
+    NAMESPACES: [
+      'default',
+    ],
   }
 }
