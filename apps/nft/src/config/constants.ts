@@ -21,7 +21,10 @@ export const TWITTER_DESC =
   "Get ready to enter into Mantle's adventure filled ecosystem.";
 
 // To be changed before launch
-export const ABSOLUTE_PATH = "https://mint.mantle.xyz/";
+export const ABSOLUTE_PATH =
+  process.env.NEXT_PUBLIC_VERCEL_ENV === "production"
+    ? "https://mint.mantle.xyz/"
+    : process.env.NEXT_PUBLIC_VERCEL_URL;
 
 // Google Tag
 export const GOOGLE_TAG = "GTM-PX2HN6L";
