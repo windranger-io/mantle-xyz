@@ -1,5 +1,5 @@
-import createIntlMiddleware from "next-intl/middleware";
 import CONST from "@mantle/constants";
+import createIntlMiddleware from "next-intl/middleware";
 
 // The middleware intercepts requests to `/` and will redirect
 // to one of the configured locales instead (e.g. `/en`).
@@ -14,5 +14,7 @@ export default createIntlMiddleware({
 
 export const config = {
   // Skip all internal paths
-  matcher: ["/((?!api|_next|assets|favicon.ico).*)"],
+  matcher: [
+    "/((?!api|_next|assets|favicon.ico|opengraph-image.png|twitter-image.png).*)",
+  ],
 };
