@@ -12,7 +12,7 @@ export const CONVERSION_RATE = 1;
 export const L1_BITDAO_TOKEN_ADDRESS =
   "0x5a94Dc6cc85fdA49d8E9A8b85DDE8629025C42be";
 export const L1_MANTLE_TOKEN_ADDRESS =
-  "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604";
+  "0x3c3a81e81dc49a522a592e7622a7e711c06bf354";
 
 // Use L1 Converter contract to carryout the conversion
 export const L1_CONVERTER_CONTRACT_ABI = [
@@ -20,7 +20,7 @@ export const L1_CONVERTER_CONTRACT_ABI = [
   "function migrateAllBIT()",
 ];
 export const L1_CONVERTER_CONTRACT_ADDRESS =
-  "0x144D9B7F34a4e3133C6F347886fBe2700c4cb268";
+  "0xfFb94c81D9A283aB4373ab4Ba3534DC4FB8d1295";
 
 // Token constructs for dummy contracts on goerli
 export const L1_BITDAO_TOKEN: Token = {
