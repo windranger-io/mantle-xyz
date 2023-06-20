@@ -1,6 +1,6 @@
 // Configure the applications name
 export const APP_NAME =
-  "Mantle: Unveiled | The gateway to Mantle will open soon.";
+  "Mantle: Unveiling | The gateway to Mantle will open soon.";
 
 // Configure deta description
 export const META =
