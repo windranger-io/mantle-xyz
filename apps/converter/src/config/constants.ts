@@ -13,7 +13,7 @@ function getEnvVar(name: string, fallback: string) {
 
 // these control which chains we treat as l1/l2 - the rest of the this constants doc will need to be altered for mainnet (we can $ENV most of this)
 export const L1_CHAIN_ID = +getEnvVar("L1_CHAIN_ID", "1");
-export const L2_CHAIN_ID = +getEnvVar("L2_CHAIN_ID", "5002");
+export const L2_CHAIN_ID = +getEnvVar("L2_CHAIN_ID", "5000");
 
 // export the conversion rate
 export const CONVERSION_RATE = 1;
@@ -163,7 +163,7 @@ export const CHAINS: Record<
     rpcUrls: ["https://rpc.testnet.mantle.xyz"],
     blockExplorerUrls: ["https://explorer.testnet.mantle.xyz/"],
   },
-  5002: {
+  5000: {
     chainId: "0x1389",
     chainName: "Mantle Mainnet",
     nativeCurrency: {
@@ -221,19 +221,19 @@ export const CHAINS_FORMATTED: Record<number, Chain> = {
     id: 5001,
     nativeCurrency: CHAINS[5001].nativeCurrency,
   },
-  5002: {
-    name: CHAINS[5002].chainName,
-    network: CHAINS[5002].chainName,
+  5000: {
+    name: CHAINS[5000].chainName,
+    network: CHAINS[5000].chainName,
     rpcUrls: {
       default: {
-        http: [CHAINS[5002].rpcUrls[0]],
+        http: [CHAINS[5000].rpcUrls[0]],
       },
       public: {
-        http: [CHAINS[5002].rpcUrls[0]],
+        http: [CHAINS[5000].rpcUrls[0]],
       },
     },
-    id: 5002,
-    nativeCurrency: CHAINS[5002].nativeCurrency,
+    id: 5000,
+    nativeCurrency: CHAINS[5000].nativeCurrency,
   },
 };
 
@@ -241,6 +241,7 @@ export enum ChainID {
   Ethereum = 1,
   Goerli = 5,
   MantleTestnet = 5001,
+  Mantle = 5000,
 }
 
 export enum TokenSymbol {
