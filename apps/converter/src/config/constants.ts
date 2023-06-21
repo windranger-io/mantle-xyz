@@ -31,6 +31,7 @@ export const L1_BITDAO_TOKEN: Token = {
   decimals: 18,
   logoURI: "/bitdao.svg",
 };
+
 export const L1_MANTLE_TOKEN: Token = {
   chainId: 5,
   address: L1_MANTLE_TOKEN_ADDRESS,
