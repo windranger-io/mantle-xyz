@@ -107,10 +107,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   );
 
   // page toggled chainId (set according to Deposit/Withdraw)
-  const [chainId, setChainId] = useState(5);
+  const [chainId, setChainId] = useState(L1_CHAIN_ID);
 
   // initially set to just the current chainId (this will control when to show unsupported in the ConnectWallet component)
-  const [safeChains, setSafeChains] = useState([5]);
+  const [safeChains, setSafeChains] = useState([L1_CHAIN_ID]);
 
   // get the provider for the chosen chain
   const provider = useProvider({ chainId });

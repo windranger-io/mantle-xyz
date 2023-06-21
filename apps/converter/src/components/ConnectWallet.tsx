@@ -8,7 +8,7 @@ import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { truncateAddress } from "@utils/formatStrings";
-import { CHAINS, L1_CHAIN_ID } from "@config/constants";
+import { CHAINS, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
 import { Button } from "@mantle/ui";
@@ -34,6 +34,15 @@ function ConnectWallet() {
 
   // chain is valid if it matches any of these states...
   const isChainID = useMemo(() => {
+    console.log({
+      currentChain,
+      safeChains,
+      chainId,
+      L1_CHAIN_ID,
+      isLayer1ChainID,
+      address,
+      L2_CHAIN_ID,
+    });
     return (
       currentChain &&
       ((safeChains.length === 2 &&

@@ -1,9 +1,19 @@
 import { BigNumberish } from "ethers";
 import { Address, Chain } from "wagmi";
 
+function getEnvVar(name: string, fallback: string) {
+  const variable = process.env[name];
+
+  if (!variable) {
+    return fallback;
+  }
+
+  return variable;
+}
+
 // these control which chains we treat as l1/l2 - the rest of the this constants doc will need to be altered for mainnet (we can $ENV most of this)
-export const L1_CHAIN_ID = 5;
-export const L2_CHAIN_ID = 5001;
+export const L1_CHAIN_ID = +getEnvVar("L1_CHAIN_ID", "1");
+export const L2_CHAIN_ID = +getEnvVar("L2_CHAIN_ID", "5002");
 
 // export the conversion rate
 export const CONVERSION_RATE = 1;
@@ -107,6 +117,25 @@ export const CHAINS: Record<
     blockExplorerUrls: string[];
   }
 > = {
+  1: {
+    chainId: "0x1",
+    chainName: "Ethereum Mainnet",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: [
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      `https://mainnet.infura.io/v3/${getEnvVar(
+        "NEXT_PUBLIC_INFURA_API_KEY",
+        ""
+      )}`,
+      // public gateway
+      `https://rpc.ankr.com/eth`,
+    ],
+    blockExplorerUrls: ["https://etherscan.io/"],
+  },
   // setup goerli so that it can be added to the users wallet
   5: {
     chainId: "0x5",
@@ -134,9 +163,35 @@ export const CHAINS: Record<
     rpcUrls: ["https://rpc.testnet.mantle.xyz"],
     blockExplorerUrls: ["https://explorer.testnet.mantle.xyz/"],
   },
+  5002: {
+    chainId: "0x1389",
+    chainName: "Mantle Mainnet",
+    nativeCurrency: {
+      name: "Mantle",
+      symbol: "MNT",
+      decimals: 18,
+    },
+    rpcUrls: ["https://rpc.mantle.xyz"],
+    blockExplorerUrls: ["https://explorer.mantle.xyz/"],
+  },
 };
 
 export const CHAINS_FORMATTED: Record<number, Chain> = {
+  1: {
+    testnet: false,
+    name: CHAINS[1].chainName,
+    network: CHAINS[1].chainName,
+    rpcUrls: {
+      default: {
+        http: [CHAINS[1].rpcUrls[0]],
+      },
+      public: {
+        http: [CHAINS[1].rpcUrls[1]],
+      },
+    },
+    id: 1,
+    nativeCurrency: CHAINS[1].nativeCurrency,
+  },
   5: {
     testnet: true,
     name: CHAINS[5].chainName,
@@ -165,6 +220,20 @@ export const CHAINS_FORMATTED: Record<number, Chain> = {
     },
     id: 5001,
     nativeCurrency: CHAINS[5001].nativeCurrency,
+  },
+  5002: {
+    name: CHAINS[5002].chainName,
+    network: CHAINS[5002].chainName,
+    rpcUrls: {
+      default: {
+        http: [CHAINS[5002].rpcUrls[0]],
+      },
+      public: {
+        http: [CHAINS[5002].rpcUrls[0]],
+      },
+    },
+    id: 5002,
+    nativeCurrency: CHAINS[5002].nativeCurrency,
   },
 };
 
