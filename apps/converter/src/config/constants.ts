@@ -19,17 +19,22 @@ export const L1_MANTLE_TOKEN_ADDRESSES: Record<number, `0x${string}`> = {
   5: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
 };
 
+export const L1_CONVERTER_CONTRACT_ADDRESSES: Record<number, `0x${string}`> = {
+  1: "0xfFb94c81D9A283aB4373ab4Ba3534DC4FB8d1295",
+  5: "0x144D9B7F34a4e3133C6F347886fBe2700c4cb268",
+};
+
 // Convert BitDAO tokens to Mantle tokens on L1
 export const L1_BITDAO_TOKEN_ADDRESS = L1_BITDAO_TOKEN_ADDRESSES[L1_CHAIN_ID];
 export const L1_MANTLE_TOKEN_ADDRESS = L1_MANTLE_TOKEN_ADDRESSES[L1_CHAIN_ID];
+export const L1_CONVERTER_CONTRACT_ADDRESS =
+  L1_CONVERTER_CONTRACT_ADDRESSES[L1_CHAIN_ID];
 
 // Use L1 Converter contract to carryout the conversion
 export const L1_CONVERTER_CONTRACT_ABI = [
   "function migrateBIT(uint256 _amount)",
   "function migrateAllBIT()",
 ];
-export const L1_CONVERTER_CONTRACT_ADDRESS =
-  "0xfFb94c81D9A283aB4373ab4Ba3534DC4FB8d1295";
 
 // Token constructs for dummy contracts on goerli
 export const L1_BITDAO_TOKEN: Token = {
