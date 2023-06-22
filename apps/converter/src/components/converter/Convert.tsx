@@ -12,8 +12,6 @@ import To from "@components/converter/To";
 import CTA from "@components/converter/CTA";
 import TX from "@components/converter/TransactionPanel";
 
-import { SimpleCard } from "@mantle/ui";
-
 export default function Convert() {
   // unpack the context
   const { view, isCTAPageOpen, setIsCTAPageOpen } = useContext(StateContext);
@@ -23,13 +21,15 @@ export default function Convert() {
       ((isCTAPageOpen && (
         <Dialogue isOpen={isCTAPageOpen} setIsOpen={setIsCTAPageOpen} />
       )) || (
-        <SimpleCard className="max-w-lg w-full grid gap-4 relative bg-[#0D0D0D] overflow-auto md:overflow-hidden">
+        <div className="max-w-lg w-full grid gap-4 relative bg-[#000000] overflow-y-auto overflow-x-clip md:overflow-hidden border border-[#1C1E20] rounded-t-[30px] rounded-b-[20px] py-6 mx-auto">
           <From />
           <Hr />
           <To />
-          <CTA setIsOpen={setIsCTAPageOpen} />
-          <TX />
-        </SimpleCard>
+          <div className="px-5">
+            <CTA setIsOpen={setIsCTAPageOpen} />
+            <TX />
+          </div>
+        </div>
       ))) || <span />
   );
 }

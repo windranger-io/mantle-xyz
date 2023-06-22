@@ -79,7 +79,7 @@ export default function CTA({
     // console.log(spendDetails, destinationTokenAmount);
     let text;
     if (!client?.address) {
-      text = "Please connect your wallet";
+      text = "Connect wallet";
     } else if (!isChainID) {
       text = `Switch to ${CHAINS[chainId].chainName}`;
     } else if (

@@ -16,8 +16,6 @@ export default function TokenSelect() {
   const { balances, amount, isLoadingBalances, setAmount } =
     useContext(StateContext);
 
-  console.log({ balances, amount, isLoadingBalances });
-
   const hasBalance = useMemo(() => {
     return parseUnits(
       balances?.[L1_BITDAO_TOKEN.address] || "0",
@@ -39,7 +37,7 @@ export default function TokenSelect() {
   }, []);
 
   return (
-    <div className="pb-4 z-10">
+    <div className="z-10">
       {/* <BalanceLabel
         direction="Convert"
         logo={
@@ -55,14 +53,14 @@ export default function TokenSelect() {
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
         htmlFor="convert-amount"
-        className="flex flex-row w-full justify-between items-center py-4"
+        className="flex flex-row w-full justify-between items-center py-4 px-5"
       >
         <div className="flex flex-row items-center gap-3">
           <Image
             alt={`Logo for ${L1_BITDAO_TOKEN?.name}`}
             src={L1_BITDAO_TOKEN?.logoURI}
-            width={32}
-            height={32}
+            width={40}
+            height={40}
           />
           <div className="flex flex-col">
             <div>From</div>
@@ -92,7 +90,7 @@ export default function TokenSelect() {
         </div>
       </label>
 
-      <div className="flex flex-row pt-6">
+      <div className="flex flex-row pt-6 bg-[#0D0D0D] px-5">
         <div className="flex items-center text-4xl max-w-1/3">
           <span id="hide" ref={span} className="invisible fixed">
             {amount || "0"}
@@ -240,7 +238,7 @@ export default function TokenSelect() {
         </div>
       </div>
       {!hasBalance && !isLoadingBalances ? (
-        <div className="flex flex-row items-center gap-2 w-full text-right justify-end">
+        <div className="flex flex-row items-center gap-2 w-full text-right justify-end bg-[#0D0D0D] px-5">
           <span>
             <svg
               width="19"
@@ -270,7 +268,7 @@ export default function TokenSelect() {
           <span className="text-[#E22F3D]">Insufficient balance.</span>
         </div>
       ) : (
-        <div className="flex flex-col w-full justify-end text-right">
+        <div className="flex flex-col w-full justify-end text-right bg-[#0D0D0D] px-5">
           <div className="flex justify-end">
             <BalanceLabel
               className=""

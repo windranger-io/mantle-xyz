@@ -9,11 +9,19 @@ export const L2_CHAIN_ID = +(process.env["NEXT_PUBLIC_L2_CHAIN_ID"] || "5000");
 // export the conversion rate
 export const CONVERSION_RATE = 1;
 
+export const L1_BITDAO_TOKEN_ADDRESSES: Record<number, `0x${string}`> = {
+  1: "0x1A4b46696b2bB4794Eb3D4c26f1c55F9170fa4C5",
+  5: "0x5a94Dc6cc85fdA49d8E9A8b85DDE8629025C42be",
+};
+
+export const L1_MANTLE_TOKEN_ADDRESSES: Record<number, `0x${string}`> = {
+  1: "0x3c3a81e81dc49a522a592e7622a7e711c06bf354",
+  5: "",
+};
+
 // Convert BitDAO tokens to Mantle tokens on L1
-export const L1_BITDAO_TOKEN_ADDRESS =
-  "0x5a94Dc6cc85fdA49d8E9A8b85DDE8629025C42be";
-export const L1_MANTLE_TOKEN_ADDRESS =
-  "0x3c3a81e81dc49a522a592e7622a7e711c06bf354";
+export const L1_BITDAO_TOKEN_ADDRESS = L1_BITDAO_TOKEN_ADDRESSES[L1_CHAIN_ID];
+export const L1_MANTLE_TOKEN_ADDRESS = L1_MANTLE_TOKEN_ADDRESSES[L1_CHAIN_ID];
 
 // Use L1 Converter contract to carryout the conversion
 export const L1_CONVERTER_CONTRACT_ABI = [
