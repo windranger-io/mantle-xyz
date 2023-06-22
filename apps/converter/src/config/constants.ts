@@ -16,7 +16,7 @@ export const L1_BITDAO_TOKEN_ADDRESSES: Record<number, `0x${string}`> = {
 
 export const L1_MANTLE_TOKEN_ADDRESSES: Record<number, `0x${string}`> = {
   1: "0x3c3a81e81dc49a522a592e7622a7e711c06bf354",
-  5: "",
+  5: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
 };
 
 // Convert BitDAO tokens to Mantle tokens on L1
