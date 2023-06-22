@@ -41,7 +41,6 @@ function useAllowanceCheck(
               CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
             )
           : connectedProvider;
-      // const useProvider = chainId === L1_CHAIN_ID ? provider : connectedProvider;
       // only run the multicall if we're connected to the correct network
       if (
         client?.address &&
@@ -49,8 +48,6 @@ function useAllowanceCheck(
         bridgeAddress &&
         provider
       ) {
-        // check that we're using the corrent network before proceeding
-        // only run the multicall if we're connected to the correct network
         // direction of the interaction
         const type =
           chainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw;
@@ -63,7 +60,7 @@ function useAllowanceCheck(
             })) ||
           tokens[chainId === L1_CHAIN_ID ? 0 : 1];
 
-        // native tokens don't need allowance checks (this whole check needs to be moved into a useEffect to update properly)...
+        // native tokens don't need allowance checks
         if (
           client.address &&
           bridgeAddress &&
