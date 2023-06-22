@@ -1,7 +1,7 @@
 "use client";
 
 // this version of L1_CHAIN will use infura
-import { CHAINS_FORMATTED, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
+import { CHAINS_FORMATTED, L1_CHAIN_ID } from "@config/constants";
 
 // Required components for wagmi...
 import { WagmiConfig, configureChains, createClient } from "wagmi";
@@ -16,7 +16,7 @@ import { publicProvider } from "wagmi/providers/public";
 
 const { chains, provider, webSocketProvider } = configureChains(
   // We support L1 and Mantle (depending on state of ui)
-  [CHAINS_FORMATTED[L1_CHAIN_ID], CHAINS_FORMATTED[L2_CHAIN_ID]],
+  [CHAINS_FORMATTED[L1_CHAIN_ID]],
   [
     jsonRpcProvider({
       rpc: (chain) => ({

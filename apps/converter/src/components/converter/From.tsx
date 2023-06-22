@@ -16,6 +16,8 @@ export default function TokenSelect() {
   const { balances, amount, isLoadingBalances, setAmount } =
     useContext(StateContext);
 
+  console.log({ balances, amount, isLoadingBalances });
+
   const hasBalance = useMemo(() => {
     return parseUnits(
       balances?.[L1_BITDAO_TOKEN.address] || "0",

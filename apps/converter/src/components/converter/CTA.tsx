@@ -7,7 +7,6 @@ import {
   CHAINS,
   CTAPages,
   L1_CHAIN_ID,
-  L2_CHAIN_ID,
   L1_BITDAO_TOKEN_ADDRESS,
   L1_BITDAO_TOKEN,
 } from "@config/constants";
@@ -52,7 +51,6 @@ export default function CTA({
 
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
-  const isMantleChainID = useIsChainID(L2_CHAIN_ID);
 
   // set address with useState to avoid hydration errors
   const [address, setAddress] = useState<`0x${string}`>(client?.address!);
@@ -62,12 +60,8 @@ export default function CTA({
 
   // check that the chainId is valid for the selected use-case
   const isChainID = useMemo(() => {
-    return (
-      (chainId === L1_CHAIN_ID && isLayer1ChainID) ||
-      (chainId === L2_CHAIN_ID && isMantleChainID) ||
-      !address
-    );
-  }, [address, chainId, isLayer1ChainID, isMantleChainID]);
+    return (chainId === L1_CHAIN_ID && isLayer1ChainID) || !address;
+  }, [address, chainId, isLayer1ChainID]);
 
   // create an allowance approval request on the selected token
   const { approve, approvalStatus } = useCallApprove();

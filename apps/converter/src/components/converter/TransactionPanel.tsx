@@ -9,7 +9,6 @@ import {
   L1_BITDAO_TOKEN,
   L1_MANTLE_TOKEN,
   L1_CHAIN_ID,
-  L2_CHAIN_ID,
   CONVERSION_RATE,
 } from "@config/constants";
 
@@ -50,19 +49,14 @@ export default function TransactionPanel() {
 
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
-  const isMantleChainID = useIsChainID(L2_CHAIN_ID);
 
   // set address with useState to avoid hydration errors
   const [address, setAddress] = useState<`0x${string}`>(client?.address!);
 
   // check that the chainId is valid for the L1_BITDAO_TOKEN use-case
   const isChainID = useMemo(() => {
-    return (
-      (chainId === L1_CHAIN_ID && isLayer1ChainID) ||
-      (chainId === L2_CHAIN_ID && isMantleChainID) ||
-      !address
-    );
-  }, [address, chainId, isLayer1ChainID, isMantleChainID]);
+    return (chainId === L1_CHAIN_ID && isLayer1ChainID) || !address;
+  }, [address, chainId, isLayer1ChainID]);
 
   // set wagmi address to address for ssr
   useEffect(() => {

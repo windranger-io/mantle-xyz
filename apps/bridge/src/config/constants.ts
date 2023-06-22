@@ -1,21 +1,9 @@
 import { BigNumberish } from "ethers";
 import { Address, Chain } from "wagmi";
 
-function getEnvVar(name: string) {
-  const variable = process.env[name];
-
-  if (!variable) {
-    throw new Error(
-      `ERROR: env var "${name} missing, please add it to continue`
-    );
-  }
-
-  return variable;
-}
-
 // these control which chains we treat as l1/l2 - the rest of the this constants doc will need to be altered for mainnet (we can $ENV most of this)
-export const L1_CHAIN_ID = +getEnvVar("NEXT_PUBLIC_L1_CHAIN_ID");
-export const L2_CHAIN_ID = +getEnvVar("NEXT_PUBLIC_L2_CHAIN_ID");
+export const L1_CHAIN_ID = 5;
+export const L2_CHAIN_ID = 5001;
 
 // Configure the applications name
 export const APP_NAME = "Mantle Testnet Bridge";
@@ -115,7 +103,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      `https://goerli.infura.io/v3/${getEnvVar("NEXT_PUBLIC_INFURA_API_KEY")}`,
+      `https://goerli.infura.io/v3/${process.env["NEXT_PUBLIC_INFURA_API_KEY"]}`,
       // public gateway
       `https://rpc.ankr.com/eth_goerli`,
     ],

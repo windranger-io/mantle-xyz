@@ -24,12 +24,7 @@ import {
 } from "react";
 import { useProvider } from "wagmi";
 import { usePathname } from "next/navigation";
-import {
-  useAccountBalances,
-  useL1FeeData,
-  useL2FeeData,
-  FeeData,
-} from "@hooks/web3/read";
+import { useAccountBalances, useL1FeeData, FeeData } from "@hooks/web3/read";
 
 import { getMulticallContract } from "@utils/multicallContract";
 import useAllowanceCheck from "@hooks/web3/converter/read/useAllowanceCheck";
@@ -163,16 +158,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // get current gas fees for L1
   const { l1FeeData, refetchL1FeeData } = useL1FeeData();
 
-  // get current gas fees for l2
-  const { l2FeeData, refetchL2FeeData } = useL2FeeData();
-
   // get current gas fees on selected network
-  const feeData = useMemo(
-    () =>
-      // return the selected chains feeData as default
-      chainId === L1_CHAIN_ID ? l1FeeData : l2FeeData,
-    [chainId, l1FeeData, l2FeeData]
-  );
+  const feeData = useMemo(() => l1FeeData, [l1FeeData]);
 
   // perform a multicall on the given network to get all token balances for user
   const { balances, resetBalances, isFetchingBalances, isRefetchingBalances } =
@@ -237,7 +224,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     () => {
       resetBalances();
       refetchL1FeeData();
-      refetchL2FeeData();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [chainId, client?.address, multicall]
@@ -262,7 +248,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
       feeData,
       l1FeeData,
-      l2FeeData,
       actualGasFee,
       isLoadingFeeData,
       isLoadingBalances:
@@ -310,7 +295,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
     feeData,
     l1FeeData,
-    l2FeeData,
     actualGasFee,
     isLoadingFeeData,
     isLoadingBalances,

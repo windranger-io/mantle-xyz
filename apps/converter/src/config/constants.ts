@@ -1,19 +1,10 @@
+/* eslint-disable @typescript-eslint/dot-notation */
 import { BigNumberish } from "ethers";
 import { Address, Chain } from "wagmi";
 
-function getEnvVar(name: string, fallback: string) {
-  const variable = process.env[name];
-
-  if (!variable) {
-    return fallback;
-  }
-
-  return variable;
-}
-
 // these control which chains we treat as l1/l2 - the rest of the this constants doc will need to be altered for mainnet (we can $ENV most of this)
-export const L1_CHAIN_ID = +getEnvVar("L1_CHAIN_ID", "1");
-export const L2_CHAIN_ID = +getEnvVar("L2_CHAIN_ID", "5000");
+export const L1_CHAIN_ID = +(process.env["NEXT_PUBLIC_L1_CHAIN_ID"] || "1");
+export const L2_CHAIN_ID = +(process.env["NEXT_PUBLIC_L2_CHAIN_ID"] || "5000");
 
 // export the conversion rate
 export const CONVERSION_RATE = 1;
@@ -127,10 +118,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      `https://mainnet.infura.io/v3/${getEnvVar(
-        "NEXT_PUBLIC_INFURA_API_KEY",
-        ""
-      )}`,
+      `https://mainnet.infura.io/v3/${process.env["NEXT_PUBLIC_INFURA_API_KEY"]}`,
       // public gateway
       `https://rpc.ankr.com/eth`,
     ],
@@ -271,6 +259,7 @@ export interface Token {
 
 // Address for multicall3 contract on each network - Multicall3: https://github.com/mds1/multicall
 export const MULTICALL_CONTRACTS: Record<number, `0x${string}`> = {
+  1: "0xcA11bde05977b3631167028862bE2a173976CA11",
   5: "0xcA11bde05977b3631167028862bE2a173976CA11",
   5001: "0xcA11bde05977b3631167028862bE2a173976CA11",
 };
