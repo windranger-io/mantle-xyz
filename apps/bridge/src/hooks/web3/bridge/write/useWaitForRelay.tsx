@@ -51,6 +51,57 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
   // build toast to return to the current page
   const { updateToast, deleteToast } = useToast();
 
+  // Construst the toast
+  const doUpdateToast = ({
+    borderLeft,
+    content,
+    type,
+    id,
+    buttonText,
+    chainId,
+    receipt,
+    tx1Hash,
+    tx2Hash,
+    page = CTAPages.Loading,
+    safeChains = [chainId],
+  }: {
+    borderLeft: string;
+    content: JSX.Element;
+    type: "success" | "error" | "onGoing" | undefined;
+    id: string;
+    buttonText: string | JSX.Element;
+    chainId: number;
+    receipt: TransactionReceipt;
+    tx1Hash: string;
+    tx2Hash: string | false;
+    page: CTAPages;
+    safeChains: number[];
+  }) => {
+    const onButtonClick = () => {
+      setCTAChainId(chainId);
+      setTx1(receipt);
+      setTx1Hash(tx1Hash);
+      setTx2Hash(tx2Hash);
+      setCTAPage(page);
+      setIsCTAPageOpen(true);
+      // set safeChains until we complete this tx
+      setSafeChains(safeChains);
+      // mark open now
+      isOpenRef.current = true;
+
+      return false;
+    };
+    // update the content and the callbacks
+    updateToast({
+      id,
+      type,
+      content,
+      borderLeft,
+      buttonText,
+      onButtonClick,
+    });
+  };
+
   // wait for the message to be relayed
   const waitForRelay = async (receipt: TransactionReceipt) => {
     // extract the txHash from the receipt, we'll use to ID the associated toast
@@ -76,7 +127,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
       // Perform the action using the crossChainMessenger
       if (direction === Direction.Deposit) {
         // update the content and the callbacks
-        updateToast({
+        doUpdateToast({
           borderLeft: "bg-yellow-500",
           content: (
             <div>
@@ -89,25 +140,21 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
           type: "success",
           id: `${txHash}`,
           buttonText: `Restore loading screen`,
-          onButtonClick: () => {
-            setCTAChainId(5);
-            setTx1(receipt);
-            setTx1Hash(txHash);
-            setTx2Hash(false);
-            setCTAPage(CTAPages.Loading);
-            setIsCTAPageOpen(true);
-            // mark open now
-            isOpenRef.current = true;
-
-            return true;
-          },
+          chainId: L1_CHAIN_ID,
+          receipt,
+          tx1Hash: txHash,
+          tx2Hash: false,
+          page: CTAPages.Loading,
+          safeChains: [L1_CHAIN_ID],
         });
         // get the new deposits
         refetchDeposits();
+        // wait for 1 min before we start checking
+        await timeout(60000);
         // wait for this status update (we're polling the l2 here - these are usually quicker than the l2-l1 direction)
         const retryForL2 = async (): Promise<MessageReceipt> =>
           waitForMessageStatus!(txHash, MessageStatus.RELAYED, {
-            pollIntervalMs: 12000, // use the same block time as L1
+            pollIntervalMs: 36000, // wait 3 blocks between polls (default is 4000)
             timeoutMs: ONE_HOUR_MS, // extreme but it will end
           }).catch(async (e) => {
             // throw server errors to the outside
@@ -118,7 +165,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
               // throw in outer context to stop the await and to move to error state
               throw e;
             }
-            // wait for 12 seconds (1 pollInterval) before trying again
+            // wait for 12 seconds (1 block) before trying again
             await timeout(12000);
 
             // try again - this will eventually fill the stack, any serious errors should be caught and thrown
@@ -140,7 +187,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
         )?.transactionReceipt?.transactionHash;
       } else {
         // update the content and the callbacks
-        updateToast({
+        doUpdateToast({
           borderLeft: "bg-blue-600",
           content: (
             <div>
@@ -153,18 +200,12 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
           type: "success",
           id: `${txHash}`,
           buttonText: `Restore loading screen`,
-          onButtonClick: () => {
-            setCTAChainId(L2_CHAIN_ID);
-            setTx1(receipt);
-            setTx1Hash(txHash);
-            setTx2Hash(false);
-            setCTAPage(CTAPages.Loading);
-            setIsCTAPageOpen(true);
-            // mark open now
-            isOpenRef.current = true;
-
-            return true;
-          },
+          chainId: L2_CHAIN_ID,
+          receipt,
+          tx1Hash: txHash,
+          tx2Hash: false,
+          page: CTAPages.Loading,
+          safeChains: [L1_CHAIN_ID, L2_CHAIN_ID],
         });
 
         // refetch to mark the claim available
@@ -175,10 +216,13 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
         let iterations = 0;
         let stopped = false;
 
+        // wait for 1 min before we start checking
+        await timeout(60000);
+
         // loop for 2000 blocks or until stopped
         while (!stopped && iterations < 2000) {
-          // 12s is approx time it takes to mine a block
-          await timeout(12000);
+          // 12s is approx time it takes to mine a block (wait 3 blocks before checking again)
+          await timeout(36000);
           // check the status now
           status = await getMessageStatus!(txHash)
             // eslint-disable-next-line @typescript-eslint/no-loop-func
@@ -222,8 +266,9 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
               // message has been relayed move to the claim page
               setCTAPage(CTAPages.Withdraw);
             }
-            // update the toast
-            updateToast({
+
+            // update the content and the callbacks
+            doUpdateToast({
               borderLeft: "bg-green-600",
               content: (
                 <div className="flex flex-row items-center gap-2">
@@ -234,20 +279,12 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
               type: "success",
               id: `${txHash}`,
               buttonText: `Claim`,
-              onButtonClick: () => {
-                setCTAChainId(L2_CHAIN_ID);
-                setTx1(receipt);
-                setTx1Hash(txHash);
-                setTx2Hash(false);
-                setCTAPage(CTAPages.Withdraw);
-                setIsCTAPageOpen(true);
-                // set safeChains until we complete this tx
-                setSafeChains([L1_CHAIN_ID, L2_CHAIN_ID]);
-                // mark open now
-                isOpenRef.current = true;
-
-                return true;
-              },
+              chainId: L2_CHAIN_ID,
+              receipt,
+              tx1Hash: txHash,
+              tx2Hash: false,
+              page: CTAPages.Withdraw,
+              safeChains: [L1_CHAIN_ID, L2_CHAIN_ID],
             });
           } else if (status === MessageStatus.RELAYED) {
             try {

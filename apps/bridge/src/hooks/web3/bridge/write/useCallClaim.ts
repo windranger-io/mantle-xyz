@@ -4,12 +4,9 @@ import {
   TransactionReceipt,
 } from "@ethersproject/providers";
 import StateContext from "@providers/stateContext";
-import { debounce } from "lodash";
-import { useContext, useState, useRef, useMemo, useEffect } from "react";
-import { useProvider } from "wagmi";
+import { useContext, useState } from "react";
 import { MessageLike, MessageReceipt, MessageStatus } from "@mantleio/sdk";
 import { useMantleSDK } from "@providers/mantleSDKContext";
-import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 
 // noop to ignore errors
@@ -17,11 +14,11 @@ const noopHandler = () => ({});
 
 // throw error with receipt and message
 class TxError extends Error {
-  receipt: TransactionReceipt | TransactionResponse;
+  receipt: true | TransactionReceipt | TransactionResponse;
 
   constructor(
     message: string | undefined,
-    receipt: TransactionReceipt | TransactionResponse
+    receipt: true | TransactionReceipt | TransactionResponse
   ) {
     super(message);
     this.name = "TxError";
@@ -42,31 +39,15 @@ export function useCallClaim(
   // import crosschain comms
   const { crossChainMessenger, getMessageStatus } = useMantleSDK();
 
-  // pull l1 provider
-  const provider = useProvider({ chainId: L1_CHAIN_ID });
-
-  // check for l1 connection
-  const isChainId = useIsChainID(L1_CHAIN_ID);
+  const { switchToNetwork } = useSwitchToNetwork();
 
   // mark loading between callClaim and the useEffect waiting for the finalizeMessage()
   const [isLoading, setIsLoading] = useState(false);
 
-  // allow the claim checks to be debounced
-  const commitClaimRef = useRef<() => void>();
-
-  // import the network switch
-  const { switchToNetwork } = useSwitchToNetwork();
-
   // commit claim method...
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const commitClaim = () => {
-    if (
-      tx1 &&
-      isChainId &&
-      isLoading &&
-      crossChainMessenger &&
-      getMessageStatus
-    ) {
+    if (tx1 && crossChainMessenger && getMessageStatus) {
       // check if a claim has already been made - if it has - return that instead
       const checkForClaim = async () => {
         return getMessageStatus(tx1, { returnReceipt: true }).then(
@@ -97,6 +78,48 @@ export function useCallClaim(
           .finalizeMessage(tx1)
           .catch((e) => {
             if (
+              e.reason === "messenger has no L1 signer" ||
+              e.reason === "underlying network changed"
+            ) {
+              setIsLoading(true);
+              switchToNetwork(L1_CHAIN_ID)
+                .catch(() => {
+                  setIsLoading(false);
+                  return false;
+                })
+                .then((completed) => {
+                  if (completed !== false) {
+                    setTimeout(() => {
+                      makeClaim()
+                        .catch(() => {
+                          return noopHandler() as TransactionReceipt;
+                        })
+                        .then(async (tx) => {
+                          // move on if we resolved the tx
+                          if (tx && tx !== true && tx.blockHash) {
+                            if (storeProgress) {
+                              // move to final page
+                              setCTAPage(CTAPages.Withdrawn);
+                            }
+                            // if provided an onsuccess func
+                            if (onSuccess) {
+                              onSuccess(tx);
+                            }
+                            // complete
+                            setIsLoading(false);
+                          } else if (tx !== true) {
+                            // re-enable the button so we can try again
+                            setIsLoading(false);
+                          }
+                        });
+                    });
+                  } else {
+                    setIsLoading(false);
+                  }
+                });
+              return true;
+            }
+            if (
               e.message ===
               "execution reverted: Provided message has already been received."
             ) {
@@ -111,8 +134,8 @@ export function useCallClaim(
                 (tx as TransactionResponse)?.wait
                   ? await (tx as TransactionResponse)?.wait?.()
                   : tx
-              ) as TransactionReceipt;
-              if (finalTx && storeProgress) {
+              ) as true | TransactionReceipt;
+              if (finalTx && finalTx !== true && storeProgress) {
                 setTx2Hash(finalTx.transactionHash);
                 // set immediately into state
                 tx2HashRef.current = finalTx.transactionHash;
@@ -138,16 +161,14 @@ export function useCallClaim(
                 })
               : makeClaim()
           );
-        }) as Promise<TransactionReceipt>
+        }) as Promise<true | TransactionReceipt>
       )
         .catch(() => {
           return noopHandler() as TransactionReceipt;
         })
         .then(async (tx) => {
-          // re-enable the button so we can try again
-          setIsLoading(false);
           // move on if we resolved the tx
-          if (tx && tx.blockHash) {
+          if (tx && tx !== true && tx.blockHash) {
             if (storeProgress) {
               // move to final page
               setCTAPage(CTAPages.Withdrawn);
@@ -156,46 +177,26 @@ export function useCallClaim(
             if (onSuccess) {
               onSuccess(tx);
             }
+            // complete
+            setIsLoading(false);
+          } else if (tx !== true) {
+            // re-enable the button so we can try again
+            setIsLoading(false);
           }
         });
     }
   };
 
-  // debounce the current callback assigned to commitClaimRef
-  const doCommitClaimWithDebounce = useMemo(() => {
-    const callback = () => commitClaimRef.current?.();
-    return debounce(callback, 600);
-  }, []);
-
-  // update the references every render to make sure we have the latest state in the function
-  useEffect(() => {
-    commitClaimRef.current = commitClaim;
-  }, [commitClaim]);
-
   // initiate claim and make sure we're on the correct network
-  const callClaim = async () => {
+  const callClaim = async (): Promise<void> => {
     // initiate loading/claim state
     setIsLoading(true);
     // first step is to ensure we're on the correct network - we break this up because we need the correct signer to finalise the message
-    if (tx1 && !isChainId) {
-      await switchToNetwork(L1_CHAIN_ID).catch(() => {
-        setIsLoading(false);
-      });
+    if (tx1) {
+      return commitClaim();
     }
+    return Promise.resolve();
   };
-
-  // when we're in a loading state and have the correct chainId we can attempt to finalise the message
-  useEffect(() => {
-    doCommitClaimWithDebounce();
-  }, [
-    tx1,
-    provider,
-    isLoading,
-    isChainId,
-    crossChainMessenger,
-    // when any of the above props change we debounce a call to commitClaim to only initiate one metamask prompt
-    doCommitClaimWithDebounce,
-  ]);
 
   return {
     isLoading,

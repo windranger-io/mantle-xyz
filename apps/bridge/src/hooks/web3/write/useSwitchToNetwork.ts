@@ -14,13 +14,14 @@ export function useSwitchToNetwork() {
   };
 
   // trigger change of network
-  const switchToNetwork = async (chainId: number) => {
+  const switchToNetwork = async (chainId: number): Promise<number | void> => {
     if (!window.ethereum) throw new Error("No crypto wallet found");
     try {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: `0x${Number(chainId).toString(16)}` }],
       });
+      return chainId;
     } catch (switchError: any) {
       // This error code indicates that the chain has not been added to MetaMask.
       if (switchError && switchError.code === 4902) {
@@ -29,6 +30,7 @@ export function useSwitchToNetwork() {
         throw switchError;
       }
     }
+    return Promise.resolve();
   };
 
   return {

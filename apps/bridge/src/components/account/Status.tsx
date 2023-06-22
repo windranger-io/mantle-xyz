@@ -109,7 +109,11 @@ export default function Status({
                 // do we have the transaction hash available?
                 // do we want to check the tx has completed?
                 item.status = "complete";
-              } else {
+              } else if (
+                res.status === MessageStatus.IN_CHALLENGE_PERIOD ||
+                res.status === MessageStatus.STATE_ROOT_NOT_PUBLISHED ||
+                res.status === MessageStatus.UNCONFIRMED_L1_TO_L2_MESSAGE
+              ) {
                 // otherwise it should be pending
                 item.status = "pending";
               }
@@ -200,8 +204,13 @@ export default function Status({
           l1Hash || currentStatus.tx;
 
         // update the tx2Hash store with cached values (using a ref to collect these values to avoid race conditions when setting to tx2Hashes)
-        if (l1Hash !== withdrawalTx2Hashes.current[transactionHash]) {
-          setTx2Hashes({ ...withdrawalTx2Hashes.current });
+        if (
+          withdrawalTx2Hashes.current &&
+          l1Hash !== withdrawalTx2Hashes.current[transactionHash]
+        ) {
+          setTimeout(() => {
+            setTx2Hashes({ ...withdrawalTx2Hashes.current });
+          });
         }
 
         // return the withdrawalStatus

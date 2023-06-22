@@ -173,7 +173,7 @@ export function useCallBridge(
             isCTAPageOpenRef.current = true;
 
             // close the toast when clicked...
-            return true;
+            return false;
           },
         });
 
@@ -292,7 +292,7 @@ export function useCallBridge(
             isCTAPageOpenRef.current = true;
 
             // close the toast when clicked...
-            return true;
+            return false;
           },
         });
       }

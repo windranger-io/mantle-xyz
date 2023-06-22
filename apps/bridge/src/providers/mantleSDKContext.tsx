@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop */
+/* eslint-disable no-underscore-dangle, no-await-in-loop */
 
 "use client";
 
@@ -17,11 +17,12 @@ import {
   toTransactionHash,
 } from "@mantleio/sdk";
 
+import * as contracts from "@mantleio/contracts";
+
 import { hashCrossDomainMessage } from "@mantleio/core-utils";
 
 import { CHAINS_FORMATTED, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
-import { ethers, providers } from "ethers";
 import { useSigner, useProvider, useNetwork } from "wagmi";
 import type {
   FallbackProvider,
@@ -29,11 +30,14 @@ import type {
   TransactionReceipt,
   TransactionResponse,
 } from "@ethersproject/providers";
+import { BytesLike, Signer, ethers, providers } from "ethers";
 
 import ErrorFallback from "@components/ErrorFallback";
 import { withErrorBoundary, useErrorHandler } from "react-error-boundary";
 
 import { timeout } from "@utils/toolSet";
+
+import { gql, useApolloClient } from "@apollo/client";
 
 type WaitForMessageStatus = (
   message: MessageLike,
@@ -71,6 +75,27 @@ interface MantleSDKProviderProps {
   children: React.ReactNode;
 }
 
+// Construct query to pull stateBatch at index
+const GetBatchStateAtIndexQuery = gql`
+  query GetBatchStateAtIndex($transactionIndex: String!) {
+    stateBatchAppends(
+      first: 1
+      orderBy: batchIndex
+      orderDirection: desc
+      where: { prevTotalElements_lte: $transactionIndex }
+    ) {
+      txHash
+      txBlock
+      batchIndex
+      batchRoot
+      batchSize
+      prevTotalElements
+      signature
+      extraData
+    }
+  }
+`;
+
 // Exports a provider containing the crossChainMessenger and some additional overridden helper methods
 function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   // currently selected chain according to wagmi (associated with provider/signer combo)
@@ -80,7 +105,11 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   // of that frame by ref to avoid an "underlying network changed" error if the user switches chain
   const layer1InfuraRef = React.useRef<Provider>();
   const layer1ProviderRef = React.useRef<Provider>();
+  const layer1SignerRef = React.useRef<Signer>();
   const mantleTestnetRef = React.useRef<Provider>();
+
+  // get the apolloClient
+  const gqclient = useApolloClient();
 
   // pull all the signers/privders and set handlers and associate boundaries as we go
   const { data: layer1Signer, error: layer1SignerError } = useSigner({
@@ -89,11 +118,15 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   useErrorHandler(layer1SignerError);
   // get an infura backed provider so we can search through more blocks - this enables the full sdk to work
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const layer1Infura = new ethers.providers.InfuraProvider(
-    L1_CHAIN_ID,
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    process.env["NEXT_PUBLIC_INFURA_API_KEY"]
+  const layer1Infura = React.useMemo(
+    () =>
+      new ethers.providers.JsonRpcProvider("/rpc", {
+        chainId: L1_CHAIN_ID,
+        name: CHAINS_FORMATTED[L1_CHAIN_ID].name,
+      }),
+    []
   );
+
   // use public l1 Provider for gernal lookups (gas etc)
   const layer1Provider = React.useMemo(
     () =>
@@ -154,6 +187,59 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
         const challengePeriod = await contract.FRAUD_PROOF_WINDOW();
         return challengePeriod.toNumber();
       };
+
+    // get the stateRootBatch associated with this transactionIndex (get the result from graphql)
+    context.crossChainMessenger.getStateRootBatchByTransactionIndex = async (
+      transactionIndex
+    ) => {
+      // fetch the appendStateBatch event from supergraph that matches this transactionIndex
+      const { data } = await gqclient.query({
+        query: GetBatchStateAtIndexQuery,
+        variables: {
+          transactionIndex: `${transactionIndex}`,
+        },
+        context: {
+          fetchOptions: {
+            next: { revalidate: 60 },
+          },
+        },
+      });
+
+      // return null if we didn't find the index
+      if (data.stateBatchAppends.length === 0) {
+        return null;
+      }
+
+      // if we have results, we should only have 1
+      const stateBatchAppendedEvent = data.stateBatchAppends[0];
+
+      // we will need to get the transaction for the txHash provided by the graphql response
+      const stateBatchTransaction =
+        await layer1InfuraRef.current?.getTransaction(
+          stateBatchAppendedEvent.txHash
+        );
+      const [stateRoots] =
+        context.crossChainMessenger.contracts.l1.StateCommitmentChain.interface.decodeFunctionData(
+          "appendStateBatch",
+          stateBatchTransaction?.data as BytesLike
+        );
+
+      // return the content from supergraph + the stateRoots from the transaction
+      return {
+        blockNumber: stateBatchAppendedEvent.txBlock,
+        stateRoots,
+        header: {
+          batchRoot: stateBatchAppendedEvent.batchRoot,
+          signature: stateBatchAppendedEvent.signature,
+          extraData: stateBatchAppendedEvent.extraData,
+          batchIndex: ethers.BigNumber.from(stateBatchAppendedEvent.batchIndex),
+          batchSize: ethers.BigNumber.from(stateBatchAppendedEvent.batchSize),
+          prevTotalElements: ethers.BigNumber.from(
+            stateBatchAppendedEvent.prevTotalElements
+          ),
+        },
+      };
+    };
 
     // get the stateRoot for a given message
     context.crossChainMessenger.getMessageStateRoot = async (
@@ -250,8 +336,9 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       if (relayedMessageEvents.length === 1) {
         return {
           receiptStatus: MessageReceiptStatus.RELAYED_SUCCEEDED,
-          transactionReceipt:
-            await relayedMessageEvents[0].getTransactionReceipt(),
+          transactionReceipt: await unconnectedMessenger.getTransactionReceipt(
+            relayedMessageEvents[0].transactionHash
+          ),
         };
       }
       // otherwise we have a bad state...[]
@@ -267,9 +354,10 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       if (failedRelayedMessageEvents.length > 0) {
         return {
           receiptStatus: MessageReceiptStatus.RELAYED_FAILED,
-          transactionReceipt: await failedRelayedMessageEvents[
-            failedRelayedMessageEvents.length - 1
-          ].getTransactionReceipt(),
+          transactionReceipt: await unconnectedMessenger.getTransactionReceipt(
+            failedRelayedMessageEvents[failedRelayedMessageEvents.length - 1]
+              .transactionHash
+          ),
         };
       }
 
@@ -398,6 +486,42 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       }
     };
 
+    context.crossChainMessenger.finalizeMessage = async (message, opts) => {
+      return layer1SignerRef.current!.sendTransaction(
+        await context.crossChainMessenger.populateTransaction.finalizeMessage(
+          message,
+          opts
+        )
+      );
+    };
+
+    context.crossChainMessenger.populateTransaction.finalizeMessage = async (
+      message,
+      opts
+    ) => {
+      const resolved = await context.crossChainMessenger.toCrossChainMessage(
+        message
+      );
+      if (resolved.direction === MessageDirection.L1_TO_L2) {
+        throw new Error(`cannot finalize L1 to L2 message`);
+      }
+      const proof = await context.crossChainMessenger.getMessageProof(resolved);
+      const legacyL1XDM = new ethers.Contract(
+        context.crossChainMessenger.contracts.l1.L1CrossDomainMessenger.address,
+        contracts.getContractInterface("L1CrossDomainMessenger"),
+        // use l1 provider
+        layer1InfuraRef.current
+      );
+      return legacyL1XDM.populateTransaction.relayMessage(
+        resolved.target,
+        resolved.sender,
+        resolved.message,
+        resolved.messageNonce,
+        proof,
+        (opts === null || opts === undefined ? undefined : opts.overrides) || {}
+      );
+    };
+
     /*
      * Exposing new instances of these two methods so that we can return the receipt directly from the call
      */
@@ -451,12 +575,23 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
           const { timestamp } = block;
           const challengePeriod =
             await context.crossChainMessenger.getChallengePeriodSeconds();
+          // now get the latest block...
           const latestBlock = await layer1ProviderRef.current!.getBlock(
             "latest"
           );
           // check that the challengePeriod period has ellapsed before marking as ready
           if (timestamp + challengePeriod > latestBlock.timestamp) {
-            status = MessageStatus.IN_CHALLENGE_PERIOD;
+            // await the challenge period in this tick to avoid repeating the stateRoot check every new block (+ 2block buffer)
+            await timeout((challengePeriod + 24) * 1000);
+            // now get the latest block...
+            const nextBlock = await layer1ProviderRef.current!.getBlock(
+              "latest"
+            );
+            if (timestamp + challengePeriod > nextBlock.timestamp) {
+              status = MessageStatus.IN_CHALLENGE_PERIOD;
+            } else {
+              status = MessageStatus.READY_FOR_RELAY;
+            }
           } else {
             status = MessageStatus.READY_FOR_RELAY;
           }
@@ -557,6 +692,22 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       throw new Error(`timed out waiting for message status change`);
     };
 
+    // attach this to internal getMessageStatus
+    context.crossChainMessenger.getMessageStatus = async (message) => {
+      return (await getMessageStatus(message)) as MessageStatus;
+    };
+
+    // attach this to internal waitForMessageStatus
+    context.crossChainMessenger.waitForMessageStatus = async (
+      message,
+      status
+    ) => {
+      // wait for the status
+      await waitForMessageStatus(message, status);
+
+      return undefined;
+    };
+
     // return the crosschain manager
     return {
       ...context,
@@ -570,6 +721,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     layer1ProviderRef,
     mantleTestnetSigner,
     mantleTestnetProvider,
+    gqclient,
     chain,
   ]);
 
@@ -585,6 +737,10 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   React.useEffect(() => {
     mantleTestnetRef.current = mantleTestnetProvider;
   }, [mantleTestnetProvider]);
+
+  React.useEffect(() => {
+    layer1SignerRef.current = layer1Signer as Signer;
+  }, [layer1Signer]);
 
   return (
     <MantleSDKContext.Provider value={crossChainMessenger as SDKContext}>
