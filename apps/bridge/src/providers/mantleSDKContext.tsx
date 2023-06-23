@@ -200,7 +200,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
         },
         context: {
           fetchOptions: {
-            next: { revalidate: 60 },
+            next: { revalidate: 30 },
           },
         },
       });
@@ -336,6 +336,11 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
         ? context.crossChainMessenger.contracts.l2.L2CrossDomainMessenger
         : context.crossChainMessenger.contracts.l1.L1CrossDomainMessenger;
 
+      // get the provider to read the receipt from
+      const provider = IS_L1_TO_L2
+        ? mantleTestnetRef.current!
+        : layer1ProviderRef.current!;
+
       // connect to the fixed provider
       const messenger = unconnectedMessenger.connect(
         IS_L1_TO_L2 ? mantleTestnetRef.current! : layer1InfuraRef.current!
@@ -345,15 +350,17 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       const relayedMessageEvents = await messenger
         .queryFilter(messenger.filters.RelayedMessage(messageHash))
         .catch(() => []);
+
       // if the relay was successful only once then return the receipt
       if (relayedMessageEvents.length === 1) {
         return {
           receiptStatus: MessageReceiptStatus.RELAYED_SUCCEEDED,
-          transactionReceipt: await unconnectedMessenger.getTransactionReceipt(
+          transactionReceipt: await provider.getTransactionReceipt(
             relayedMessageEvents[0].transactionHash
           ),
         };
       }
+
       // otherwise we have a bad state...[]
       if (relayedMessageEvents.length > 1) {
         throw new Error(`multiple successful relays for message`);
@@ -367,7 +374,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       if (failedRelayedMessageEvents.length > 0) {
         return {
           receiptStatus: MessageReceiptStatus.RELAYED_FAILED,
-          transactionReceipt: await unconnectedMessenger.getTransactionReceipt(
+          transactionReceipt: await provider.getTransactionReceipt(
             failedRelayedMessageEvents[failedRelayedMessageEvents.length - 1]
               .transactionHash
           ),
@@ -555,6 +562,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       const resolved = await context.crossChainMessenger.toCrossChainMessage(
         message
       );
+
       // attempt to fetch the messages receipt
       const receipt = await context.crossChainMessenger.getMessageReceipt(
         resolved
