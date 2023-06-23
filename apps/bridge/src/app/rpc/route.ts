@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
   }
 
   // fetch from public node with no cache
-  return NextResponse.json(await fetchPublic(id, jsonrpc, method, params), {
+  return NextResponse.json(await fetchInfura(id, jsonrpc, method, params), {
     headers: {
       "Cache-Control":
         "max-age=12, public, s-maxage=12, stale-while-revalidate=59",
