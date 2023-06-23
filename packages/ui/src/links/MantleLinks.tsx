@@ -1,6 +1,7 @@
 /* eslint-disable react/require-default-props */
 
 import { LinkHTMLAttributes, type ReactNode } from 'react'
+import Link from 'next/link'
 
 import { type Variant, type Size } from './types'
 
@@ -17,11 +18,13 @@ interface LinkProps
   href: string
   children: ReactNode
   target?: string
+  shallow?: boolean
 }
 
 export const MantleLink = ({
   size = 'regular',
   variant = 'primary',
+  shallow = false,
   href,
   children,
   className,
@@ -29,7 +32,7 @@ export const MantleLink = ({
   ...props
 }: LinkProps) => (
   // eslint-disable-next-line react/button-has-type
-  <a
+  <Link
     href={href}
     target={target}
     className={cls(`
@@ -38,9 +41,10 @@ export const MantleLink = ({
     ${classes.variant[variant]}
     ${className}
   `)}
+    shallow={shallow}
     // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
   >
     {children}
-  </a>
+  </Link>
 )

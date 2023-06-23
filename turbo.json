@@ -46,6 +46,16 @@
       ],
       "cache": false
     },
+    "dev:converter": {
+      "env": [
+        "NEXT_PUBLIC_INFURA_API_KEY",
+        "NEXT_PUBLIC_SITE_URL",
+        "NEXT_PUBLIC_VERCEL_URL",
+        "NEXT_PUBLIC_L1_CHAIN_ID",
+        "NEXT_PUBLIC_L2_CHAIN_ID"
+      ],
+      "cache": false
+    },
     "dev:cms": {
       "cache": false
     },
