@@ -196,10 +196,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // all token selections from both panes
   const [selectedToken, setSelectedToken] = useState<{
     [key in Direction]: string;
-  }>({ [Direction.Deposit]: "BitDAO", [Direction.Withdraw]: "BitDAO" });
+  }>({ [Direction.Deposit]: "Mantle", [Direction.Withdraw]: "Mantle" });
   const [destinationToken, setDestinationToken] = useState<{
     [key in Direction]: string;
-  }>({ [Direction.Deposit]: "BitDAO", [Direction.Withdraw]: "BitDAO" });
+  }>({ [Direction.Deposit]: "Mantle", [Direction.Withdraw]: "Mantle" });
 
   // amounts (input and destination supplied to final tx's)
   const [selectedTokenAmount, setSelectedTokenAmount] = useState<string>("");

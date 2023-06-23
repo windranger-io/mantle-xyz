@@ -19,7 +19,7 @@ export * from './src/links/MantleLinks'
  *
  *
  */
-
+export * from './src/base/Icons'
 export * from './src/base/T'
 
 /**
@@ -63,3 +63,5 @@ export * from './src/presentational/PageBackgroundImage'
  */
 
 export * from './src/fonts/ThemeFonts'
+
+export * from './src/LocaleSwitcher'

@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/** The less we use this global style the better! */
+
+
+body{
+  background-color: #000000;
+}

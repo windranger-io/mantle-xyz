@@ -30,11 +30,11 @@ export const MAX_BALANCE = 1000;
 
 // User must tweet the following before they can mint tokens...
 export const REQUIRED_TWEET =
-  /To #BuildonMantle, I am claiming test \$BIT tokens on https:\/\/([^\s]+) for @0xMantle, a next generation high-performance modular @Ethereum L2 built for hyperscaled dApps.\n\nLearn more: \[https:\/\/([^\]]+)\]/;
+  /To #BuildonMantle, I am claiming test \$MNT tokens on https:\/\/([^\s]+) for @0xMantle, a next generation high-performance modular @Ethereum L2 built for hyperscaled dApps.\n\nLearn more: \[https:\/\/([^\]]+)\]/;
 
 // set the available networks token contract address (goerli)
 export const NETWORKS: Record<number, `0x${string}`> = {
-  5: "0x5a94Dc6cc85fdA49d8E9A8b85DDE8629025C42be",
+  5: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
 };
 
 // set the available chains configuration to allow network to be added

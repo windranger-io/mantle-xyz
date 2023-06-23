@@ -166,7 +166,7 @@ export default function TransactionPanel({
                         : formatEther(
                             parseUnits(actualGasFee || "0", "gwei") || "0"
                           )}{" "}
-                      BIT
+                      MNT
                     </>
                   </Typography>
                 </div>,
