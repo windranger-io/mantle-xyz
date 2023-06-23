@@ -69,7 +69,7 @@ export const OG_DESC =
   "Convert $BIT tokens to $MNT tokens here... #BuildonMantle.";
 
 // Configure Twitter Title
-export const TWITTER_TITLE = "Mantle Testnet Converter";
+export const TWITTER_TITLE = "Mantle Converter";
 
 // Configure Twitter Desc
 export const TWITTER_DESC =
