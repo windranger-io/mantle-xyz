@@ -4,6 +4,9 @@ export const SUPERGRAPH_NAME = "supergraph--bridge--0-0-1";
 // Set the local engine (true: db || false: mongo)
 export const SUPERGRAPH_DEV_ENGINE = false;
 
+// Flag unique ids to insert by upsert only on id field (otherwise use _block_number + id to make a unique entry)
+export const SUPERGRAPH_UNIQUE_IDS = true;
+
 // Define the schema we will follow in our syncs and queries
 export const SUPERGRAPH_SCHEMA = `
     type StateBatchAppend @entity {
@@ -22,7 +25,7 @@ export const SUPERGRAPH_SCHEMA = `
 
 // Define the default query we want to show in graphiql
 export const SUPERGRAPH_DEFAULT_QUERY = `
-    {
+    query MostRecentUpdates {
       stateBatchAppends(first: 10, skip: 0, orderBy: batchIndex, orderDirection: desc) {
         batchIndex
         prevTotalElements

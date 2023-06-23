@@ -25,17 +25,22 @@ export class Mongo extends DB {
 
   name: string;
 
+  uniqueIds: boolean;
+
   // construct a kv store
   constructor(
     client: MongoClient | Promise<MongoClient>,
     name: string,
-    kv: KV
+    kv: KV,
+    uniqueIds?: boolean
   ) {
     super(kv);
     // establish connection
     this.client = client;
     // record the connection name
     this.name = name;
+    // are the ids unique?
+    this.uniqueIds = uniqueIds || false;
     // resolve the client then attach the named db
     this.db = Promise.resolve(client).then((mongo) =>
       mongo.db(name || "supergraph")
@@ -47,12 +52,14 @@ export class Mongo extends DB {
     client,
     name,
     kv,
+    uniqueIds,
   }: {
     client: MongoClient | Promise<MongoClient>;
     name: string;
     kv: KV;
+    uniqueIds?: boolean;
   } & Record<string, unknown>) {
-    const db = new this(client, name, kv);
+    const db = new this(client, name, kv, uniqueIds);
     await db.update({ kv });
     return db;
   }
@@ -89,7 +96,23 @@ export class Mongo extends DB {
       // get the collection for this entity
       const collection = (await Promise.resolve(this.db)).collection(ref);
       // get the most recent document that matches the id
-      const document = collection.findOne({ id }, { sort: { _block_ts: -1 } });
+      const document = collection.findOne(
+        {
+          id,
+          // if ids are unique then we can place by update
+          ...(this.uniqueIds
+            ? {}
+            : {
+                // eslint-disable-next-line no-underscore-dangle
+                _block_ts: val?._block_ts,
+                // eslint-disable-next-line no-underscore-dangle
+                _block_num: val?._block_num,
+                // eslint-disable-next-line no-underscore-dangle
+                _chain_id: val?._chain_id,
+              }),
+        },
+        { sort: { _block_ts: -1 } }
+      );
 
       // this will update the most recent entry or upsert a new document (do we want this to insert a new doc every update?)
       (await Promise.resolve(this.db)).collection(ref).updateOne(
@@ -163,12 +186,17 @@ export class Mongo extends DB {
                 filter: {
                   // each entry is unique by block and id
                   id: val.key.split(".")[1],
-                  // eslint-disable-next-line no-underscore-dangle
-                  _block_ts: val.value?._block_ts,
-                  // eslint-disable-next-line no-underscore-dangle
-                  _block_num: val.value?._block_num,
-                  // eslint-disable-next-line no-underscore-dangle
-                  _chain_id: val.value?._chain_id,
+                  // if ids are unique then we can place by update
+                  ...(this.uniqueIds
+                    ? {}
+                    : {
+                        // eslint-disable-next-line no-underscore-dangle
+                        _block_ts: val.value?._block_ts,
+                        // eslint-disable-next-line no-underscore-dangle
+                        _block_num: val.value?._block_num,
+                        // eslint-disable-next-line no-underscore-dangle
+                        _chain_id: val.value?._chain_id,
+                      }),
                 },
                 update: {
                   $set: {
