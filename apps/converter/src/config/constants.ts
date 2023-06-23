@@ -56,7 +56,7 @@ export const L1_MANTLE_TOKEN: Token = {
 };
 
 // Configure the applications name
-export const APP_NAME = "Mantle Testnet Converter";
+export const APP_NAME = "Mantle Converter";
 
 // Configure deta description
 export const META = "Convert $BIT tokens to $MNT tokens - 1:1";
