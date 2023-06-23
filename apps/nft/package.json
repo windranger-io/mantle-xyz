@@ -11,8 +11,7 @@
     "start": "next start",
     "lint": "eslint ./src --fix",
     "lint:nft": "eslint ./src --fix",
-    "predev:nft": "pnpm build:locales",
-    "prebuild": "pnpm build:locales"
+    "postinstall": "pnpm build:locales"
   },
   "dependencies": {
     "@mantle/constants": "workspace:*",
