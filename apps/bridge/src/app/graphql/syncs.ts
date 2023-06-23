@@ -16,6 +16,7 @@ import { addSync, Store, Mongo, DB } from "@mantle/supergraph";
 import {
   SUPERGRAPH_NAME,
   SUPERGRAPH_DEV_ENGINE,
+  SUPERGRAPH_UNIQUE_IDS,
   L1_START_BLOCK,
   L1_STATE_COMMITMENT_CHAIN,
   STATE_COMMITMENT_CHAIN_STATE_BATCH_APPENDED_ABI,
@@ -42,6 +43,7 @@ Store.setEngine({
         Mongo.create({
           kv: {},
           name: SUPERGRAPH_NAME,
+          uniqueIds: SUPERGRAPH_UNIQUE_IDS,
           client: getMongodb(process.env.MONGODB_URI!),
         }),
 });

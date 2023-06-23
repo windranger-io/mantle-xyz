@@ -20,6 +20,7 @@ import {
   SUPERGRAPH_SCHEMA,
   SUPERGRAPH_DEFAULT_QUERY,
   SUPERGRAPH_DEV_ENGINE,
+  SUPERGRAPH_UNIQUE_IDS,
   SUPERGRAPH_REVALIDATE,
   SUPERGRAPH_STALE_WHILE_REVALIDATE,
 } from "./config";
@@ -54,7 +55,7 @@ const graphql = createSupergraph<NextApiRequest, NextApiResponse>({
             MONGODB_URI
           ),
           // skip groupBy on time/block - each id is unique in this set of syncs
-          uniqueIds: true,
+          uniqueIds: SUPERGRAPH_UNIQUE_IDS,
         }),
   // pass in the simplified graphql schema
   schema: SUPERGRAPH_SCHEMA,
@@ -71,8 +72,6 @@ export async function GET(request: NextRequest) {
   try {
     // get html response
     const response = await graphql(request);
-
-    console.log("test");
 
     // return via nextjs
     return new NextResponse(response.body, {
