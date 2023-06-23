@@ -24,6 +24,7 @@ export const SUPERGRAPH_SCHEMA = `
 export const SUPERGRAPH_DEFAULT_QUERY = `
     {
       stateBatchAppends(first: 10, skip: 0, orderBy: batchIndex, orderDirection: desc) {
+        batchIndex
         prevTotalElements
         batchSize
       }
