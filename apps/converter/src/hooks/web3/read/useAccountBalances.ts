@@ -27,7 +27,7 @@ function useAccountBalances(
     [key: string]: BigNumberish;
   }>(
     [
-      "BALANCES_FOR_ADDRESS_ON_CHAINID_TEST",
+      "BALANCES_FOR_ADDRESS_ON_CHAINID",
       {
         address: client?.address,
         chainId,
