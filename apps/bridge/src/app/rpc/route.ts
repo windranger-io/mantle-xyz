@@ -2,9 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { cache } from "react";
 
-// revalidate this req every 300000
-// export const revalidate = 300000;
-
 const fetchInfura = async (
   id: number,
   jsonrpc: string,
@@ -101,7 +98,7 @@ export async function POST(request: NextRequest) {
       {
         headers: {
           "Cache-Control":
-            "max-age=12, public, s-maxage=12, stale-while-revalidate=12",
+            "max-age=12, public, s-maxage=12, stale-while-revalidate=59",
         },
       }
     );
@@ -124,7 +121,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json(await fetchPublic(id, jsonrpc, method, params), {
     headers: {
       "Cache-Control":
-        "max-age=12, public, s-maxage=12, stale-while-revalidate=12",
+        "max-age=12, public, s-maxage=12, stale-while-revalidate=59",
     },
   });
 }
