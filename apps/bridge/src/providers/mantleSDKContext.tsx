@@ -218,11 +218,24 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
         await layer1InfuraRef.current?.getTransaction(
           stateBatchAppendedEvent.txHash
         );
-      const [stateRoots] =
-        context.crossChainMessenger.contracts.l1.StateCommitmentChain.interface.decodeFunctionData(
-          "appendStateBatch",
-          stateBatchTransaction?.data as BytesLike
-        );
+
+      // check both contracts for the initial call that set the stateRoots
+      let stateRoots;
+      try {
+        // eslint-disable-next-line prefer-destructuring
+        stateRoots =
+          context.crossChainMessenger.contracts.l1.StateCommitmentChain.interface.decodeFunctionData(
+            "appendStateBatch",
+            stateBatchTransaction?.data as BytesLike
+          )[0];
+      } catch (e) {
+        // eslint-disable-next-line prefer-destructuring
+        stateRoots =
+          context.crossChainMessenger.contracts.l1.Rollup.interface.decodeFunctionData(
+            "createAssertionWithStateBatch",
+            stateBatchTransaction?.data as BytesLike
+          )[2];
+      }
 
       // return the content from supergraph + the stateRoots from the transaction
       return {
