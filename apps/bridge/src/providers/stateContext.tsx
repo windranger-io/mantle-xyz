@@ -324,7 +324,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     selectedToken,
     destinationToken,
     bridgeAddress,
-    destinationTokenAmount
+    destinationTokenAmount,
+    allowance
   );
 
   // perform a multicall on the given network to get all token balances for user
@@ -408,17 +409,20 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   );
 
   // reset the gas estimate every time we make a change
-  useEffect(() => {
-    resetGasEstimate();
-  }, [
-    chainId,
-    client?.address,
-    selectedToken,
-    destinationToken,
-    bridgeAddress,
-    destinationTokenAmount,
-    resetGasEstimate,
-  ]);
+  useEffect(
+    () => {
+      resetGasEstimate();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      chainId,
+      client?.address,
+      selectedToken,
+      destinationToken,
+      bridgeAddress,
+      destinationTokenAmount,
+    ]
+  );
 
   // log the new status to ctaStatus
   useEffect(() => {
