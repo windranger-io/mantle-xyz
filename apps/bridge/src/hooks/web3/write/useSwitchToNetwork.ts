@@ -26,7 +26,7 @@ export function useSwitchToNetwork() {
       // This error code indicates that the chain has not been added to MetaMask.
       if (switchError && switchError.code === 4902) {
         await addNetwork(chainId);
-      } else if (switchError.message !== "header not found") {
+      } else if (switchError.code !== -32000) {
         throw switchError;
       }
     }
