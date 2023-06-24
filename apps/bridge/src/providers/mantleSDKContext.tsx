@@ -15,6 +15,7 @@ import {
   StateRoot,
   TransactionLike,
   toTransactionHash,
+  StateRootBatch,
 } from "@mantleio/sdk";
 
 import * as contracts from "@mantleio/contracts";
@@ -56,20 +57,20 @@ type GetMessageStatus = (
   MessageStatus | { status: MessageStatus; receipt: MessageReceipt }
 >;
 
-type SDKContext = {
+type MantleSDK = {
   crossChainMessenger: CrossChainMessenger;
   waitForMessageStatus: WaitForMessageStatus;
   getMessageStatus: GetMessageStatus;
+  toCrossChainMessage: (msg: MessageLike) => Promise<CrossChainMessage>;
+  getMessageStateRoot: (msg: MessageLike) => Promise<{
+    stateRoot: string;
+    stateRootIndexInBatch: number;
+    batch: StateRootBatch;
+    timestamp: number;
+  } | null>;
 };
 
-const MantleSDKContext = React.createContext<
-  | {
-      crossChainMessenger: CrossChainMessenger | undefined;
-      waitForMessageStatus: WaitForMessageStatus | undefined;
-      getMessageStatus: GetMessageStatus | undefined;
-    }
-  | undefined
->(undefined);
+const MantleSDKContext = React.createContext<MantleSDK | undefined>(undefined);
 
 interface MantleSDKProviderProps {
   children: React.ReactNode;
@@ -100,6 +101,20 @@ const GetBatchStateAtIndexQuery = gql`
 function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   // currently selected chain according to wagmi (associated with provider/signer combo)
   const { chain } = useNetwork();
+
+  // pull the challenge period once
+  const challengePeriod = React.useRef<number>();
+  const crossChainMessages = React.useRef<Record<string, CrossChainMessage>>(
+    {}
+  );
+  const batchIndexChecks = React.useRef<{
+    [key: string]: {
+      stateRoot: string;
+      stateRootIndexInBatch: number;
+      batch: StateRootBatch;
+      timestamp: number;
+    };
+  }>({});
 
   // setting providers against refs because we freeze state in a render frame and need to step out
   // of that frame by ref to avoid an "underlying network changed" error if the user switches chain
@@ -157,7 +172,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       return { crossChainMessenger: undefined };
 
     // context only stores the manager
-    const context = {
+    const context: MantleSDK = {
       crossChainMessenger: new CrossChainMessenger({
         l1ChainId: L1_CHAIN_ID,
         l2ChainId: L2_CHAIN_ID,
@@ -170,11 +185,27 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
               (mantleTestnetProvider as FallbackProvider).providerConfigs[0]
                 .provider,
       }),
-    };
+    } as MantleSDK;
 
     /*
      * override these methods to attach to current network ref (avoids underlying network changed error)
      */
+
+    // memoise gets for crossChainMessages
+    context.toCrossChainMessage = async (msg: MessageLike) => {
+      const key = (
+        typeof msg === "string"
+          ? msg
+          : (msg as TransactionResponse).hash ||
+            (msg as TransactionReceipt).transactionHash
+      ) as string;
+      // set the value once
+      crossChainMessages.current[key] =
+        crossChainMessages.current[key] ||
+        (await context.crossChainMessenger.toCrossChainMessage(msg));
+
+      return crossChainMessages.current[key];
+    };
 
     // read the challengePeriodSeconds from the contract
     context.crossChainMessenger.getChallengePeriodSeconds =
@@ -184,8 +215,8 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
             layer1ProviderRef.current!
           );
 
-        const challengePeriod = await contract.FRAUD_PROOF_WINDOW();
-        return challengePeriod.toNumber();
+        const period = await contract.FRAUD_PROOF_WINDOW();
+        return period.toNumber();
       };
 
     // get the stateRootBatch associated with this transactionIndex (get the result from graphql)
@@ -198,6 +229,9 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
         variables: {
           transactionIndex: `${transactionIndex}`,
         },
+        // disable apollo cache to force new fetch call every invoke
+        fetchPolicy: "no-cache",
+        // use next cache to store the responses for 30s
         context: {
           fetchOptions: {
             next: { revalidate: 30 },
@@ -206,7 +240,12 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       });
 
       // return null if we didn't find the index
-      if (data.stateBatchAppends.length === 0) {
+      if (
+        data.stateBatchAppends.length === 0 ||
+        parseInt(data.stateBatchAppends[0].prevTotalElements, 10) +
+          parseInt(data.stateBatchAppends[0].batchSize, 10) <=
+          transactionIndex
+      ) {
         return null;
       }
 
@@ -239,7 +278,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
 
       // return the content from supergraph + the stateRoots from the transaction
       return {
-        blockNumber: stateBatchAppendedEvent.txBlock,
+        blockNumber: parseInt(stateBatchAppendedEvent.txBlock, 10),
         stateRoots,
         header: {
           batchRoot: stateBatchAppendedEvent.batchRoot,
@@ -255,68 +294,89 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     };
 
     // get the stateRoot for a given message
+    context.getMessageStateRoot = async (message: MessageLike) => {
+      const resolved = await context.toCrossChainMessage(message);
+
+      // if the stateRoot hasnt been checked yet...
+      if (!batchIndexChecks.current[resolved.transactionHash]) {
+        // State roots are only a thing for L2 to L1 messages.
+        if (resolved.direction === MessageDirection.L1_TO_L2) {
+          throw new Error(`cannot get a state root for an L1 to L2 message`);
+        }
+
+        // We need the block number of the transaction that triggered the message so we can look up the
+        // state root batch that corresponds to that block number.
+        const messageTxReceipt =
+          await mantleTestnetRef.current!.getTransactionReceipt(
+            resolved.transactionHash
+          );
+
+        // Every block has exactly one transaction in it. Since there's a genesis block, the
+        // transaction index will always be one less than the block number.
+        const messageTxIndex = messageTxReceipt.blockNumber - 1;
+
+        // Pull down the state root batch, we'll try to pick out the specific state root that
+        // corresponds to our message.
+        const stateRootBatch =
+          await context.crossChainMessenger.getStateRootBatchByTransactionIndex(
+            messageTxIndex
+          );
+
+        // No state root batch, no state root.
+        if (stateRootBatch === null) {
+          return null;
+        }
+
+        // We have a state root batch, now we need to find the specific state root for our transaction.
+        // First we need to figure out the index of the state root within the batch we found. This is
+        // going to be the original transaction index offset by the total number of previous state
+        // roots.
+        const indexInBatch =
+          messageTxIndex - stateRootBatch.header.prevTotalElements.toNumber();
+
+        // Just a sanity check.
+        if (stateRootBatch.stateRoots.length <= indexInBatch) {
+          // Should never happen!
+          throw new Error(`state root does not exist in batch`);
+        }
+
+        // get the block details
+        const bn = stateRootBatch.blockNumber;
+        const block = await layer1ProviderRef.current!.getBlock(bn);
+        const { timestamp } = block;
+
+        // memoise the check
+        batchIndexChecks.current[resolved.transactionHash] = {
+          stateRoot: stateRootBatch.stateRoots[indexInBatch],
+          stateRootIndexInBatch: indexInBatch,
+          batch: stateRootBatch,
+          timestamp,
+        };
+      }
+
+      // return all details about the stateRoot check
+      return batchIndexChecks.current[resolved.transactionHash];
+    };
+
+    // assign method to context with expected signature
     context.crossChainMessenger.getMessageStateRoot = async (
       message: MessageLike
     ): Promise<StateRoot | null> => {
-      const resolved = await context.crossChainMessenger.toCrossChainMessage(
-        message
-      );
-
-      // State roots are only a thing for L2 to L1 messages.
-      if (resolved.direction === MessageDirection.L1_TO_L2) {
-        throw new Error(`cannot get a state root for an L1 to L2 message`);
-      }
-
-      // We need the block number of the transaction that triggered the message so we can look up the
-      // state root batch that corresponds to that block number.
-      const messageTxReceipt =
-        await mantleTestnetRef.current!.getTransactionReceipt(
-          resolved.transactionHash
-        );
-
-      // Every block has exactly one transaction in it. Since there's a genesis block, the
-      // transaction index will always be one less than the block number.
-      const messageTxIndex = messageTxReceipt.blockNumber - 1;
-
-      // Pull down the state root batch, we'll try to pick out the specific state root that
-      // corresponds to our message.
-      const stateRootBatch =
-        await context.crossChainMessenger.getStateRootBatchByTransactionIndex(
-          messageTxIndex
-        );
-
-      // No state root batch, no state root.
-      if (stateRootBatch === null) {
-        return null;
-      }
-
-      // We have a state root batch, now we need to find the specific state root for our transaction.
-      // First we need to figure out the index of the state root within the batch we found. This is
-      // going to be the original transaction index offset by the total number of previous state
-      // roots.
-      const indexInBatch =
-        messageTxIndex - stateRootBatch.header.prevTotalElements.toNumber();
-
-      // Just a sanity check.
-      if (stateRootBatch.stateRoots.length <= indexInBatch) {
-        // Should never happen!
-        throw new Error(`state root does not exist in batch`);
-      }
-
-      return {
-        stateRoot: stateRootBatch.stateRoots[indexInBatch],
-        stateRootIndexInBatch: indexInBatch,
-        batch: stateRootBatch,
-      };
+      const res = await context.getMessageStateRoot(message);
+      return res
+        ? {
+            stateRoot: res.stateRoot,
+            stateRootIndexInBatch: res.stateRootIndexInBatch,
+            batch: res.batch,
+          }
+        : res;
     };
 
     // find the relayed messageReceipt
     context.crossChainMessenger.getMessageReceipt = async (
       message: TransactionResponse
     ): Promise<MessageReceipt> => {
-      const resolved = await context.crossChainMessenger.toCrossChainMessage(
-        message
-      );
+      const resolved = await context.toCrossChainMessage(message);
 
       // memoise the IS_L1_TO_L2 check, we'll do this a few times to make sure we're pulling data from the correct contract/network
       const IS_L1_TO_L2 = resolved.direction === MessageDirection.L1_TO_L2;
@@ -519,9 +579,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       message,
       opts
     ) => {
-      const resolved = await context.crossChainMessenger.toCrossChainMessage(
-        message
-      );
+      const resolved = await context.toCrossChainMessage(message);
       if (resolved.direction === MessageDirection.L1_TO_L2) {
         throw new Error(`cannot finalize L1 to L2 message`);
       }
@@ -547,7 +605,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
      */
 
     // allow messageStatus to optionally return the receipt aswell as the status
-    const getMessageStatus = async (
+    context.getMessageStatus = async (
       message: MessageLike,
       options?: {
         returnReceipt: boolean;
@@ -559,9 +617,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       let status: MessageStatus = 0;
 
       // convert message to message hash
-      const resolved = await context.crossChainMessenger.toCrossChainMessage(
-        message
-      );
+      const resolved = await context.toCrossChainMessage(message);
 
       // attempt to fetch the messages receipt
       const receipt = await context.crossChainMessenger.getMessageReceipt(
@@ -582,33 +638,33 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
           status = status || MessageStatus.FAILED_L1_TO_L2_MESSAGE;
         }
       } else if (receipt === null) {
-        // no receipt - check if the message was published
-        const stateRoot = await context.crossChainMessenger.getMessageStateRoot(
-          resolved
-        );
+        // no receipt - check if the message was published (if we do a successful stateRoot check we could memoise the rest of this)
+        const stateRoot = await context.getMessageStateRoot(resolved);
         // no published
         if (stateRoot === null) {
           status = MessageStatus.STATE_ROOT_NOT_PUBLISHED;
         } else {
           // published - find out in which block
-          const bn = stateRoot.batch.blockNumber;
-          const block = await layer1ProviderRef.current!.getBlock(bn);
-          const { timestamp } = block;
-          const challengePeriod =
-            await context.crossChainMessenger.getChallengePeriodSeconds();
+          challengePeriod.current =
+            challengePeriod.current ||
+            (await context.crossChainMessenger.getChallengePeriodSeconds());
           // now get the latest block...
           const latestBlock = await layer1ProviderRef.current!.getBlock(
             "latest"
           );
           // check that the challengePeriod period has ellapsed before marking as ready
-          if (timestamp + challengePeriod > latestBlock.timestamp) {
-            // await the challenge period in this tick to avoid repeating the stateRoot check every new block (+ 2block buffer)
-            await timeout((challengePeriod + 24) * 1000);
+          if (
+            stateRoot.timestamp + challengePeriod.current >
+            latestBlock.timestamp
+          ) {
             // now get the latest block...
             const nextBlock = await layer1ProviderRef.current!.getBlock(
               "latest"
             );
-            if (timestamp + challengePeriod > nextBlock.timestamp) {
+            if (
+              stateRoot.timestamp + challengePeriod.current >
+              nextBlock.timestamp
+            ) {
               status = MessageStatus.IN_CHALLENGE_PERIOD;
             } else {
               status = MessageStatus.READY_FOR_RELAY;
@@ -636,7 +692,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     };
 
     // wait for a messageStatus to update and return the associated receipt
-    const waitForMessageStatus = async (
+    context.waitForMessageStatus = async (
       message: MessageLike,
       status: MessageStatus,
       opts: {
@@ -645,22 +701,18 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       } = {}
     ): Promise<MessageReceipt> => {
       // Resolving once up-front is slightly more efficient.
-      const resolved = await context.crossChainMessenger.toCrossChainMessage(
-        message
-      );
+      const resolved = await context.toCrossChainMessage(message);
 
       let totalTimeMs = 0;
       while (totalTimeMs < (opts.timeoutMs || Infinity)) {
         const tick = Date.now();
-        const { status: currentStatus, receipt } = (await getMessageStatus(
-          resolved,
-          {
+        const { status: currentStatus, receipt } =
+          (await context.getMessageStatus(resolved, {
             returnReceipt: true,
-          }
-        )) as unknown as {
-          status: MessageStatus;
-          receipt: MessageReceipt;
-        };
+          })) as unknown as {
+            status: MessageStatus;
+            receipt: MessageReceipt;
+          };
 
         // Handle special cases for L1 to L2 messages.
         if (resolved.direction === MessageDirection.L1_TO_L2) {
@@ -715,7 +767,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
 
     // attach this to internal getMessageStatus
     context.crossChainMessenger.getMessageStatus = async (message) => {
-      return (await getMessageStatus(message)) as MessageStatus;
+      return (await context.getMessageStatus(message)) as MessageStatus;
     };
 
     // attach this to internal waitForMessageStatus
@@ -724,17 +776,13 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       status
     ) => {
       // wait for the status
-      await waitForMessageStatus(message, status);
+      await context.waitForMessageStatus(message, status);
 
       return undefined;
     };
 
     // return the crosschain manager
-    return {
-      ...context,
-      getMessageStatus,
-      waitForMessageStatus,
-    };
+    return context;
   }, [
     layer1Signer,
     layer1Provider,
@@ -744,6 +792,8 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     mantleTestnetProvider,
     gqclient,
     chain,
+    challengePeriod,
+    batchIndexChecks,
   ]);
 
   // setting readonly providers fresh on every tick to avoid "underlying network changed" errors
@@ -764,7 +814,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   }, [layer1Signer]);
 
   return (
-    <MantleSDKContext.Provider value={crossChainMessenger as SDKContext}>
+    <MantleSDKContext.Provider value={crossChainMessenger as MantleSDK}>
       {children}
     </MantleSDKContext.Provider>
   );

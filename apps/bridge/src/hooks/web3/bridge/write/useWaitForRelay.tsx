@@ -243,9 +243,10 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
             });
           // based on the status update the states status and wait for the relayed message before setting the L1 txHash
           if (status === MessageStatus.IN_CHALLENGE_PERIOD) {
-            setCTAStatus("Ready for relay, finalizing message now");
-            // refetch to mark the claim available
-            refetchWithdrawals();
+            // update status
+            setCTAStatus(
+              "In the challenge period, waiting for status READY_FOR_RELAY..."
+            );
           } else if (
             status === MessageStatus.READY_FOR_RELAY &&
             // this should prevent page from turning back after the claim has succeeded
@@ -253,10 +254,8 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
             // if we havent set the l2 ref
             !tx2HashRef.current
           ) {
-            // update status
-            setCTAStatus(
-              "In the challenge period, waiting for status READY_FOR_RELAY..."
-            );
+            // mark as ready for relay
+            setCTAStatus("Ready for relay, finalizing message now");
             // we should only update the toast event if the page is closed
             if (tx1HashRef.current === txHash) {
               // refetch to mark the claim available

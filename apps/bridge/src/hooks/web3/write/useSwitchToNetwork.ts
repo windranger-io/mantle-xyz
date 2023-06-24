@@ -26,7 +26,7 @@ export function useSwitchToNetwork() {
       // This error code indicates that the chain has not been added to MetaMask.
       if (switchError && switchError.code === 4902) {
         await addNetwork(chainId);
-      } else if (switchError.reason !== "RPC Error: header not found") {
+      } else if (switchError.message !== "header not found") {
         throw switchError;
       }
     }
