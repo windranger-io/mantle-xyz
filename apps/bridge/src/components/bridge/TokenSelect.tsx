@@ -16,7 +16,7 @@ import {
   L1_CHAIN_ID,
   L2_CHAIN_ID,
 } from "@config/constants";
-import { formatBigNumberString } from "@utils/formatStrings";
+import { localeZero, formatBigNumberString } from "@utils/formatStrings";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
 import DirectionLabel from "@components/bridge/utils/DirectionLabel";
@@ -234,9 +234,12 @@ export default function TokenSelect({
                             </span>
                           </div>
                           <div className="text-type-muted">
-                            {Number(
-                              balances?.[token.address] || 0
-                            ).toLocaleString("en")}
+                            {formatBigNumberString(
+                              `${balances?.[token.address] || 0}`,
+                              selected.decimals,
+                              true,
+                              false
+                            )}
                           </div>
                         </div>
                       );
@@ -295,8 +298,13 @@ export default function TokenSelect({
           logo={<span />}
           chain={`${
             Number.isNaN(parseFloat(balances?.[selected.address] || ""))
-              ? "0.0"
-              : formatBigNumberString(balances?.[selected.address]) || "0.0"
+              ? localeZero
+              : formatBigNumberString(
+                  balances?.[selected.address],
+                  selected.decimals,
+                  true,
+                  false
+                ) || localeZero
           }${" "}${selected.symbol}`}
         />
       )}
