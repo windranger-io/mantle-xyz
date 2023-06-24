@@ -11,6 +11,8 @@ import Hr from "@components/converter/Divider";
 import To from "@components/converter/To";
 import CTA from "@components/converter/CTA";
 import TX from "@components/converter/TransactionPanel";
+import { Typography } from "@mantle/ui";
+import { ConvertCard } from "@components/ConvertCard";
 
 export default function Convert() {
   // unpack the context
@@ -19,17 +21,39 @@ export default function Convert() {
   return (
     (view === Views.Default &&
       ((isCTAPageOpen && (
-        <Dialogue isOpen={isCTAPageOpen} setIsOpen={setIsCTAPageOpen} />
+        <>
+          <Typography
+            variant="appPageHeading"
+            className="text-center mt-4 text-[42px] mb-[52px]"
+          >
+            Welcome to the Converter
+          </Typography>
+          <Dialogue isOpen={isCTAPageOpen} setIsOpen={setIsCTAPageOpen} />
+        </>
       )) || (
-        <div className="max-w-lg w-full grid gap-4 relative bg-[#000000] overflow-y-auto overflow-x-clip md:overflow-hidden border border-[#1C1E20] rounded-t-[30px] rounded-b-[20px] py-6 mx-auto">
-          <From />
-          <Hr />
-          <To />
-          <div className="px-5">
-            <CTA setIsOpen={setIsCTAPageOpen} />
-            <TX />
-          </div>
-        </div>
+        <>
+          <Typography
+            variant="appPageHeading"
+            className="text-center mt-4 text-[42px]"
+          >
+            Converter
+          </Typography>
+          <Typography variant="body" className="text-center mt-6 mb-2">
+            Convert tokens. Conversion is irreversible.
+          </Typography>
+          <ConvertCard>
+            <From />
+            <Hr />
+            <To />
+            <div className="px-5">
+              <CTA setIsOpen={setIsCTAPageOpen} />
+              <TX />
+              <Typography variant="body" className="text-center mt-6 mb-2">
+                We will refund gas fee
+              </Typography>
+            </div>
+          </ConvertCard>
+        </>
       ))) || <span />
   );
 }

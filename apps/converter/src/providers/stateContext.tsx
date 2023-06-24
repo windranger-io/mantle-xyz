@@ -123,16 +123,16 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const multicall = useRef<{ network: Network; multicallContract: Contract }>();
 
   // the selected page within CTAPage to open
-  const [ctaPage, setCTAPage] = useState<CTAPages>(CTAPages.Default);
+  const [ctaPage, setCTAPage] = useState<CTAPages>(CTAPages.Terms);
   // seperate the ctaChainId from the chainId to dissassociate the tabs from the cta
   const [ctaChainId, setCTAChainId] = useState(chainId);
   // status from the cta operation (this is currently being logged in the console)
   const [ctaStatus, setCTAStatus] = useState<string | boolean>(false);
   // setup modal controls - we will open and close the modal based on this state
-  const [isCTAPageOpen, setIsCTAPageOpen] = useState(false);
+  const [isCTAPageOpen, setIsCTAPageOpen] = useState(true);
 
   // a ref to the current page
-  const ctaPageRef = useRef<CTAPages>(CTAPages.Default);
+  const ctaPageRef = useRef<CTAPages>(CTAPages.Terms);
   // a ref to the ctaPage open state
   const isCTAPageOpenRef = useRef(false);
   // allow resets to start waiting for the bridge tx after network failure by setting a "ctaErrorReset" override

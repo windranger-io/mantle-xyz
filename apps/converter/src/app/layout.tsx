@@ -4,7 +4,6 @@ import "./styles/globals.css";
 import {
   GTWalsheimRegular,
   GTWalsheimMedium,
-  Footer,
   PageWrapper,
   PageBackroundImage,
   PageContainer,
@@ -38,13 +37,13 @@ export default function RootLayout({
                 altDesc="Bridge Background Image"
               />
             }
-            header={<Nav />}
+            header={<Nav className="mb-0" />}
           >
-            <PageContainer className="gap-8">
+            <PageContainer>
               {children}
-              <div>
+              {/* <div>
                 <Footer page="converter" />
-              </div>
+              </div> */}
             </PageContainer>
           </PageWrapper>
         </Providers>

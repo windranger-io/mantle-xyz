@@ -11,7 +11,8 @@ import Error from "@components/converter/dialogue/Error";
 
 import Converted from "@components/converter/dialogue/Converted";
 
-import { SimpleCard } from "@mantle/ui";
+import { ConvertCard } from "@components/ConvertCard";
+import Terms from "./Terms";
 
 export default function Dialogue({
   isOpen,
@@ -56,8 +57,8 @@ export default function Dialogue({
 
   return (
     (isOpen && (
-      <SimpleCard className="max-w-lg w-full grid gap-4 relative bg-black border border-stroke-primary">
-        <div className="w-full max-w-lg transform px-6 text-left align-middle transition-all space-y-10">
+      <ConvertCard>
+        <div className="w-full max-w-lg transform text-left align-middle transition-all space-y-10 px-4 py-6">
           {ctaPage === CTAPages.Default && (
             <Default closeModal={closeModalAndReset} />
           )}
@@ -70,8 +71,9 @@ export default function Dialogue({
           {ctaPage === CTAPages.Error && (
             <Error reset={reset} closeModal={closeModalAndReset} />
           )}
+          {ctaPage === CTAPages.Terms && <Terms />}
         </div>
-      </SimpleCard>
+      </ConvertCard>
     )) || <div />
   );
 }

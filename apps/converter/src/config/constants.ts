@@ -100,7 +100,8 @@ export enum Views {
 
 // Available Page states for the CTA Modal
 export enum CTAPages {
-  "Default" = 1,
+  "Terms" = 1,
+  "Default",
   "Loading",
   "Converted",
   "Error",
