@@ -24,7 +24,18 @@ type ToastState = {
 
 const useToastStore = create<ToastState>()((set) => ({
   toasts: [],
-  create: (toast) => set((state) => ({ toasts: [...state.toasts, toast] })),
+  create: (toast) =>
+    set((state) => {
+      const toasts = [...state.toasts];
+
+      const index = toasts.findIndex((el) => el.id === toast.id);
+
+      if (index !== -1) {
+        return { toasts };
+      }
+
+      return { toasts: [...state.toasts, toast] };
+    }),
   delete: (id) =>
     set((state) => {
       const toasts = [...state.toasts];

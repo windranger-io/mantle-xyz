@@ -17,13 +17,13 @@ function Nav({ className }: { className: string }) {
       active: pathName === "/",
       shallow: true,
     },
-    {
-      name: "Dashboard",
-      href: "/dashboard",
-      internal: true,
-      active: pathName === "/dashboard",
-      shallow: true,
-    },
+    // {
+    //   name: "Dashboard",
+    //   href: "/dashboard",
+    //   internal: true,
+    //   active: pathName === "/dashboard",
+    //   shallow: true,
+    // },
   ];
 
   return (

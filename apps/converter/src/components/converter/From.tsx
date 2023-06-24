@@ -238,7 +238,7 @@ export default function TokenSelect() {
         </div>
       </div>
       {!hasBalance && !isLoadingBalances ? (
-        <div className="flex flex-row items-center gap-2 w-full text-right justify-end bg-[#0D0D0D] px-5">
+        <div className="flex flex-row items-center gap-2 w-full text-right justify-end bg-[#0D0D0D] px-5 pb-4">
           <span>
             <svg
               width="19"
@@ -268,7 +268,7 @@ export default function TokenSelect() {
           <span className="text-[#E22F3D]">Insufficient balance.</span>
         </div>
       ) : (
-        <div className="flex flex-col w-full justify-end text-right bg-[#0D0D0D] px-5">
+        <div className="flex flex-col w-full justify-end text-right bg-[#0D0D0D] px-5 pb-4">
           <div className="flex justify-end">
             <BalanceLabel
               className=""

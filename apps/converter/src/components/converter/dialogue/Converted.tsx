@@ -1,68 +1,180 @@
-import { L1_CHAIN_ID, L1_MANTLE_TOKEN } from "@config/constants";
+import {
+  CHAINS,
+  L1_BITDAO_TOKEN,
+  L1_BITDAO_TOKEN_ADDRESS,
+  L1_MANTLE_TOKEN,
+} from "@config/constants";
 
 import { Button, Typography } from "@mantle/ui";
-import { MdClear } from "react-icons/md";
 
-import TxLink from "@components/converter/utils/TxLink";
 import { useAddToken } from "@hooks/web3/write/useAddToken";
+import Link from "next/link";
+import Image from "next/image";
+import { useToast } from "@hooks/useToast";
+import { useContext, useEffect, useMemo } from "react";
+import StateContext from "@providers/stateContext";
+import { parseUnits } from "ethers/lib/utils.js";
 
-export default function Deposited({
-  txHash,
-  closeModal,
+function WhatNextLink({
+  href,
+  title,
+  description,
+  image,
 }: {
-  txHash: string | boolean;
-  closeModal: () => void;
+  href: string;
+  title: string;
+  description: string;
+  image: string;
 }) {
-  const { addToken } = useAddToken();
-
   return (
-    <>
-      <span className="flex justify-between align-middle">
-        <Typography variant="modalHeading" className="text-center w-full">
-          Conversion completed
-        </Typography>
-        <Typography variant="modalHeading" className="text-white w-auto pt-1">
-          <MdClear onClick={closeModal} className="cursor-pointer" />
-        </Typography>
-      </span>
-      <div className="flex items-center justify-center">
+    <Link href={href}>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-4">
+          <div className="relative h-[100px] w-[180px] rounded-lg border border-[#1C1E20] bg-black">
+            <Image
+              fill
+              src={image}
+              alt={description}
+              className="object-contain object-center"
+            />
+          </div>
+          <div className="flex flex-col">
+            <Typography variant="modalHeadingSm">{title}</Typography>
+            <Typography>{description}</Typography>
+          </div>
+        </div>
         <svg
-          width="80"
-          height="80"
-          viewBox="0 0 80 80"
+          width="9"
+          height="16"
+          viewBox="0 0 9 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <mask
-            id="mask0_2300_7133"
-            style={{ maskType: "alpha" }}
-            maskUnits="userSpaceOnUse"
-            x="0"
-            y="0"
-            width="80"
-            height="80"
-          >
-            <rect width="80" height="80" fill="#D9D9D9" />
-          </mask>
-          <g mask="url(#mask0_2300_7133)">
+          <g>
             <path
-              d="M35.1257 47.6249L26.9959 39.4535C26.4991 38.9844 25.9034 38.7499 25.209 38.7499C24.5145 38.7499 23.9034 39.0138 23.3757 39.5416C22.8757 40.0416 22.6257 40.6388 22.6257 41.3333C22.6257 42.0277 22.8708 42.6061 23.361 43.0686L33.459 53.2499C33.9211 53.7499 34.4754 53.9999 35.1219 53.9999C35.7683 53.9999 36.339 53.7499 36.834 53.2499L56.584 33.4999C57.1118 32.9721 57.3757 32.361 57.3757 31.6666C57.3757 30.9721 57.1118 30.3471 56.584 29.7916C56.0284 29.3194 55.3895 29.0971 54.6673 29.1249C53.9451 29.1527 53.3515 29.399 52.8867 29.8639L35.1257 47.6249ZM40.006 72.9166C35.5076 72.9166 31.254 72.0482 27.2452 70.3113C23.2364 68.5745 19.742 66.2134 16.7622 63.228C13.7823 60.2426 11.4243 56.7493 9.68815 52.748C7.95204 48.7467 7.08398 44.4991 7.08398 40.0053C7.08398 35.4513 7.9524 31.1699 9.68923 27.1612C11.4261 23.1523 13.7872 19.6649 16.7726 16.6989C19.758 13.7329 23.2513 11.3888 27.2526 9.66659C31.2538 7.94436 35.5014 7.08325 39.9953 7.08325C44.5493 7.08325 48.8308 7.94803 52.8399 9.67759C56.8491 11.4071 60.3365 13.7543 63.3022 16.7193C66.2678 19.6841 68.6118 23.1672 70.334 27.1685C72.0562 31.1698 72.9173 35.4451 72.9173 39.9946C72.9173 44.4929 72.0559 48.7465 70.3329 52.7553C68.61 56.7642 66.2627 60.2585 63.2912 63.2384C60.3197 66.2183 56.8333 68.5763 52.8321 70.3124C48.8308 72.0485 44.5554 72.9166 40.006 72.9166ZM39.9979 68.1249C47.8053 68.1249 54.4451 65.3758 59.9173 59.8777C65.3895 54.3795 68.1257 47.7545 68.1257 40.0027C68.1257 32.1953 65.3905 25.5555 59.9201 20.0833C54.4497 14.611 47.8108 11.8749 40.0034 11.8749C32.2516 11.8749 25.6257 14.6101 20.1257 20.0805C14.6257 25.5509 11.8757 32.1898 11.8757 39.9972C11.8757 47.749 14.6247 54.3749 20.1229 59.8749C25.6211 65.3749 32.2461 68.1249 39.9979 68.1249Z"
-              fill="#3EB66A"
+              d="M1.50147 0.249999L8.35547 7.105C8.4388 7.18767 8.50114 7.27767 8.54247 7.375C8.58447 7.47233 8.60547 7.56967 8.60547 7.667C8.60547 7.76433 8.58447 7.86167 8.54247 7.959C8.50114 8.05633 8.4388 8.14633 8.35547 8.229L1.48047 15.105C1.2998 15.285 1.0948 15.375 0.865469 15.375C0.636136 15.375 0.431469 15.278 0.251469 15.084C0.0708018 14.9313 -0.0125312 14.7263 0.00146874 14.469C0.0148021 14.2123 0.104802 14.0007 0.271469 13.834L6.45947 7.667L0.25147 1.459C0.0981362 1.30567 0.0214704 1.10433 0.0214704 0.854999C0.0214704 0.604332 0.0981363 0.402666 0.25147 0.249999C0.418137 0.0833323 0.62647 -6.97546e-07 0.87647 -6.75691e-07C1.12647 -6.53835e-07 1.3348 0.0833324 1.50147 0.249999Z"
+              fill="white"
             />
           </g>
         </svg>
       </div>
-      <div className="text-center text-lg">
-        <div className="mb-4">You can now use your Mantle tokens</div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <TxLink chainId={L1_CHAIN_ID} txHash={txHash} />
+    </Link>
+  );
+}
+
+export default function Deposited({
+  txHash,
+  from,
+  closeModal,
+}: {
+  txHash: string | boolean;
+  from: string;
+  closeModal: () => void;
+}) {
+  const { addToken } = useAddToken();
+  const { createToast } = useToast();
+  const { chainId, isLoadingBalances, balances } = useContext(StateContext);
+
+  useEffect(() => {
+    if (typeof txHash === "string") {
+      createToast({
+        type: "success",
+        borderLeft: "bg-green-600",
+        content: (
+          <div className="flex flex-col">
+            <Typography variant="body">
+              <b>Success Conversion completed</b>
+            </Typography>
+            <Typography variant="body">{from} BIT converted to MNT</Typography>
+          </div>
+        ),
+        id: txHash,
+        buttonText: "Etherscan",
+        onButtonClick: () => {
+          window.open(
+            `${CHAINS[chainId].blockExplorerUrls}tx/${txHash}`,
+            "_blank"
+          );
+
+          return true;
+        },
+      });
+    }
+  }, [txHash]);
+
+  // get the balance/allowanace details
+  const BITBalance = useMemo(() => {
+    return balances?.[L1_BITDAO_TOKEN_ADDRESS] || "0";
+  }, [balances]);
+
+  const hasBitBalanceRemaining = parseUnits(
+    balances[L1_BITDAO_TOKEN.address] || "-1",
+    L1_BITDAO_TOKEN.decimals
+  ).gte(parseUnits("0", L1_BITDAO_TOKEN.decimals));
+
+  useEffect(() => {
+    if (
+      !isLoadingBalances &&
+      typeof txHash === "string" &&
+      hasBitBalanceRemaining
+    ) {
+      createToast({
+        type: "success",
+        borderLeft: "bg-yellow-500",
+        content: (
+          <div className="flex flex-col">
+            <Typography variant="body">
+              <b>You still have remaining BIT tokens</b>
+            </Typography>
+            <Typography variant="body">
+              Would you like to convert the rest now?
+            </Typography>
+          </div>
+        ),
+        id: `${txHash}-remaining-balance`,
+        buttonText: "Convert",
+        onButtonClick: () => {
+          closeModal();
+
+          return true;
+        },
+      });
+    }
+  }, [isLoadingBalances, txHash, BITBalance, hasBitBalanceRemaining]);
+
+  return (
+    <>
+      <span className="flex justify-between align-middle">
+        <Typography variant="modalHeading" className="text-center w-full mt-4">
+          What to do next with MNT?
+        </Typography>
+      </span>
+      <div className="pr-2">
+        <WhatNextLink
+          image="/converted/link-1.png"
+          title="Delegate"
+          description="Lorem ipsum..."
+          href="/"
+        />
+        <WhatNextLink
+          image="/converted/link-2.png"
+          title="Bridge"
+          description="Lorem ipsum..."
+          href="/"
+        />
+        <WhatNextLink
+          image="/converted/link-3.png"
+          title="Explore Dapps"
+          description="Lorem ipsum..."
+          href="/"
+        />
       </div>
       <div>
         <Button
           type="button"
           size="full"
           className="h-14 flex flex-row gap-4 text-center items-center justify-center my-4"
+          variant="dark"
           onClick={() => addToken(L1_MANTLE_TOKEN)}
         >
           <svg
@@ -121,9 +233,12 @@ export default function Deposited({
               fill="#F6851B"
             />
           </svg>
-          Add Mantle Token to Wallet
+          Add MNT to Wallet
         </Button>
       </div>
+      <Typography className="text-center">
+        If you don&apos;t see MNT tokens in your wallet click this button
+      </Typography>
     </>
   );
 }

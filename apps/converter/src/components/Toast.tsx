@@ -126,7 +126,7 @@ export function ToastContainer({ children }: { children: ReactNode }) {
 
   const { toasts, deleteToast } = useToast();
 
-  const { view, isCTAPageOpen } = useContext(StateContext);
+  const { view } = useContext(StateContext);
 
   const escFunction = useCallback(
     (event: KeyboardEvent) => {
@@ -149,11 +149,7 @@ export function ToastContainer({ children }: { children: ReactNode }) {
     <>
       {children}
       <FixedToastContainer
-        hidden={
-          isCTAPageOpen ||
-          pathName?.indexOf("/account") !== -1 ||
-          view === Views.Account
-        }
+        hidden={pathName?.indexOf("/account") !== -1 || view === Views.Account}
       >
         <AnimatePresence>
           {toasts.map((toast) => (

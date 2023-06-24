@@ -1,8 +1,12 @@
-import { useContext } from "react";
-
+import { useContext, useMemo } from "react";
 import StateContext from "@providers/stateContext";
 
-import { CTAPages } from "@config/constants";
+import {
+  CONVERSION_RATE,
+  CTAPages,
+  L1_BITDAO_TOKEN,
+  L1_MANTLE_TOKEN,
+} from "@config/constants";
 
 import Default from "@components/converter/dialogue/Default";
 
@@ -12,6 +16,7 @@ import Error from "@components/converter/dialogue/Error";
 import Converted from "@components/converter/dialogue/Converted";
 
 import { ConvertCard } from "@components/ConvertCard";
+import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import Terms from "./Terms";
 
 export default function Dialogue({
@@ -30,7 +35,26 @@ export default function Dialogue({
     setTxHash,
     setSafeChains,
     isCTAPageOpenRef: isOpenRef,
+    amount,
   } = useContext(StateContext);
+
+  const from = useMemo(() => {
+    const formatted = formatUnits(
+      parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals),
+      L1_BITDAO_TOKEN.decimals
+    );
+    return formatted.replace(/\.0$/, "");
+  }, [amount]);
+
+  const to = useMemo(() => {
+    let bn = parseUnits(amount || "0", L1_MANTLE_TOKEN.decimals);
+    if (CONVERSION_RATE !== 1) {
+      bn = bn.mul(CONVERSION_RATE * 100).div(100);
+    }
+    const formatted = formatUnits(bn, L1_MANTLE_TOKEN.decimals).toString();
+
+    return formatted.replace(/\.0$/, "");
+  }, [amount]);
 
   const reset = () => {
     // clear the last tx we set
@@ -63,10 +87,19 @@ export default function Dialogue({
             <Default closeModal={closeModalAndReset} />
           )}
           {ctaPage === CTAPages.Converted && (
-            <Converted txHash={txHash} closeModal={closeModalAndReset} />
+            <Converted
+              txHash={txHash}
+              from={from}
+              closeModal={closeModalAndReset}
+            />
           )}
           {ctaPage === CTAPages.Loading && (
-            <Loading txHash={txHash} closeModal={closeModalAndReset} />
+            <Loading
+              txHash={txHash}
+              closeModal={closeModalAndReset}
+              from={from}
+              to={to}
+            />
           )}
           {ctaPage === CTAPages.Error && (
             <Error reset={reset} closeModal={closeModalAndReset} />

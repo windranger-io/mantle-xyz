@@ -55,7 +55,7 @@ export * from './src/presentational/SimpleCard'
 export * from './src/presentational/PageBackgroundImage'
 
 /**
- * 
+ *
 
 /**
  * Global App Fonts

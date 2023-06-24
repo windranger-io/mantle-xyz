@@ -180,9 +180,9 @@ function ConnectWallet() {
       {isChainID && client.isConnected && client.address ? (
         <Button
           type="button"
-          variant="walletLabel"
           size="regular"
-          className="flex flex-row items-center text-xs h-full text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-default"
+          variant="walletLabel"
+          className="flex items-center text-xs text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-default h-[36px]"
         >
           <Avatar walletAddress="address" />
           {truncateAddress(getAddress(client.address) as `0x${string}`)}
@@ -230,11 +230,7 @@ function ConnectWallet() {
               <BiError className="text-sm" />
               <p className="text-sm">Unsupported chain</p>
             </div>
-            <Button
-              className="max-w-[10em]"
-              variant="walletConnect"
-              onClick={() => changeNetwork()}
-            >
+            <Button variant="walletConnect" onClick={() => changeNetwork()}>
               Please switch to {CHAINS[chainId].chainName}
             </Button>
           </div>

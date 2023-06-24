@@ -198,6 +198,9 @@ importers:
       '@ethersproject/providers':
         specifier: ^5.7.2
         version: 5.7.2
+      '@mantle/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
       '@mantle/ui':
         specifier: workspace:*
         version: link:../../packages/ui
