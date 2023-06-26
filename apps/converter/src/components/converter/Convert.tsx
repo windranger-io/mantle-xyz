@@ -13,6 +13,7 @@ import CTA from "@components/converter/CTA";
 import TX from "@components/converter/TransactionPanel";
 import { Typography } from "@mantle/ui";
 import { ConvertCard } from "@components/ConvertCard";
+import { SmartContractTracker } from "./SmartContractTracker";
 
 export default function Convert() {
   // unpack the context
@@ -55,29 +56,7 @@ export default function Convert() {
               </div>
             </ConvertCard>
             <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] xl:min-w-[320px] lg:absolute lg:top-0 lg:right-[-60%] xl:right-[-90%]">
-              <ConvertCard className="rounded-xl w-full">
-                <div className="flex px-2 py-2 gap-3">
-                  <div className="h-3 w-3 rounded-full bg-green-400 mt-[3px]" />
-                  <div className="flex flex-col gap-4">
-                    <div className="flex flex-col">
-                      <Typography className="text-type-secondary">
-                        Status
-                      </Typography>
-                      <Typography className="font-bold text-type-primary">
-                        Active (Unhalted)
-                      </Typography>
-                    </div>
-                    <div className="flex flex-col">
-                      <Typography className="text-type-secondary">
-                        Token left to convert
-                      </Typography>
-                      <Typography className="font-bold text-type-primary">
-                        1,232,245.00 MNT
-                      </Typography>
-                    </div>
-                  </div>
-                </div>
-              </ConvertCard>
+              <SmartContractTracker />
             </div>
           </div>
         </>
