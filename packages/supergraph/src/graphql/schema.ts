@@ -16,19 +16,6 @@ import { toPlural } from "../utils/toPlural";
 import { toCamelCase } from "../utils/toCamelCase";
 
 // extract the field we're joining against to mark the derivedFrom
-const unnestDerivedFrom = (entity: FieldDefinitionNode) => {
-  if (
-    entity.directives &&
-    entity.directives.length &&
-    entity.directives[0].name.value === "derivedFrom"
-  ) {
-    return (entity.directives?.[0]?.arguments?.[0]?.value as StringValueNode)
-      .value;
-  }
-  return undefined;
-};
-
-// extract the field we're joining against to mark the derivedFrom
 const unnestSingular = (entity: ObjectTypeExtensionNode) => {
   if (
     entity.directives &&
@@ -70,6 +57,19 @@ const unnestType = (
     return `${depth > 2 ? "[" : ""}${value === "Bytes" ? "String" : value}${
       depth > 2 ? "!]!" : ""
     }`;
+  }
+  return undefined;
+};
+
+// extract the field we're joining against to mark the derivedFrom
+const unnestDerivedFrom = (entity: FieldDefinitionNode) => {
+  if (
+    entity.directives &&
+    entity.directives.length &&
+    entity.directives[0].name.value === "derivedFrom"
+  ) {
+    return (entity.directives?.[0]?.arguments?.[0]?.value as StringValueNode)
+      .value;
   }
   return undefined;
 };

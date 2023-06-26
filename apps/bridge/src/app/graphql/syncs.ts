@@ -1,25 +1,19 @@
-/* eslint-disable no-console, no-underscore-dangle */
-
-// Open a connection to the db to pull the queried data
-import { getMongodb } from "@providers/mongoClient";
-
-// Configure against the correct chainIds
-import { CHAINS, L1_CHAIN_ID } from "@config/constants"; // L2_CHAIN_ID
-
-// We create new providers here to connect to both L1 and L2
+// We create new providers here to connect to the selected rpc
 import { providers } from "ethers";
 
+// Configure against the correct chainIds
+import { CHAINS, L1_CHAIN_ID } from "@config/constants";
+
 // Use addSync to add operations and Store to interact with entity storage
-import { addSync, Store, Mongo, DB } from "@mantle/supergraph";
+import { addSync, Store } from "@mantle/supergraph";
 
 // Supergraph specific constants detailing the contracts we'll sync against
 import {
-  SUPERGRAPH_NAME,
-  SUPERGRAPH_DEV_ENGINE,
-  SUPERGRAPH_UNIQUE_IDS,
   L1_START_BLOCK,
   L1_STATE_COMMITMENT_CHAIN,
   STATE_COMMITMENT_CHAIN_STATE_BATCH_APPENDED_ABI,
+  L1StateBatchAppendedEntity,
+  L1StateBatchAppendedEvent,
 } from "./config";
 
 // configure JsonRpcProvider for L1
@@ -29,62 +23,34 @@ const L1_PROVIDER = new providers.JsonRpcProvider(
   }`
 );
 
-// switch out the engine for development to avoid the mongo requirment locally
-Store.setEngine({
-  // name the connection
-  name: SUPERGRAPH_NAME,
-  // db is dependent on state
-  db:
-    // in production/production like environments we want to store mutations to mongo otherwise we can store them locally
-    process.env.NODE_ENV === "development" && SUPERGRAPH_DEV_ENGINE
-      ? // connect store to in-memory/node-persist store
-        DB.create({ kv: {}, name: SUPERGRAPH_NAME })
-      : // connect store to MongoDB
-        Mongo.create({
-          kv: {},
-          name: SUPERGRAPH_NAME,
-          uniqueIds: SUPERGRAPH_UNIQUE_IDS,
-          client: getMongodb(process.env.MONGODB_URI!),
-        }),
-});
-
 // Sync StateBatch commitments
-export const L1StateBatchAppendedHandler = addSync<{
-  _batchRoot: string;
-  _batchIndex: string;
-  _batchSize: string;
-  _prevTotalElements: string;
-  _signature: string;
-  _extraData: string;
-}>(
-  "StateBatchAppended",
-  L1_STATE_COMMITMENT_CHAIN,
-  L1_PROVIDER,
-  L1_START_BLOCK,
-  STATE_COMMITMENT_CHAIN_STATE_BATCH_APPENDED_ABI,
-  async (args, { tx }) => {
+export const L1StateBatchAppendedHandler = addSync<L1StateBatchAppendedEvent>({
+  // Set the name of the event we're consuming with this handler (1 event per handler)
+  eventName: "StateBatchAppended",
+  // Connect the sync to L1 Provider and set the sync startBlock
+  provider: L1_PROVIDER,
+  startBlock: L1_START_BLOCK,
+  // Define the event we're indexing with this handler
+  address: L1_STATE_COMMITMENT_CHAIN,
+  eventAbi: STATE_COMMITMENT_CHAIN_STATE_BATCH_APPENDED_ABI,
+  // Construct the callback we'll use to index the event
+  onEvent: async (args, { tx }) => {
     // load the entity for this batchIndex
-    const entity = await Store.get<{
-      id: string;
-      batchRoot: string;
-      batchIndex: string;
-      batchSize: string;
-      prevTotalElements: string;
-      signature: string;
-      extraData: string;
-      txBlock: number;
-      txHash: string;
-      txIndex: number;
-    }>("StateBatchAppend", args._batchIndex, true);
+    const entity = await Store.get<L1StateBatchAppendedEntity>(
+      "StateBatchAppend",
+      // the ID we'll index this entity under
+      args.batchIndex,
+      // we can set this to true to disable entity hydration if we know we're not going to use any of the old values in the new state
+      true
+    );
 
     // set details for appended batch (id'd according to batchIndex)
-    entity.set("id", args._batchIndex);
-    entity.set("batchRoot", args._batchRoot);
-    entity.set("batchIndex", args._batchIndex);
-    entity.set("batchSize", args._batchSize);
-    entity.set("prevTotalElements", args._prevTotalElements);
-    entity.set("signature", args._signature);
-    entity.set("extraData", args._extraData);
+    entity.set("batchRoot", args.batchRoot);
+    entity.set("batchIndex", args.batchIndex);
+    entity.set("batchSize", args.batchSize);
+    entity.set("prevTotalElements", args.prevTotalElements);
+    entity.set("signature", args.signature);
+    entity.set("extraData", args.extraData);
     // set the tx details into the entity
     entity.set("txBlock", tx.blockNumber);
     entity.set("txHash", tx.transactionHash);
@@ -92,5 +58,5 @@ export const L1StateBatchAppendedHandler = addSync<{
 
     // save the changes
     await entity.save();
-  }
-);
+  },
+});

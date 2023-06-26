@@ -4,7 +4,7 @@ export const SUPERGRAPH_NAME = "supergraph--bridge--0-0-1";
 // Set the local engine (true: db || false: mongo)
 export const SUPERGRAPH_DEV_ENGINE = false;
 
-// Flag unique ids to insert by upsert only on id field (otherwise use _block_number + id to make a unique entry)
+// Flag unique ids to insert by upsert only on id field (otherwise use _block_number + id to make a unique entry and do a distinct groupBy on the id when querying)
 export const SUPERGRAPH_UNIQUE_IDS = true;
 
 // Define the schema we will follow in our syncs and queries
@@ -47,5 +47,29 @@ export const L1_STATE_COMMITMENT_CHAIN =
 
 // ABI for StateBatchAppended event
 export const STATE_COMMITMENT_CHAIN_STATE_BATCH_APPENDED_ABI = [
-  "event StateBatchAppended(uint256 indexed _batchIndex, bytes32 _batchRoot, uint256 _batchSize, uint256 _prevTotalElements, bytes _signature, bytes _extraData)",
+  "event StateBatchAppended(uint256 indexed batchIndex, bytes32 batchRoot, uint256 batchSize, uint256 prevTotalElements, bytes signature, bytes extraData)",
 ];
+
+// Definitions for the Events args (as defined in the abi)
+export type L1StateBatchAppendedEvent = {
+  batchRoot: string;
+  batchIndex: string;
+  batchSize: string;
+  prevTotalElements: string;
+  signature: string;
+  extraData: string;
+};
+
+// Definitions for the entity we're saving on each L1StateBatchAppendedEvent
+export type L1StateBatchAppendedEntity = {
+  id: string;
+  batchRoot: string;
+  batchIndex: string;
+  batchSize: string;
+  prevTotalElements: string;
+  signature: string;
+  extraData: string;
+  txBlock: number;
+  txHash: string;
+  txIndex: number;
+};

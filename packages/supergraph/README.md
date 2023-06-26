@@ -130,9 +130,9 @@ To create a new `supergraph syncOp[]` handler and keep the `supergraph` instance
    ```typescript
    const handler = addSync<{ name: string; number: string }>(
      CONTRACT_EVT,
-     CONTRACT_ADDRESS,
      CHAINS_PROVIDER,
      CONTRACT_ABI,
+     CONTRACT_ADDRESS,
      async ({ name, number }, { tx, block }) => {
        // Code for handling the sync operation
      }
