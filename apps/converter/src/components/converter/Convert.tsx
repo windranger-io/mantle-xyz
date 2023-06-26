@@ -41,18 +41,45 @@ export default function Convert() {
           <Typography variant="body" className="text-center mt-6 mb-2">
             Convert tokens. Conversion is irreversible.
           </Typography>
-          <ConvertCard>
-            <From />
-            <Hr />
-            <To />
-            <div className="px-5">
-              <CTA setIsOpen={setIsCTAPageOpen} />
-              <TX />
-              <Typography variant="body" className="text-center mt-6 mb-2">
-                We will refund gas fee
-              </Typography>
+          <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row lg:block gap-4 lg:mx-auto ">
+            <ConvertCard>
+              <From />
+              <Hr />
+              <To />
+              <div className="px-5">
+                <CTA setIsOpen={setIsCTAPageOpen} />
+                <TX />
+                <Typography variant="body" className="text-center mt-6 mb-2">
+                  We will refund gas fee
+                </Typography>
+              </div>
+            </ConvertCard>
+            <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] xl:min-w-[320px] lg:absolute lg:top-0 lg:right-[-60%] xl:right-[-90%]">
+              <ConvertCard className="rounded-xl w-full">
+                <div className="flex px-2 py-2 gap-3">
+                  <div className="h-3 w-3 rounded-full bg-green-400 mt-[3px]" />
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col">
+                      <Typography className="text-type-secondary">
+                        Status
+                      </Typography>
+                      <Typography className="font-bold text-type-primary">
+                        Active (Unhalted)
+                      </Typography>
+                    </div>
+                    <div className="flex flex-col">
+                      <Typography className="text-type-secondary">
+                        Token left to convert
+                      </Typography>
+                      <Typography className="font-bold text-type-primary">
+                        1,232,245.00 MNT
+                      </Typography>
+                    </div>
+                  </div>
+                </div>
+              </ConvertCard>
             </div>
-          </ConvertCard>
+          </div>
         </>
       ))) || <span />
   );
