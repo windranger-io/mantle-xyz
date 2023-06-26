@@ -16,7 +16,7 @@
     "@ethersproject/providers": "^5.7.2",
     "@headlessui/react": "^1.7.13",
     "@mantle/constants": "workspace:*",
-    "@mantle/supergraph": "workspace:*",
+    "@mantle/supagraph": "workspace:*",
     "@mantle/ui": "workspace:*",
     "@mantleio/contracts": "^0.2.0",
     "@mantleio/core-utils": "^0.1.0",

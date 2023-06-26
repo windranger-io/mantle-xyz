@@ -10,7 +10,7 @@ import type {
   GraphQLResolveInfo,
 } from "graphql";
 
-// General supergraph typings and constants
+// General supagraph typings and constants
 import { Key, SimpleSchema } from "./types";
 
 // Only these types may defined as schema'd types

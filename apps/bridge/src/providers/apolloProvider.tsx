@@ -8,7 +8,7 @@ import {
 } from "@apollo/experimental-nextjs-app-support/ssr";
 
 function makeClient() {
-  // the client should always be pointing at the locally running supergraph endpoint
+  // the client should always be pointing at the locally running supagraph endpoint
   const httpLink = new HttpLink({
     uri: "/graphql",
   });

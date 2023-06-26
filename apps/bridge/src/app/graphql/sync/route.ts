@@ -2,16 +2,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // import the sync command
-import { DB, Mongo, Stage, Store, sync } from "@mantle/supergraph";
+import { DB, Mongo, Stage, Store, sync } from "@mantle/supagraph";
 import { getMongodb } from "@providers/mongoClient";
 
 // import revalidation timings from config
 import {
-  SUPERGRAPH_DEV_ENGINE,
-  SUPERGRAPH_NAME,
-  SUPERGRAPH_REVALIDATE,
-  SUPERGRAPH_STALE_WHILE_REVALIDATE,
-  SUPERGRAPH_UNIQUE_IDS,
+  SUPAGRAPH_DEV_ENGINE,
+  SUPAGRAPH_NAME,
+  SUPAGRAPH_REVALIDATE,
+  SUPAGRAPH_STALE_WHILE_REVALIDATE,
+  SUPAGRAPH_UNIQUE_IDS,
 } from "../config";
 
 // import all sync handlers
@@ -20,18 +20,18 @@ import "../syncs";
 // switch out the engine for development to avoid the mongo requirment locally
 Store.setEngine({
   // name the connection
-  name: SUPERGRAPH_NAME,
+  name: SUPAGRAPH_NAME,
   // db is dependent on state
   db:
     // in production/production like environments we want to store mutations to mongo otherwise we can store them locally
-    process.env.NODE_ENV === "development" && SUPERGRAPH_DEV_ENGINE
+    process.env.NODE_ENV === "development" && SUPAGRAPH_DEV_ENGINE
       ? // connect store to in-memory/node-persist store
-        DB.create({ kv: {}, name: SUPERGRAPH_NAME })
+        DB.create({ kv: {}, name: SUPAGRAPH_NAME })
       : // connect store to MongoDB
         Mongo.create({
           kv: {},
-          name: SUPERGRAPH_NAME,
-          uniqueIds: SUPERGRAPH_UNIQUE_IDS,
+          name: SUPAGRAPH_NAME,
+          uniqueIds: SUPAGRAPH_UNIQUE_IDS,
           client: getMongodb(process.env.MONGODB_URI!),
         }),
 });
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
   // we don't need to sync more often than once per block - and if we're using vercel.json crons we can only sync 1/min
   return NextResponse.json(summary, {
     headers: {
-      "Cache-Control": `max-age=${SUPERGRAPH_REVALIDATE}, public, s-maxage=${SUPERGRAPH_REVALIDATE}, stale-while-revalidate=${SUPERGRAPH_STALE_WHILE_REVALIDATE}`,
+      "Cache-Control": `max-age=${SUPAGRAPH_REVALIDATE}, public, s-maxage=${SUPAGRAPH_REVALIDATE}, stale-while-revalidate=${SUPAGRAPH_STALE_WHILE_REVALIDATE}`,
     },
   });
 }

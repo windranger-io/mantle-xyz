@@ -1,4 +1,4 @@
-# Mantle - Supergraph - Vercel Subgraph-like multi-chain indexer
+# Mantle - Supagraph - Vercel Subgraph-like multi-chain indexer
 
 This directory contains a utility toolkit to index any RPC using subgraph-like mapping definitions backed by MongoDB.
 
@@ -17,12 +17,12 @@ We are depending on:
 
 ### Getting started
 
-To get started with `supergraph`, follow these steps:
+To get started with `supagraph`, follow these steps:
 
 1. Install the required dependencies:
 
    ```bash
-   $ pnpm add @mantle-xyz/supergraph
+   $ pnpm add supagraph
    ```
 
 ### GraphQL:
@@ -51,19 +51,19 @@ To get started with `supergraph`, follow these steps:
    };
    ```
 
-2. If we're using `supergraph` to construct static `GraphQL` endpoints, we can call `createSupergraph` and supply a mapping of arrays (`{Entity: []}`) as the `entities` prop, otherwise, we might want to use a resolver:
+2. If we're using `supagraph` to construct static `GraphQL` endpoints, we can call `createSupagraph` and supply a mapping of arrays (`{Entity: []}`) as the `entities` prop, otherwise, we might want to use a resolver:
 
    ```typescript
-   import { createSupergraph, memoryResolver } from "@mantle-xyz/supergraph";
+   import { createSupagraph, memoryResolver } from "supagraph";
 
    import * as http from "http";
 
-   const supergraph = createSupergraph({
+   const supagraph = createSupagraph({
      schema,
      entities: memoryResolver({
-       name: "supergraph",
+       name: "supagraph",
      }),
-     graphqlEndpoint: ``, // the relative path which will load supergraph.GET()
+     graphqlEndpoint: ``, // the relative path which will load supagraph.GET()
      defaultQuery: `
        {
          names {
@@ -75,14 +75,14 @@ To get started with `supergraph`, follow these steps:
        }`,
    });
 
-   const server = http.createServer(supergraph);
+   const server = http.createServer(supagraph);
 
    server.listen(4001, () => {
      console.info("Server is running on http://localhost:4001/api/graphql");
    });
    ```
 
-3. Start `supergraph` with node:
+3. Start `supagraph` with node:
 
    ```bash
    $ node ./[filename].js
@@ -93,7 +93,7 @@ To get started with `supergraph`, follow these steps:
    ```typescript
    import type { NextApiRequest, NextApiResponse } from "next";
 
-   export default createSupergraph<NextApiRequest, NextApiResponse>({
+   export default createSupagraph<NextApiRequest, NextApiResponse>({
      schema,
      entities,
      graphqlEndpoint: `/api/graphql`, // this _must_ match the current route
@@ -117,12 +117,12 @@ To get started with `supergraph`, follow these steps:
 
 ### Sync
 
-To create a new `supergraph syncOp[]` handler and keep the `supergraph` instance up to date, follow these steps:
+To create a new `supagraph syncOp[]` handler and keep the `supagraph` instance up to date, follow these steps:
 
 1. Import the necessary functions:
 
    ```typescript
-   import { addSync, sync, Store } from "@mantle-xyz/supergraph";
+   import { addSync, sync, Store } from "supagraph";
    ```
 
 2. Create a new `syncOp[]` handler using `addSync()`:
@@ -160,7 +160,7 @@ To create a new `supergraph syncOp[]` handler and keep the `supergraph` instance
    );
    ```
 
-4. Call the `sync()` method in the `GET` handler of a nextjs `route.ts` document (or any other means if running `supergraph` in a different environment):
+4. Call the `sync()` method in the `GET` handler of a nextjs `route.ts` document (or any other means if running `supagraph` in a different environment):
 
    ```typescript
    export async function GET() {
@@ -170,7 +170,7 @@ To create a new `supergraph syncOp[]` handler and keep the `supergraph` instance
    }
    ```
 
-5. The simplest way to keep a Vercel-hosted `supergraph` instance up to date is to set a `cron` job in the project's `vercel.json` config to call the `${sync_get_route}` every minute (`reqs per day` === `syncOps * 1440`):
+5. The simplest way to keep a Vercel-hosted `supagraph` instance up to date is to set a `cron` job in the project's `vercel.json` config to call the `${sync_get_route}` every minute (`reqs per day` === `syncOps * 1440`):
 
    ```
    # vercel.json
@@ -186,7 +186,7 @@ To create a new `supergraph syncOp[]` handler and keep the `supergraph` instance
 
 ## Contributing
 
-If you would like to contribute to `supergraph`, please follow these steps:
+If you would like to contribute to `supagraph`, please follow these steps:
 
 1. Fork this repository.
 2. Create a new branch for your changes.

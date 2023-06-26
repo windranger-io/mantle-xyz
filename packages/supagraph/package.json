@@ -1,12 +1,12 @@
 {
-  "name": "@mantle/supergraph",
+  "name": "@mantle/supagraph",
   "version": "0.0.0",
   "private": true,
   "author": "grezle",
   "description": "GraphQL queryable RPC Indexer",
   "keywords": [
     "mantle",
-    "supergraph",
+    "supagraph",
     "subgraph",
     "graphql",
     "index",

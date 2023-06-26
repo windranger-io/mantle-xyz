@@ -1,4 +1,4 @@
-// General supergraph typings and constants
+// General supagraph typings and constants
 import { Where, EntityRecord } from "./types";
 import {
   ALL_FILTERS,

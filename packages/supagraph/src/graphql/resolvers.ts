@@ -36,7 +36,7 @@ export const memoryResolver = async ({ name }: { name: string }) => {
         return target[key];
       }
 
-      // everything else is an entity held as camelCased key in the entities - let supergraph handle resolution on the full set...
+      // everything else is an entity held as camelCased key in the entities - let supagraph handle resolution on the full set...
       return () => memEntities[toCamelCase(key as string)];
     },
   }) as Entities;
@@ -53,7 +53,7 @@ export async function mongoIndexer({
   schema: SimpleSchema;
 }) {
   // fetch the db connection
-  const mongo = (await client).db(name || "supergraph");
+  const mongo = (await client).db(name || "supagraph");
   // we need to pull the metaTable from mongo
   const metaTable = mongo.collection("__meta__");
 
@@ -111,7 +111,7 @@ export function mongoResolver({
   // we return a schema resolver to map the entities against mongo resolvers (using the queries AST)
   return async (schema: SimpleSchema) => {
     // fetch the db connection
-    const mongo = (await client).db(name || "supergraph");
+    const mongo = (await client).db(name || "supagraph");
 
     // store any changes in the schema against the index (this will be checked again after every build/compile in dev or after a revalidate)
     await mongoIndexer({ name, client, schema });
@@ -154,7 +154,7 @@ export function mongoResolver({
 
         // if the context.result[entity] is present then we can return a result...
         // * Note that this is EVERY document of this entity type in the result, we need to post-filter to get to the correct result for the graphql response
-        //   - this post filtering is the default behaviour of supergraph (it works directly against arrays of documents)
+        //   - this post filtering is the default behaviour of supagraph (it works directly against arrays of documents)
         return context?.result[entity] || [];
       };
 
