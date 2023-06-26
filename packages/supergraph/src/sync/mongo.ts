@@ -1,4 +1,4 @@
-/* eslint-disable max-classes-per-file */
+/* eslint-disable no-underscore-dangle, max-classes-per-file */
 
 import type { AnyBulkWriteOperation, Document, MongoClient } from "mongodb";
 
@@ -7,6 +7,7 @@ import { DB } from "./db";
 // this should probably just be string - Record<string, string | number | Buffer> (or anything else which is valid in a mongo setting)
 type KV = Record<string, Record<string, Record<string, unknown> | null>>;
 
+// Error to throw with a .notFound prop set to true
 class NotFound extends Error {
   notFound: boolean;
 
@@ -19,12 +20,16 @@ class NotFound extends Error {
 
 // Simple key-value database store (abstract-leveldown compliant)
 export class Mongo extends DB {
+  // underlying mongo client
   client: MongoClient | Promise<MongoClient>;
 
+  // selected db on the mongo client
   db: ReturnType<MongoClient["db"]> | Promise<ReturnType<MongoClient["db"]>>;
 
+  // name given to the db on the mongo client
   name: string;
 
+  // are the entities in this db being upserted or not?
   uniqueIds: boolean;
 
   // construct a kv store
@@ -64,12 +69,13 @@ export class Mongo extends DB {
     return db;
   }
 
-  // update the kv store with a new set of getters
+  // update the kv store with a new set of values
   async update({ kv }: { kv: KV }) {
     // restore given kv
     this.kv = kv || {};
   }
 
+  // get from mongodb
   async get(key: string) {
     if (this.kv[key]) {
       return this.kv[key];
@@ -88,6 +94,7 @@ export class Mongo extends DB {
     throw new NotFound("Not Found");
   }
 
+  // store into mongodb
   async put(key: string, val: Record<string, unknown>) {
     // spit the key and get from mongo
     const [ref, id] = key.split(".");
@@ -103,11 +110,8 @@ export class Mongo extends DB {
           ...(this.uniqueIds
             ? {}
             : {
-                // eslint-disable-next-line no-underscore-dangle
                 _block_ts: val?._block_ts,
-                // eslint-disable-next-line no-underscore-dangle
                 _block_num: val?._block_num,
-                // eslint-disable-next-line no-underscore-dangle
                 _chain_id: val?._chain_id,
               }),
         },
@@ -132,6 +136,7 @@ export class Mongo extends DB {
     return true;
   }
 
+  // delete from mongodb (not sure we ever need to do this? We could noop)
   async del(key: string) {
     // spit the key and get from mongo
     const [ref, id] = key.split(".");
@@ -151,6 +156,7 @@ export class Mongo extends DB {
     return true;
   }
 
+  // perfom a bulkWrite against mongodb
   async batch(
     vals: {
       type: "put" | "del";
@@ -190,11 +196,8 @@ export class Mongo extends DB {
                   ...(this.uniqueIds
                     ? {}
                     : {
-                        // eslint-disable-next-line no-underscore-dangle
                         _block_ts: val.value?._block_ts,
-                        // eslint-disable-next-line no-underscore-dangle
                         _block_num: val.value?._block_num,
-                        // eslint-disable-next-line no-underscore-dangle
                         _chain_id: val.value?._chain_id,
                       }),
                 },
@@ -213,11 +216,8 @@ export class Mongo extends DB {
                       };
                     }, {} as Record<string, unknown>),
                     // add block details to the insert (this is what makes it an insert - every event should insert a new document)
-                    // eslint-disable-next-line no-underscore-dangle
                     _block_ts: val.value?._block_ts,
-                    // eslint-disable-next-line no-underscore-dangle
                     _block_num: val.value?._block_num,
-                    // eslint-disable-next-line no-underscore-dangle
                     _chain_id: val.value?._chain_id,
                   },
                 },

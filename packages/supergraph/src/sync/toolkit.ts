@@ -25,14 +25,8 @@ export enum Stage {
   process,
 }
 
-// how many ranges to request at a time
-const CONCURRENCY = 10;
-
-// working directory of the calling project or tmp if in prod
-const cwd = process.env.NODE_ENV === "development" ? process.cwd() : "/tmp"; // we should use /tmp/ on prod for an ephemeral store during the execution of this process (max 512mb of space)
-
-// sync operations will be appended in the route.ts file using addSync
-const syncs: {
+// Define a sync op
+export type Sync = {
   eventName: string;
   address: string;
   provider: BaseProvider;
@@ -42,7 +36,19 @@ const syncs: {
     args: any,
     { tx, block }: { tx: TransactionReceipt; block: Block }
   ) => void;
-}[] = [];
+};
+
+// how many ranges to request at a time
+const CONCURRENCY = 10;
+
+// the maximum no. of blocks to be attempted in any one queryFilter call
+const RANGE_LIMIT = 100000;
+
+// working directory of the calling project or tmp if in prod
+const cwd = process.env.NODE_ENV === "development" ? process.cwd() : "/tmp"; // we should use /tmp/ on prod for an ephemeral store during the execution of this process (max 512mb of space)
+
+// sync operations will be appended in the route.ts file using addSync
+const syncs: Sync[] = [];
 
 // list of public rpc endpoints
 const altProviders: Record<number, string[]> = {
@@ -79,35 +85,57 @@ const getRandomProvider = (chainId: number) => {
 };
 
 // allow external usage to set the sync operations
-export const addSync = <T>(
-  eventName: string,
-  address: string,
-  provider: BaseProvider,
-  startBlock: number,
-  eventAbi: ethers.Contract["abi"],
-  onEvent: (
+export function addSync<T>(
+  eventNameOrParams:
+    | string
+    | {
+        eventName: string;
+        address: string;
+        provider: BaseProvider;
+        startBlock: number;
+        eventAbi: ethers.Contract["abi"];
+        onEvent: (
+          args: T,
+          { tx, block }: { tx: TransactionReceipt; block: Block }
+        ) => void;
+      },
+  provider?: BaseProvider,
+  startBlock?: number,
+  address?: string,
+  eventAbi?: ethers.Contract["abi"],
+  onEvent?: (
     args: T,
     { tx, block }: { tx: TransactionReceipt; block: Block }
   ) => void
-) => {
-  syncs.push({
-    eventName,
-    address,
-    provider,
-    startBlock,
-    eventAbi,
-    onEvent,
-  });
+): (args: T, { tx, block }: { tx: TransactionReceipt; block: Block }) => void {
+  let params;
 
-  // return the event handler to constructing context
-  return onEvent;
-};
+  // hydrate the params
+  if (typeof eventNameOrParams === "string") {
+    params = {
+      address: address!,
+      eventAbi: eventAbi!,
+      eventName: eventNameOrParams!,
+      onEvent: onEvent!,
+      provider: provider!,
+      startBlock: startBlock!,
+    };
+  } else {
+    params = eventNameOrParams;
+  }
+
+  // push to the syncs
+  syncs.push(params);
+
+  // Return the event handler to constructing context
+  return params.onEvent;
+}
 
 // slice the range into 100,000 block units
 const createBlockRanges = (
   fromBlock: number,
   toBlock: number,
-  limit = 100000
+  limit: number
 ): number[][] => {
   // each current is a tuple containing from and to
   let currentRange: number[] = [fromBlock];
@@ -182,7 +210,7 @@ const eventsFromRange = async (
   });
 
   if (res.length) {
-    // return all events from the given range
+    // log what we've collected on this tick
     console.log(
       `Got ${
         res.length
@@ -191,26 +219,17 @@ const eventsFromRange = async (
         toBlock,
       })}`
     );
-    // add each item to the result (process 10 at a time - this blocks the outer until all are resolved)
+
+    // add each item to the result
     res.forEach((resEvent) => {
       result.add({
         ...resEvent,
       } as ethers.Event);
     });
-
-    // everything is in place...
-    console.log(
-      `Resolved blocks for ${
-        res.length
-      } ${event}::${chainId} events from range: ${JSON.stringify({
-        fromBlock,
-        toBlock,
-      })}`
-    );
   }
 };
 
-// call to cancel this frame and split it
+// cancel this frame and split the range in two to reattempt the call
 const cancelAndSplit =
   (
     chainId: number,
@@ -323,7 +342,7 @@ const getNewEvents = async (
     // connect to contract and filter for events to build data-set
     const contract = new ethers.Contract(address, eventAbi, provider);
     // create a new eventRange for each 500,000 blocks (to process in parallel)
-    const ranges = createBlockRanges(fromBlock, toBlock, 100000);
+    const ranges = createBlockRanges(fromBlock, toBlock, RANGE_LIMIT);
     // construct a reqStack so that we're only processing x reqs at a time
     const reqStack: (() => Promise<any>)[] = [];
 
@@ -346,6 +365,7 @@ const getNewEvents = async (
 
     // pull from the reqStack and process...
     while (reqStack.length > 0) {
+      // process n requests concurrently and wait for them all to resolve
       const consec = reqStack.splice(0, CONCURRENCY);
       // run through all promises until we come to a stop
       await Promise.all(
@@ -358,6 +378,50 @@ const getNewEvents = async (
 
   // wrap the events with the known type
   return wrapEventRes(eventName, Array.from(result), provider);
+};
+
+// read the file from disk
+const readJSON = async <T extends Record<string, any>>(
+  type: string,
+  filename: string
+): Promise<T> => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(
+      `${cwd}/data/${type}/${filename}.json`,
+      "utf8",
+      async (err, file) => {
+        if (!err && file && file.length) {
+          const data = JSON.parse(file);
+          resolve(data as T);
+        } else {
+          reject(err);
+        }
+      }
+    );
+  });
+};
+
+// save a JSON data blob to disk
+const saveJSON = async (
+  type: string,
+  filename: string,
+  resData: Record<string, unknown>
+): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    // write the file
+    fs.writeFile(
+      `${cwd}/data/${type}/${filename}.json`,
+      JSON.stringify(resData),
+      "utf8",
+      async (err) => {
+        if (!err) {
+          resolve(true);
+        } else {
+          reject(err);
+        }
+      }
+    );
+  });
 };
 
 // this is only managing about 20k blocks before infura gets complainee
@@ -392,12 +456,7 @@ const attemptFnCall = async <T extends Record<string, any>>(
       .then((resData: T) => {
         clearTimeout(timer);
         // write the file
-        fs.writeFile(
-          `${cwd}/data/${type}/${dets.chainId}-${dets.data[prop]}.json`,
-          JSON.stringify(resData),
-          "utf8",
-          () => {}
-        );
+        saveJSON(type, `${dets.chainId}-${dets.data[prop]}`, resData);
         // set the value by mutation
         dets[resProp] = resData[resProp as unknown as keyof T];
         // resolve the requested data
@@ -407,27 +466,6 @@ const attemptFnCall = async <T extends Record<string, any>>(
         clearTimeout(timer);
         reject(e);
       });
-  });
-};
-
-// read the file from disk
-const readType = async <T extends Record<string, any>>(
-  type: string,
-  filename: string
-): Promise<T> => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(
-      `${cwd}/data/${type}/${filename}.json`,
-      "utf8",
-      async (err, file) => {
-        if (!err && file && file.length) {
-          const data = JSON.parse(file);
-          resolve(data as T);
-        } else {
-          reject(err);
-        }
-      }
-    );
   });
 };
 
@@ -565,7 +603,7 @@ const readCSV = async (
   });
 };
 
-// Save events to csv file
+// save events to csv file
 const saveCSV = async (
   csvFileName: string,
   events: {
@@ -820,7 +858,7 @@ export const sync = async ({
     }
   }
 
-  // we're starting the process here then print the discovery
+  // if we're starting the process here then print the discovery
   if (!start || (start && Stage[start] < Stage.process)) {
     // detail everything which was loaded in this run
     console.log("\n--\n\nTotal no. events discovered:", events.length, "\n");
@@ -893,7 +931,7 @@ export const sync = async ({
     console.log("--\n\nEvents sorted", sorted.length);
   }
 
-  // pull all the sorted content from the tmp store if we start on the process
+  // check if we start on "process" in this sync and pull all the sorted content from the tmp store
   if (start && Stage[start] === Stage.process) {
     // log the start of the operation
     console.log(
@@ -942,7 +980,7 @@ export const sync = async ({
                 blockHash: opSorted.data.blockHash,
                 blockNumber: opSorted.data.blockNumber,
               } as unknown as TransactionReceipt)
-            : await readType<TransactionReceipt>(
+            : await readJSON<TransactionReceipt>(
                 "transactions",
                 `${opSorted.chainId}-${opSorted.data.transactionHash}`
               );
@@ -954,7 +992,7 @@ export const sync = async ({
                 number: opSorted.data.blockNumber,
                 timestamp: opSorted.timestamp || opSorted.data.blockNumber,
               } as unknown as Block)
-            : await readType<Block>(
+            : await readJSON<Block>(
                 "blocks",
                 `${opSorted.chainId}-${opSorted.data.blockNumber}`
               );
@@ -991,7 +1029,7 @@ export const sync = async ({
     // after commit all events are stored in db
     process.stdout.write("✔\nPointers updated ");
 
-    // commit an update for each provider used in the sync
+    // commit an update for each provider used in the sync (these are normal db.put's to always write to the same entries)
     await Promise.all(
       Array.from(chainIds).map(async (chainId) => {
         // we want to select the latest block this chains events

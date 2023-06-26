@@ -1,45 +1,36 @@
-/* eslint-disable prefer-destructuring */
-
 // Return graphql server as next request handler
 import { NextRequest, NextResponse } from "next/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-// Open a connection to the db to pull the queried data
-import { getMongodb } from "@providers/mongoClient";
-
-// Construct subgraph flavoured graphql server which resolves to Mongo queries
+// Construct subgraph flavoured graphql server
 import {
-  mongoResolver,
-  memoryResolver,
   createSupergraph,
+  memoryResolver,
+  mongoResolver,
 } from "@mantle/supergraph";
 
 // Import connection config from local dir
+import { getMongodb } from "@providers/mongoClient";
 import {
-  SUPERGRAPH_NAME,
   SUPERGRAPH_SCHEMA,
   SUPERGRAPH_DEFAULT_QUERY,
-  SUPERGRAPH_DEV_ENGINE,
-  SUPERGRAPH_UNIQUE_IDS,
   SUPERGRAPH_REVALIDATE,
   SUPERGRAPH_STALE_WHILE_REVALIDATE,
+  SUPERGRAPH_DEV_ENGINE,
+  SUPERGRAPH_NAME,
+  SUPERGRAPH_UNIQUE_IDS,
 } from "./config";
 
-// revalidate this page every 12s (avg block time)
+// Revalidate this page every 12s (avg block time)
 export const revalidate = SUPERGRAPH_REVALIDATE;
 
-// extract env vars
-const NODE_ENV = process.env.NODE_ENV;
-const MONGODB_URI = process.env.MONGODB_URI;
-
-// create a new supergraph handler
+// Create a new supergraph handler
 const graphql = createSupergraph<NextApiRequest, NextApiResponse>({
   // setup the entities (we're feeding in a mongo/mem-db driven store here - all queries are made at runtime directly against mongo in 1 request or are fully satisified from a local cache)
   entities:
-    // switch out the resolver for different environments/conditions
-    (NODE_ENV === "development" && SUPERGRAPH_DEV_ENGINE) ||
+    (process.env.NODE_ENV === "development" && SUPERGRAPH_DEV_ENGINE) ||
     // or if the mongodb uri isnt set...
-    !MONGODB_URI
+    !process.env.MONGODB_URI
       ? // for development we can keep entities in node-persist and share between connections
         memoryResolver({
           // name the database (in-memory/persisted on disk to .next dir)
@@ -52,7 +43,7 @@ const graphql = createSupergraph<NextApiRequest, NextApiResponse>({
           // connect to mongodb
           client: getMongodb(
             // this obviously needs putting in an env
-            MONGODB_URI
+            process.env.MONGODB_URI
           ),
           // skip groupBy on time/block - each id is unique in this set of syncs
           uniqueIds: SUPERGRAPH_UNIQUE_IDS,

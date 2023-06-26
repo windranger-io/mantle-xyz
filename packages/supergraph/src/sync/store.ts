@@ -175,21 +175,28 @@ export class Store {
           ).map((v) => new TypedMapEntry(v.key, v.value))
         )
       : await (async () => {
-          // pull from db (if not marked as a newId)
-          const fromDb =
-            !newId && (await engine?.stage?.get(`${toCamelCase(ref)}.${id}`));
-          return new Entity<T>(
-            ref,
-            id,
-            (fromDb &&
-              Object.keys(fromDb).map((key) => {
-                return new TypedMapEntry(
-                  key as keyof T,
-                  fromDb[key] as T[keyof T]
-                );
-              })) ||
-              []
-          ) as unknown as T & Entity<T>;
+          let fromDb: T | boolean = false;
+          // attempt to pull from db...
+          try {
+            // pull from db (if not marked as a newId)
+            fromDb =
+              !newId &&
+              ((await engine?.stage?.get(`${toCamelCase(ref)}.${id}`)) as T);
+          } finally {
+            // eslint-disable-next-line no-unsafe-finally
+            return new Entity<T>(
+              ref,
+              id,
+              ((fromDb as boolean) !== false &&
+                Object.keys(fromDb).map((key) => {
+                  return new TypedMapEntry(
+                    key as keyof T,
+                    (fromDb as T)[key as keyof T]
+                  );
+                })) ||
+                []
+            ) as unknown as T & Entity<T>;
+          }
         })()) as unknown as T & Entity<T>;
   }
 
@@ -210,14 +217,14 @@ export class Store {
   }
 
   static async remove(ref: string, id: string) {
-    // set the value
+    // clear the value
     delete entities[`${ref}`][`${id}`];
-    // put the value into the db
+    // del the value set from the db
     await engine?.stage?.del(`${toCamelCase(ref)}.${id}`);
   }
 
   static async setEngine({ name, db }: { name: string; db: DB | Promise<DB> }) {
-    // set in global state
+    // set db and name in global state
     setEngine({ name, db });
 
     return engine;

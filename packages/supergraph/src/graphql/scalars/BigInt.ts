@@ -28,15 +28,14 @@ export function createGraphQLError(
   if (versionInfo.major >= 17) {
     return new GraphQLError(message, options);
   }
-  return new GraphQLError(
-    message,
-    options?.nodes,
-    options?.source,
-    options?.positions,
-    options?.path,
-    options?.originalError,
-    options?.extensions || {}
-  );
+  return new GraphQLError(message, {
+    nodes: options?.nodes,
+    source: options?.source,
+    positions: options?.positions,
+    path: options?.path,
+    originalError: options?.originalError,
+    extensions: options?.extensions || {},
+  });
 }
 
 export function isObjectLike(

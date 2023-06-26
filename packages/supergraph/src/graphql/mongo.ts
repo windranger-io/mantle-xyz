@@ -1017,7 +1017,7 @@ export function createQuery(
         ? [
             {
               $sort: {
-                // use block as secondary sort before
+                // use block_ts as primary sort before grouping and limiting first result
                 _block_ts: -1,
               },
             },
@@ -1029,6 +1029,7 @@ export function createQuery(
               },
             },
             {
+              // we're projecting everything being requested at this level on this entity
               $project: {
                 _id: 1,
                 ...[

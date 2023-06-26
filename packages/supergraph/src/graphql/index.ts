@@ -145,6 +145,7 @@ export const createSupergraph = <
           );
         })
         .reduce((finalEntities, entity) => {
+          // only include entities defined in the schema
           finalEntities[entity] =
             (entities as Entities & { __resolved: Awaited<Entities> })
               .__resolved[entity] || [];
@@ -259,13 +260,13 @@ export const createSupergraph = <
                       from(key, [parent, props, context, ast], operation)
                     );
                   }
-                  // check for nested filter clauses
+                  // check for nested filter clauses and resolve through entity defined resolvers...
                   const query =
                     key.type[0] === "["
                       ? createMultiQuery(_entities, _schema, key)
                       : createSingularQuery(_entities, _schema, key);
 
-                  // pass the query terms through the resolvers
+                  // pass the query terms through the constructed and resolved resolvers
                   return query(
                     parent,
                     key.type[0] === "["
@@ -284,8 +285,21 @@ export const createSupergraph = <
     }),
   });
 
-  // this might break some implementations - need to test thoroughly
-  async function handle(...args: Parameters<typeof handler>) {
+  // add the provided headers to a response
+  const addHeaders = (hres: Response) => {
+    // add to return response
+    if (headers && hres && hres.headers) {
+      Object.keys(headers).forEach((key) => {
+        hres.headers.set(key, headers[key]);
+      });
+    }
+    return hres;
+  };
+
+  // wrap the handler to allow for the addition of headers via setHeader
+  function handle(
+    ...args: Parameters<typeof handler>
+  ): Promise<ReturnType<typeof handler>> | ReturnType<typeof handler> {
     // add to serverResponse before calling
     if (
       headers &&
@@ -298,15 +312,15 @@ export const createSupergraph = <
       });
     }
     // run the handler
-    const hres = await handler(...args);
-    // add to return response
-    if (headers && hres && hres.headers) {
-      Object.keys(headers).forEach((key) => {
-        hres.headers.set(key, headers[key]);
-      });
+    const hres = handler(...args);
+
+    // if its a promise, resolve and add headers to the response
+    if (hres instanceof Promise) {
+      return hres.then((res) => addHeaders(res));
     }
-    // return response with headers added
-    return hres;
+
+    // add headers to the response immediately
+    return addHeaders(hres);
   }
 
   return handle as typeof handler;

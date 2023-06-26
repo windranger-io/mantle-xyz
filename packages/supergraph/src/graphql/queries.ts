@@ -1,5 +1,5 @@
-/* eslint-disable no-nested-ternary, no-underscore-dangle */
-/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable no-nested-ternary, no-underscore-dangle, no-restricted-syntax */
+/* eslint-disable no-await-in-loop, @typescript-eslint/naming-convention */
 import {
   Key,
   Where,
@@ -11,6 +11,7 @@ import {
   WhereInterface,
 } from "./types";
 
+// perform filters on the resolved entity result
 import { checkFilterClause, resolveFilters } from "./where";
 
 // async filter method
@@ -95,7 +96,7 @@ export const createSingularQuery = (
   };
 };
 
-// for MultiQueries we expect an array of results and they can be paginated and filtered
+// for MultiQueries we expect an array of results and they can be paginated, filtered and sorted
 export const createMultiQuery = (
   entities_: () => Entities | Promise<Entities>,
   _schema: SimpleSchema,
@@ -160,7 +161,6 @@ export const createMultiQuery = (
           const clone = { ...child } as Record<string, unknown>;
 
           // check each of the keys against any where clauses...
-          // eslint-disable-next-line no-restricted-syntax
           for (const key_ of _schema[entity]) {
             if (typeof key_ !== "string") {
               // get the join type without multi markers
@@ -177,7 +177,6 @@ export const createMultiQuery = (
                 const query = createSingularQuery(entities_, _schema, key_);
                 // resolve child
                 clone[key_.name] = [
-                  // eslint-disable-next-line no-await-in-loop
                   await query(
                     clone,
                     {
@@ -192,7 +191,6 @@ export const createMultiQuery = (
                 // gather resolver for multi entity type
                 const query = createMultiQuery(entities_, _schema, key_);
                 // resolve children
-                // eslint-disable-next-line no-await-in-loop
                 clone[key_.name] = (await query(
                   clone,
                   { where: where as Where },

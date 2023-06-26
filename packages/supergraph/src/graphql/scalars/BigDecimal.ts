@@ -4,12 +4,17 @@ import { GraphQLScalarType, GraphQLScalarTypeConfig } from "graphql/type";
 // using built in BigInt to construct BigDecimal
 export class BigDecimal {
   // Configuration: constants
-  static DECIMALS = 18; // number of decimals on all instances
 
-  static ROUNDED = true; // numbers are truncated (false) or rounded (true)
+  // number of decimals on all instances
+  static DECIMALS = 18;
 
-  static SHIFT = BigInt(`1${"0".repeat(BigDecimal.DECIMALS)}`); // derived constant
+  // numbers are truncated (false) or rounded (true)
+  static ROUNDED = true;
 
+  // derived constant
+  static SHIFT = BigInt(`1${"0".repeat(BigDecimal.DECIMALS)}`);
+
+  // the internal bigInt slot
   _n!: bigint;
 
   constructor(value: unknown) {
