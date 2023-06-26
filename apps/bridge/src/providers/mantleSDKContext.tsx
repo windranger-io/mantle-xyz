@@ -223,7 +223,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     context.crossChainMessenger.getStateRootBatchByTransactionIndex = async (
       transactionIndex
     ) => {
-      // fetch the appendStateBatch event from supergraph that matches this transactionIndex
+      // fetch the appendStateBatch event from supagraph that matches this transactionIndex
       const { data } = await gqclient.query({
         query: GetBatchStateAtIndexQuery,
         variables: {
@@ -276,7 +276,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
           )[2];
       }
 
-      // return the content from supergraph + the stateRoots from the transaction
+      // return the content from supagraph + the stateRoots from the transaction
       return {
         blockNumber: parseInt(stateBatchAppendedEvent.txBlock, 10),
         stateRoots,

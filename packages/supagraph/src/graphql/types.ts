@@ -47,7 +47,7 @@ export type Key = {
 
 export declare type SimpleSchema = Record<string, Key[] | string>;
 
-export declare const createSupergraph: <
+export declare const createSupagraph: <
   TServerContext extends Record<string, any>,
   TUserContext extends Record<string, any>
 >({

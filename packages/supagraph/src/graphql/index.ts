@@ -68,7 +68,7 @@ export type ElementTypeOfArray<T extends ReadonlyArray<any>> = ArrayElementType<
 >;
 
 // create new yoga definition tied to entities collection(s)
-export const createSupergraph = <
+export const createSupagraph = <
   TServerContext extends Record<string, any>,
   TUserContext extends Record<string, any>
 >({
@@ -167,7 +167,7 @@ export const createSupergraph = <
       renderGraphiQL({
         ...opts,
         // set the playground page title...
-        title: "Supergraph Playground",
+        title: "Supagraph Playground",
       }),
     // construct the schema from the typeDefs and _schema
     schema: createSchema({

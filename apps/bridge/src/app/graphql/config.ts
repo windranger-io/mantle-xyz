@@ -1,14 +1,14 @@
-// Name your supergraph (this will inform mongo table name etc...)
-export const SUPERGRAPH_NAME = "supergraph--bridge--0-0-1";
+// Name your supagraph (this will inform mongo table name etc...)
+export const SUPAGRAPH_NAME = "supergraph--bridge--0-0-1";
 
 // Set the local engine (true: db || false: mongo)
-export const SUPERGRAPH_DEV_ENGINE = false;
+export const SUPAGRAPH_DEV_ENGINE = false;
 
 // Flag unique ids to insert by upsert only on id field (otherwise use _block_number + id to make a unique entry and do a distinct groupBy on the id when querying)
-export const SUPERGRAPH_UNIQUE_IDS = true;
+export const SUPAGRAPH_UNIQUE_IDS = true;
 
 // Define the schema we will follow in our syncs and queries
-export const SUPERGRAPH_SCHEMA = `
+export const SUPAGRAPH_SCHEMA = `
     type StateBatchAppend @entity {
       id: ID!
       batchRoot: String
@@ -24,7 +24,7 @@ export const SUPERGRAPH_SCHEMA = `
 `;
 
 // Define the default query we want to show in graphiql
-export const SUPERGRAPH_DEFAULT_QUERY = `
+export const SUPAGRAPH_DEFAULT_QUERY = `
     query MostRecentUpdates {
       stateBatchAppends(first: 10, skip: 0, orderBy: batchIndex, orderDirection: desc) {
         batchIndex
@@ -35,8 +35,8 @@ export const SUPERGRAPH_DEFAULT_QUERY = `
 `;
 
 // How often do we want the queries to be revalidated?
-export const SUPERGRAPH_REVALIDATE = 12;
-export const SUPERGRAPH_STALE_WHILE_REVALIDATE = 59;
+export const SUPAGRAPH_REVALIDATE = 12;
+export const SUPAGRAPH_STALE_WHILE_REVALIDATE = 59;
 
 // Blocks to start collecting events from
 export const L1_START_BLOCK = 8191063;

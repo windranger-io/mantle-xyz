@@ -35,7 +35,7 @@ export class DB {
       // init the localStorage mechanism
       await Storage.init({
         // dump this with the rest of the .next artifacts to be periodically reclaimed?
-        dir: `.next/${name || "supergraph"}/node-persist/storage`,
+        dir: `.next/${name || "supagraph"}/node-persist/storage`,
       });
       // restore given kv
       const keys = await Storage.keys();

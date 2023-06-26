@@ -5,9 +5,9 @@ import { providers } from "ethers";
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
 // Use addSync to add operations and Store to interact with entity storage
-import { addSync, Store } from "@mantle/supergraph";
+import { addSync, Store } from "@mantle/supagraph";
 
-// Supergraph specific constants detailing the contracts we'll sync against
+// Supagraph specific constants detailing the contracts we'll sync against
 import {
   L1_START_BLOCK,
   L1_STATE_COMMITMENT_CHAIN,

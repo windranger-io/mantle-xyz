@@ -48,7 +48,7 @@ export class Mongo extends DB {
     this.uniqueIds = uniqueIds || false;
     // resolve the client then attach the named db
     this.db = Promise.resolve(client).then((mongo) =>
-      mongo.db(name || "supergraph")
+      mongo.db(name || "supagraph")
     );
   }
 
