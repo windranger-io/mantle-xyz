@@ -55,7 +55,7 @@ export default function Convert() {
                 </Typography>
               </div>
             </ConvertCard>
-            <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] xl:min-w-[320px] lg:absolute lg:top-0 lg:right-[-60%] xl:right-[-90%]">
+            <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] xl:min-w-[320px] lg:absolute lg:top-0 lg:right-[-60%] xl:right-[-80%]">
               <SmartContractTracker />
             </div>
           </div>
