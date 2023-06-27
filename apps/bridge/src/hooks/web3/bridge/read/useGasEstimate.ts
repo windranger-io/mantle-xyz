@@ -17,7 +17,8 @@ function useGasEstimate(
   selectedToken: { [x: string]: string },
   destinationToken: { [x: string]: string },
   bridgeAddress: string | false | undefined,
-  destinationTokenAmount: string
+  destinationTokenAmount: string,
+  allowance: string
 ) {
   // pull crossChainMessenger
   const { crossChainMessenger } = useMantleSDK();
@@ -39,6 +40,7 @@ function useGasEstimate(
           ],
         bridgeAddress,
         destinationTokenAmount,
+        allowance,
       },
     ],
     async () => {
@@ -82,37 +84,48 @@ function useGasEstimate(
         const l2Token = MANTLE_TOKEN_LIST.tokens.find((v) => {
           return destinationToken[type] === v.name && v.chainId === L2_CHAIN_ID;
         });
-        if (type === Direction.Deposit) {
-          return crossChainMessenger?.estimateGas
-            ?.depositERC20(
-              l1Token!.address,
-              l2Token!.address,
-              parseUnits(
-                destinationTokenAmount?.toString() || "0",
-                l1Token?.decimals
-              ),
-              { overrides: { from: client?.address } }
+        // check allocance first - if we don't have enough allowance allocated the gas-estimate will fail
+        if (
+          allowance &&
+          parseUnits(allowance, l1Token?.decimals).gte(
+            parseUnits(
+              destinationTokenAmount?.toString() || "0",
+              l1Token?.decimals
             )
-            ?.catch((e) => errorHandler(e))
-            ?.then((val) => {
-              return val.toString();
-            });
-        }
-        if (type === Direction.Withdraw) {
-          return crossChainMessenger?.estimateGas
-            ?.withdrawERC20(
-              l1Token!.address,
-              l2Token!.address,
-              parseUnits(
-                destinationTokenAmount?.toString() || "0",
-                l2Token?.decimals
-              ),
-              { overrides: { from: client?.address } }
-            )
-            ?.catch((e) => errorHandler(e))
-            ?.then((val) => {
-              return val.toString();
-            });
+          )
+        ) {
+          if (type === Direction.Deposit) {
+            return crossChainMessenger?.estimateGas
+              ?.depositERC20(
+                l1Token!.address,
+                l2Token!.address,
+                parseUnits(
+                  destinationTokenAmount?.toString() || "0",
+                  l1Token?.decimals
+                ),
+                { overrides: { from: client?.address } }
+              )
+              ?.catch((e) => errorHandler(e))
+              ?.then((val) => {
+                return val.toString();
+              });
+          }
+          if (type === Direction.Withdraw) {
+            return crossChainMessenger?.estimateGas
+              ?.withdrawERC20(
+                l1Token!.address,
+                l2Token!.address,
+                parseUnits(
+                  destinationTokenAmount?.toString() || "0",
+                  l2Token?.decimals
+                ),
+                { overrides: { from: client?.address } }
+              )
+              ?.catch((e) => errorHandler(e))
+              ?.then((val) => {
+                return val.toString();
+              });
+          }
         }
       }
 

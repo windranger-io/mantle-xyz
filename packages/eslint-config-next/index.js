@@ -31,6 +31,7 @@ module.exports = {
     // next
     'react/react-in-jsx-scope': 'off',
     '@next/next/no-html-link-for-pages': 'off',
+    'turbo/no-undeclared-env-vars': 'off',
   },
   ignorePatterns: [
     '**/*.js',

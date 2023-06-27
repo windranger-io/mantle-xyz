@@ -1,12 +1,15 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalEnv": [
+    "NEXT_PUBLIC_*",
     "GITHUB_TOKEN",
     "I18NEXUS_API_KEY",
     "I18NEXUS_VERSION",
     "I18NEXUS_API_URL",
     "I18NEXUS_PRE_BUILD",
-    "VERCEL_ENV"
+    "VERCEL_ENV",
+    "NODE_ENV",
+    "MONGODB_URI"
   ],
   "pipeline": {
     "build": {
@@ -33,7 +36,9 @@
       "env": [
         "NEXT_PUBLIC_INFURA_API_KEY",
         "NEXT_PUBLIC_SITE_URL",
-        "NEXT_PUBLIC_VERCEL_URL"
+        "NEXT_PUBLIC_VERCEL_URL",
+        "NODE_ENV",
+        "MONGODB_URI"
       ],
       "cache": false
     },

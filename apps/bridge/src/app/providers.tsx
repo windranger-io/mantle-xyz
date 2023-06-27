@@ -1,4 +1,5 @@
 import { WagmiProvider } from "@providers/wagmiContext";
+import { ApolloWrapper } from "@providers/apolloProvider";
 import { MantleSDKProvider } from "@providers/mantleSDKContext";
 import { StateProvider } from "@providers/stateContext";
 
@@ -11,11 +12,13 @@ export default async function Providers({
 }) {
   return (
     <WagmiProvider>
-      <MantleSDKProvider>
-        <StateProvider>
-          <ToastContainer>{children}</ToastContainer>
-        </StateProvider>
-      </MantleSDKProvider>
+      <ApolloWrapper>
+        <MantleSDKProvider>
+          <StateProvider>
+            <ToastContainer>{children}</ToastContainer>
+          </StateProvider>
+        </MantleSDKProvider>
+      </ApolloWrapper>
     </WagmiProvider>
   );
 }

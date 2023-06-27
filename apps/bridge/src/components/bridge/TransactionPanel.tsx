@@ -15,7 +15,7 @@ import {
 
 import { formatEther, formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { BigNumber, constants } from "ethers";
-import { formatBigNumberString } from "@utils/formatStrings";
+import { localeZero, formatBigNumberString } from "@utils/formatStrings";
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 
 export default function TransactionPanel({
@@ -178,7 +178,7 @@ export default function TransactionPanel({
                       ? "This transaction will fail, withdrawal amount must not exceed your balance"
                       : `${
                           parseInt(actualGasFee || "0", 10) === 0
-                            ? "0.0"
+                            ? localeZero
                             : `~${formatUnits(
                                 BigNumber.from(
                                   (
@@ -205,7 +205,7 @@ export default function TransactionPanel({
                     }
                   >
                     {parseInt(actualGasFee || "0", 10) === 0
-                      ? "0.0"
+                      ? localeZero
                       : `~${formatEther(
                           BigNumber.from(
                             l1FeeData.data?.maxFeePerGas ||
@@ -224,9 +224,13 @@ export default function TransactionPanel({
               </Typography>
               <Typography variant="smallWidget" className="text-type-muted">
                 {Number.isNaN(parseFloat(balances?.[selected.address] || ""))
-                  ? "0.0"
-                  : formatBigNumberString(balances?.[selected.address]) ||
-                    "0.0"}{" "}
+                  ? localeZero
+                  : formatBigNumberString(
+                      balances?.[selected.address],
+                      selected.decimals,
+                      true,
+                      false
+                    ) || localeZero}{" "}
                 {selected.symbol}
               </Typography>
             </div>
@@ -239,10 +243,11 @@ export default function TransactionPanel({
               <Typography variant="smallWidget" className="text-type-muted">
                 {/* eslint-disable-next-line no-nested-ternary */}
                 {Number.isNaN(parseFloat(allowance || ""))
-                  ? "0.0"
+                  ? localeZero
                   : isAllowanceInfinity
                   ? Infinity.toLocaleString()
-                  : formatBigNumberString(allowance) || "0.0"}{" "}
+                  : formatBigNumberString(allowance, 18, true, false) ||
+                    localeZero}{" "}
                 {selected.symbol}
               </Typography>
             </div>
@@ -253,8 +258,13 @@ export default function TransactionPanel({
               key="tx-panel-5"
               title={`${
                 Number.isNaN(parseFloat(destinationTokenAmount || ""))
-                  ? "0.0"
-                  : formatBigNumberString(destinationTokenAmount) || "0.0"
+                  ? localeZero
+                  : formatBigNumberString(
+                      destinationTokenAmount,
+                      destination.decimals,
+                      true,
+                      false
+                    ) || localeZero
               } ${destination.symbol}`}
             >
               <Typography variant="smallWidget">You will receive</Typography>
@@ -263,8 +273,13 @@ export default function TransactionPanel({
                 className="text-white text-ellipsis w-64 whitespace-nowrap relative overflow-auto text-right"
               >
                 {Number.isNaN(parseFloat(destinationTokenAmount || ""))
-                  ? "0.0"
-                  : formatBigNumberString(destinationTokenAmount) || "0.0"}{" "}
+                  ? localeZero
+                  : formatBigNumberString(
+                      destinationTokenAmount,
+                      destination.decimals,
+                      true,
+                      false
+                    ) || localeZero}{" "}
                 {destination.symbol}
               </Typography>
             </div>

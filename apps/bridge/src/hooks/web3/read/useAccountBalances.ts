@@ -88,7 +88,7 @@ function useAccountBalances(
           // set the balance value in to the token details
           newFillBalances[filteredTokens[key].address] = formatUnits(
             value?.toString() || "0",
-            18
+            filteredTokens[key].decimals
           );
 
           return newFillBalances;
