@@ -68,7 +68,6 @@ function useAccountBalances(
           };
         });
 
-        console.log({ calls });
         // run all calls...
         const responses = await callMulticallContract(
           multicall.current.multicallContract,

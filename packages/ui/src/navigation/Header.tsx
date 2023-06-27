@@ -1,5 +1,5 @@
 import * as React from 'react'
-import clsx from 'clsx'
+import { cn } from '../utils'
 import { NavigationLite } from './NavigationLite'
 import { NavigationFull } from './NavigationFull'
 
@@ -29,8 +29,8 @@ export const Header = ({
   <header
     className={
       sticky
-        ? clsx('sticky top-0', ` ${className || ``}`)
-        : clsx('mb-20', ` ${className || ``}`)
+        ? cn('sticky top-0', ` ${className || ``}`)
+        : cn('mb-20', ` ${className || ``}`)
     }
   >
     {navLite ? (

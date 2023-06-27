@@ -192,19 +192,6 @@ export default function CTA({
       >
         {CTAButtonText}
       </Button>
-
-      {/* <hr className="border border-stroke-inputs mt-6 mb-8" /> */}
-      {isChainID &&
-        !!client.address &&
-        !!parseFloat(amount) &&
-        parseUnits(
-          balances[L1_BITDAO_TOKEN.address] || "-1",
-          L1_BITDAO_TOKEN.decimals
-        ).gte(parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals)) &&
-        parseUnits(allowance || "-1", L1_BITDAO_TOKEN.decimals).gte(
-          parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals)
-        ) &&
-        amount && <div className="my-5" />}
     </div>
   );
 }

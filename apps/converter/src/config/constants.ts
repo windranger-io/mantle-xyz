@@ -34,6 +34,7 @@ export const L1_CONVERTER_CONTRACT_ADDRESS =
 export const L1_CONVERTER_CONTRACT_ABI = [
   "function migrateBIT(uint256 _amount)",
   "function migrateAllBIT()",
+  "function halted() view returns (bool)",
 ];
 
 // Token constructs for dummy contracts on goerli
@@ -100,7 +101,8 @@ export enum Views {
 
 // Available Page states for the CTA Modal
 export enum CTAPages {
-  "Default" = 1,
+  "Terms" = 1,
+  "Default",
   "Loading",
   "Converted",
   "Error",

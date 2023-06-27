@@ -1,47 +1,22 @@
-import { useContext, useMemo } from "react";
-import StateContext from "@providers/stateContext";
-
 import Image from "next/image";
 
 import { Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
 
-import {
-  L1_CHAIN_ID,
-  CONVERSION_RATE,
-  L1_BITDAO_TOKEN,
-  L1_MANTLE_TOKEN,
-} from "@config/constants";
+import { L1_CHAIN_ID } from "@config/constants";
 import TxLink from "@components/converter/utils/TxLink";
-import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
 export default function Loading({
   txHash,
   closeModal,
+  from,
+  to,
 }: {
   txHash: string | boolean;
   closeModal: () => void;
+  from: string;
+  to: string;
 }) {
-  const { amount } = useContext(StateContext);
-
-  const from = useMemo(() => {
-    const formatted = formatUnits(
-      parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals),
-      L1_BITDAO_TOKEN.decimals
-    );
-    return formatted.replace(/\.0$/, "");
-  }, [amount]);
-
-  const to = useMemo(() => {
-    let bn = parseUnits(amount || "0", L1_MANTLE_TOKEN.decimals);
-    if (CONVERSION_RATE !== 1) {
-      bn = bn.mul(CONVERSION_RATE * 100).div(100);
-    }
-    const formatted = formatUnits(bn, L1_MANTLE_TOKEN.decimals).toString();
-
-    return formatted.replace(/\.0$/, "");
-  }, [amount]);
-
   return (
     <>
       <span className="flex justify-between align-middle">

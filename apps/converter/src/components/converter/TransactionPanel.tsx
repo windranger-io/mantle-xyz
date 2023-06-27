@@ -5,16 +5,10 @@ import StateContext from "@providers/stateContext";
 
 import { Typography } from "@mantle/ui";
 
-import {
-  L1_BITDAO_TOKEN,
-  L1_MANTLE_TOKEN,
-  L1_CHAIN_ID,
-  CONVERSION_RATE,
-} from "@config/constants";
+import { L1_BITDAO_TOKEN, L1_CHAIN_ID } from "@config/constants";
 
 import { formatEther, parseUnits } from "ethers/lib/utils.js";
 import { constants } from "ethers";
-import { formatBigNumberString } from "@utils/formatStrings";
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 
 export default function TransactionPanel() {
@@ -26,17 +20,16 @@ export default function TransactionPanel() {
     allowance,
     actualGasFee,
     isLoadingGasEstimate,
-    amount,
   } = useContext(StateContext);
   // only update on allowance change to maintain the correct decimals against constants if infinity
-  const isAllowanceInfinity = useMemo(
-    () =>
-      constants.MaxUint256.eq(
-        parseUnits(allowance || "0", L1_MANTLE_TOKEN.decimals)
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [allowance]
-  );
+  // const isAllowanceInfinity = useMemo(
+  //   () =>
+  //     constants.MaxUint256.eq(
+  //       parseUnits(allowance || "0", L1_MANTLE_TOKEN.decimals)
+  //     ),
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   [allowance]
+  // );
 
   // only update on allowance change to maintain the correct decimals against constants if infinity
   const isActualGasFeeInfinity = useMemo(
@@ -68,21 +61,19 @@ export default function TransactionPanel() {
 
   return (
     (isChainID &&
-      amount &&
-      parseFloat(amount) &&
       parseUnits(
         balances[L1_BITDAO_TOKEN.address] || "-1",
         L1_BITDAO_TOKEN.decimals
-      ).gte(parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals)) &&
+      ).gte(parseUnits("0", L1_BITDAO_TOKEN.decimals)) &&
       parseUnits(allowance || "-1", L1_BITDAO_TOKEN.decimals).gte(
-        parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals)
+        parseUnits("0", L1_BITDAO_TOKEN.decimals)
       ) &&
       ((!isLoadingGasEstimate && (
-        <div className="space-y-3" key="tx-panel-0">
+        <div className="space-y-3 pt-6" key="tx-panel-0">
           <div className="flex justify-between">
             <Typography variant="smallWidget">Conversion rate</Typography>
             <Typography variant="smallWidget" className="text-white">
-              1 : {CONVERSION_RATE}
+              1 BIT = 1 MNT
             </Typography>
           </div>
           <div className="flex justify-between">
@@ -128,7 +119,7 @@ export default function TransactionPanel() {
               </Typography>
             </div>,
           ]}
-          {client?.address && client?.address !== "0x" && (
+          {/* {client?.address && client?.address !== "0x" && (
             <div className="flex justify-between" key="tx-panel-3">
               <Typography variant="smallWidget" className="text-type-muted">
                 Current Balance
@@ -144,14 +135,13 @@ export default function TransactionPanel() {
                 {L1_BITDAO_TOKEN.symbol}
               </Typography>
             </div>
-          )}
-          {client?.address && client?.address !== "0x" && (
+          )} */}
+          {/* {client?.address && client?.address !== "0x" && (
             <div className="flex justify-between" key="tx-panel-4">
               <Typography variant="smallWidget" className="text-type-muted">
                 Current Allowance
               </Typography>
               <Typography variant="smallWidget" className="text-type-muted">
-                {/* eslint-disable-next-line no-nested-ternary */}
                 {Number.isNaN(parseFloat(allowance || ""))
                   ? "0.0"
                   : isAllowanceInfinity
@@ -160,7 +150,7 @@ export default function TransactionPanel() {
                 {L1_BITDAO_TOKEN.symbol}
               </Typography>
             </div>
-          )}
+          )} */}
         </div>
       )) || (
         <div className="flex justify-center items-center">

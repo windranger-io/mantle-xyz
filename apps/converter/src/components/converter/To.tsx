@@ -28,7 +28,7 @@ export default function Destination() {
   }, [amount]);
 
   return (
-    <div className="pt-4 pb-2 px-5">
+    <div className="pb-2 px-5">
       <div className="flex flex-row w-full justify-between items-center pt-4">
         <div className="flex flex-row items-center gap-3">
           <div className="flex flex-row gap-2 text-4xl">
@@ -41,8 +41,6 @@ export default function Destination() {
             <span className="text-[#C4C4C4] font-bold">MNT</span>
           </div>
         </div>
-        <div className="" />
-        <div className="flex flex-row items-center gap-3" />
       </div>
       <div className="flex flex-col w-full justify-end text-right">
         <div className="flex justify-end">

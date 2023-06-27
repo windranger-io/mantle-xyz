@@ -8,7 +8,7 @@ import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { truncateAddress } from "@utils/formatStrings";
-import { CHAINS, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
+import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
 import { Button } from "@mantle/ui";
@@ -34,15 +34,6 @@ function ConnectWallet() {
 
   // chain is valid if it matches any of these states...
   const isChainID = useMemo(() => {
-    console.log({
-      currentChain,
-      safeChains,
-      chainId,
-      L1_CHAIN_ID,
-      isLayer1ChainID,
-      address,
-      L2_CHAIN_ID,
-    });
     return (
       currentChain &&
       ((safeChains.length === 2 &&
@@ -180,9 +171,9 @@ function ConnectWallet() {
       {isChainID && client.isConnected && client.address ? (
         <Button
           type="button"
-          variant="walletLabel"
           size="regular"
-          className="flex flex-row items-center text-xs h-full text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-default"
+          variant="walletLabel"
+          className="flex items-center text-xs text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit cursor-default h-[36px]"
         >
           <Avatar walletAddress="address" />
           {truncateAddress(getAddress(client.address) as `0x${string}`)}
@@ -230,11 +221,7 @@ function ConnectWallet() {
               <BiError className="text-sm" />
               <p className="text-sm">Unsupported chain</p>
             </div>
-            <Button
-              className="max-w-[10em]"
-              variant="walletConnect"
-              onClick={() => changeNetwork()}
-            >
+            <Button variant="walletConnect" onClick={() => changeNetwork()}>
               Please switch to {CHAINS[chainId].chainName}
             </Button>
           </div>

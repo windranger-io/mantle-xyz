@@ -4,7 +4,7 @@ import { Header } from "@mantle/ui/src/navigation/Header";
 import ConnectWallet from "@components/ConnectWallet";
 import { usePathname } from "next/navigation";
 
-function Nav() {
+function Nav({ className }: { className: string }) {
   // use the given pathName to set active on navItem
   const pathName = usePathname();
 
@@ -17,17 +17,22 @@ function Nav() {
       active: pathName === "/",
       shallow: true,
     },
-    {
-      name: "Dashboard",
-      href: "/dashboard",
-      internal: true,
-      active: pathName === "/dashboard",
-      shallow: true,
-    },
+    // {
+    //   name: "Dashboard",
+    //   href: "/dashboard",
+    //   internal: true,
+    //   active: pathName === "/dashboard",
+    //   shallow: true,
+    // },
   ];
 
   return (
-    <Header navLite walletConnect={<ConnectWallet />} navItems={NAV_ITEMS} />
+    <Header
+      navLite
+      walletConnect={<ConnectWallet />}
+      navItems={NAV_ITEMS}
+      className={className}
+    />
   );
 }
 
