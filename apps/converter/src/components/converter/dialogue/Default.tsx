@@ -119,9 +119,6 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
             Back
           </Button>
         )}
-        <Typography className="text-center mt-4">
-          We will refund gas fee
-        </Typography>
       </div>
     </>
   );

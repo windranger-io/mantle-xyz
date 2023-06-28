@@ -47,12 +47,9 @@ export default function Convert() {
               <From />
               <Hr />
               <To />
-              <div className="px-5">
+              <div className="px-5 pb-4">
                 <CTA setIsOpen={setIsCTAPageOpen} />
                 <TX />
-                <Typography variant="body" className="text-center mt-6 mb-2">
-                  We will refund gas fee
-                </Typography>
               </div>
             </ConvertCard>
             <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] xl:min-w-[320px] lg:absolute lg:top-0 lg:right-[-60%] xl:right-[-80%]">
