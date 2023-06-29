@@ -10,6 +10,7 @@ import { GoogleAnalytics } from "@src/components/GoogleAnalytics";
 import { Metadata } from "next";
 import { useLocale } from "next-intl";
 import "../styles/globals.css";
+import { Cookies } from "@src/components/Cookies";
 
 export const metadata: Metadata = {
   title: APP_NAME,
@@ -39,6 +40,7 @@ export default function RootLayout({
       className={`${GTWalsheimRegular.variable} ${GTWalsheimMedium.variable}`}
     >
       <GoogleAnalytics GA_TRACKING_ID={GOOGLE_TAG} />
+      <Cookies />
 
       {/* <Head /> */}
 
