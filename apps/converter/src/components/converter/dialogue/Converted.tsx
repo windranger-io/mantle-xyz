@@ -153,19 +153,19 @@ export default function Deposited({
         <WhatNextLink
           image="/converted/link-1.png"
           title="Delegate"
-          description="Lorem ipsum..."
-          href="/"
+          description="Participate in Mantle's governance"
+          href="https://delegatevote.mantle.xyz/"
         />
         <WhatNextLink
           image="/converted/link-2.png"
           title="Bridge"
-          description="Lorem ipsum..."
-          href="/"
+          description="Move your tokens to Mantle Network"
+          href="https://bridge.mantle.xyz/"
         />
         <WhatNextLink
           image="/converted/link-3.png"
           title="Explore Dapps"
-          description="Lorem ipsum..."
+          description="Lend your tokens or generate yield"
           href="/"
         />
       </div>
