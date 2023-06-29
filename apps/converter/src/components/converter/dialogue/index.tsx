@@ -13,7 +13,7 @@ import Default from "@components/converter/dialogue/Default";
 import Loading from "@components/converter/dialogue/Loading";
 import Error from "@components/converter/dialogue/Error";
 
-import Converted from "@components/converter/dialogue/Converted";
+import Converted from "@components/converter/dialogue/Completed";
 
 import { ConvertCard } from "@components/ConvertCard";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
