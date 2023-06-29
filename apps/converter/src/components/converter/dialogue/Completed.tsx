@@ -1,3 +1,7 @@
+import { useContext, useEffect, useMemo } from "react";
+import Image from "next/image";
+import { parseUnits } from "ethers/lib/utils.js";
+
 import {
   CHAINS,
   L1_BITDAO_TOKEN,
@@ -8,11 +12,8 @@ import {
 import { Button, Typography } from "@mantle/ui";
 import TxLink from "@components/converter/utils/TxLink";
 import { useAddToken } from "@hooks/web3/write/useAddToken";
-import Image from "next/image";
 import { useToast } from "@hooks/useToast";
-import { useContext, useEffect, useMemo } from "react";
 import StateContext from "@providers/stateContext";
-import { parseUnits } from "ethers/lib/utils.js";
 import CheckedCircle from "../../../../public/assets/check_circle.svg";
 
 export default function Deposited({
