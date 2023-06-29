@@ -3,6 +3,8 @@ import {
   L1_BITDAO_TOKEN,
   L1_BITDAO_TOKEN_ADDRESS,
   L1_MANTLE_TOKEN,
+  MANTLE_BRIDGE_URL,
+  DELEGATION_URL,
 } from "@config/constants";
 
 import { Button, Typography } from "@mantle/ui";
@@ -154,13 +156,13 @@ export default function Deposited({
           image="/converted/link-1.png"
           title="Delegate"
           description="Participate in Mantle's governance"
-          href="https://delegatevote.mantle.xyz/"
+          href={DELEGATION_URL}
         />
         <WhatNextLink
           image="/converted/link-2.png"
           title="Bridge"
           description="Move your tokens to Mantle Network"
-          href={CONST.RESOURCE_LINKS.BRIDGE_LINK}
+          href={MANTLE_BRIDGE_URL[chainId] || "#"}
         />
         <WhatNextLink
           image="/converted/link-3.png"
