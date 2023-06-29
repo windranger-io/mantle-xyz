@@ -6,7 +6,7 @@ import {
 } from "@config/constants";
 
 import { Button, Typography } from "@mantle/ui";
-
+import CONST from "@mantle/constants";
 import { useAddToken } from "@hooks/web3/write/useAddToken";
 import Link from "next/link";
 import Image from "next/image";
@@ -27,7 +27,7 @@ function WhatNextLink({
   image: string;
 }) {
   return (
-    <Link href={href}>
+    <Link href={href} target="_blank">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4">
           <div className="relative h-[100px] w-[180px] rounded-lg border border-[#1C1E20] bg-black">
@@ -160,13 +160,13 @@ export default function Deposited({
           image="/converted/link-2.png"
           title="Bridge"
           description="Move your tokens to Mantle Network"
-          href="https://bridge.mantle.xyz/"
+          href={CONST.RESOURCE_LINKS.BRIDGE_LINK}
         />
         <WhatNextLink
           image="/converted/link-3.png"
           title="Explore Dapps"
           description="Lend your tokens or generate yield"
-          href="/"
+          href={CONST.NAV_LINKS_ABSOLUTE.ECOSYSTEM_LINK}
         />
       </div>
       <div>
