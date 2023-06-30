@@ -1,8 +1,13 @@
 "use client";
 
-import { Views } from "@config/constants";
+import {
+  Views,
+  L1_CONVERTER_CONTRACT_ABI,
+  L1_CONVERTER_CONTRACT_ADDRESS,
+} from "@config/constants";
 import StateContext from "@providers/stateContext";
 import { useContext } from "react";
+import { useContractRead } from "wagmi";
 
 // by order of use...
 import Dialogue from "@components/converter/dialogue";
@@ -10,6 +15,7 @@ import From from "@components/converter/From";
 import Hr from "@components/converter/Divider";
 import To from "@components/converter/To";
 import CTA from "@components/converter/CTA";
+import Error from "@components/converter/Error";
 import TX from "@components/converter/TransactionPanel";
 import { Typography } from "@mantle/ui";
 import { ConvertCard } from "@components/ConvertCard";
@@ -19,6 +25,13 @@ import { Faq } from "./Faq";
 export default function Convert() {
   // unpack the context
   const { view, isCTAPageOpen, setIsCTAPageOpen } = useContext(StateContext);
+
+  const { data: halted, isLoading: isLoadingHaltedStatus } = useContractRead({
+    address: L1_CONVERTER_CONTRACT_ADDRESS,
+    abi: L1_CONVERTER_CONTRACT_ABI,
+    watch: true,
+    functionName: "halted",
+  });
 
   return (
     (view === Views.Default &&
@@ -49,12 +62,16 @@ export default function Convert() {
               <Hr />
               <To />
               <div className="px-5 pb-4">
-                <CTA setIsOpen={setIsCTAPageOpen} />
+                <CTA setIsOpen={setIsCTAPageOpen} halted={!!halted} />
+                <Error halted={!!halted} />
                 <TX />
               </div>
             </ConvertCard>
             <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] lg:max-w-[250px] xl:w-[320px] xl:max-w-[320px] lg:absolute lg:top-0 lg:right-[-55%] xl:right-[-80%]">
-              <SmartContractTracker />
+              <SmartContractTracker
+                halted={!!halted}
+                isLoadingHaltedStatus={isLoadingHaltedStatus}
+              />
               <Faq />
             </div>
           </div>

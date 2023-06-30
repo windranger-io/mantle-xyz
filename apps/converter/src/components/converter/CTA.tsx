@@ -23,8 +23,10 @@ import { useCallApprove } from "@hooks/web3/converter/write/useCallApprove";
 // Contains a button & a modal to control allowance and deposits/withdrawals
 export default function CTA({
   setIsOpen,
+  halted,
 }: {
   setIsOpen: (val: boolean) => void;
+  halted: boolean;
 }) {
   // unpack the context
   const {
@@ -78,7 +80,9 @@ export default function CTA({
   const CTAButtonText = useMemo(() => {
     // console.log(spendDetails, destinationTokenAmount);
     let text;
-    if (!client?.address) {
+    if (halted) {
+      text = "Conversion halted";
+    } else if (!client?.address) {
       text = "Connect wallet";
     } else if (!isChainID) {
       text = `Switch to ${CHAINS[chainId].chainName}`;
@@ -140,6 +144,7 @@ export default function CTA({
     allowance,
     chainId,
     approvalStatus,
+    halted,
   ]);
 
   // set wagmi address to address for ssr
@@ -178,16 +183,17 @@ export default function CTA({
           }
         }}
         disabled={
-          isChainID &&
-          !!client.address &&
-          (!!approvalStatus ||
-            !amount ||
-            !parseFloat(amount) ||
-            Number.isNaN(parseFloat(amount)) ||
-            parseUnits(
-              spendDetails.balance || "-1",
-              L1_BITDAO_TOKEN.decimals
-            ).lt(parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals)))
+          halted ||
+          (isChainID &&
+            !!client.address &&
+            (!!approvalStatus ||
+              !amount ||
+              !parseFloat(amount) ||
+              Number.isNaN(parseFloat(amount)) ||
+              parseUnits(
+                spendDetails.balance || "-1",
+                L1_BITDAO_TOKEN.decimals
+              ).lt(parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals))))
         }
       >
         {CTAButtonText}

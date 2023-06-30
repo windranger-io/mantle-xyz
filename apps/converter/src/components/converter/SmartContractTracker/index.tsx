@@ -2,7 +2,6 @@
 
 import { ConvertCard } from "@components/ConvertCard";
 import {
-  L1_CONVERTER_CONTRACT_ABI,
   L1_CONVERTER_CONTRACT_ADDRESS,
   L1_MANTLE_TOKEN,
   L1_MANTLE_TOKEN_ADDRESS,
@@ -11,19 +10,18 @@ import { Typography } from "@mantle/ui";
 import { cn } from "@mantle/ui/src/utils";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { useMemo } from "react";
-import { useBalance, useContractRead } from "wagmi";
+import { useBalance } from "wagmi";
 
-export function SmartContractTracker() {
+export function SmartContractTracker({
+  halted,
+  isLoadingHaltedStatus,
+}: {
+  halted: boolean;
+  isLoadingHaltedStatus: boolean;
+}) {
   const { data: balanceData, isLoading: isBalanceLoading } = useBalance({
     address: L1_CONVERTER_CONTRACT_ADDRESS,
     token: L1_MANTLE_TOKEN_ADDRESS,
-  });
-
-  const { data: halted, isLoading } = useContractRead({
-    address: L1_CONVERTER_CONTRACT_ADDRESS,
-    abi: L1_CONVERTER_CONTRACT_ABI,
-    watch: true,
-    functionName: "halted",
   });
 
   const formattedBalance = useMemo(() => {
@@ -38,7 +36,7 @@ export function SmartContractTracker() {
     return formattedMoney;
   }, [balanceData?.formatted]);
 
-  if (isLoading || isBalanceLoading) {
+  if (isLoadingHaltedStatus || isBalanceLoading) {
     // eslint-disable-next-line react/jsx-no-useless-fragment
     return <></>;
   }
