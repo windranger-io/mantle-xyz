@@ -14,8 +14,8 @@ import TxLink from "@components/converter/utils/TxLink";
 import { useAddToken } from "@hooks/web3/write/useAddToken";
 import { useToast } from "@hooks/useToast";
 import StateContext from "@providers/stateContext";
-import CheckedCircle from "../../../../public/converted/check_circle.svg";
-import MetamaskSvg from "../../../../public/converted/metamask.svg";
+import CheckedCircle from "public/converted/check_circle.svg";
+import MetamaskSvg from "public/converted/metamask.svg";
 
 export default function Deposited({
   txHash,

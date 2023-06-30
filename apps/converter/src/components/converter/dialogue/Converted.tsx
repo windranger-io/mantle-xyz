@@ -16,7 +16,7 @@ import { useToast } from "@hooks/useToast";
 import { useContext, useEffect, useMemo } from "react";
 import StateContext from "@providers/stateContext";
 import { parseUnits } from "ethers/lib/utils.js";
-import MetamaskSvg from "../../../../public/converted/metamask.svg";
+import MetamaskSvg from "public/converted/metamask.svg";
 
 function WhatNextLink({
   href,
