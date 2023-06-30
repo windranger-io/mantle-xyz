@@ -285,3 +285,10 @@ export const TOKEN_ABI = [
   "function allowance(address owner, address spender) external view returns (uint256)",
   "function approve(address spender, uint256 amount) returns (bool)",
 ];
+
+export const MANTLE_BRIDGE_URL: Record<number, string> = {
+  1: "https://bridge.mantle.xyz",
+  5: "https://bridge.testnet.mantle.xyz",
+};
+
+export const DELEGATION_URL: string = "https://delegatevote.mantle.xyz/";

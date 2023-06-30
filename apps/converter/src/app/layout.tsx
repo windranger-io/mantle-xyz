@@ -40,27 +40,26 @@ export default function RootLayout({
               />
             }
             header={<Nav className="mb-0 m-0" />}
+            className="h-screen"
           >
-            <PageContainer>
-              {children}
-              <div className="flex justify-center items-center pt-52">
-                <div>
-                  <a
-                    href={CONST.WEBSITE}
-                    rel="noreferrer noopener"
-                    target="_blank"
-                    className="inline-block"
-                  >
-                    <div className="flex flex-row align-center gap-4">
-                      <MantleLogoIcon height={40} width={40} />
-                      <div className="flex items-center">
-                        Mantle {new Date().getFullYear()}&nbsp;&#169;
-                      </div>
+            <PageContainer className="grow">{children}</PageContainer>
+            <div className="flex justify-center items-center py-8">
+              <div>
+                <a
+                  href={CONST.WEBSITE}
+                  rel="noreferrer noopener"
+                  target="_blank"
+                  className="inline-block"
+                >
+                  <div className="flex flex-row align-center gap-4">
+                    <MantleLogoIcon height={40} width={40} />
+                    <div className="flex items-center">
+                      Mantle {new Date().getFullYear()}&nbsp;&#169;
                     </div>
-                  </a>
-                </div>
+                  </div>
+                </a>
               </div>
-            </PageContainer>
+            </div>
           </PageWrapper>
         </Providers>
       </body>
