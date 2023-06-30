@@ -14,6 +14,7 @@ import TX from "@components/converter/TransactionPanel";
 import { Typography } from "@mantle/ui";
 import { ConvertCard } from "@components/ConvertCard";
 import { SmartContractTracker } from "./SmartContractTracker";
+import { Faq } from "./Faq";
 
 export default function Convert() {
   // unpack the context
@@ -52,8 +53,9 @@ export default function Convert() {
                 <TX />
               </div>
             </ConvertCard>
-            <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] xl:min-w-[320px] lg:absolute lg:top-0 lg:right-[-60%] xl:right-[-80%]">
+            <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] lg:max-w-[250px] xl:w-[320px] xl:max-w-[320px] lg:absolute lg:top-0 lg:right-[-55%] xl:right-[-80%]">
               <SmartContractTracker />
+              <Faq />
             </div>
           </div>
         </>
