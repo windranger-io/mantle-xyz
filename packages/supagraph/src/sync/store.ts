@@ -21,12 +21,13 @@ type Engine = {
   stage?: Stage;
   chainId?: number;
   block?: Block;
+  newDb?: boolean;
 };
 
 // create a global to store in-memory engine for duration of request
 // eslint-disable-next-line no-multi-assign
 const engine: Engine = ((global as typeof global & { engine: Engine }).engine =
-  (global as typeof global & { engine: Engine }).engine || {});
+  (global as typeof global & { engine: Engine }).engine || {}); // should we default this to the memory db?
 
 // Entity store -- flat array of entity lookups keyed by ref-id - this will be backed by a levelDown like driver
 const entities: {
@@ -161,6 +162,12 @@ export class Store {
     id: string,
     newId: boolean = false
   ): Promise<T & Entity<T>> {
+    // if we attempt to use this without an engine then prepare one now...
+    if (!engine.db)
+      await setEngine({
+        name: "supagraph",
+        db: new DB({}),
+      });
     // default the entity if missing
     entities[ref] = entities[ref] || {};
     // return the Entity (as a clone or as a new entry (this isnt recorded into state until it is saved later))
@@ -187,7 +194,7 @@ export class Store {
             return new Entity<T>(
               ref,
               id,
-              ((fromDb as boolean) !== false &&
+              (!!fromDb &&
                 Object.keys(fromDb).map((key) => {
                   return new TypedMapEntry(
                     key as keyof T,

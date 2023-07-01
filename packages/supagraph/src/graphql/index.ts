@@ -19,6 +19,7 @@ import { toCamelCase } from "../utils/toCamelCase";
 
 import { createDefs, readSchema } from "./schema";
 import {
+  caseInsensitiveMatch,
   createMultiQuery,
   createSingularQuery,
   tidyDefaultQuery,
@@ -260,21 +261,57 @@ export const createSupagraph = <
                       from(key, [parent, props, context, ast], operation)
                     );
                   }
-                  // check for nested filter clauses and resolve through entity defined resolvers...
-                  const query =
-                    key.type[0] === "["
-                      ? createMultiQuery(_entities, _schema, key)
-                      : createSingularQuery(_entities, _schema, key);
 
-                  // pass the query terms through the constructed and resolved resolvers
-                  return query(
-                    parent,
-                    key.type[0] === "["
-                      ? props
-                      : ({ id: parent[key.name], ...props } as Args),
-                    context,
-                    ast
-                  );
+                  // if theres any filter criteria on the key.name
+                  if (
+                    args.where ||
+                    args.skip ||
+                    args.first ||
+                    args.orderBy ||
+                    args.orderDirection
+                  ) {
+                    // check for nested filter clauses and resolve through entity defined resolvers...
+                    const query =
+                      key.type[0] === "["
+                        ? createMultiQuery(_entities, _schema, key)
+                        : createSingularQuery(_entities, _schema, key);
+
+                    // pass the query terms through the constructed and resolved resolvers
+                    return query(
+                      parent,
+                      key.type[0] === "["
+                        ? props
+                        : ({ id: parent[key.name], ...props } as Args),
+                      context,
+                      ast
+                    );
+                  }
+
+                  // we run either filter or find based on if we're finding an array of matches or a singular match
+                  return from[operation]((item) => {
+                    // check the items derived field matches the parent field
+                    if (key.derivedFrom) {
+                      return (
+                        item &&
+                        caseInsensitiveMatch(
+                          typeof item[key.derivedFrom] === "object"
+                            ? (item[key.derivedFrom] as { id: string }).id
+                            : (item[key.derivedFrom] as string),
+                          parent as string | { id: string }
+                        )
+                      );
+                    }
+                    // check the item.id matches the parents key.name value
+                    return (
+                      item &&
+                      caseInsensitiveMatch(
+                        item.id as string,
+                        (typeof parent === "object"
+                          ? parent[key.name]
+                          : parent) as string | { id: string }
+                      )
+                    );
+                  });
                 };
               }
               return args;
