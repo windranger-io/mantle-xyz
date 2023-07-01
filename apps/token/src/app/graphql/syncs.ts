@@ -39,16 +39,16 @@ export const DelegateChangedHandler = addSync<DelegateChangedEvent>({
     // console.log("add", entity.balance, "to", args.toDelegate);
 
     // fetch old
-    const oldDelegate = await Store.get<DelegateEntity>(
-      "Delegate",
-      args.fromDelegate
-    );
+    const oldDelegate =
+      args.fromDelegate === args.delegator
+        ? entity
+        : await Store.get<DelegateEntity>("Delegate", args.fromDelegate);
 
     // fetch new
-    const newDelegate = await Store.get<DelegateEntity>(
-      "Delegate",
-      args.toDelegate
-    );
+    const newDelegate =
+      args.toDelegate === args.delegator
+        ? entity
+        : await Store.get<DelegateEntity>("Delegate", args.toDelegate);
 
     if (args.fromDelegate !== "0x0000000000000000000000000000000000000000") {
       // update the old and new delegates with the correct votes
@@ -56,6 +56,10 @@ export const DelegateChangedHandler = addSync<DelegateChangedEvent>({
         "delegatorsCount",
         BigNumber.from(oldDelegate.delegatorsCount || "0").sub(1)
       );
+
+      oldDelegate.set("blockNumber", tx.blockNumber);
+      oldDelegate.set("transactionHash", tx.transactionHash);
+      await oldDelegate.save();
     }
 
     newDelegate.set(
@@ -75,13 +79,6 @@ export const DelegateChangedHandler = addSync<DelegateChangedEvent>({
     // save the changes
     await entity.save();
     await newDelegate.save();
-
-    // only save if its not from the 0x00 address
-    if (args.fromDelegate !== "0x0000000000000000000000000000000000000000") {
-      oldDelegate.set("blockNumber", tx.blockNumber);
-      oldDelegate.set("transactionHash", tx.transactionHash);
-      await oldDelegate.save();
-    }
   },
 });
 

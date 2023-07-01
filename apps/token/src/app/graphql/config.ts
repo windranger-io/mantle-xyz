@@ -6,7 +6,7 @@ export const L1_CHAIN_ID = "5";
 export const L1_CHAIN_NAME = "goerli";
 
 // Name your supagraph (this will inform mongo table name etc...)
-export const SUPAGRAPH_NAME = "supagraph--token--0-0-5";
+export const SUPAGRAPH_NAME = "supagraph--token--0-0-6";
 
 // Set the local engine (true: db || false: mongo)
 export const SUPAGRAPH_DEV_ENGINE = false;
