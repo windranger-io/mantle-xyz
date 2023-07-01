@@ -1012,6 +1012,13 @@ export function createQuery(
   // collate the aggregates starting from the root entity
   aggregates.push(
     ...([
+      // sort before grouping (need to sort first because we won't have an index for the projection)
+      {
+        $sort: {
+          // use given sort and direction
+          [args?.orderBy || "id"]: args.orderDirection === "desc" ? -1 : 1,
+        },
+      },
       // if the ids are updated then we need to groupBy on the id sorted by block/time
       ...(!uniqueIds
         ? [
@@ -1083,13 +1090,6 @@ export function createQuery(
             },
           }
         : useMatch || false,
-      // if sort is not on the id do it after grouping (will this be an indexed sort if we're sorting a projection?)
-      {
-        $sort: {
-          // use given sort and direction
-          [args?.orderBy || "id"]: args.orderDirection === "desc" ? -1 : 1,
-        },
-      },
       // apply counts from the full collection?
       // {
       //   $setWindowFields: {

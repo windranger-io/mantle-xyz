@@ -684,18 +684,18 @@ const saveCSV = async (
 
 // sync all events since last sync operation
 export const sync = async ({
-  start,
-  stop,
+  start = false,
+  stop = false,
   skipBlocks = false,
   skipTransactions = false,
   skipOptionalArgs = false,
 }: {
-  start: keyof typeof Stage | false;
-  stop: keyof typeof Stage | false;
+  start?: keyof typeof Stage | false;
+  stop?: keyof typeof Stage | false;
   skipBlocks?: boolean;
   skipTransactions?: boolean;
   skipOptionalArgs?: boolean;
-}) => {
+} = {}) => {
   // record when we started this operation
   const startTime = performance.now();
 
@@ -712,6 +712,11 @@ export const sync = async ({
 
   // open a checkpoint on the db...
   const engine = await getEngine();
+
+  // set the engine against the db
+  if (engine.db) {
+    engine.db.engine = engine as { newDb: boolean };
+  }
 
   // fetch the latest block once per chain
   const latestBlock: Record<string, Block> = {};
@@ -810,6 +815,11 @@ export const sync = async ({
       const toBlock = latestBlock[chainId].number;
       const fromBlock = latestEntity[chainId].latestBlock || startBlock;
 
+      // mark engine as newDb
+      if (!latestEntity[chainId].latestBlock) {
+        engine.newDb = true;
+      }
+
       // record the startBlock
       startBlocks[chainId] = fromBlock;
 
@@ -839,6 +849,8 @@ export const sync = async ({
           `${cwd}/data/events/latestRun-${eventName}-${chainId}.csv`
         ))
     ) {
+      // assume that we're starting a fresh db
+      engine.newDb = true;
       // start the run from the blocks
       if (start && Stage[start] >= Stage.process) {
         start = "blocks";
@@ -938,6 +950,9 @@ export const sync = async ({
       "\n\nStarting sync by restoring last-runs sorted events...\n\n--\n"
     );
 
+    // assume that we're starting a fresh db
+    engine.newDb = true;
+
     // restore the sorted collection
     sorted = await readCSV(`${cwd}/data/events/latestRun-allData.csv`);
 
@@ -1025,6 +1040,9 @@ export const sync = async ({
 
     // commit the checkpoint on the db...
     await engine?.stage?.commit();
+
+    // no longer a newDB after committing changes
+    engine.newDb = false;
 
     // after commit all events are stored in db
     process.stdout.write("✔\nPointers updated ");

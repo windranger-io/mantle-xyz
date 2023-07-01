@@ -32,12 +32,16 @@ export class Mongo extends DB {
   // are the entities in this db being upserted or not?
   uniqueIds: boolean;
 
+  // associated engine (which contains this db)
+  engine?: { newDb: boolean } & Record<string, unknown>;
+
   // construct a kv store
   constructor(
     client: MongoClient | Promise<MongoClient>,
     name: string,
     kv: KV,
-    uniqueIds?: boolean
+    uniqueIds?: boolean,
+    engine?: { newDb: boolean } & Record<string, unknown>
   ) {
     super(kv);
     // establish connection
@@ -46,6 +50,8 @@ export class Mongo extends DB {
     this.name = name;
     // are the ids unique?
     this.uniqueIds = uniqueIds || false;
+    // associate the engine
+    this.engine = engine || ({} as { newDb: boolean });
     // resolve the client then attach the named db
     this.db = Promise.resolve(client).then((mongo) =>
       mongo.db(name || "supagraph")
@@ -58,13 +64,15 @@ export class Mongo extends DB {
     name,
     kv,
     uniqueIds,
+    engine,
   }: {
     client: MongoClient | Promise<MongoClient>;
     name: string;
     kv: KV;
     uniqueIds?: boolean;
+    engine?: { newDb: boolean } & Record<string, unknown>;
   } & Record<string, unknown>) {
-    const db = new this(client, name, kv, uniqueIds);
+    const db = new this(client, name, kv, uniqueIds, engine);
     await db.update({ kv });
     return db;
   }

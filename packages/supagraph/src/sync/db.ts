@@ -10,17 +10,24 @@ export class DB {
 
   store?: Promise<Storage>;
 
+  engine?: { newDb: boolean } & Record<string, unknown>;
+
   // construct a kv store
-  constructor(kv: KV) {
+  constructor(kv: KV, engine?: { newDb: boolean } & Record<string, unknown>) {
     // restore given kv
     this.kv = kv || {};
+    this.engine = engine || ({} as { newDb: boolean });
   }
 
   static async create({
     kv,
     name,
-  }: { kv: KV; name?: string } & Record<string, unknown>) {
-    const db = new this(kv);
+    engine,
+  }: { kv: KV; name?: string; engine?: { newDb: boolean } } & Record<
+    string,
+    unknown
+  >) {
+    const db = new this(kv, engine);
     await db.update({ kv, name });
     return db;
   }
