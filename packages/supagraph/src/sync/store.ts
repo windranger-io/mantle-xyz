@@ -91,7 +91,7 @@ export class Entity<T extends { id: string }> extends TypedMap<
         Object.defineProperty(this, kv.key as string, {
           // Alternatively, use: `get() {}`
           get() {
-            return kv.value;
+            return this.get(kv.key);
           },
           // Alternatively, use: `set(newValue) {}`
           set(newValue) {
