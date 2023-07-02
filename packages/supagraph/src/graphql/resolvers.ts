@@ -102,11 +102,11 @@ export async function mongoIndexer({
 export function mongoResolver({
   name,
   client,
-  uniqueIds = false,
+  mutable = false,
 }: {
   name: string;
   client: Promise<MongoClient>;
-  uniqueIds?: boolean;
+  mutable?: boolean;
 }) {
   // we return a schema resolver to map the entities against mongo resolvers (using the queries AST)
   return async (schema: SimpleSchema) => {
@@ -130,7 +130,7 @@ export function mongoResolver({
         // no result means we're on the root leaf of the query, extract all intel from the AST and query mongo for everything all-at-once...
         if (!context?.result) {
           // we walk the AST through all args and all fields and recreate a mongo query to request all the information required to satisfy the query the one request
-          const query = createQuery(schema, entity, uniqueIds, ast, context);
+          const query = createQuery(schema, entity, mutable, ast, context);
           // connect to the entity collection
           const collection = mongo.collection(toCamelCase(entity));
           // get the result from the complete query
