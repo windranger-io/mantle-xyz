@@ -18,7 +18,7 @@ import {
   SUPAGRAPH_STALE_WHILE_REVALIDATE,
   SUPAGRAPH_DEV_ENGINE,
   SUPAGRAPH_NAME,
-  SUPAGRAPH_UNIQUE_IDS,
+  SUPAGRAPH_MUTABLE_ENTITIES,
 } from "./config";
 
 // Revalidate this page every 12s (avg block time)
@@ -46,7 +46,7 @@ const graphql = createSupagraph<NextApiRequest, NextApiResponse>({
             process.env.MONGODB_URI
           ),
           // skip groupBy on time/block - each id is unique in this set of syncs
-          uniqueIds: SUPAGRAPH_UNIQUE_IDS,
+          mutableEntities: SUPAGRAPH_MUTABLE_ENTITIES,
         }),
   // pass in the simplified graphql schema
   schema: SUPAGRAPH_SCHEMA,

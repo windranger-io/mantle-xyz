@@ -738,7 +738,7 @@ function createArgs(args: Record<string, any>) {
 function createLookup(
   schema: SimpleSchema,
   entity: string,
-  uniqueIds: boolean,
+  mutable: boolean,
   ast: any,
   context: Record<string, Record<string, unknown>>,
   map: MapResult,
@@ -772,8 +772,8 @@ function createLookup(
             schema,
             // TitleCase entity name
             vals.type.replace(/\[|\]|!/g, ""),
-            // pass uniqueIds prop through
-            uniqueIds,
+            // pass mutable prop through
+            mutable,
             // full ast
             ast,
             // the current query context
@@ -794,7 +794,9 @@ function createLookup(
               },
             },
             // use the store at the given position (I think)
-            useArgStore
+            useArgStore,
+            // pass derivedFrom field to add to projection for immutable projections
+            vals.derivedFrom
           ),
         ].filter((v) => v),
         // use the path of the current reference to id the position
@@ -967,13 +969,14 @@ export function generateIndexes(schema: SimpleSchema, entity: string) {
 export function createQuery(
   schema: SimpleSchema,
   entity: string,
-  uniqueIds: boolean,
+  mutable: boolean,
   ast: any,
   context: Record<string, Record<string, unknown>>,
   usePath?: string,
   useMap?: MapResult,
   useMatch?: { $match: { $expr: { $eq: string[] } } },
-  useArgStore: Record<string, unknown> = {}
+  useArgStore: Record<string, unknown> = {},
+  extraProjection: string | false = false
 ) {
   // variables need to be injected into queries
   const { variables } = context.params as Record<
@@ -1012,19 +1015,18 @@ export function createQuery(
   // collate the aggregates starting from the root entity
   aggregates.push(
     ...([
-      // sort before grouping (need to sort first because we won't have an index for the projection)
-      {
-        $sort: {
-          // use given sort and direction
-          [args?.orderBy || "id"]: args.orderDirection === "desc" ? -1 : 1,
-        },
-      },
+      // perform the match before the sort and groupBy to limit matches
+      useMatch?.$match
+        ? {
+            $match: useMatch?.$match,
+          }
+        : false,
       // if the ids are updated then we need to groupBy on the id sorted by block/time
-      ...(!uniqueIds
+      ...(!mutable
         ? [
             {
               $sort: {
-                // use block_ts as primary sort before grouping and limiting first result
+                // use block_ts as primary sort before grouping and limiting to first result of each id
                 _block_ts: -1,
               },
             },
@@ -1032,17 +1034,30 @@ export function createQuery(
               $group: {
                 _id: "$id",
                 // include all values here to inform the joins later
-                latestDocument: { $first: "$$ROOT" },
+                [`latestDocument${toCamelCase(
+                  (usePath || "").replace(/\./g, "-")
+                )}`]: {
+                  $first: "$$ROOT",
+                },
               },
             },
             {
               // we're projecting everything being requested at this level on this entity
               $project: {
                 _id: 1,
+                // if we're performing a lookup then we need to add the projected "derivedFrom" for the graphql internals to unwind against
+                ...(extraProjection
+                  ? {
+                      [extraProjection]: `$latestDocument${toCamelCase(
+                        (usePath || "").replace(/\./g, "-")
+                      )}.${extraProjection}`,
+                    }
+                  : {}),
+                // we combine any fields mentioned for this entity in this or any parent arg.where aswell as everything we know we want for this req
                 ...[
                   ...valueFields,
-                  ...Array.from(new Set([...entityFields, ...argFields])),
-                ] // we also need to combine any fields mentioned for this entity in this or any parent arg.where
+                  ...Array.from(new Set([...argFields, ...entityFields])),
+                ]
                   .filter(
                     (v) =>
                       v &&
@@ -1053,15 +1068,35 @@ export function createQuery(
                   .reduce((carr, vals) => {
                     return {
                       ...carr,
-                      [vals.name]: `$latestDocument.${vals.name}`,
+                      [vals.name]: `$latestDocument${toCamelCase(
+                        (usePath || "").replace(/\./g, "-")
+                      )}.${vals.name}`,
                     };
                   }, {} as Record<string, any>),
               },
             },
+            {
+              // sort after grouping (this is likely more expensive because we're sorting on a projection - hopefully the filter has limited the items enough)
+              $sort: {
+                // use given sort and direction
+                [args?.orderBy || "id"]:
+                  args.orderDirection === "desc" ? -1 : 1,
+              },
+            },
           ]
-        : []),
+        : [
+            {
+              // sort the items before performing lookups/matches to make sure we're using the index
+              $sort: {
+                // use given sort and direction or default to id (to keep it consistent)
+                [args?.orderBy || "id"]:
+                  args.orderDirection === "desc" ? -1 : 1,
+              },
+            },
+          ]),
       // for each entity on the query we need to create a join...
       ...Array.from(new Set([...entityFields, ...argFields]))
+        // exclude any fields not mentioned in the query
         .filter(
           (v) =>
             v && (fields.indexOf(v.name) !== -1 || argFields.indexOf(v) !== -1)
@@ -1072,7 +1107,7 @@ export function createQuery(
           createLookup(
             schema,
             usePath || "",
-            uniqueIds,
+            mutable,
             ast,
             context,
             map,
@@ -1084,37 +1119,29 @@ export function createQuery(
       args?.where
         ? {
             $match: {
-              // combine both matches
+              // place the match for descending checks
               ...createArgs(args).$match,
-              ...(useMatch?.$match || {}),
             },
           }
-        : useMatch || false,
-      // apply counts from the full collection?
-      // {
-      //   $setWindowFields: {
-      //     output: {
-      //       totalCount: {
-      //         $count: {},
-      //       },
-      //     },
-      //   },
-      // },
+        : false,
       // set the pagination offsets and limits
       {
         $skip: parseInt(args?.skip || "0", 10),
       },
       {
         $limit:
-          parseInt(args?.skip || "0", 10) + parseInt(args?.first || "500", 10),
+          parseInt(args?.skip || "0", 10) + parseInt(args?.first || "25", 10),
       },
       // project all fields that are being requested in the output
-      ...(!uniqueIds
+      ...(!mutable
         ? [
             {
               $project: {
                 _id: "$id",
                 id: "$id",
+                ...(extraProjection
+                  ? { [extraProjection]: `$${extraProjection}` }
+                  : {}),
                 ...valueFields
                   .filter(
                     (v) => v && fields.indexOf(v.name) !== -1 && v.type !== "ID"

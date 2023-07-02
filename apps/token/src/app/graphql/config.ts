@@ -11,8 +11,10 @@ export const SUPAGRAPH_NAME = "supagraph--token--0-0-6";
 // Set the local engine (true: db || false: mongo)
 export const SUPAGRAPH_DEV_ENGINE = false;
 
-// Flag unique ids to insert by upsert only on id field (otherwise use _block_number + id to make a unique entry and do a distinct groupBy on the id when querying)
-export const SUPAGRAPH_UNIQUE_IDS = true;
+// Flag mutableEntities to insert by upsert only on id field
+// - otherwise use _block_number + id to make a unique entry and do a distinct groupBy on the id when querying
+//   ie: do everything the immutable way (this can be a lot more expensive)
+export const SUPAGRAPH_MUTABLE_ENTITIES = true;
 
 // Define the schema we will follow in our syncs and queries
 export const SUPAGRAPH_SCHEMA = `
@@ -56,6 +58,16 @@ export const L1_MANTLE_TOKEN = "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604";
 
 // ABI for StateBatchAppended event
 export const LN_MANTLE_TOKEN_ABI = [
+  "event Approval(address indexed owner, address indexed spender, uint256 value)",
+  "event DelegateChanged(address indexed delegator, address indexed fromDelegate, address indexed toDelegate)",
+  "event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance)",
+  "event Initialized(uint8 version)",
+  "event MintCapNumeratorChanged(address indexed from, uint256 previousMintCapNumerator, uint256 newMintCapNumerator)",
+  "event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)",
+  "event Transfer(address indexed from, address indexed to, uint256 value)",
+];
+
+export const SUPAGRAPH_EVENT_SIGNATURES = [
   "event Approval(address indexed owner, address indexed spender, uint256 value)",
   "event DelegateChanged(address indexed delegator, address indexed fromDelegate, address indexed toDelegate)",
   "event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance)",

@@ -11,7 +11,7 @@ import {
   SUPAGRAPH_NAME,
   SUPAGRAPH_REVALIDATE,
   SUPAGRAPH_STALE_WHILE_REVALIDATE,
-  SUPAGRAPH_UNIQUE_IDS,
+  SUPAGRAPH_MUTABLE_ENTITIES,
 } from "../config";
 
 // import all sync handlers
@@ -31,7 +31,7 @@ Store.setEngine({
         Mongo.create({
           kv: {},
           name: SUPAGRAPH_NAME,
-          uniqueIds: SUPAGRAPH_UNIQUE_IDS,
+          mutableEntities: SUPAGRAPH_MUTABLE_ENTITIES,
           client: getMongodb(process.env.MONGODB_URI!),
         }),
 });

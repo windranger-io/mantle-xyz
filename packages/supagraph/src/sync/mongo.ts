@@ -30,7 +30,7 @@ export class Mongo extends DB {
   name: string;
 
   // are the entities in this db being upserted or not?
-  uniqueIds: boolean;
+  mutable: boolean;
 
   // associated engine (which contains this db)
   engine?: { newDb: boolean } & Record<string, unknown>;
@@ -40,7 +40,7 @@ export class Mongo extends DB {
     client: MongoClient | Promise<MongoClient>,
     name: string,
     kv: KV,
-    uniqueIds?: boolean,
+    mutable?: boolean,
     engine?: { newDb: boolean } & Record<string, unknown>
   ) {
     super(kv);
@@ -49,7 +49,7 @@ export class Mongo extends DB {
     // record the connection name
     this.name = name;
     // are the ids unique?
-    this.uniqueIds = uniqueIds || false;
+    this.mutable = mutable || false;
     // associate the engine
     this.engine = engine || ({} as { newDb: boolean });
     // resolve the client then attach the named db
@@ -63,16 +63,16 @@ export class Mongo extends DB {
     client,
     name,
     kv,
-    uniqueIds,
+    mutable,
     engine,
   }: {
     client: MongoClient | Promise<MongoClient>;
     name: string;
     kv: KV;
-    uniqueIds?: boolean;
+    mutable?: boolean;
     engine?: { newDb: boolean } & Record<string, unknown>;
   } & Record<string, unknown>) {
-    const db = new this(client, name, kv, uniqueIds, engine);
+    const db = new this(client, name, kv, mutable, engine);
     await db.update({ kv });
     return db;
   }
@@ -115,7 +115,7 @@ export class Mongo extends DB {
         {
           id,
           // if ids are unique then we can place by update
-          ...(this.uniqueIds
+          ...(this.mutable
             ? {}
             : {
                 _block_ts: val?._block_ts,
@@ -201,7 +201,7 @@ export class Mongo extends DB {
                   // each entry is unique by block and id
                   id: val.key.split(".")[1],
                   // if ids are unique then we can place by update
-                  ...(this.uniqueIds
+                  ...(this.mutable
                     ? {}
                     : {
                         _block_ts: val.value?._block_ts,
