@@ -31,7 +31,7 @@ Store.setEngine({
         Mongo.create({
           kv: {},
           name: SUPAGRAPH_NAME,
-          mutableEntities: SUPAGRAPH_MUTABLE_ENTITIES,
+          mutable: SUPAGRAPH_MUTABLE_ENTITIES,
           client: getMongodb(process.env.MONGODB_URI!),
         }),
 });

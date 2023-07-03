@@ -46,7 +46,7 @@ const graphql = createSupagraph<NextApiRequest, NextApiResponse>({
             process.env.MONGODB_URI
           ),
           // skip groupBy on time/block - each id is unique in this set of syncs
-          mutableEntities: SUPAGRAPH_MUTABLE_ENTITIES,
+          mutable: SUPAGRAPH_MUTABLE_ENTITIES,
         }),
   // pass in the simplified graphql schema
   schema: SUPAGRAPH_SCHEMA,

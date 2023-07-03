@@ -69,7 +69,7 @@ export const config = {
   `,
   // Set the local engine (true: db || false: mongo)
   dev: false,
-  // Flag mutableEntities to insert by upsert only on id field
+  // Flag mutable to insert by upsert only on id field
   // - otherwise use _block_number + id to make a unique entry and do a distinct groupBy on the id when querying
   //   ie: do everything the immutable way (this can be a lot more expensive)
   mutable: true,
