@@ -6,32 +6,59 @@ import { addSync, Store } from "@mantle/supagraph";
 
 // Supagraph specific constants detailing the contracts we'll sync against
 import {
-  L1_CHAIN_NAME,
-  L1_START_BLOCK,
-  L1_MANTLE_TOKEN,
-  LN_MANTLE_TOKEN_ABI,
-  // these types will be imported from a generated directory (coming soon TM);
+  config,
+  // these types will be imported from a generated directory based on the SUPAGRAPH_EVENT_SIGNATURES and SUPAGRAPH_SCHEMA (coming soon TM);
   DelegateChangedEvent,
   DelegateVotesChangedEvent,
   TransferEvent,
   DelegateEntity,
 } from "./config";
 
-// configure JsonRpcProvider for L1
-const L1_PROVIDER = new providers.JsonRpcProvider(
-  `https://${L1_CHAIN_NAME}.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`
+// configure JsonRpcProvider for Mantle contracts chainId
+const MANTLE_PROVIDER = new providers.JsonRpcProvider(
+  (config.providers as Record<number, { rpcUrl: string }>)[
+    config.contracts.mantle.chainId
+  ].rpcUrl
 );
+
+// extract env config
+const MANTLE_TOKEN_ADDRESS = config.contracts.mantle.address;
+const MANTLE_START_BLOCK = config.contracts.mantle.startBlock;
+
+// we could import the Contract from ./generated:
+
+// -- contract handlers to call every "sync()"
+// import { DelegateEntity } from "./generated/entities";
+// import { DelegateChanged, Factory } from "./generated/contracts/mantle";
+//
+// -- set and export the handler (we could just set the type `args: DelegateChangedEvent` and return the handler directly)
+// export const DelegateChangedHandler = DelegateChanged(
+//   async (args, { tx, block }) => {
+//     const entity = await DelegateEntity.get(args.delegator);
+//
+//     // if we needed to sync a factory deployed contract, we could do that by registering a new mapping for the given address
+//     // await Factory.create(address); // this will start syncing from the current block (we will need to suspend, collect and sync events for the new contract)
+//   }
+// );
+//
+// -- generic handler to call every "sync()"
+// import { On } from "./generated";
+//
+// -- set and export generic handler
+// export const onSync = On("sync", ({ txs, block }) => {
+//
+// });
 
 // Sync DelegateChanged events
 export const DelegateChangedHandler = addSync<DelegateChangedEvent>({
   // Set the name of the event we're consuming with this handler (1 event per handler)
   eventName: "DelegateChanged",
   // Connect the sync to L1 Provider and set the sync startBlock
-  provider: L1_PROVIDER,
-  startBlock: L1_START_BLOCK,
-  // Define the event we're indexing with this handler
-  address: L1_MANTLE_TOKEN,
-  eventAbi: LN_MANTLE_TOKEN_ABI,
+  provider: MANTLE_PROVIDER,
+  address: MANTLE_TOKEN_ADDRESS,
+  startBlock: MANTLE_START_BLOCK,
+  // this can be the same for all events in the supagraph
+  eventAbi: config.events,
   // Construct the callback we'll use to index the event
   onEvent: async (args, { tx }) => {
     // console.log("add", entity.balance, "to", args.toDelegate);
@@ -96,11 +123,11 @@ export const DelegateVotesChangedHandler = addSync<DelegateVotesChangedEvent>({
   // Set the name of the event we're consuming with this handler (1 event per handler)
   eventName: "DelegateVotesChanged",
   // Connect the sync to L1 Provider and set the sync startBlock
-  provider: L1_PROVIDER,
-  startBlock: L1_START_BLOCK,
-  // Define the event we're indexing with this handler
-  address: L1_MANTLE_TOKEN,
-  eventAbi: LN_MANTLE_TOKEN_ABI,
+  provider: MANTLE_PROVIDER,
+  address: MANTLE_TOKEN_ADDRESS,
+  startBlock: MANTLE_START_BLOCK,
+  // this can be the same for all events in the supagraph
+  eventAbi: config.events,
   // Construct the callback we'll use to index the event
   onEvent: async (args, { tx }) => {
     // console.log("votes changed:", args.delegate, "from", args.previousBalance.toString(), "to", args.newBalance.toString());
@@ -125,11 +152,11 @@ export const TransferHandler = addSync<TransferEvent>({
   // Set the name of the event we're consuming with this handler (1 event per handler)
   eventName: "Transfer",
   // Connect the sync to L1 Provider and set the sync startBlock
-  provider: L1_PROVIDER,
-  startBlock: L1_START_BLOCK,
-  // Define the event we're indexing with this handler
-  address: L1_MANTLE_TOKEN,
-  eventAbi: LN_MANTLE_TOKEN_ABI,
+  provider: MANTLE_PROVIDER,
+  address: MANTLE_TOKEN_ADDRESS,
+  startBlock: MANTLE_START_BLOCK,
+  // this can be the same for all events in the supagraph
+  eventAbi: config.events,
   // Construct the callback we'll use to index the event
   onEvent: async (args, { tx }) => {
     // console.log("transfer: from", args.from, "to", args.to, "for", args.value.toString());
