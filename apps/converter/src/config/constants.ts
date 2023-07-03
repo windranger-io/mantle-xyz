@@ -292,3 +292,8 @@ export const MANTLE_BRIDGE_URL: Record<number, string> = {
 };
 
 export const DELEGATION_URL: string = "https://delegatevote.mantle.xyz/";
+
+export enum ErrorMessages {
+  INSUFFICIENT_GAS = "You do not have enough gas to cover the transaction cost.",
+  HALTED = "Conversion halted. Contract is under maintenance. Please check later.",
+}
