@@ -4,6 +4,7 @@ import {
   L1_CONVERTER_CONTRACT_ABI,
   L1_CONVERTER_CONTRACT_ADDRESS,
   L1_BITDAO_TOKEN,
+  ErrorMessages,
 } from "@config/constants";
 import {
   TransactionReceipt,
@@ -62,6 +63,7 @@ export function useCallConvert(): UseMutateFunction<
     setCTAStatus,
     setCTAPage,
     setIsCTAPageOpen,
+    setErrorMsg,
   } = useContext(StateContext);
 
   // main CTA method - we keep this mutation frame open until it error's or the tx succeeds - this keeps a closure over the current state so that we can return to it (via toasts)
@@ -255,6 +257,13 @@ export function useCallConvert(): UseMutateFunction<
         " txHash => ",
         txHash
       );
+
+      if (error.message.indexOf("code=UNPREDICTABLE_GAS_LIMIT") > -1) {
+        // display error message when user doesn't have sufficient gas
+        setErrorMsg(ErrorMessages.INSUFFICIENT_GAS);
+        // close the dialogue
+        setIsCTAPageOpen(false);
+      }
 
       // delete the toast if the tx failed or something generic that we don't know about went wrong...
       if (
