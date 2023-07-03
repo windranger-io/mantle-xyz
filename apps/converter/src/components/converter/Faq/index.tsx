@@ -11,7 +11,7 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
       <Typography className="text-type-secondary mx-4 mb-4">
         This conversion is part of a strategic move following{" "}
         <a
-          href="https://www.mantle.xyz/terms"
+          href="https://snapshot.org/#/bitdao.eth/proposal/0xe81f852d90ba80929b1f19683da14b334d63b31cb94e53249b8caed715475693"
           target="__blank"
           rel="noreferrer"
           className="underline"
@@ -26,15 +26,10 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
     q: "How to assure the right security?",
     a: (
       <Typography className="text-type-secondary mx-4 mb-4">
-        Please follow the blog post -{" "}
-        <a
-          href="https://www.mantle.xyz/terms"
-          target="__blank"
-          rel="noreferrer"
-          className="underline"
-        >
-          link to blog post
-        </a>
+        Please follow the{" "}
+        {/* <a href="/" target="__blank" rel="noreferrer" className="underline"> */}
+        blog post
+        {/* </a> */}
       </Typography>
     ),
   },
