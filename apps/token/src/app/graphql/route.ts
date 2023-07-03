@@ -13,7 +13,7 @@ import {
 import { getMongodb } from "@providers/mongoClient";
 
 // Import the currect configuration
-import config from "./config";
+import { config } from "./config";
 
 // Revalidate this page every 12s (avg block time)
 export const { revalidate } = config;

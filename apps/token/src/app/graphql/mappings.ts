@@ -1,11 +1,38 @@
+import { providers } from "ethers/lib/ethers";
 import {
   DelegateChangedHandler,
   DelegateVotesChangedHandler,
   TransferHandler,
 } from "./syncs";
 
+// Define the Mappings type
+type Mappings = {
+  handlers: Record<
+    string,
+    Record<
+      string,
+      (
+        args: any,
+        {
+          tx,
+          block,
+        }: {
+          tx: providers.TransactionReceipt;
+          block: providers.Block;
+        }
+      ) => void
+    >
+  >;
+  register: {
+    chainId: number;
+    address: string;
+    startBlock: number;
+    handlers: string;
+  }[];
+};
+
 // export the complete supagraph configuration (sync & graph)
-export const mappings = {
+export const mappings: Mappings = {
   // handler mappings
   handlers: {
     mantle: {
@@ -25,7 +52,7 @@ export const mappings = {
   ],
 };
 
-// mappings will define the syncs that are in-play -- these will be persisted in the Store and can be modified at runtime to (de)register factory deployed contracts
+// mappings will define the syncs that are in-play -- these will be persisted in the Store and can be modified at runtime to (de/)register factory deployed contracts
 
 // export the mappings as default
 export default mappings;
