@@ -85,7 +85,7 @@ const getRandomProvider = (chainId: number) => {
 };
 
 // allow external usage to set the sync operations
-export function addSync<T>(
+export function addSync<T extends Record<string, unknown>>(
   eventNameOrParams:
     | string
     | {

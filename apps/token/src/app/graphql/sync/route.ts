@@ -6,7 +6,7 @@ import { DB, Mongo, Stage, Store, sync } from "@mantle/supagraph";
 import { getMongodb } from "@providers/mongoClient";
 
 // import revalidation timings from config
-import config from "../config";
+import { config } from "../config";
 
 // import all sync handlers
 import "../syncs";
