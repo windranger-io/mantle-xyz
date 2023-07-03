@@ -12,13 +12,15 @@ import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { useMemo } from "react";
 import { useBalance } from "wagmi";
 
+type SCTrackerProps = {
+  halted: boolean;
+  isLoadingHaltedStatus: boolean;
+};
+
 export function SmartContractTracker({
   halted,
   isLoadingHaltedStatus,
-}: {
-  halted: boolean;
-  isLoadingHaltedStatus: boolean;
-}) {
+}: SCTrackerProps) {
   const { data: balanceData, isLoading: isBalanceLoading } = useBalance({
     address: L1_CONVERTER_CONTRACT_ADDRESS,
     token: L1_MANTLE_TOKEN_ADDRESS,
