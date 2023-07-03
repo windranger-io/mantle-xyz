@@ -1,1 +1,1 @@
-# App Template
+# Events App
