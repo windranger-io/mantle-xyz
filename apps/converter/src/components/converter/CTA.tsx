@@ -20,14 +20,13 @@ import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 import { useCallApprove } from "@hooks/web3/converter/write/useCallApprove";
 
-// Contains a button & a modal to control allowance and deposits/withdrawals
-export default function CTA({
-  setIsOpen,
-  halted,
-}: {
+type CTAProps = {
   setIsOpen: (val: boolean) => void;
   halted: boolean;
-}) {
+};
+
+// Contains a button & a modal to control allowance and deposits/withdrawals
+export default function CTA({ setIsOpen, halted }: CTAProps) {
   // unpack the context
   const {
     chainId,
