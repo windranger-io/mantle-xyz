@@ -10,7 +10,8 @@ export default function ErrorMsg({ halted }: { halted: boolean }) {
   useEffect(() => {
     if (halted) {
       setErrorMsg(ErrorMessages.HALTED);
-    } else {
+    } else if (errorMsg === ErrorMessages.HALTED) {
+      // don't remove error msg if it is other existing error
       setErrorMsg("");
     }
   }, [halted]);
