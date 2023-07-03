@@ -17,6 +17,7 @@
     "dev:converter": "turbo run dev:converter",
     "dev:cms": "turbo run dev:cms",
     "dev:nft": "turbo run dev:nft",
+    "dev:events": "turbo run dev:events",
     "dev:template": "turbo run dev:template",
     "test": "turbo run test",
     "lint": "turbo run lint",

@@ -72,6 +72,9 @@
       ],
       "cache": false
     },
+    "dev:events": {
+      "cache": false
+    },
     "dev:template": {
       "cache": false
     },
