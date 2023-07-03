@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Typography } from "@mantle/ui";
+
+import StateContext from "@providers/stateContext";
 
 enum ErrorMessages {
   INSUFFICIENT_GAS = "You do not have enough gas to cover the transaction cost.",
@@ -7,20 +9,20 @@ enum ErrorMessages {
 }
 
 export default function ErrorMsg({ halted }: { halted: boolean }) {
-  const [error, setError] = useState<string>("");
+  const { errorMsg, setErrorMsg } = useContext(StateContext);
 
   useEffect(() => {
     if (halted) {
-      setError(ErrorMessages.HALTED);
+      setErrorMsg(ErrorMessages.HALTED);
     } else {
-      setError("");
+      setErrorMsg("");
     }
   }, [halted]);
 
-  if (error) {
+  if (errorMsg) {
     return (
       <Typography variant="smallWidget" className="mt-4 mb-2 text-[#E22F3D]">
-        {error}
+        {errorMsg}
       </Typography>
     );
   }

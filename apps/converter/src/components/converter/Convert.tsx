@@ -15,7 +15,7 @@ import From from "@components/converter/From";
 import Hr from "@components/converter/Divider";
 import To from "@components/converter/To";
 import CTA from "@components/converter/CTA";
-import Error from "@components/converter/Error";
+import ErrorMsg from "@components/converter/ErrorMsg";
 import TX from "@components/converter/TransactionPanel";
 import { Typography } from "@mantle/ui";
 import { ConvertCard } from "@components/ConvertCard";
@@ -63,7 +63,7 @@ export default function Convert() {
               <To />
               <div className="px-5 pb-4">
                 <CTA setIsOpen={setIsCTAPageOpen} halted={!!halted} />
-                <Error halted={!!halted} />
+                <ErrorMsg halted={!!halted} />
                 <TX />
               </div>
             </ConvertCard>

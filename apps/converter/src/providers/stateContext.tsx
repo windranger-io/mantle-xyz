@@ -54,6 +54,7 @@ export type StateProps = {
 
   ctaPage: CTAPages;
   ctaPageRef: MutableRefObject<CTAPages>;
+  errorMsg: string;
   ctaChainId: number;
   ctaStatus: string | boolean;
   isCTAPageOpen: boolean;
@@ -80,6 +81,7 @@ export type StateProps = {
   resetAllowance: () => void;
   resetGasEstimate: () => void;
   setCTAPage: (ctaPage: CTAPages) => void;
+  setErrorMsg: (errMsg: string) => void;
   setCTAChainId: (v: number) => void;
   setCTAStatus: (status: string | boolean) => void;
   setIsCTAPageOpen: (isCTAPageOpen: boolean) => void;
@@ -124,6 +126,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // the selected page within CTAPage to open
   const [ctaPage, setCTAPage] = useState<CTAPages>(CTAPages.Terms);
+  // the error msg under CTA button
+  const [errorMsg, setErrorMsg] = useState<string>("");
   // seperate the ctaChainId from the chainId to dissassociate the tabs from the cta
   const [ctaChainId, setCTAChainId] = useState(chainId);
   // status from the cta operation (this is currently being logged in the console)
@@ -256,6 +260,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
       ctaPage,
       ctaPageRef,
+      errorMsg,
       ctaStatus,
       ctaChainId,
       isCTAPageOpen,
@@ -279,6 +284,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       resetGasEstimate,
 
       setCTAPage,
+      setErrorMsg,
       setCTAChainId,
       setCTAStatus,
       setIsCTAPageOpen,
@@ -304,6 +310,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
     ctaPage,
     ctaPageRef,
+    errorMsg,
     ctaStatus,
     ctaChainId,
     isCTAPageOpen,
