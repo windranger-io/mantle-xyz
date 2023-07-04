@@ -82,6 +82,7 @@ export class Stage extends DB {
       }
     }
 
+    // if this is a newDb (we're starting the collection from startBlock) then we can skip looking up the item in the db (it won't be there)
     if (!this.db.engine?.newDb) {
       // nothing has been found in cache, look up from disk
       const value = await this.db.get(key);
