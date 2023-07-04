@@ -18,7 +18,7 @@ export default function TransactionPanel() {
     client,
     // balances,
     // allowance,
-    actualGasFee,
+    actualGasFee: actualGasFeeState,
     isLoadingGasEstimate,
   } = useContext(StateContext);
   // only update on allowance change to maintain the correct decimals against constants if infinity
@@ -30,6 +30,12 @@ export default function TransactionPanel() {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   //   [allowance]
   // );
+
+  // to avoid hydration mismatch - initialize the actual gas fee to empty string
+  const [actualGasFee, setActualGasFee] = useState<string>("");
+  useEffect(() => {
+    setActualGasFee(actualGasFeeState);
+  }, [actualGasFeeState]);
 
   // only update on allowance change to maintain the correct decimals against constants if infinity
   const isActualGasFeeInfinity = useMemo(
@@ -83,40 +89,39 @@ export default function TransactionPanel() {
           </Typography>
         </div>
         {/* Place gas rows */}
-        {[
-          <div
-            key="tx-panel-1"
-            className="flex justify-between"
-            title={
+        <div
+          key="tx-panel-1"
+          className="flex justify-between"
+          title={
+            parseInt(actualGasFee || "0", 10) === 0
+              ? "This transaction will fail, check approved allowance"
+              : `${
+                  isActualGasFeeInfinity
+                    ? Infinity.toLocaleString()
+                    : actualGasFee || 0
+                } GWEI`
+          }
+        >
+          <Typography variant="smallWidget">Gas fee</Typography>
+          <Typography
+            variant="smallWidget"
+            className={
               parseInt(actualGasFee || "0", 10) === 0
-                ? "This transaction will fail, check approved allowance"
-                : `${
-                    isActualGasFeeInfinity
-                      ? Infinity.toLocaleString()
-                      : actualGasFee || 0
-                  } GWEI`
+                ? "text-[#E22F3D]"
+                : "text-white"
             }
           >
-            <Typography variant="smallWidget">Gas fee</Typography>
-            <Typography
-              variant="smallWidget"
-              className={
-                parseInt(actualGasFee || "0", 10) === 0
-                  ? "text-[#E22F3D]"
-                  : "text-white"
-              }
-            >
-              <>
-                {isActualGasFeeInfinity
-                  ? Infinity.toLocaleString()
-                  : formatEther(
-                      parseUnits(actualGasFee || "0", "gwei") || "0"
-                    )}{" "}
-                ETH
-              </>
-            </Typography>
-          </div>,
-        ]}
+            <>
+              {isActualGasFeeInfinity
+                ? Infinity.toLocaleString()
+                : formatEther(
+                    parseUnits(actualGasFee || "0", "gwei") || "0"
+                  )}{" "}
+              ETH
+            </>
+          </Typography>
+        </div>
+
         {/* {client?.address && client?.address !== "0x" && (
             <div className="flex justify-between" key="tx-panel-3">
               <Typography variant="smallWidget" className="text-type-muted">

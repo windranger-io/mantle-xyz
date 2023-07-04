@@ -9,7 +9,7 @@ import {
 import { Typography } from "@mantle/ui";
 import { cn } from "@mantle/ui/src/utils";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useBalance } from "wagmi";
 
 type SCTrackerProps = {
@@ -26,9 +26,17 @@ export function SmartContractTracker({
     token: L1_MANTLE_TOKEN_ADDRESS,
   });
 
+  // to avoid hydration error
+  const [balanceDataClient, setBalanceDataClient] = useState<
+    string | undefined
+  >(undefined);
+  useEffect(() => {
+    setBalanceDataClient(balanceData?.formatted);
+  }, [balanceData?.formatted]);
+
   const formattedBalance = useMemo(() => {
     const formatted = formatUnits(
-      parseUnits(balanceData?.formatted || "0", L1_MANTLE_TOKEN.decimals),
+      parseUnits(balanceDataClient || "0", L1_MANTLE_TOKEN.decimals),
       L1_MANTLE_TOKEN.decimals
     );
     const formattedMoney = new Intl.NumberFormat("us-US", {}).format(
@@ -36,9 +44,20 @@ export function SmartContractTracker({
     );
 
     return formattedMoney;
-  }, [balanceData?.formatted]);
+  }, [balanceDataClient]);
 
-  if (isLoadingHaltedStatus || isBalanceLoading) {
+  // to avoid hydration error
+  const [isLoadingHalted, setIsLoadingHalted] = useState<boolean>(false);
+  useEffect(() => {
+    setIsLoadingHalted(isLoadingHaltedStatus);
+  }, [isLoadingHaltedStatus]);
+
+  const [isLoadingBalance, setIsLoadingBalance] = useState<boolean>(false);
+  useEffect(() => {
+    setIsLoadingBalance(isBalanceLoading);
+  }, [isBalanceLoading]);
+
+  if (isLoadingHalted || isLoadingBalance) {
     // eslint-disable-next-line react/jsx-no-useless-fragment
     return <></>;
   }
