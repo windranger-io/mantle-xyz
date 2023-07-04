@@ -35,17 +35,7 @@ export default function Convert() {
 
   return (
     (view === Views.Default &&
-      ((isCTAPageOpen && (
-        <>
-          <Typography
-            variant="appPageHeading"
-            className="text-center mt-4 text-[42px] mb-[52px]"
-          >
-            Welcome to the Converter
-          </Typography>
-          <Dialogue />
-        </>
-      )) || (
+      ((isCTAPageOpen && <Dialogue />) || (
         <>
           <Typography
             variant="appPageHeading"

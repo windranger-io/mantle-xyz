@@ -77,7 +77,7 @@ export default function Dialogue() {
 
   return (
     (isCTAPageOpen && (
-      <ConvertCard>
+      <ConvertCard className="mt-16">
         <div className="w-full max-w-lg transform text-left align-middle transition-all space-y-10 px-4 py-6">
           {ctaPage === CTAPages.Default && (
             <Default closeModal={closeModalAndReset} />
