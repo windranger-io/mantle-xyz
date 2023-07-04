@@ -1,5 +1,3 @@
-"use client";
-
 import { ConvertCard } from "@components/ConvertCard";
 import {
   L1_CONVERTER_CONTRACT_ADDRESS,
@@ -9,39 +7,27 @@ import {
 import { Typography } from "@mantle/ui";
 import { cn } from "@mantle/ui/src/utils";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
-import { useMemo } from "react";
 import { useBalance } from "wagmi";
 
 type SCTrackerProps = {
   halted: boolean;
-  isLoadingHaltedStatus: boolean;
 };
 
-export function SmartContractTracker({
-  halted,
-  isLoadingHaltedStatus,
-}: SCTrackerProps) {
-  const { data: balanceData, isLoading: isBalanceLoading } = useBalance({
+export function SmartContractTracker({ halted }: SCTrackerProps) {
+  const { data: balanceData } = useBalance({
     address: L1_CONVERTER_CONTRACT_ADDRESS,
     token: L1_MANTLE_TOKEN_ADDRESS,
+    suspense: true,
   });
 
-  const formattedBalance = useMemo(() => {
-    const formatted = formatUnits(
-      parseUnits(balanceData?.formatted || "0", L1_MANTLE_TOKEN.decimals),
-      L1_MANTLE_TOKEN.decimals
-    );
-    const formattedMoney = new Intl.NumberFormat("us-US", {}).format(
-      +formatted
-    );
+  const formatted = formatUnits(
+    parseUnits(balanceData?.formatted || "0", L1_MANTLE_TOKEN.decimals),
+    L1_MANTLE_TOKEN.decimals
+  );
 
-    return formattedMoney;
-  }, [balanceData?.formatted]);
-
-  if (isLoadingHaltedStatus || isBalanceLoading) {
-    // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <></>;
-  }
+  const formattedBalance = new Intl.NumberFormat("us-US", {}).format(
+    +formatted
+  );
 
   return (
     <ConvertCard className="rounded-xl w-full">
