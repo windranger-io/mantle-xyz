@@ -43,7 +43,7 @@ export default function Convert() {
           >
             Welcome to the Converter
           </Typography>
-          <Dialogue isOpen={isCTAPageOpen} setIsOpen={setIsCTAPageOpen} />
+          <Dialogue />
         </>
       )) || (
         <>
