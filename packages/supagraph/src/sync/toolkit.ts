@@ -1,4 +1,4 @@
-/* eslint-disable no-console, no-multi-assign, no-await-in-loop, no-restricted-syntax, no-param-reassign */
+/* eslint-disable no-console, no-multi-assign, no-await-in-loop, no-restricted-syntax, no-param-reassign, no-underscore-dangle */
 import fs from "fs";
 
 // Build Event filters with ethers
@@ -725,6 +725,8 @@ export const sync = async ({
     Entity<{ id: string; latestBlock: number }> & {
       id: string;
       latestBlock: number;
+      _block_num: number;
+      _block_ts: number;
     }
   > = {};
 
@@ -739,6 +741,7 @@ export const sync = async ({
   // collect each events abi iface
   const eventIfaces: Record<string, ethers.utils.Interface> = {};
   const startBlocks: Record<string, number> = {};
+  const startTimes: Record<string, number> = {};
 
   // chainIds visited in the process
   const chainIds: Set<number> = new Set<number>();
@@ -789,10 +792,12 @@ export const sync = async ({
       // if we've already discovered the latest block entry for this provider then return it
       latestEntity[chainId] ||
       // otherwise fetch it from the store (we'll update this once we've committed all changes)
-      (await Store.get<{ id: string; latestBlock: number }>(
-        "__meta__",
-        `${chainId}`
-      ));
+      (await Store.get<{
+        id: string;
+        latestBlock: number;
+        _block_num: number;
+        _block_ts: number;
+      }>("__meta__", `${chainId}`));
 
     // check if we should be pulling events in this sync or using the tmp cache
     if (
@@ -815,7 +820,8 @@ export const sync = async ({
 
       // set the block frame
       const toBlock = latestBlock[chainId].number;
-      const fromBlock = latestEntity[chainId].latestBlock || startBlock;
+      const fromBlock = latestEntity[chainId]._block_num || startBlock;
+      const fromTime = latestEntity[chainId]._block_ts || startBlock;
 
       // mark engine as newDb
       if (!latestEntity[chainId].latestBlock) {
@@ -824,6 +830,7 @@ export const sync = async ({
 
       // record the startBlock
       startBlocks[chainId] = fromBlock;
+      startTimes[chainId] = fromTime;
 
       // mark the operation in the log
       console.log("--\n\nSync chainID:", chainId, { fromBlock, toBlock }, "\n");
@@ -1065,7 +1072,9 @@ export const sync = async ({
         chainUpdates.push(
           `Chain pointer update: id::${chainId} → ${JSON.stringify({
             fromBlock: startBlocks[chainId],
-            toBlock: chainsLatestBlock?.data.blockNumber,
+            // if we didn't find any events then we can keep the toBlock as startBlock
+            toBlock:
+              chainsLatestBlock?.data.blockNumber || startBlocks[chainId],
           })}`
         );
 
@@ -1074,13 +1083,16 @@ export const sync = async ({
         // make sure we're storing against the correct block
         Store.setBlock({
           timestamp:
-            chainsLatestBlock?.timestamp || chainsLatestBlock?.data.blockNumber,
-          number: chainsLatestBlock?.data.blockNumber,
+            chainsLatestBlock?.timestamp ||
+            chainsLatestBlock?.data.blockNumber ||
+            // if latestBlock is missing use startTime (could be a block or a ts depending on settings)...
+            startTimes[chainId],
+          number: chainsLatestBlock?.data.blockNumber || startBlocks[chainId],
         } as unknown as Block);
         // save the latest entry
         latestEntity[chainId].set(
           "latestBlock",
-          chainsLatestBlock?.data.blockNumber
+          chainsLatestBlock?.data.blockNumber || startBlocks[chainId]
         );
 
         // persist changes into the store
