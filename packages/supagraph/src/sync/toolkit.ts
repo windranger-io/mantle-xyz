@@ -269,11 +269,11 @@ const cancelAndSplit =
       // split the range in two and try again...
       const middle = Math.round((fromBlock + toBlock) / 2);
       // result was limited, detail what happend...
-      console.log(
-        ` - failed getting ${event}::${chainId} - splitting req [${fromBlock} ... ${toBlock}] -> [${fromBlock} ... ${
-          middle - 1
-        }] and [${middle + 1} ... ${toBlock}]`
-      );
+      // console.log(
+      //   ` - failed getting ${event}::${chainId} - splitting req [${fromBlock} ... ${toBlock}] -> [${fromBlock} ... ${
+      //     middle - 1
+      //   }] and [${middle + 1} ... ${toBlock}]`
+      // );
 
       // get events from two ranges and bubble the result (this will combine all results recursively and add blocks)
       await Promise.all([
@@ -798,7 +798,9 @@ export const sync = async ({
     if (
       !start ||
       Stage[start] === Stage.events ||
-      !fs.existsSync(`${cwd}/data/events/latestRun-${eventName}-${chainId}.csv`)
+      !fs.existsSync(
+        `${cwd}/data/events/latestRun-${address}-${eventName}-${chainId}.csv`
+      )
     ) {
       // start the run from the blocks
       if (start && Stage[start] > Stage.events) {
@@ -838,7 +840,7 @@ export const sync = async ({
 
       // record the entities run so we can step back to this spot
       await saveCSV(
-        `${cwd}/data/events/latestRun-${eventName}-${chainId}.csv`,
+        `${cwd}/data/events/latestRun-${address}-${eventName}-${chainId}.csv`,
         newEvents
       );
     } else if (
@@ -846,7 +848,7 @@ export const sync = async ({
       Stage[start] < Stage.process ||
       (!fs.existsSync(`${cwd}/data/events/latestRun-allData.csv`) &&
         fs.existsSync(
-          `${cwd}/data/events/latestRun-${eventName}-${chainId}.csv`
+          `${cwd}/data/events/latestRun-${address}-${eventName}-${chainId}.csv`
         ))
     ) {
       // assume that we're starting a fresh db
@@ -857,7 +859,7 @@ export const sync = async ({
       }
       // read in events from disk
       newEvents = await readCSV(
-        `${cwd}/data/events/latestRun-${eventName}-${chainId}.csv`
+        `${cwd}/data/events/latestRun-${address}-${eventName}-${chainId}.csv`
       );
     }
 
@@ -990,6 +992,7 @@ export const sync = async ({
         const tx =
           skipOptionalArgs || skipTransactions
             ? ({
+                contractAddress: opSorted.data.address,
                 transactionHash: opSorted.data.transactionHash,
                 transactionIndex: opSorted.data.transactionIndex,
                 blockHash: opSorted.data.blockHash,
