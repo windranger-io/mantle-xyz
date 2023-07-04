@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import Image from "next/image";
+import { MdClear } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 import { Typography } from "@mantle/ui";
-import { MdClear } from "react-icons/md";
-
 import { L1_CHAIN_ID } from "@config/constants";
+import { useToast } from "@hooks/useToast";
 import TxLink from "@components/converter/utils/TxLink";
 
 export default function Loading({
@@ -17,6 +19,29 @@ export default function Loading({
   from: string;
   to: string;
 }) {
+  const { createToast } = useToast();
+  const router = useRouter();
+
+  useEffect(() => {
+    createToast({
+      type: "onGoing",
+      borderLeft: "bg-blue-600",
+      content: (
+        <div className="flex flex-col">
+          <Typography variant="body">
+            <b>Conversion initiated</b>
+          </Typography>
+          <Typography variant="body">Will be available in ~5 mins</Typography>
+        </div>
+      ),
+      id: "on-going-conversion",
+      buttonText: "View",
+      onButtonClick: () => {
+        router.push("/");
+        return true;
+      },
+    });
+  }, []);
   return (
     <>
       <span className="flex justify-between align-middle">
