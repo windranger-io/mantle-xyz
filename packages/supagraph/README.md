@@ -63,7 +63,7 @@ To get started with `supagraph`, follow these steps:
      entities: memoryResolver({
        name: "supagraph",
      }),
-     graphqlEndpoint: ``, // the relative path which will load supagraph.GET()
+     graphqlEndpoint: `graphql`, // the relative path which will load supagraph.GET()
      defaultQuery: `
        {
          names {
@@ -78,7 +78,7 @@ To get started with `supagraph`, follow these steps:
    const server = http.createServer(supagraph);
 
    server.listen(4001, () => {
-     console.info("Server is running on http://localhost:4001/api/graphql");
+     console.info("Server is running on http://localhost:4001/graphql");
    });
    ```
 
@@ -143,7 +143,12 @@ To create a new `supagraph syncOp[]` handler and keep the `supagraph` instance u
 
    ```typescript
    const handler = addSync<{ name: string; number: string }>(
-     ...async ({ name, number }, { tx, block }) => {
+     CONTRACT_EVT,
+     CHAINS_PROVIDER,
+     CONTRACT_ABI,
+     CONTRACT_ADDRESS,
+     // handler code...
+     async ({ name, number }, { tx, block }) => {
        let entity = await Store.get<{
          id: string;
          name: string;
@@ -164,7 +169,7 @@ To create a new `supagraph syncOp[]` handler and keep the `supagraph` instance u
 
    ```typescript
    export async function GET() {
-     const events = await sync(); // all new events discovered from all sync operations
+     const summary = await sync(); // all new events discovered from all sync operations
 
      // Code for handling the response
    }
