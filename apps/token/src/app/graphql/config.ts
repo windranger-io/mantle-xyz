@@ -4,15 +4,16 @@ import { BigNumber } from "ethers";
 // export the complete supagraph configuration (sync & graph)
 export const config = {
   // Name your supagraph (this will inform mongo table name etc...)
-  name: "supagraph--token--0-0-8",
+  name: process.env.SUPAGRAPH_NAME || "supagraph--token--testnet--0-0-1",
   // Configure providers
   providers: {
+    1: {
+      rpcUrl: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
+    },
     5: {
       rpcUrl: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
     },
   },
-  // Register the providers (which mappings should be registered?)
-  enabled: [5],
   // Establish all event signatures available to supagraph
   events: [
     "event Transfer(address indexed from, address indexed to, uint256 value)",
@@ -22,10 +23,19 @@ export const config = {
   // Configure available Contracts and their block details
   contracts: {
     mantle: {
-      chainId: 5,
-      address: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
-      startBlock: 9127688,
-      endBlock: "latest",
+      // set config from env
+      chainId:
+        (process.env.MANTLE_CHAIN_ID &&
+          parseInt(process.env.MANTLE_CHAIN_ID, 10)) ||
+        5,
+      address:
+        process.env.MANTLE_ADDRESS ||
+        "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
+      startBlock:
+        (process.env.MANTLE_START_BLOCK &&
+          parseInt(process.env.MANTLE_START_BLOCK, 10)) ||
+        9127688,
+      endBlock: process.env.MANTLE_END_BLOCK || "latest",
       // Establish all event signatures available on this contract (we could also accept a .sol or .json file here)
       events: [
         "event Transfer(address indexed from, address indexed to, uint256 value)",
@@ -34,14 +44,19 @@ export const config = {
       ],
     },
     bitdao: {
-      // chainId: 1,
-      // address: "0x1A4b46696b2bB4794Eb3D4c26f1c55F9170fa4C5",
-      // startBlock: 12605730,
-      // endBlock: "latest",
-      chainId: 5,
-      address: "0xB17B140eddCC575DaD4256959b8A35d0E7E1Ae17", // we should make sure these are always checksummed going in
-      startBlock: 7728490,
-      endBlock: "latest",
+      // set config from env
+      chainId:
+        (process.env.BITDAO_CHAIN_ID &&
+          parseInt(process.env.BITDAO_CHAIN_ID, 10)) ||
+        5,
+      address:
+        process.env.BITDAO_ADDRESS ||
+        "0xB17B140eddCC575DaD4256959b8A35d0E7E1Ae17",
+      startBlock:
+        (process.env.BITDAO_START_BLOCK &&
+          parseInt(process.env.BITDAO_START_BLOCK, 10)) ||
+        7728490,
+      endBlock: process.env.BITDAO_END_BLOCK || "latest",
       // Establish all event signatures available on this contract (we could also accept a .sol or .json file here)
       events: [
         "event Transfer(address indexed from, address indexed to, uint256 value)",
