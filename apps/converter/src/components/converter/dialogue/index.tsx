@@ -17,7 +17,6 @@ import Converted from "@components/converter/dialogue/Completed";
 
 import { ConvertCard } from "@components/ConvertCard";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
-import Terms from "./Terms";
 
 export default function Dialogue() {
   const {
@@ -100,7 +99,6 @@ export default function Dialogue() {
           {ctaPage === CTAPages.Error && (
             <Error reset={reset} closeModal={closeModalAndReset} />
           )}
-          {ctaPage === CTAPages.Terms && <Terms />}
         </div>
       </ConvertCard>
     )) || <div />
