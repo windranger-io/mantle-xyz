@@ -62,7 +62,18 @@
       "cache": false
     },
     "dev:token": {
-      "cache": false
+      "cache": false,
+      "env": [
+        "SUPAGRAPH_NAME",
+        "MANTLE_CHAIN_ID",
+        "MANTLE_ADDRESS",
+        "MANTLE_START_BLOCK",
+        "MANTLE_END_BLOCK",
+        "BITDAO_CHAIN_ID",
+        "BITDAO_ADDRESS",
+        "BITDAO_START_BLOCK",
+        "BITDAO_END_BLOCK"
+      ]
     },
     "dev:cms": {
       "cache": false
