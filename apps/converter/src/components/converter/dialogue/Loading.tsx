@@ -34,7 +34,7 @@ export default function Loading({
           <Typography variant="body">Will be available in ~5 mins</Typography>
         </div>
       ),
-      id: "on-going-conversion",
+      id: `${txHash}-pending-conversion`,
       buttonText: "View",
       onButtonClick: () => {
         router.push("/");
