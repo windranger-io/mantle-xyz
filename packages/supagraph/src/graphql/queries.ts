@@ -34,14 +34,14 @@ export const caseInsensitiveMatch = (
   right: string | { id: string } | { id: string }[]
 ) =>
   // derived side will always be linked via an ID ref
-  left.toLowerCase() ===
+  left?.toLowerCase() ===
   // check that it matches the target side
-  (Array.isArray(right)
-    ? right[0].id.toLowerCase()
-    : typeof right === "object"
-    ? right.id.toLowerCase()
+  (Array.isArray(right) && right[0].id
+    ? right[0].id?.toLowerCase()
+    : typeof right === "object" && (right as { id: string }).id
+    ? (right as { id: string }).id?.toLowerCase()
     : typeof right === "string"
-    ? right.toLowerCase()
+    ? right?.toLowerCase()
     : right);
 
 // for SingularQueries we expect one result and it must match against the required id arg
@@ -231,18 +231,18 @@ export const createMultiQuery = (
       // sort the matches by the given order
       matches = matches.sort((a: EntityRecord, b: EntityRecord) =>
         // holds a string value - sort using localeCompare
-        orderBy && typeof a[orderBy as string] === "string"
+        orderBy
           ? parseFloat(
               direction +
-                (a[orderBy as string] as string).localeCompare(
-                  b[orderBy as string] as string,
+                ((a[orderBy as string] as string) || "").localeCompare(
+                  (b[orderBy as string] as string) || "",
                   undefined,
                   { numeric: true }
                 )
             )
           : // holds a single entity - sort on the entities id
           orderBy &&
-            typeof (a[orderBy as string] as { id: string }).id === "string"
+            typeof (a[orderBy as string] as { id: string })?.id === "string"
           ? parseFloat(
               direction +
                 (a[orderBy as string] as { id: string }).id.localeCompare(
@@ -263,8 +263,10 @@ export const createMultiQuery = (
           : // default to string/id
             parseFloat(
               direction +
-                ((typeof a === "string" ? a : a.id) as string).localeCompare(
-                  (typeof b === "string" ? b : b.id) as string
+                (
+                  (typeof a === "string" ? a : a?.id || "0") as string
+                ).localeCompare(
+                  (typeof b === "string" ? b : b?.id || "0") as string
                 )
             )
       );

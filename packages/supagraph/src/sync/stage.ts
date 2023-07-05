@@ -82,14 +82,21 @@ export class Stage extends DB {
       }
     }
 
-    // nothing has been found in cache, look up from disk
-    const value = await this.db.get(key);
-    if (this.isCheckpoint) {
-      // since we are a checkpoint, put this value in cache, so future `get` calls will not look the key up again from disk
-      this.checkpoints[this.checkpoints.length - 1].keyValueMap.set(key, value);
+    // if this is a newDb (we're starting the collection from startBlock) then we can skip looking up the item in the db (it won't be there)
+    if (!this.db.engine?.newDb) {
+      // nothing has been found in cache, look up from disk
+      const value = await this.db.get(key);
+      if (this.isCheckpoint) {
+        // since we are a checkpoint, put this value in cache, so future `get` calls will not look the key up again from disk
+        this.checkpoints[this.checkpoints.length - 1].keyValueMap.set(
+          key,
+          value
+        );
+      }
+      return value;
     }
 
-    return value;
+    return null;
   }
 
   // writes a value directly to leveldb

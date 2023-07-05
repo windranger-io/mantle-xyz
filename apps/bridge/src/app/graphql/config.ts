@@ -4,8 +4,8 @@ export const SUPAGRAPH_NAME = "supergraph--bridge--0-0-1";
 // Set the local engine (true: db || false: mongo)
 export const SUPAGRAPH_DEV_ENGINE = false;
 
-// Flag unique ids to insert by upsert only on id field (otherwise use _block_number + id to make a unique entry and do a distinct groupBy on the id when querying)
-export const SUPAGRAPH_UNIQUE_IDS = true;
+// Flag mutable to insert by upsert only on id field (otherwise use _block_number + id to make a unique entry and do a distinct groupBy on the id when querying)
+export const SUPAGRAPH_MUTABLE_ENTITIES = true;
 
 // Define the schema we will follow in our syncs and queries
 export const SUPAGRAPH_SCHEMA = `

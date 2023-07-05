@@ -51,7 +51,7 @@ To get started with `supagraph`, follow these steps:
    };
    ```
 
-2. If we're using `supagraph` to construct static `GraphQL` endpoints, we can call `createSupagraph` and supply a mapping of arrays (`{Entity: []}`) as the `entities` prop, otherwise, we might want to use a resolver:
+2. If we're using `supagraph` to construct static `GraphQL` endpoints, we can call `createSupagraph` and supply a mapping of arrays (`{[EntityName]: []}`) as the `entities` prop, otherwise, we might want to use a resolver:
 
    ```typescript
    import { createSupagraph, memoryResolver } from "supagraph";
@@ -63,7 +63,7 @@ To get started with `supagraph`, follow these steps:
      entities: memoryResolver({
        name: "supagraph",
      }),
-     graphqlEndpoint: ``, // the relative path which will load supagraph.GET()
+     graphqlEndpoint: `graphql`, // the absolute path which will proxy supagraph.GET()/.POST() requests
      defaultQuery: `
        {
          names {
@@ -78,7 +78,7 @@ To get started with `supagraph`, follow these steps:
    const server = http.createServer(supagraph);
 
    server.listen(4001, () => {
-     console.info("Server is running on http://localhost:4001/api/graphql");
+     console.info("Server is running on http://localhost:4001/graphql");
    });
    ```
 
@@ -96,7 +96,7 @@ To get started with `supagraph`, follow these steps:
    export default createSupagraph<NextApiRequest, NextApiResponse>({
      schema,
      entities,
-     graphqlEndpoint: `/api/graphql`, // this _must_ match the current route
+     graphqlEndpoint: `graphql`, // this _must_ match the current route
      defaultQuery: `
        {
          names {
@@ -143,7 +143,12 @@ To create a new `supagraph syncOp[]` handler and keep the `supagraph` instance u
 
    ```typescript
    const handler = addSync<{ name: string; number: string }>(
-     ...async ({ name, number }, { tx, block }) => {
+     CONTRACT_EVT,
+     CHAINS_PROVIDER,
+     CONTRACT_ABI,
+     CONTRACT_ADDRESS,
+     // handler code...
+     async ({ name, number }, { tx, block }) => {
        let entity = await Store.get<{
          id: string;
          name: string;
@@ -164,7 +169,7 @@ To create a new `supagraph syncOp[]` handler and keep the `supagraph` instance u
 
    ```typescript
    export async function GET() {
-     const events = await sync(); // all new events discovered from all sync operations
+     const summary = await sync(); // all new events discovered from all sync operations
 
      // Code for handling the response
    }
@@ -192,3 +197,7 @@ If you would like to contribute to `supagraph`, please follow these steps:
 2. Create a new branch for your changes.
 3. Make your changes and test them thoroughly.
 4. Create a pull request and describe your changes.
+
+## Support
+
+Support can be found on our Discord channel [#supagraph](https://discord.gg/ryxy6eA6Dv)

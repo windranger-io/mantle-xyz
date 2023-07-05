@@ -6,13 +6,7 @@ import { DB, Mongo, Stage, Store, sync } from "@mantle/supagraph";
 import { getMongodb } from "@providers/mongoClient";
 
 // import revalidation timings from config
-import {
-  SUPAGRAPH_DEV_ENGINE,
-  SUPAGRAPH_NAME,
-  SUPAGRAPH_REVALIDATE,
-  SUPAGRAPH_STALE_WHILE_REVALIDATE,
-  SUPAGRAPH_MUTABLE_ENTITIES,
-} from "../config";
+import { supagraph } from "../config";
 
 // import all sync handlers
 import "../syncs";
@@ -20,18 +14,18 @@ import "../syncs";
 // switch out the engine for development to avoid the mongo requirment locally
 Store.setEngine({
   // name the connection
-  name: SUPAGRAPH_NAME,
+  name: supagraph.name,
   // db is dependent on state
   db:
     // in production/production like environments we want to store mutations to mongo otherwise we can store them locally
-    process.env.NODE_ENV === "development" && SUPAGRAPH_DEV_ENGINE
+    process.env.NODE_ENV === "development" && supagraph.dev
       ? // connect store to in-memory/node-persist store
-        DB.create({ kv: {}, name: SUPAGRAPH_NAME })
+        DB.create({ kv: {}, name: supagraph.name })
       : // connect store to MongoDB
         Mongo.create({
           kv: {},
-          name: SUPAGRAPH_NAME,
-          mutable: SUPAGRAPH_MUTABLE_ENTITIES,
+          name: supagraph.name,
+          mutable: supagraph.mutable,
           client: getMongodb(process.env.MONGODB_URI!),
         }),
 });
@@ -59,7 +53,7 @@ export async function GET(request: NextRequest) {
   // we don't need to sync more often than once per block - and if we're using vercel.json crons we can only sync 1/min
   return NextResponse.json(summary, {
     headers: {
-      "Cache-Control": `max-age=${SUPAGRAPH_REVALIDATE}, public, s-maxage=${SUPAGRAPH_REVALIDATE}, stale-while-revalidate=${SUPAGRAPH_STALE_WHILE_REVALIDATE}`,
+      "Cache-Control": `max-age=${supagraph.revalidate}, public, s-maxage=${supagraph.revalidate}, stale-while-revalidate=${supagraph.staleWhileRevalidate}`,
     },
   });
 }

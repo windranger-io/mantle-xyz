@@ -1,4 +1,4 @@
-/* eslint-disable no-console, no-multi-assign, no-await-in-loop, no-restricted-syntax, no-param-reassign */
+/* eslint-disable no-console, no-multi-assign, no-await-in-loop, no-restricted-syntax, no-param-reassign, no-underscore-dangle */
 import fs from "fs";
 
 // Build Event filters with ethers
@@ -85,7 +85,7 @@ const getRandomProvider = (chainId: number) => {
 };
 
 // allow external usage to set the sync operations
-export function addSync<T>(
+export function addSync<T extends Record<string, unknown>>(
   eventNameOrParams:
     | string
     | {
@@ -269,11 +269,11 @@ const cancelAndSplit =
       // split the range in two and try again...
       const middle = Math.round((fromBlock + toBlock) / 2);
       // result was limited, detail what happend...
-      console.log(
-        ` - failed getting ${event}::${chainId} - splitting req [${fromBlock} ... ${toBlock}] -> [${fromBlock} ... ${
-          middle - 1
-        }] and [${middle + 1} ... ${toBlock}]`
-      );
+      // console.log(
+      //   ` - failed getting ${event}::${chainId} - splitting req [${fromBlock} ... ${toBlock}] -> [${fromBlock} ... ${
+      //     middle - 1
+      //   }] and [${middle + 1} ... ${toBlock}]`
+      // );
 
       // get events from two ranges and bubble the result (this will combine all results recursively and add blocks)
       await Promise.all([
@@ -684,18 +684,18 @@ const saveCSV = async (
 
 // sync all events since last sync operation
 export const sync = async ({
-  start,
-  stop,
+  start = false,
+  stop = false,
   skipBlocks = false,
   skipTransactions = false,
   skipOptionalArgs = false,
 }: {
-  start: keyof typeof Stage | false;
-  stop: keyof typeof Stage | false;
+  start?: keyof typeof Stage | false;
+  stop?: keyof typeof Stage | false;
   skipBlocks?: boolean;
   skipTransactions?: boolean;
   skipOptionalArgs?: boolean;
-}) => {
+} = {}) => {
   // record when we started this operation
   const startTime = performance.now();
 
@@ -713,6 +713,11 @@ export const sync = async ({
   // open a checkpoint on the db...
   const engine = await getEngine();
 
+  // set the engine against the db
+  if (engine.db) {
+    engine.db.engine = engine as { newDb: boolean };
+  }
+
   // fetch the latest block once per chain
   const latestBlock: Record<string, Block> = {};
   const latestEntity: Record<
@@ -720,6 +725,8 @@ export const sync = async ({
     Entity<{ id: string; latestBlock: number }> & {
       id: string;
       latestBlock: number;
+      _block_num: number;
+      _block_ts: number;
     }
   > = {};
 
@@ -734,6 +741,7 @@ export const sync = async ({
   // collect each events abi iface
   const eventIfaces: Record<string, ethers.utils.Interface> = {};
   const startBlocks: Record<string, number> = {};
+  const startTimes: Record<string, number> = {};
 
   // chainIds visited in the process
   const chainIds: Set<number> = new Set<number>();
@@ -784,16 +792,20 @@ export const sync = async ({
       // if we've already discovered the latest block entry for this provider then return it
       latestEntity[chainId] ||
       // otherwise fetch it from the store (we'll update this once we've committed all changes)
-      (await Store.get<{ id: string; latestBlock: number }>(
-        "__meta__",
-        `${chainId}`
-      ));
+      (await Store.get<{
+        id: string;
+        latestBlock: number;
+        _block_num: number;
+        _block_ts: number;
+      }>("__meta__", `${chainId}`));
 
     // check if we should be pulling events in this sync or using the tmp cache
     if (
       !start ||
       Stage[start] === Stage.events ||
-      !fs.existsSync(`${cwd}/data/events/latestRun-${eventName}-${chainId}.csv`)
+      !fs.existsSync(
+        `${cwd}/data/events/latestRun-${address}-${eventName}-${chainId}.csv`
+      )
     ) {
       // start the run from the blocks
       if (start && Stage[start] > Stage.events) {
@@ -808,10 +820,17 @@ export const sync = async ({
 
       // set the block frame
       const toBlock = latestBlock[chainId].number;
-      const fromBlock = latestEntity[chainId].latestBlock || startBlock;
+      const fromBlock = latestEntity[chainId]._block_num || startBlock;
+      const fromTime = latestEntity[chainId]._block_ts || startBlock;
+
+      // mark engine as newDb
+      if (!latestEntity[chainId].latestBlock) {
+        engine.newDb = true;
+      }
 
       // record the startBlock
       startBlocks[chainId] = fromBlock;
+      startTimes[chainId] = fromTime;
 
       // mark the operation in the log
       console.log("--\n\nSync chainID:", chainId, { fromBlock, toBlock }, "\n");
@@ -828,7 +847,7 @@ export const sync = async ({
 
       // record the entities run so we can step back to this spot
       await saveCSV(
-        `${cwd}/data/events/latestRun-${eventName}-${chainId}.csv`,
+        `${cwd}/data/events/latestRun-${address}-${eventName}-${chainId}.csv`,
         newEvents
       );
     } else if (
@@ -836,16 +855,18 @@ export const sync = async ({
       Stage[start] < Stage.process ||
       (!fs.existsSync(`${cwd}/data/events/latestRun-allData.csv`) &&
         fs.existsSync(
-          `${cwd}/data/events/latestRun-${eventName}-${chainId}.csv`
+          `${cwd}/data/events/latestRun-${address}-${eventName}-${chainId}.csv`
         ))
     ) {
+      // assume that we're starting a fresh db
+      engine.newDb = true;
       // start the run from the blocks
       if (start && Stage[start] >= Stage.process) {
         start = "blocks";
       }
       // read in events from disk
       newEvents = await readCSV(
-        `${cwd}/data/events/latestRun-${eventName}-${chainId}.csv`
+        `${cwd}/data/events/latestRun-${address}-${eventName}-${chainId}.csv`
       );
     }
 
@@ -938,6 +959,9 @@ export const sync = async ({
       "\n\nStarting sync by restoring last-runs sorted events...\n\n--\n"
     );
 
+    // assume that we're starting a fresh db
+    engine.newDb = true;
+
     // restore the sorted collection
     sorted = await readCSV(`${cwd}/data/events/latestRun-allData.csv`);
 
@@ -975,6 +999,7 @@ export const sync = async ({
         const tx =
           skipOptionalArgs || skipTransactions
             ? ({
+                contractAddress: opSorted.data.address,
                 transactionHash: opSorted.data.transactionHash,
                 transactionIndex: opSorted.data.transactionIndex,
                 blockHash: opSorted.data.blockHash,
@@ -1026,6 +1051,9 @@ export const sync = async ({
     // commit the checkpoint on the db...
     await engine?.stage?.commit();
 
+    // no longer a newDB after committing changes
+    engine.newDb = false;
+
     // after commit all events are stored in db
     process.stdout.write("✔\nPointers updated ");
 
@@ -1044,7 +1072,9 @@ export const sync = async ({
         chainUpdates.push(
           `Chain pointer update: id::${chainId} → ${JSON.stringify({
             fromBlock: startBlocks[chainId],
-            toBlock: chainsLatestBlock?.data.blockNumber,
+            // if we didn't find any events then we can keep the toBlock as startBlock
+            toBlock:
+              chainsLatestBlock?.data.blockNumber || startBlocks[chainId],
           })}`
         );
 
@@ -1053,13 +1083,16 @@ export const sync = async ({
         // make sure we're storing against the correct block
         Store.setBlock({
           timestamp:
-            chainsLatestBlock?.timestamp || chainsLatestBlock?.data.blockNumber,
-          number: chainsLatestBlock?.data.blockNumber,
+            chainsLatestBlock?.timestamp ||
+            chainsLatestBlock?.data.blockNumber ||
+            // if latestBlock is missing use startTime (could be a block or a ts depending on settings)...
+            startTimes[chainId],
+          number: chainsLatestBlock?.data.blockNumber || startBlocks[chainId],
         } as unknown as Block);
         // save the latest entry
         latestEntity[chainId].set(
           "latestBlock",
-          chainsLatestBlock?.data.blockNumber
+          chainsLatestBlock?.data.blockNumber || startBlocks[chainId]
         );
 
         // persist changes into the store
