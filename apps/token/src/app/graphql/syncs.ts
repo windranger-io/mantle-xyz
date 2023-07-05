@@ -7,7 +7,7 @@ import { addSync, Store } from "@mantle/supagraph";
 // Supagraph specific constants detailing the contracts we'll sync against
 import { TransactionReceipt } from "@ethersproject/providers";
 import {
-  config,
+  supagraph,
   // these types will be imported from a generated directory based on the SUPAGRAPH_EVENT_SIGNATURES and SUPAGRAPH_SCHEMA (coming soon TM);
   DelegateChangedEvent,
   DelegateVotesChangedEvent,
@@ -17,25 +17,25 @@ import {
 
 // configure JsonRpcProvider for Mantle contracts chainId
 const MANTLE_PROVIDER = new providers.JsonRpcProvider(
-  (config.providers as Record<number, { rpcUrl: string }>)[
-    config.contracts.mantle.chainId
+  (supagraph.providers as Record<number, { rpcUrl: string }>)[
+    supagraph.contracts.mantle.chainId
   ].rpcUrl
 );
 
 // extract env config
-const MANTLE_TOKEN_ADDRESS = config.contracts.mantle.address;
-const MANTLE_START_BLOCK = config.contracts.mantle.startBlock;
+const MANTLE_TOKEN_ADDRESS = supagraph.contracts.mantle.address;
+const MANTLE_START_BLOCK = supagraph.contracts.mantle.startBlock;
 
 // configure JsonRpcProvider for BitDAO contracts chainId
 const BITDAO_PROVIDER = new providers.JsonRpcProvider(
-  (config.providers as Record<number, { rpcUrl: string }>)[
-    config.contracts.bitdao.chainId
+  (supagraph.providers as Record<number, { rpcUrl: string }>)[
+    supagraph.contracts.bitdao.chainId
   ].rpcUrl
 );
 
 // extract env config
-const BITDAO_TOKEN_ADDRESS = config.contracts.bitdao.address;
-const BITDAO_START_BLOCK = config.contracts.bitdao.startBlock;
+const BITDAO_TOKEN_ADDRESS = supagraph.contracts.bitdao.address;
+const BITDAO_START_BLOCK = supagraph.contracts.bitdao.startBlock;
 
 // we could import the Contract from ./generated:
 
@@ -243,7 +243,7 @@ addSync<DelegateChangedEvent>({
   address: MANTLE_TOKEN_ADDRESS,
   startBlock: MANTLE_START_BLOCK,
   // this can be the same for all events in the supagraph
-  eventAbi: config.events,
+  eventAbi: supagraph.events,
   // Construct the callback we'll use to index the event
   onEvent: DelegateChangedHandler,
 });
@@ -257,7 +257,7 @@ addSync<DelegateChangedEvent>({
   address: BITDAO_TOKEN_ADDRESS,
   startBlock: BITDAO_START_BLOCK,
   // this can be the same for all events in the supagraph
-  eventAbi: config.events,
+  eventAbi: supagraph.events,
   // Construct the callback we'll use to index the event
   onEvent: DelegateChangedHandler,
 });
@@ -271,7 +271,7 @@ addSync<DelegateVotesChangedEvent>({
   address: MANTLE_TOKEN_ADDRESS,
   startBlock: MANTLE_START_BLOCK,
   // this can be the same for all events in the supagraph
-  eventAbi: config.events,
+  eventAbi: supagraph.events,
   // Construct the callback we'll use to index the event
   onEvent: DelegateVotesChangedHandler,
 });
@@ -285,7 +285,7 @@ addSync<DelegateVotesChangedEvent>({
   address: BITDAO_TOKEN_ADDRESS,
   startBlock: BITDAO_START_BLOCK,
   // this can be the same for all events in the supagraph
-  eventAbi: config.events,
+  eventAbi: supagraph.events,
   // Construct the callback we'll use to index the event
   onEvent: DelegateVotesChangedHandler,
 });
@@ -299,7 +299,7 @@ addSync<TransferEvent>({
   address: MANTLE_TOKEN_ADDRESS,
   startBlock: MANTLE_START_BLOCK,
   // this can be the same for all events in the supagraph
-  eventAbi: config.events,
+  eventAbi: supagraph.events,
   // Construct the callback we'll use to index the event
   onEvent: TransferHandler,
 });
@@ -313,7 +313,7 @@ addSync<TransferEvent>({
   address: BITDAO_TOKEN_ADDRESS,
   startBlock: BITDAO_START_BLOCK,
   // this can be the same for all events in the supagraph
-  eventAbi: config.events,
+  eventAbi: supagraph.events,
   // Construct the callback we'll use to index the event
   onEvent: TransferHandler,
 });

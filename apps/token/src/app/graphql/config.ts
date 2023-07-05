@@ -2,7 +2,7 @@
 import { BigNumber } from "ethers";
 
 // export the complete supagraph configuration (sync & graph)
-export const config = {
+export const supagraph = {
   // Name your supagraph (this will inform mongo table name etc...)
   name: process.env.SUPAGRAPH_NAME || "supagraph--token--testnet--0-0-1",
   // Configure providers
@@ -122,7 +122,7 @@ export const config = {
 };
 
 // export config as default export
-export default config;
+export default supagraph;
 
 // Definitions for the Approval Events args (as defined in the abi)
 export type ApprovalEvent = {
