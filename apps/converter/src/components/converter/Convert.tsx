@@ -26,7 +26,7 @@ export default function Convert() {
   // unpack the context
   const { view, isCTAPageOpen, setIsCTAPageOpen } = useContext(StateContext);
 
-  const { data: halted, isLoading: isLoadingHaltedStatus } = useContractRead({
+  const { data: halted } = useContractRead({
     address: L1_CONVERTER_CONTRACT_ADDRESS,
     abi: L1_CONVERTER_CONTRACT_ABI,
     watch: true,
@@ -58,10 +58,7 @@ export default function Convert() {
               </div>
             </ConvertCard>
             <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] lg:max-w-[250px] xl:w-[320px] xl:max-w-[320px] lg:absolute lg:top-0 lg:right-[-55%] xl:right-[-80%]">
-              <SmartContractTracker
-                halted={!!halted}
-                isLoadingHaltedStatus={isLoadingHaltedStatus}
-              />
+              <SmartContractTracker halted={!!halted} />
               <Faq />
             </div>
           </div>
