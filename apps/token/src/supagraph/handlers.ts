@@ -1,76 +1,37 @@
-// We create new providers here to connect to the selected rpc
-import { BigNumber, providers } from "ethers";
+// We use BigNumber to handle all numeric operations
+import { BigNumber } from "ethers";
 
-// Use addSync to add operations and Store to interact with entity storage
-import { addSync, Store } from "@mantle/supagraph";
+// Use Store to interact with entity storage
+import { Store } from "@mantle/supagraph";
 
 // Supagraph specific constants detailing the contracts we'll sync against
 import { TransactionReceipt } from "@ethersproject/providers";
-import {
-  supagraph,
-  // these types will be imported from a generated directory based on the SUPAGRAPH_EVENT_SIGNATURES and SUPAGRAPH_SCHEMA (coming soon TM);
+
+// Import the configuration for this supagraph (most of these values should be pulled from env)
+import config from "./config";
+
+// - These types will be generated based on the event signatures exported by the defined contracts in config (coming soon TM);
+import type {
   DelegateChangedEvent,
+  DelegateEntity,
   DelegateVotesChangedEvent,
   TransferEvent,
-  DelegateEntity,
-} from "./config";
+} from "./types";
 
-// configure JsonRpcProvider for Mantle contracts chainId
-const MANTLE_PROVIDER = new providers.JsonRpcProvider(
-  (supagraph.providers as Record<number, { rpcUrl: string }>)[
-    supagraph.contracts.mantle.chainId
-  ].rpcUrl
-);
-
-// extract env config
-const MANTLE_TOKEN_ADDRESS = supagraph.contracts.mantle.address;
-const MANTLE_START_BLOCK = supagraph.contracts.mantle.startBlock;
-
-// configure JsonRpcProvider for BitDAO contracts chainId
-const BITDAO_PROVIDER = new providers.JsonRpcProvider(
-  (supagraph.providers as Record<number, { rpcUrl: string }>)[
-    supagraph.contracts.bitdao.chainId
-  ].rpcUrl
-);
-
-// extract env config
-const BITDAO_TOKEN_ADDRESS = supagraph.contracts.bitdao.address;
-const BITDAO_START_BLOCK = supagraph.contracts.bitdao.startBlock;
-
-// we could import the Contract from ./generated:
-
-// -- contract handlers to call every "sync()"
-// import { DelegateEntity } from "./generated/entities";
-// import { DelegateChanged, Factory } from "./generated/contracts/mantle";
-//
-// -- set and export the handler (we could just set the type `args: DelegateChangedEvent` and return the handler directly)
-// export const DelegateChangedHandler = DelegateChanged(
-//   async (args, { tx, block }) => {
-//     const entity = await DelegateEntity.get(args.delegator);
-//
-//     // if we needed to sync a factory deployed contract, we could do that by registering a new mapping for the given address
-//     // await Factory.create(address); // this will start syncing from the current block (we will need to suspend, collect and sync events for the new contract)
-//   }
-// );
-//
-// -- generic handler to call every "sync()"
-// import { On } from "./generated";
-//
-// -- set and export generic handler
-// export const onSync = On("sync", ({ txs, block }) => {
-//
-// });
+// Extract the Mantle token address so that we can detect which contract the event belongs to
+const MANTLE_TOKEN_ADDRESS = config.contracts.mantle.address;
 
 // Generic handler to consume DelegateChanged events
 export const DelegateChangedHandler = async (
   args: DelegateChangedEvent,
   { tx }: { tx: TransactionReceipt }
 ) => {
-  // console.log("add", args.fromDelegate, "to", args.toDelegate);
+  // console.log("delegate: from", args.fromDelegate, "to", args.toDelegate);
+
+  // construct token specific props
   const toProp = `${
     tx.contractAddress === MANTLE_TOKEN_ADDRESS ? "mnt" : "bit"
   }To` as "mntTo" | "bitTo";
-
   const countProp = `${
     tx.contractAddress === MANTLE_TOKEN_ADDRESS ? "mnt" : "bit"
   }DelegatorsCount` as "mntDelegatorsCount" | "bitDelegatorsCount";
@@ -144,6 +105,7 @@ export const DelegateVotesChangedHandler = async (
 ) => {
   // console.log("votes changed:", args.delegate, "from", args.previousBalance.toString(), "to", args.newBalance.toString());
 
+  // construct token specific props
   const votesProp = `${
     tx.contractAddress === MANTLE_TOKEN_ADDRESS ? "mnt" : "bit"
   }Votes` as "mntVotes" | "bitVotes";
@@ -179,6 +141,8 @@ export const TransferHandler = async (
   { tx }: { tx: TransactionReceipt }
 ) => {
   // console.log("transfer: from", args.from, "to", args.to, "for", args.value.toString());
+
+  // construct token specific props
   const balanceProp = `${
     tx.contractAddress === MANTLE_TOKEN_ADDRESS ? "mnt" : "bit"
   }Balance` as "mntBalance" | "bitBalance";
@@ -233,87 +197,3 @@ export const TransferHandler = async (
   // save the changes
   await recipient.save();
 };
-
-// Sync DelegateChanged events
-addSync<DelegateChangedEvent>({
-  // Set the name of the event we're consuming with this handler (1 event per handler)
-  eventName: "DelegateChanged",
-  // Connect the sync to L1 Provider and set the sync startBlock
-  provider: MANTLE_PROVIDER,
-  address: MANTLE_TOKEN_ADDRESS,
-  startBlock: MANTLE_START_BLOCK,
-  // this can be the same for all events in the supagraph
-  eventAbi: supagraph.events,
-  // Construct the callback we'll use to index the event
-  onEvent: DelegateChangedHandler,
-});
-
-// Sync DelegateChanged events
-addSync<DelegateChangedEvent>({
-  // Set the name of the event we're consuming with this handler (1 event per handler)
-  eventName: "DelegateChanged",
-  // Connect the sync to L1 Provider and set the sync startBlock
-  provider: BITDAO_PROVIDER,
-  address: BITDAO_TOKEN_ADDRESS,
-  startBlock: BITDAO_START_BLOCK,
-  // this can be the same for all events in the supagraph
-  eventAbi: supagraph.events,
-  // Construct the callback we'll use to index the event
-  onEvent: DelegateChangedHandler,
-});
-
-// Sync DelegateVotesChanged events
-addSync<DelegateVotesChangedEvent>({
-  // Set the name of the event we're consuming with this handler (1 event per handler)
-  eventName: "DelegateVotesChanged",
-  // Connect the sync to L1 Provider and set the sync startBlock
-  provider: MANTLE_PROVIDER,
-  address: MANTLE_TOKEN_ADDRESS,
-  startBlock: MANTLE_START_BLOCK,
-  // this can be the same for all events in the supagraph
-  eventAbi: supagraph.events,
-  // Construct the callback we'll use to index the event
-  onEvent: DelegateVotesChangedHandler,
-});
-
-// Sync DelegateVotesChanged events
-addSync<DelegateVotesChangedEvent>({
-  // Set the name of the event we're consuming with this handler (1 event per handler)
-  eventName: "DelegateVotesChanged",
-  // Connect the sync to L1 Provider and set the sync startBlock
-  provider: BITDAO_PROVIDER,
-  address: BITDAO_TOKEN_ADDRESS,
-  startBlock: BITDAO_START_BLOCK,
-  // this can be the same for all events in the supagraph
-  eventAbi: supagraph.events,
-  // Construct the callback we'll use to index the event
-  onEvent: DelegateVotesChangedHandler,
-});
-
-// Sync Transfer events
-addSync<TransferEvent>({
-  // Set the name of the event we're consuming with this handler (1 event per handler)
-  eventName: "Transfer",
-  // Connect the sync to L1 Provider and set the sync startBlock
-  provider: MANTLE_PROVIDER,
-  address: MANTLE_TOKEN_ADDRESS,
-  startBlock: MANTLE_START_BLOCK,
-  // this can be the same for all events in the supagraph
-  eventAbi: supagraph.events,
-  // Construct the callback we'll use to index the event
-  onEvent: TransferHandler,
-});
-
-// Sync Transfer events
-addSync<TransferEvent>({
-  // Set the name of the event we're consuming with this handler (1 event per handler)
-  eventName: "Transfer",
-  // Connect the sync to L1 Provider and set the sync startBlock
-  provider: BITDAO_PROVIDER,
-  address: BITDAO_TOKEN_ADDRESS,
-  startBlock: BITDAO_START_BLOCK,
-  // this can be the same for all events in the supagraph
-  eventAbi: supagraph.events,
-  // Construct the callback we'll use to index the event
-  onEvent: TransferHandler,
-});

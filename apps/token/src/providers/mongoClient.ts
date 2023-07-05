@@ -1,16 +1,16 @@
 import { MongoClient } from "mongodb";
 
-// add a global rejection-handler (hopefully this isnt triggered)
+// Add a global rejection-handler (hopefully this isnt triggered)
 process.on("unhandledRejection", (err, promise) => {
   // eslint-disable-next-line no-console
   console.log(`Unhandled rejection (promise: ${promise}, reason: ${err})`);
 });
 
-// containers for connections we have...
+// Containers for connections we have...
 const client: Record<string, MongoClient> = {};
 const clientPromise: Record<string, Promise<MongoClient>> = {};
 
-// keep trying for the db
+// Keep trying for the db
 export const getMongodb = async (uri: string): Promise<MongoClient> => {
   if (!uri) {
     throw new Error("Please provide a monogo uri to proceed");

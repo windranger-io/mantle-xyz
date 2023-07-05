@@ -873,7 +873,7 @@ export const sync = async ({
     // only need to do this if we got new events
     if (newEvents) {
       // record the fully resolved discovery
-      console.log(`\n${eventName} new events:`, newEvents.length);
+      console.log(`\n${eventName} new events:`, newEvents.length, "\n");
       // push all new events to the event log
       events = events.concat(newEvents);
     }

@@ -10,6 +10,15 @@ const nextConfig = {
       'static.alchemyapi.io',
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/graphql',
+        permanent: true,
+      },
+    ]
+  },
   experimental: {
     appDir: true,
     scrollRestoration: true

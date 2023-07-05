@@ -1,36 +1,72 @@
-// use addSync to add operations and sync to process them all in block/tx order
+// Use addSync to add operations and sync to process them all in block/tx order
 import { NextRequest, NextResponse } from "next/server";
 
-// import the sync command
-import { DB, Mongo, Stage, Store, sync } from "@mantle/supagraph";
+// Import the sync command and db drivers to setup engine
+import { DB, Mongo, Stage, Store, addSync, sync } from "@mantle/supagraph";
+
+// Each sync will be provided its own provider
+import { providers } from "ethers/lib/ethers";
+
+// Import mongodb client
 import { getMongodb } from "@providers/mongoClient";
 
-// import revalidation timings from config
-import { supagraph } from "../config";
+// Import all mappings to be registered
+import { Mappings, mappings } from "@supagraph/register";
 
-// import all sync handlers
-import "../syncs";
+// Import revalidation timings from config
+import config from "@supagraph/config";
 
-// switch out the engine for development to avoid the mongo requirment locally
+// Object of providers by rpcUrl
+const providerCache: { [rpcUrl: string]: providers.JsonRpcProvider } = {};
+
+// Switch out the engine for development to avoid the mongo requirment locally
 Store.setEngine({
   // name the connection
-  name: supagraph.name,
+  name: config.name,
   // db is dependent on state
   db:
     // in production/production like environments we want to store mutations to mongo otherwise we can store them locally
-    process.env.NODE_ENV === "development" && supagraph.dev
+    process.env.NODE_ENV === "development" && config.dev
       ? // connect store to in-memory/node-persist store
-        DB.create({ kv: {}, name: supagraph.name })
+        DB.create({ kv: {}, name: config.name })
       : // connect store to MongoDB
         Mongo.create({
           kv: {},
-          name: supagraph.name,
-          mutable: supagraph.mutable,
+          name: config.name,
+          mutable: config.mutable,
           client: getMongodb(process.env.MONGODB_URI!),
         }),
 });
 
-// expose the sync command on a route so that we can call it with a cron job
+// Register each of the syncs from the mapping
+mappings.register.forEach((syncOp) => {
+  // pull the handlers for the registration
+  const handlers =
+    typeof syncOp.handlers === "object"
+      ? syncOp.handlers
+      : mappings.handlers?.[
+          syncOp.handlers || ("" as keyof Mappings["handlers"])
+        ] || {};
+
+  // configure JsonRpcProvider for contracts chainId
+  providerCache[syncOp.rpcUrl] =
+    providerCache[syncOp.rpcUrl] ||
+    new providers.JsonRpcProvider(syncOp.rpcUrl);
+
+  // for each handler register a sync
+  Object.keys(handlers).forEach((eventName) => {
+    addSync({
+      eventName,
+      eventAbi: syncOp.abi,
+      address: syncOp.address,
+      startBlock: syncOp.startBlock,
+      provider: providerCache[syncOp.rpcUrl],
+      onEvent: handlers[eventName],
+    });
+  });
+});
+
+// Expose the sync command on a route so that we can call it with a cron job
 export async function GET(request: NextRequest) {
   // set the start stage of the sync ("events", "blocks", "transactions", "sort", "process")
   const start =
@@ -53,7 +89,7 @@ export async function GET(request: NextRequest) {
   // we don't need to sync more often than once per block - and if we're using vercel.json crons we can only sync 1/min
   return NextResponse.json(summary, {
     headers: {
-      "Cache-Control": `max-age=${supagraph.revalidate}, public, s-maxage=${supagraph.revalidate}, stale-while-revalidate=${supagraph.staleWhileRevalidate}`,
+      "Cache-Control": `max-age=${config.revalidate}, public, s-maxage=${config.revalidate}, stale-while-revalidate=${config.staleWhileRevalidate}`,
     },
   });
 }
