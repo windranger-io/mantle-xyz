@@ -78,6 +78,8 @@ export const createSupagraph = <
   plugins,
   graphqlEndpoint,
   name,
+  icon,
+  title,
   defaultQuery,
   headers,
   revalidate = 0,
@@ -94,6 +96,8 @@ export const createSupagraph = <
     Plugin<YogaInitialContext> | Plugin | Record<string, unknown>
   >;
   graphqlEndpoint?: string;
+  icon?: string;
+  title?: string;
   name?: string;
   defaultQuery?: string;
   headers?: Record<string, string>;
@@ -161,14 +165,17 @@ export const createSupagraph = <
     graphqlEndpoint:
       graphqlEndpoint || (name ? `/subgraphs/name/${name}` : `/graphql`),
     graphiql: {
+      title,
       defaultQuery: defaultQuery ? tidyDefaultQuery(defaultQuery) : `query {}`,
     },
     // append options to the renderGraphiQL setup
     renderGraphiQL: (opts) =>
       renderGraphiQL({
         ...opts,
+        // pass icon if defined
+        icon,
         // set the playground page title...
-        title: "Supagraph Playground",
+        title: title || "Supagraph Playground",
       }),
     // construct the schema from the typeDefs and _schema
     schema: createSchema({

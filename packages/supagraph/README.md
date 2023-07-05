@@ -51,7 +51,7 @@ To get started with `supagraph`, follow these steps:
    };
    ```
 
-2. If we're using `supagraph` to construct static `GraphQL` endpoints, we can call `createSupagraph` and supply a mapping of arrays (`{Entity: []}`) as the `entities` prop, otherwise, we might want to use a resolver:
+2. If we're using `supagraph` to construct static `GraphQL` endpoints, we can call `createSupagraph` and supply a mapping of arrays (`{[EntityName]: []}`) as the `entities` prop, otherwise, we might want to use a resolver:
 
    ```typescript
    import { createSupagraph, memoryResolver } from "supagraph";
@@ -63,7 +63,7 @@ To get started with `supagraph`, follow these steps:
      entities: memoryResolver({
        name: "supagraph",
      }),
-     graphqlEndpoint: `graphql`, // the relative path which will load supagraph.GET()
+     graphqlEndpoint: `graphql`, // the absolute path which will proxy supagraph.GET()/.POST() requests
      defaultQuery: `
        {
          names {
@@ -96,7 +96,7 @@ To get started with `supagraph`, follow these steps:
    export default createSupagraph<NextApiRequest, NextApiResponse>({
      schema,
      entities,
-     graphqlEndpoint: `/api/graphql`, // this _must_ match the current route
+     graphqlEndpoint: `graphql`, // this _must_ match the current route
      defaultQuery: `
        {
          names {
