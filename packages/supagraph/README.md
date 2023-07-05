@@ -197,3 +197,7 @@ If you would like to contribute to `supagraph`, please follow these steps:
 2. Create a new branch for your changes.
 3. Make your changes and test them thoroughly.
 4. Create a pull request and describe your changes.
+
+## Support
+
+Support can be found on our Discord channel [#supagraph](https://discord.gg/ryxy6eA6Dv)

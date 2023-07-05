@@ -28,7 +28,7 @@ To get started with `supagraph`, follow these steps:
 
 ### What is a schema?
 
-- Schema's define the structure of your GraphQL API. They specifies the available entities and their properties.
+- Schema's define the structure of your GraphQL API. They specify the available entities and their properties.
 
 ### How do I define my schema?
 
@@ -36,13 +36,14 @@ To get started with `supagraph`, follow these steps:
 
   ```typescript
   const schema = `
-  # id = \`\${owner}\`
-  type Name @entity {
-    id: ID!
-    name: String!
-    owner: Bytes!
-    number: BigNumber!
-  }`;
+    # id = \`\${owner}\`
+    type Name @entity {
+      id: ID!
+      name: String!
+      owner: Bytes!
+      number: BigNumber!
+    }
+  `;
   ```
 
 ### How do I represent joins?
@@ -51,25 +52,26 @@ To get started with `supagraph`, follow these steps:
 
   ```typescript
   const schema = `
-  # id = \`\${owner}\`
-  type Name @entity {
-    id: ID!
-    name: String!
-    owner: Bytes!
-    number: [Number!]! @derivedFrom(field: "owner")
-  }
-  
-  # id = \`\${number}\`
-  type Number @entity {
-    id: ID!
-    owner: Bytes!
-    number: BigNumber!
-  }`;
+    # id = \`\${owner}\`
+    type Name @entity {
+      id: ID!
+      name: String!
+      owner: Bytes!
+      number: [Number!]! @derivedFrom(field: "owner")
+    }
+    
+    # id = \`\${number}\`
+    type Number @entity {
+      id: ID!
+      owner: Bytes!
+      number: BigNumber!
+    }
+  `;
   ```
 
-### How do I setup `supagraph`'s GraphQL server?
+### How do I setup `supagraphs` GraphQL server?
 
-- To set up `supagraph`'s GraphQL server, you need to provide your schema, resolvers, and any necessary configuration options. This can be done using the `createSupagraph` function provided by `supagraph`.
+- To set up `supagraphs` GraphQL server, you need to provide your schema, resolvers, and any necessary configuration options. This can be done using the `createSupagraph` function provided by `supagraph`.
 
   ```typescript
   import { createSupagraph, memoryResolver } from "supagraph";
@@ -85,7 +87,7 @@ To get started with `supagraph`, follow these steps:
 
 ### Can I personalize "Supagraph Playground"?
 
-- Yes, you can personalize the "Supagraph Playground" by providing a custom logo, favicon and title:
+- Yes, you can personalize the `Supagraph Playground` by providing a custom icon, title and defaultQuery:
 
   ```typescript
   import { createSupagraph } from "supagraph";
@@ -94,14 +96,15 @@ To get started with `supagraph`, follow these steps:
     title: "Supagraph Playground",
     icon: "/supagraph.png",
     defaultQuery: `
-    {
-      names {
-        id
-        name
-        number
-        owner
+      {
+        names {
+          id
+          name
+          number
+          owner
+        }
       }
-    }`,
+    `,
   });
   ```
 
