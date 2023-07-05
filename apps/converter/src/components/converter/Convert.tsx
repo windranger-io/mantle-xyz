@@ -6,7 +6,7 @@ import {
   L1_CONVERTER_CONTRACT_ADDRESS,
 } from "@config/constants";
 import StateContext from "@providers/stateContext";
-import { useContext } from "react";
+import { Suspense, useContext } from "react";
 import { useContractRead } from "wagmi";
 
 // by order of use...
@@ -20,6 +20,7 @@ import TX from "@components/converter/TransactionPanel";
 import { Typography } from "@mantle/ui";
 import { ConvertCard } from "@components/ConvertCard";
 import { SmartContractTracker } from "./SmartContractTracker";
+import { Loading as SCLoading } from "./SmartContractTracker/Loading";
 import { Faq } from "./Faq";
 
 export default function Convert() {
@@ -64,7 +65,9 @@ export default function Convert() {
           </div>
         </ConvertCard>
         <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] lg:max-w-[250px] xl:w-[320px] xl:max-w-[320px] lg:absolute lg:top-0 lg:right-[-55%] xl:right-[-80%]">
-          <SmartContractTracker halted={!!halted} />
+          <Suspense fallback={<SCLoading />}>
+            <SmartContractTracker halted={!!halted} />
+          </Suspense>
           <Faq />
         </div>
       </div>

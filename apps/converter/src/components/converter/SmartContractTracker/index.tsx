@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { useBalance } from "wagmi";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { Typography } from "@mantle/ui";
@@ -9,7 +8,6 @@ import {
   L1_MANTLE_TOKEN,
   L1_MANTLE_TOKEN_ADDRESS,
 } from "@config/constants";
-import { Loading } from "./Loading";
 
 type SCTrackerProps = {
   halted: boolean;
@@ -32,32 +30,30 @@ export function SmartContractTracker({ halted }: SCTrackerProps) {
   );
 
   return (
-    <Suspense fallback={<Loading />}>
-      <ConvertCard className="rounded-xl w-full">
-        <div className="flex px-2 py-2 gap-3">
-          <div
-            className={cn("h-3 w-3 rounded-full bg-green-400 mt-[3px]", {
-              "bg-red-500": halted,
-            })}
-          />
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <Typography className="text-type-secondary">Status</Typography>
-              <Typography className="font-bold text-type-primary">
-                {halted ? "Un" : "A"}ctive ({!halted ? "Unh" : "H"}alted)
-              </Typography>
-            </div>
-            <div className="flex flex-col">
-              <Typography className="text-type-secondary">
-                Balance in conversion contract
-              </Typography>
-              <Typography className="font-bold text-type-primary">
-                {formattedBalance} MNT
-              </Typography>
-            </div>
+    <ConvertCard className="rounded-xl w-full">
+      <div className="flex px-2 py-2 gap-3">
+        <div
+          className={cn("h-3 w-3 rounded-full bg-green-400 mt-[3px]", {
+            "bg-red-500": halted,
+          })}
+        />
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col">
+            <Typography className="text-type-secondary">Status</Typography>
+            <Typography className="font-bold text-type-primary">
+              {halted ? "Un" : "A"}ctive ({!halted ? "Unh" : "H"}alted)
+            </Typography>
+          </div>
+          <div className="flex flex-col">
+            <Typography className="text-type-secondary">
+              Balance in conversion contract
+            </Typography>
+            <Typography className="font-bold text-type-primary">
+              {formattedBalance} MNT
+            </Typography>
           </div>
         </div>
-      </ConvertCard>
-    </Suspense>
+      </div>
+    </ConvertCard>
   );
 }
