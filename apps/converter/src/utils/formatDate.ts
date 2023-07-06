@@ -1,6 +1,5 @@
 const localDateTimeIntl = new Intl.DateTimeFormat(
-  // globalThis.navigator?.language ||
-  "en",
+  globalThis.navigator?.language || "en",
   {
     year: "numeric",
     month: "2-digit",
