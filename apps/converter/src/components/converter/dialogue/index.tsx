@@ -17,15 +17,8 @@ import Converted from "@components/converter/dialogue/Completed";
 
 import { ConvertCard } from "@components/ConvertCard";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
-import Terms from "./Terms";
 
-export default function Dialogue({
-  isOpen,
-  setIsOpen,
-}: {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-}) {
+export default function Dialogue() {
   const {
     chainId,
     txHash,
@@ -36,6 +29,8 @@ export default function Dialogue({
     setSafeChains,
     isCTAPageOpenRef: isOpenRef,
     amount,
+    isCTAPageOpen,
+    setIsCTAPageOpen,
   } = useContext(StateContext);
 
   const from = useMemo(() => {
@@ -71,7 +66,7 @@ export default function Dialogue({
     // manually set this ref
     isOpenRef.current = false;
     // exit the modal
-    setIsOpen(false);
+    setIsCTAPageOpen(false);
     // after timeout to prevent flash of the first screen on close
     setTimeout(() => {
       // reset local state
@@ -80,8 +75,8 @@ export default function Dialogue({
   };
 
   return (
-    (isOpen && (
-      <ConvertCard>
+    (isCTAPageOpen && (
+      <ConvertCard className="mt-16">
         <div className="w-full max-w-lg transform text-left align-middle transition-all space-y-10 px-4 py-6">
           {ctaPage === CTAPages.Default && (
             <Default closeModal={closeModalAndReset} />
@@ -104,7 +99,6 @@ export default function Dialogue({
           {ctaPage === CTAPages.Error && (
             <Error reset={reset} closeModal={closeModalAndReset} />
           )}
-          {ctaPage === CTAPages.Terms && <Terms />}
         </div>
       </ConvertCard>
     )) || <div />

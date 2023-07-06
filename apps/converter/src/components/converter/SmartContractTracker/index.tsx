@@ -1,34 +1,35 @@
-"use client";
-
+import { useBalance } from "wagmi";
+import { useEffect, useMemo, useState } from "react";
+import { formatUnits, parseUnits } from "ethers/lib/utils.js";
+import { Typography } from "@mantle/ui";
+import { cn } from "@mantle/ui/src/utils";
 import { ConvertCard } from "@components/ConvertCard";
 import {
   L1_CONVERTER_CONTRACT_ADDRESS,
   L1_MANTLE_TOKEN,
   L1_MANTLE_TOKEN_ADDRESS,
 } from "@config/constants";
-import { Typography } from "@mantle/ui";
-import { cn } from "@mantle/ui/src/utils";
-import { formatUnits, parseUnits } from "ethers/lib/utils.js";
-import { useMemo } from "react";
-import { useBalance } from "wagmi";
 
 type SCTrackerProps = {
   halted: boolean;
-  isLoadingHaltedStatus: boolean;
 };
 
-export function SmartContractTracker({
-  halted,
-  isLoadingHaltedStatus,
-}: SCTrackerProps) {
-  const { data: balanceData, isLoading: isBalanceLoading } = useBalance({
+export function SmartContractTracker({ halted }: SCTrackerProps) {
+  const { data: balanceData } = useBalance({
     address: L1_CONVERTER_CONTRACT_ADDRESS,
     token: L1_MANTLE_TOKEN_ADDRESS,
+    suspense: true,
   });
+
+  // to avoid hydration error
+  const [balanceDataClient, setBalanceDataClient] = useState<string>("");
+  useEffect(() => {
+    setBalanceDataClient(balanceData?.formatted || "");
+  }, [balanceData?.formatted]);
 
   const formattedBalance = useMemo(() => {
     const formatted = formatUnits(
-      parseUnits(balanceData?.formatted || "0", L1_MANTLE_TOKEN.decimals),
+      parseUnits(balanceDataClient || "0", L1_MANTLE_TOKEN.decimals),
       L1_MANTLE_TOKEN.decimals
     );
     const formattedMoney = new Intl.NumberFormat("us-US", {}).format(
@@ -36,12 +37,7 @@ export function SmartContractTracker({
     );
 
     return formattedMoney;
-  }, [balanceData?.formatted]);
-
-  if (isLoadingHaltedStatus || isBalanceLoading) {
-    // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <></>;
-  }
+  }, [balanceDataClient]);
 
   return (
     <ConvertCard className="rounded-xl w-full">
