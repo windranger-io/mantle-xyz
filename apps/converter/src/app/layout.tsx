@@ -7,14 +7,13 @@ import {
   PageWrapper,
   PageBackroundImage,
   PageContainer,
-  MantleLogoIcon,
 } from "@mantle/ui";
-import CONST from "@mantle/constants";
 
 import Head from "@app/head";
 import Providers from "@app/providers";
 
 import Nav from "@components/Nav";
+import Footer from "@components/Footer";
 
 import bridgeBG from "../../public/bridge-bg.png";
 
@@ -43,23 +42,7 @@ export default function RootLayout({
             className="h-screen"
           >
             <PageContainer className="grow">{children}</PageContainer>
-            <div className="flex justify-center items-center py-8">
-              <div>
-                <a
-                  href={CONST.WEBSITE}
-                  rel="noreferrer noopener"
-                  target="_blank"
-                  className="inline-block"
-                >
-                  <div className="flex flex-row align-center gap-4">
-                    <MantleLogoIcon height={40} width={40} />
-                    <div className="flex items-center">
-                      Mantle {new Date().getFullYear()}&nbsp;&#169;
-                    </div>
-                  </div>
-                </a>
-              </div>
-            </div>
+            <Footer />
           </PageWrapper>
         </Providers>
       </body>
