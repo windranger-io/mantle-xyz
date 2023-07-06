@@ -3,7 +3,7 @@ import { ConvertCard } from "@components/ConvertCard";
 import { Typography } from "@mantle/ui";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
-// TODO: replace blog post and dashboard links
+// TODO: replace blog post URL
 const faqList: Array<{ q: string; a: JSX.Element }> = [
   {
     q: "Why should I migrate my $BIT tokens?",
@@ -53,10 +53,7 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         Yes, most users will be refunded their cost of migration in ETH. Users
         will not have to take any action and the ETH will be airdropped to the
         address. The status of the rebate will be available in a future
-        dashboard available at:{" "}
-        {/* <a href="/" target="__blank" rel="noreferrer" className="underline"> */}
-        url
-        {/* </a> */}
+        dashboard.
       </Typography>
     ),
   },
