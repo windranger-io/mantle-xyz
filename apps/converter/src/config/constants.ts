@@ -298,4 +298,5 @@ export enum ErrorMessages {
   HALTED = "Conversion halted. Contract is under maintenance. Please check later.",
 }
 
-export const isComingSoon = process.env.VERCEL_ENV === "production";
+export const isComingSoon =
+  process.env.NEXT_PUBLIC_IS_COMING_SOON === "true" || false;
