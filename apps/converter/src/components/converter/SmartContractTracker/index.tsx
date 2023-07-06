@@ -1,5 +1,5 @@
 import { useBalance } from "wagmi";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { Typography } from "@mantle/ui";
 import { cn } from "@mantle/ui/src/utils";
@@ -27,14 +27,17 @@ export function SmartContractTracker({ halted }: SCTrackerProps) {
     setBalanceDataClient(balanceData?.formatted || "");
   }, [balanceData?.formatted]);
 
-  const formatted = formatUnits(
-    parseUnits(balanceDataClient || "0", L1_MANTLE_TOKEN.decimals),
-    L1_MANTLE_TOKEN.decimals
-  );
+  const formattedBalance = useMemo(() => {
+    const formatted = formatUnits(
+      parseUnits(balanceDataClient || "0", L1_MANTLE_TOKEN.decimals),
+      L1_MANTLE_TOKEN.decimals
+    );
+    const formattedMoney = new Intl.NumberFormat("us-US", {}).format(
+      +formatted
+    );
 
-  const formattedBalance = new Intl.NumberFormat("us-US", {}).format(
-    +formatted
-  );
+    return formattedMoney;
+  }, [balanceDataClient]);
 
   return (
     <ConvertCard className="rounded-xl w-full">
