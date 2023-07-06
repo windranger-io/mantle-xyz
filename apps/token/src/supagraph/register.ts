@@ -3,9 +3,9 @@ import config from "./config";
 
 // Import the handlers
 import {
+  TransferHandler,
   DelegateChangedHandler,
   DelegateVotesChangedHandler,
-  TransferHandler,
 } from "./handlers";
 
 // Import Mappings to type the obj we will register
@@ -50,9 +50,9 @@ export const mappings: Mappings = {
           config.contracts.bitdao.chainId as keyof typeof config.providers
         ].rpcUrl,
       // pull remainder of the config from the contract
-      abi: config.contracts.mantle.events,
-      address: config.contracts.mantle.address,
-      startBlock: config.contracts.mantle.startBlock,
+      abi: config.contracts.bitdao.events,
+      address: config.contracts.bitdao.address,
+      startBlock: config.contracts.bitdao.startBlock,
     },
   ],
 };

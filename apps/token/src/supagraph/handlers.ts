@@ -7,9 +7,6 @@ import { Store } from "@mantle/supagraph";
 // Supagraph specific constants detailing the contracts we'll sync against
 import { TransactionReceipt } from "@ethersproject/providers";
 
-// Import the configuration for this supagraph (most of these values should be pulled from env)
-import config from "./config";
-
 // - These types will be generated based on the event signatures exported by the defined contracts in config (coming soon TM);
 import type {
   DelegateChangedEvent,
@@ -19,7 +16,8 @@ import type {
 } from "./types";
 
 // Extract the Mantle token address so that we can detect which contract the event belongs to
-const MANTLE_TOKEN_ADDRESS = config.contracts.mantle.address;
+const MANTLE_TOKEN_ADDRESS =
+  process.env.MANTLE_ADDRESS || "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604";
 
 // Generic handler to consume DelegateChanged events
 export const DelegateChangedHandler = async (

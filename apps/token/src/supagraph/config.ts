@@ -1,7 +1,7 @@
 // Assign default value to provided env
 import { withDefault } from "@mantle/supagraph";
 
-// Export the complete supagraph configuration (sync & graph)
+// Export the complete supagraph configuration (sync & graph) - we can add everything from Mappings to this config
 const config = {
   // name your supagraph (this will inform mongo table name etc...)
   name: withDefault(
