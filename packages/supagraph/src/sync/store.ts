@@ -136,11 +136,17 @@ export class Entity<T extends { id: string }> extends TypedMap<
     const chainId = Store.getChainId();
 
     // this should commit changes (adding them to a batch op to be commited to db later)
-    if (id && block && chainId) {
-      // adding these regardless of typings - we need them to settle the latest entry from the db
-      this.set("_block_ts" as keyof T, block.timestamp as T[keyof T]);
-      this.set("_block_num" as keyof T, block.number as T[keyof T]);
-      this.set("_chain_id" as keyof T, chainId as T[keyof T]);
+    if (id) {
+      // update block and chain details when provided
+      if (block) {
+        // adding these regardless of typings - we need them to settle the latest entry from the db
+        this.set("_block_ts" as keyof T, block.timestamp as T[keyof T]);
+        this.set("_block_num" as keyof T, block.number as T[keyof T]);
+      }
+      // adding chainId will need to be done on first insert (even if we don't have the block yet)
+      if (chainId) {
+        this.set("_chain_id" as keyof T, chainId as T[keyof T]);
+      }
       // replace the current entry with the new one
       await Store.set(
         this.ref,
@@ -247,6 +253,10 @@ export class Store {
 
   static setBlock(block: Block) {
     engine.block = block;
+  }
+
+  static clearBlock() {
+    engine.block = undefined;
   }
 
   static getBlock() {

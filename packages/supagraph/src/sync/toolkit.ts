@@ -710,6 +710,9 @@ export const sync = async ({
     fs.mkdirSync(`${cwd}/data/transactions`, { recursive: true });
   }
 
+  // detect newDBs and mark locally
+  let newDb = false;
+
   // open a checkpoint on the db...
   const engine = await getEngine();
 
@@ -722,8 +725,15 @@ export const sync = async ({
   const latestBlock: Record<string, Block> = {};
   const latestEntity: Record<
     string,
-    Entity<{ id: string; latestBlock: number }> & {
+    Entity<{
       id: string;
+      locked: boolean;
+      latestBlock: number;
+      _block_num: number;
+      _block_ts: number;
+    }> & {
+      id: string;
+      locked: boolean;
       latestBlock: number;
       _block_num: number;
       _block_ts: number;
@@ -742,6 +752,9 @@ export const sync = async ({
   const eventIfaces: Record<string, ethers.utils.Interface> = {};
   const startBlocks: Record<string, number> = {};
   const startTimes: Record<string, number> = {};
+  // record locks by chainId
+  const locked: Record<number, boolean> = {};
+  const blocked: Record<number, number> = {};
 
   // chainIds visited in the process
   const chainIds: Set<number> = new Set<number>();
@@ -787,6 +800,47 @@ export const sync = async ({
       eventIfaces[`${address}-${eventName}`] ||
       new ethers.utils.Interface(eventAbi);
 
+    // check locked state
+    if (!Object.hasOwnProperty.call(locked, chainId)) {
+      // check for lock state by directly pulling the entity (we can't go through store because newDb might be set)
+      const latest = await engine.db?.get(`__meta__.${chainId}`);
+      // hydrate the locked bool
+      locked[chainId] = latest?.locked;
+      blocked[chainId] = latest?.latestBlock || 0;
+    }
+
+    // to block is always latest when we collected the events
+    latestBlock[chainId] =
+      // if we've already discovered the latest block from the provider then return it
+      latestBlock[chainId] ||
+      // otherwise fetch it from the provider (we need each latest block for each provider)
+      (await provider.getBlock("latest"));
+
+    // the db is locked (check if this lock should be released)
+    if (
+      !newDb &&
+      locked[chainId] &&
+      blocked[chainId] + 10 < (latestBlock[chainId].number || 0)
+    ) {
+      // mark the operation in the log
+      console.log("--\n\nSync error:", chainId, " - DB is locked", "\n");
+
+      // record when we finished the sync operation
+      const endTime = performance.now();
+
+      // print time in console
+      console.log(
+        `\n===\n\nTotal execution time: ${(
+          Number(endTime - startTime) / 1000
+        ).toPrecision(4)}s\n\n`
+      );
+
+      // return error state to caller
+      return {
+        error: "DB is locked",
+      };
+    }
+
     // get the entity once
     latestEntity[chainId] =
       // if we've already discovered the latest block entry for this provider then return it
@@ -795,9 +849,19 @@ export const sync = async ({
       (await Store.get<{
         id: string;
         latestBlock: number;
+        locked: boolean;
         _block_num: number;
         _block_ts: number;
-      }>("__meta__", `${chainId}`));
+      }>("__meta__", `${chainId}`)); // if this is null but we have rows in the collection, we could select the most recent and check the lastBlock
+
+    // set the chainId into the engine
+    Store.setChainId(chainId);
+
+    // set the lock (this will be released on successful update)
+    latestEntity[chainId].set("locked", true);
+
+    // save the new locked state on the chainId
+    await latestEntity[chainId].save();
 
     // check if we should be pulling events in this sync or using the tmp cache
     if (
@@ -811,13 +875,6 @@ export const sync = async ({
       if (start && Stage[start] > Stage.events) {
         start = "blocks";
       }
-      // to block is always latest when we collected the events
-      latestBlock[chainId] =
-        // if we've already discovered the latest block from the provider then return it
-        latestBlock[chainId] ||
-        // otherwise fetch it from the provider (we need each latest block for each provider)
-        (await provider.getBlock("latest"));
-
       // set the block frame
       const toBlock = latestBlock[chainId].number;
       const fromBlock = latestEntity[chainId]._block_num || startBlock;
@@ -825,7 +882,7 @@ export const sync = async ({
 
       // mark engine as newDb
       if (!latestEntity[chainId].latestBlock) {
-        engine.newDb = true;
+        newDb = engine.newDb = true;
       }
 
       // record the startBlock
@@ -835,15 +892,18 @@ export const sync = async ({
       // mark the operation in the log
       console.log("--\n\nSync chainID:", chainId, { fromBlock, toBlock }, "\n");
 
-      // all new events to be processed in this sync
-      newEvents = await getNewEvents(
-        address,
-        eventAbi,
-        eventName,
-        fromBlock,
-        toBlock,
-        provider
-      );
+      // all new events to be processed in this sync (only make the req if we will be querying a new block)
+      newEvents =
+        toBlock >= fromBlock
+          ? await getNewEvents(
+              address,
+              eventAbi,
+              eventName,
+              fromBlock,
+              toBlock,
+              provider
+            )
+          : [];
 
       // record the entities run so we can step back to this spot
       await saveCSV(
@@ -859,7 +919,7 @@ export const sync = async ({
         ))
     ) {
       // assume that we're starting a fresh db
-      engine.newDb = true;
+      newDb = engine.newDb = true;
       // start the run from the blocks
       if (start && Stage[start] >= Stage.process) {
         start = "blocks";
@@ -960,7 +1020,7 @@ export const sync = async ({
     );
 
     // assume that we're starting a fresh db
-    engine.newDb = true;
+    newDb = engine.newDb = true;
 
     // restore the sorted collection
     sorted = await readCSV(`${cwd}/data/events/latestRun-allData.csv`);
@@ -1052,7 +1112,7 @@ export const sync = async ({
     await engine?.stage?.commit();
 
     // no longer a newDB after committing changes
-    engine.newDb = false;
+    newDb = engine.newDb = false;
 
     // after commit all events are stored in db
     process.stdout.write("✔\nPointers updated ");
@@ -1068,35 +1128,44 @@ export const sync = async ({
         const chainsLatestBlock: (typeof events)[0] =
           chainsEvents[chainsEvents.length - 1];
 
+        // extract latest update
+        const latestTimestamp =
+          chainsLatestBlock?.timestamp || chainsLatestBlock?.data.blockNumber;
+        const latestBlockNumber = chainsLatestBlock?.data.blockNumber;
+
         // log the pointer update we're making with this sync
         chainUpdates.push(
           `Chain pointer update: id::${chainId} → ${JSON.stringify({
             fromBlock: startBlocks[chainId],
             // if we didn't find any events then we can keep the toBlock as startBlock
-            toBlock:
-              chainsLatestBlock?.data.blockNumber || startBlocks[chainId],
+            toBlock: latestBlockNumber || startBlocks[chainId],
+            // this will be the starting point for the next block
+            nextBlock: (latestBlockNumber || startBlocks[chainId] || 0) + 1,
           })}`
         );
 
-        // set the chainId into the engine
-        Store.setChainId(chainId);
-        // make sure we're storing against the correct block
-        Store.setBlock({
-          timestamp:
-            chainsLatestBlock?.timestamp ||
-            chainsLatestBlock?.data.blockNumber ||
-            // if latestBlock is missing use startTime (could be a block or a ts depending on settings)...
-            startTimes[chainId],
-          number: chainsLatestBlock?.data.blockNumber || startBlocks[chainId],
-        } as unknown as Block);
-        // save the latest entry
-        latestEntity[chainId].set(
-          "latestBlock",
-          chainsLatestBlock?.data.blockNumber || startBlocks[chainId]
-        );
+        // only save the update if we have a blockNumber to save against (otherwise the next tick can start from the same block again)
+        if (latestBlockNumber) {
+          // set the chainId into the engine
+          Store.setChainId(chainId);
+          // make sure we're storing against the correct block
+          Store.setBlock({
+            // we add 1 here so that the next sync starts beyond the last block we processed (handlers are not idempotent - we must make sure we only process each event once)
+            number: latestBlockNumber + 1,
+            timestamp: latestTimestamp,
+          } as unknown as Block);
+          // save the latest entry
+          latestEntity[chainId].set("latestBlock", latestBlockNumber);
+        } else {
+          // clear the block to leave pointers untouched
+          Store.clearBlock();
+        }
+
+        // remove the lock for the next iteration
+        latestEntity[chainId].set("locked", false);
 
         // persist changes into the store
-        return latestEntity[chainId].save();
+        await latestEntity[chainId].save();
       })
     );
 
