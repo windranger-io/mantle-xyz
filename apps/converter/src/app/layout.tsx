@@ -12,6 +12,7 @@ import {
 import Head from "@app/head";
 import Providers from "@app/providers";
 
+import { isComingSoon } from "@config/constants";
 import Nav from "@components/Nav";
 import Footer from "@components/Footer";
 import bridgeBG from "../../public/bridge-bg.png";
@@ -35,13 +36,14 @@ export default function RootLayout({
               <PageBackroundImage
                 imgSrc={bridgeBG}
                 altDesc="Bridge Background Image"
+                className={isComingSoon ? "blur-md" : ""}
               />
             }
-            header={<Nav className="mb-0 m-0" />}
+            header={<Nav className="mb-0 m-0" hideConnectBtn={isComingSoon} />}
             className="h-screen"
           >
             <PageContainer className="grow">{children}</PageContainer>
-            <Footer />
+            {!isComingSoon && <Footer />}
           </PageWrapper>
         </Providers>
       </body>

@@ -297,3 +297,6 @@ export enum ErrorMessages {
   INSUFFICIENT_GAS = "You do not have enough gas to cover the transaction cost.",
   HALTED = "Conversion halted. Contract is under maintenance. Please check later.",
 }
+
+// TODO: swap to === after testing in preview environment
+export const isComingSoon = process.env.VERCEL_ENV !== "production";
