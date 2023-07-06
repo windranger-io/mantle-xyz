@@ -3,13 +3,13 @@ import { ConvertCard } from "@components/ConvertCard";
 import { Typography } from "@mantle/ui";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
-// TODO: replace BIP-21 and blog post links
+// TODO: replace blog post and dashboard links
 const faqList: Array<{ q: string; a: JSX.Element }> = [
   {
-    q: "Why should you convert your tokens?",
+    q: "Why should I migrate my $BIT tokens?",
     a: (
       <Typography className="text-type-secondary mx-4 mb-4">
-        This conversion is part of a strategic move following{" "}
+        As per{" "}
         <a
           href="https://snapshot.org/#/bitdao.eth/proposal/0xe81f852d90ba80929b1f19683da14b334d63b31cb94e53249b8caed715475693"
           target="__blank"
@@ -17,19 +17,32 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
           className="underline"
         >
           BIP-21
+        </a>{" "}
+        and{" "}
+        <a
+          href="https://snapshot.org/#/bitdao.eth/proposal/0x950dac4d5715b8aa8eab29c484b1c9dd0eed161141262b0425874f65be4d9f8e"
+          target="__blank"
+          rel="noreferrer"
+          className="underline"
+        >
+          MIP-22
         </a>
-        , aimed at unifying the brand under Mantle.
+        , the community has approved the merger of BitDAO and Mantle. The new
+        native token will be $MNT with usecases for Mantle Network gas fees and
+        Mantle Governance voting. $BIT will be delisted on exchanges and
+        replaced with $MNT trading pairs. Eventually all $BIT will be migrated
+        to $MNT.
       </Typography>
     ),
   },
   {
-    q: "How to assure the right security?",
+    q: "How do I convert using multisig?",
     a: (
       <Typography className="text-type-secondary mx-4 mb-4">
-        Please follow the{" "}
+        Please see the &quot;For Advanced Users&quot; section of the{" "}
         {/* <a href="/" target="__blank" rel="noreferrer" className="underline"> */}
         blog post
-        {/* </a> */}
+        {/* </a> */}.
       </Typography>
     ),
   },
@@ -37,7 +50,48 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
     q: "Will gas be refunded?",
     a: (
       <Typography className="text-type-secondary mx-4 mb-4">
-        Yes, once a month we will refund everyones gas.
+        Yes, most users will be refunded their cost of migration in ETH. Users
+        will not have to take any action and the ETH will be airdropped to the
+        address. The status of the rebate will be available in a future
+        dashboard available at:{" "}
+        {/* <a href="/" target="__blank" rel="noreferrer" className="underline"> */}
+        url
+        {/* </a> */}
+      </Typography>
+    ),
+  },
+  {
+    q: "How do I add $MNT to my wallet?",
+    a: (
+      <div className="mx-4 mb-4">
+        <Typography className="text-type-secondary break-all">
+          Token address: 0x3c3a81e81dc49A522A592e7622A7E711c06bf354
+        </Typography>
+        <Typography className="text-type-secondary">
+          Token symbol: MNT
+        </Typography>
+        <Typography className="text-type-secondary">
+          Token name: Mantle
+        </Typography>
+        <Typography className="text-type-secondary">Decimals: 18</Typography>
+      </div>
+    ),
+  },
+  {
+    q: "How do I vote with $MNT after?",
+    a: (
+      <Typography className="text-type-secondary mx-4 mb-4">
+        $BIT delegation and voting works independently of $MNT due to the new
+        token functionality. Visit{" "}
+        <a
+          href="https://delegatevote.mantle.xyz/"
+          target="__blank"
+          rel="noreferrer"
+          className="underline"
+        >
+          https://delegatevote.mantle.xyz/
+        </a>{" "}
+        to delegate your $MNT again.
       </Typography>
     ),
   },
