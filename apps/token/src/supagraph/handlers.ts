@@ -155,20 +155,22 @@ export const TransferHandler = async (
   // update sender if its not 0x0 address
   if (args.from !== "0x0000000000000000000000000000000000000000") {
     // get new balance for sender
-    const newBalance = BigNumber.from(entity.balance || "0").sub(args.value);
+    const newBalance = BigNumber.from(entity[balanceProp] || "0").sub(
+      args.value
+    );
 
     // sub from the sender
     entity.set(balanceProp, newBalance);
-
-    // update pointers for lastUpdate
-    entity.set("blockNumber", tx.blockNumber);
-    entity.set("transactionHash", tx.transactionHash);
 
     // sum the balances
     entity.set(
       "balance",
       newBalance.add(BigNumber.from(entity[otherBalanceProp] || "0"))
     );
+
+    // update pointers for lastUpdate
+    entity.set("blockNumber", tx.blockNumber);
+    entity.set("transactionHash", tx.transactionHash);
 
     // save the changes
     await entity.save();

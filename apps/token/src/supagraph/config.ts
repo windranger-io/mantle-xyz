@@ -86,8 +86,14 @@ const config = {
         mntTo
         bitTo
         votes
+        bitVotes
+        mntVotes
         balance
+        bitBalance
+        mntBalance
         delegatorsCount
+        bitDelegatorsCount
+        mntDelegatorsCount
         bitDelegators {
           id
         }
