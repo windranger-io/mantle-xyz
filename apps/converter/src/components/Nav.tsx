@@ -18,7 +18,7 @@ function Nav({ className, hideConnectBtn }: NavProps) {
     {
       name: "Migrate",
       href: "/",
-      internal: true,
+      internal: false,
       active: pathName === "/",
       shallow: true,
     },
