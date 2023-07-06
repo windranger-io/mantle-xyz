@@ -298,5 +298,4 @@ export enum ErrorMessages {
   HALTED = "Conversion halted. Contract is under maintenance. Please check later.",
 }
 
-// TODO: swap to === after testing in preview environment
-export const isComingSoon = process.env.VERCEL_ENV !== "production";
+export const isComingSoon = process.env.VERCEL_ENV === "production";
