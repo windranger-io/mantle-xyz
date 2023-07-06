@@ -4,13 +4,12 @@ import { Header } from "@mantle/ui/src/navigation/Header";
 import ConnectWallet from "@components/ConnectWallet";
 import { usePathname } from "next/navigation";
 
-function Nav({
-  className,
-  hideConnectBtn,
-}: {
+type NavProps = {
   className: string;
   hideConnectBtn: boolean;
-}) {
+};
+
+function Nav({ className, hideConnectBtn }: NavProps) {
   // use the given pathName to set active on navItem
   const pathName = usePathname();
 
