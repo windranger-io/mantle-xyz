@@ -80,7 +80,7 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
     // console.log(spendDetails, destinationTokenAmount);
     let text;
     if (halted) {
-      text = "Conversion halted";
+      text = "Migration halted";
     } else if (!client?.address) {
       text = "Connect wallet";
     } else if (!isChainID) {
@@ -103,7 +103,7 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
       text = (
         <div className="flex flex-row gap-4 items-center mx-auto w-fit">
           <span>
-            {approvalStatus || `Allocate allowance before converting $BIT`}
+            {approvalStatus || `Allocate allowance before migrating $BIT`}
           </span>
           {approvalStatus ? (
             <div role="status">
@@ -131,7 +131,7 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
         </div>
       );
     } else {
-      text = "Convert $BIT to $MNT";
+      text = "Migrate $BIT to $MNT";
     }
 
     return text;

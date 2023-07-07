@@ -48,10 +48,10 @@ export default function Convert() {
         variant="appPageHeading"
         className="text-center mt-4 text-[42px]"
       >
-        Converter
+        Migrator
       </Typography>
       <Typography variant="body" className="text-center mt-6 mb-2">
-        Convert tokens. Conversion is irreversible.
+        The migration is irreversible
       </Typography>
       <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row lg:block gap-4 lg:mx-auto ">
         <ConvertCard>

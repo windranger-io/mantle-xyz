@@ -29,12 +29,12 @@ export default function Loading({
       content: (
         <div className="flex flex-col">
           <Typography variant="body">
-            <b>Conversion initiated</b>
+            <b>Migration initiated</b>
           </Typography>
           <Typography variant="body">Will be available in ~5 mins</Typography>
         </div>
       ),
-      id: `${txHash}-pending-conversion`,
+      id: `${txHash}-pending-migration`,
       buttonText: "View",
       onButtonClick: () => {
         router.push("/");
@@ -46,7 +46,7 @@ export default function Loading({
     <>
       <span className="flex justify-between align-middle">
         <Typography variant="modalHeadingSm" className="text-center w-full">
-          Pending Conversion
+          Pending migration
         </Typography>
         <Typography variant="modalHeading" className="text-white w-auto pt-1">
           <MdClear onClick={closeModal} className="cursor-pointer" />
@@ -62,7 +62,7 @@ export default function Loading({
       </div>
       <div className="text-center">
         <div>
-          You are converting {from} $BIT to {to} $MNT.
+          You are migrating {from} $BIT to {to} $MNT.
         </div>
         <div>Go grab some coffee, I promise it&apos;ll be done by then!</div>
       </div>

@@ -16,7 +16,7 @@ export function Loading() {
           </div>
           <div className="flex flex-col">
             <Typography className="text-type-secondary">
-              Balance in conversion contract
+              Tokens left to migrate
             </Typography>
             <Typography className="font-bold text-type-primary">
               --- MNT
