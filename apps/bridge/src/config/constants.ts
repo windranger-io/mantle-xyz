@@ -265,7 +265,7 @@ export const MANTLE_TOKEN_LIST_URL =
 // Address for multicall3 contract on each network - Multicall3: https://github.com/mds1/multicall
 export const MULTICALL_CONTRACTS: Record<number, string> = {
   1: "0xcA11bde05977b3631167028862bE2a173976CA11",
-  5000: "0x9155FcC40E05616EBFf068446136308e757e43dA",
+  5000: "0x9155FcC40E05616EBFf068446136308e757e43dA", // TODO: ask mds1 to deploy on mantle
   5: "0xcA11bde05977b3631167028862bE2a173976CA11",
   5001: "0xcA11bde05977b3631167028862bE2a173976CA11",
 };
