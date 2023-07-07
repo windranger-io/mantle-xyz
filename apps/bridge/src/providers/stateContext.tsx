@@ -208,8 +208,14 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // the current chains token list
   const tokens = useMemo(() => {
+    const chainId1 = L1_CHAIN_ID === chainId ? L1_CHAIN_ID : L2_CHAIN_ID;
+    const chainId2 = L1_CHAIN_ID === chainId ? L2_CHAIN_ID : L1_CHAIN_ID;
+
     return MANTLE_TOKEN_LIST.tokens.filter((v) => {
-      return v.chainId === chainId;
+      const hasCorresponding = MANTLE_TOKEN_LIST.tokens.find((vv) => {
+        return vv.chainId === chainId2 && v.logoURI === vv.logoURI;
+      });
+      return hasCorresponding && v.chainId === chainId1;
     });
   }, [chainId]);
 

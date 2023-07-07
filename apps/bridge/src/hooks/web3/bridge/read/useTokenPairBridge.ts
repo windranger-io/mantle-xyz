@@ -67,7 +67,7 @@ function useTokenPairBridge(
 
         // get the bridge for the given pair
         const bridge =
-          destination.extensions.optimismBridgeAddress ||
+          selection.extensions.optimismBridgeAddress ||
           (
             await crossChainMessenger?.getBridgeForTokenPair(
               l1Address,
