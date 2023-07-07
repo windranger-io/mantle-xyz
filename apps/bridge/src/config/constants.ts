@@ -2,29 +2,40 @@ import { BigNumberish } from "ethers";
 import { Address, Chain } from "wagmi";
 
 // these control which chains we treat as l1/l2 - the rest of the this constants doc will need to be altered for mainnet (we can $ENV most of this)
-export const L1_CHAIN_ID = 5;
-export const L2_CHAIN_ID = 5001;
+export const L1_CHAIN_ID =
+  parseInt(process.env.NEXT_PUBLIC_L1_CHAIN_ID || "0", 10) || 5;
+export const L2_CHAIN_ID =
+  parseInt(process.env.NEXT_PUBLIC_L2_CHAIN_ID || "0", 10) || 5001;
 
 // Configure the applications name
-export const APP_NAME = "Mantle Testnet Bridge";
+export const APP_NAME = `Mantle${
+  L2_CHAIN_ID === 5001 ? " Testnet" : ""
+} Bridge`;
 
 // Configure deta description
-export const META =
-  "Bridge tokens for your testnet wallet, and test your dApps deployed on Mantle Testnet.";
+export const META = `Bridge tokens for your ${
+  L2_CHAIN_ID === 5001 ? "testnet" : "mainnet"
+} wallet, and test your dApps deployed on Mantle${
+  L2_CHAIN_ID === 5001 ? " Testnet" : " Mainnet"
+}.`;
 
 // Configure OG Title
 export const OG_TITLE = "Bridge Your Hyperscaling Rocket Fuel";
 
 // Configure OG Desc
-export const OG_DESC =
-  "Bridge your testnet assets here to start to #BuildonMantle.";
+export const OG_DESC = `Bridge your ${
+  L2_CHAIN_ID === 5001 ? "testnet" : "mainnet"
+} assets here to start to #BuildonMantle.`;
 
 // Configure Twitter Title
-export const TWITTER_TITLE = "Mantle Testnet Bridge";
+export const TWITTER_TITLE = `Mantle${
+  L2_CHAIN_ID === 5001 ? " Testnet" : ""
+} Bridge`;
 
 // Configure Twitter Desc
-export const TWITTER_DESC =
-  "Bridge your testnet assets here to start to #BuildonMantle.";
+export const TWITTER_DESC = `Bridge your ${
+  L2_CHAIN_ID === 5001 ? "testnet" : "mainnet"
+} assets here to start to #BuildonMantle.`;
 
 // Get the current absolute path from the env
 export function getBaseUrl() {
@@ -70,7 +81,9 @@ export const HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS = (800000).toString();
 
 // url for withdraw/deposit helper api - I can't find a way to sort the query so this is less helpful than we'd like - see below:
 export const BRIDGE_BACKEND =
-  "https://mantle-blockscout-syncdata.testnet.mantle.xyz";
+  L2_CHAIN_ID === 5001
+    ? "https://mantle-blockscout-syncdata.testnet.mantle.xyz"
+    : "https://mantle-syncdata.mantle.xyz";
 
 // how many items to include in the accounts history pages (the sort direction returned from the api means that the oldest entries are
 // on the lowest page numbers (bad)) once we've got the returned sort order under control we can reduce this back to a sensible default
@@ -92,6 +105,33 @@ export const CHAINS: Record<
     blockExplorerUrls: string[];
   }
 > = {
+  1: {
+    chainId: "0x1",
+    chainName: "Mainnet",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: [
+      // infura backed redirect gateway
+      `/rpc`,
+      // public gateway
+      `https://rpc.ankr.com/eth`,
+    ],
+    blockExplorerUrls: ["https://etherscan.io/"],
+  },
+  5000: {
+    chainId: "0x1388",
+    chainName: "Mantle",
+    nativeCurrency: {
+      name: "Mantle",
+      symbol: "MNT",
+      decimals: 18,
+    },
+    rpcUrls: ["https://rpc.mantle.xyz"],
+    blockExplorerUrls: ["https://explorer.mantle.xyz/"],
+  },
   // setup goerli so that it can be added to the users wallet
   5: {
     chainId: "0x5",
@@ -124,6 +164,34 @@ export const CHAINS: Record<
 };
 
 export const CHAINS_FORMATTED: Record<number, Chain> = {
+  1: {
+    name: CHAINS[1].chainName,
+    network: CHAINS[1].chainName,
+    rpcUrls: {
+      default: {
+        http: [CHAINS[1].rpcUrls[0]],
+      },
+      public: {
+        http: [CHAINS[1].rpcUrls[1]],
+      },
+    },
+    id: 1,
+    nativeCurrency: CHAINS[1].nativeCurrency,
+  },
+  5000: {
+    name: CHAINS[5000].chainName,
+    network: CHAINS[5000].chainName,
+    rpcUrls: {
+      default: {
+        http: [CHAINS[5000].rpcUrls[0]],
+      },
+      public: {
+        http: [CHAINS[5000].rpcUrls[1]],
+      },
+    },
+    id: 5000,
+    nativeCurrency: CHAINS[5000].nativeCurrency,
+  },
   5: {
     testnet: true,
     name: CHAINS[5].chainName,
@@ -156,7 +224,8 @@ export const CHAINS_FORMATTED: Record<number, Chain> = {
 };
 
 export enum ChainID {
-  Ethereum = 1,
+  Mainnet = 1,
+  Mantle = 5000,
   Goerli = 5,
   MantleTestnet = 5001,
 }
@@ -187,6 +256,8 @@ export interface Token {
 
 // Address for multicall3 contract on each network - Multicall3: https://github.com/mds1/multicall
 export const MULTICALL_CONTRACTS: Record<number, `0x${string}`> = {
+  1: "0xcA11bde05977b3631167028862bE2a173976CA11",
+  5000: "0x9155FcC40E05616EBFf068446136308e757e43dA",
   5: "0xcA11bde05977b3631167028862bE2a173976CA11",
   5001: "0xcA11bde05977b3631167028862bE2a173976CA11",
 };
@@ -209,30 +280,8 @@ export const MANTLE_TOKEN_LIST: {
   name: "Mantle",
   logoURI: "https://token-list.mantle.xyz/mantle_logo.svg",
   keywords: ["scaling", "layer2", "infrastructure"],
-  timestamp: "2023-02-08T09:38:45.488Z",
+  timestamp: "2023-07-06T03:31:16.835Z",
   tokens: [
-    {
-      chainId: 5,
-      address: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
-      name: "Mantle",
-      symbol: "MNT",
-      decimals: 18,
-      logoURI: "/mantle-logo.svg",
-      extensions: {
-        optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
-      },
-    },
-    {
-      chainId: 5001,
-      address: "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
-      name: "Mantle",
-      symbol: "MNT",
-      decimals: 18,
-      logoURI: "/mantle-logo.svg",
-      extensions: {
-        optimismBridgeAddress: "0x4200000000000000000000000000000000000010",
-      },
-    },
     {
       chainId: 1,
       address: "0x0000000000000000000000000000000000000000",
@@ -241,7 +290,18 @@ export const MANTLE_TOKEN_LIST: {
       decimals: 18,
       logoURI: "https://token-list.mantle.xyz/data/ETH/logo.svg",
       extensions: {
-        optimismBridgeAddress: "0x99C9fc46f92E8a1c0deC1b1747d010903E884bE1",
+        optimismBridgeAddress: "0x95fC37A27a2f68e3A647CDc081F0A89bb47c3012",
+      },
+    },
+    {
+      chainId: 5000,
+      address: "0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111",
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18,
+      logoURI: "https://token-list.mantle.xyz/data/ETH/logo.svg",
+      extensions: {
+        optimismBridgeAddress: "0x4200000000000000000000000000000000000010",
       },
     },
     {
@@ -272,7 +332,7 @@ export const MANTLE_TOKEN_LIST: {
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
-      logoURI: "/chainlink-link-logo.png",
+      logoURI: "https://token-list.mantle.xyz/data/LINK/logo.png",
       extensions: {
         optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
       },
@@ -283,7 +343,51 @@ export const MANTLE_TOKEN_LIST: {
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
-      logoURI: "/chainlink-link-logo.png",
+      logoURI: "https://token-list.mantle.xyz/data/LINK/logo.png",
+      extensions: {
+        optimismBridgeAddress: "0x4200000000000000000000000000000000000010",
+      },
+    },
+    {
+      chainId: 1,
+      address: "0x3c3a81e81dc49a522a592e7622a7e711c06bf354",
+      name: "Mantle",
+      symbol: "MNT",
+      decimals: 18,
+      logoURI: "https://token-list.mantle.xyz/data/Mantle/logo.svg",
+      extensions: {
+        optimismBridgeAddress: "0x95fC37A27a2f68e3A647CDc081F0A89bb47c3012",
+      },
+    },
+    {
+      chainId: 5000,
+      address: "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
+      name: "Mantle",
+      symbol: "MNT",
+      decimals: 18,
+      logoURI: "https://token-list.mantle.xyz/data/Mantle/logo.svg",
+      extensions: {
+        optimismBridgeAddress: "0x4200000000000000000000000000000000000010",
+      },
+    },
+    {
+      chainId: 5,
+      address: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
+      name: "Mantle",
+      symbol: "MNT",
+      decimals: 18,
+      logoURI: "https://token-list.mantle.xyz/data/Mantle/logo.svg",
+      extensions: {
+        optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
+      },
+    },
+    {
+      chainId: 5001,
+      address: "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
+      name: "Mantle",
+      symbol: "MNT",
+      decimals: 18,
+      logoURI: "https://token-list.mantle.xyz/data/Mantle/logo.svg",
       extensions: {
         optimismBridgeAddress: "0x4200000000000000000000000000000000000010",
       },
@@ -338,7 +442,7 @@ export const MANTLE_TOKEN_LIST: {
       name: "Tether USD",
       symbol: "USDT",
       decimals: 6,
-      logoURI: "/tether-usdt-logo.png",
+      logoURI: "https://token-list.mantle.xyz/data/USDT/logo.png",
       extensions: {
         optimismBridgeAddress: "0xc92470D7Ffa21473611ab6c6e2FcFB8637c8f330",
       },
@@ -349,7 +453,7 @@ export const MANTLE_TOKEN_LIST: {
       name: "Tether USD",
       symbol: "USDT",
       decimals: 6,
-      logoURI: "/tether-usdt-logo.png",
+      logoURI: "https://token-list.mantle.xyz/data/USDT/logo.png",
       extensions: {
         optimismBridgeAddress: "0x4200000000000000000000000000000000000010",
       },
@@ -362,7 +466,7 @@ export const MANTLE_TOKEN_LIST: {
       decimals: 8,
       logoURI: "https://token-list.mantle.xyz/data/WBTC/logo.svg",
       extensions: {
-        optimismBridgeAddress: "0x99C9fc46f92E8a1c0deC1b1747d010903E884bE1",
+        optimismBridgeAddress: "0x95fC37A27a2f68e3A647CDc081F0A89bb47c3012",
       },
     },
     {

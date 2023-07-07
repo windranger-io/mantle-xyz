@@ -38,7 +38,12 @@
         "NEXT_PUBLIC_SITE_URL",
         "NEXT_PUBLIC_VERCEL_URL",
         "NODE_ENV",
-        "MONGODB_URI"
+        "MONGODB_URI",
+        "NEXT_PUBLIC_L1_CHAIN_ID",
+        "NEXT_PUBLIC_L2_CHAIN_ID",
+        "SUPAGRAPH_NAME",
+        "SUPAGRAPH_L1_START_BLOCK",
+        "SUPAGRAPH_L1_STATE_COMMITMENT_CHAIN"
       ],
       "cache": false
     },

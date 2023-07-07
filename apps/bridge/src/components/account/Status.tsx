@@ -226,6 +226,7 @@ export default function Status({
     <div key={transactionHash}>
       {(() => {
         switch (isLoading || status) {
+          case "0":
           case "pending":
           case "Waiting":
             return (
@@ -242,6 +243,7 @@ export default function Status({
                 <span>Pending</span>
               </div>
             );
+          case "1":
           case "claim":
           case "Ready for Relay":
             return (
@@ -278,6 +280,7 @@ export default function Status({
                 </div>
               </Button>
             );
+          case "2":
           case "complete":
           case "Relayed":
             return (

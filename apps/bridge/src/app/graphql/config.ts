@@ -1,5 +1,6 @@
 // Name your supagraph (this will inform mongo table name etc...)
-export const SUPAGRAPH_NAME = "supergraph--bridge--0-0-1";
+export const SUPAGRAPH_NAME =
+  process.env.SUPAGRAPH_NAME || "supergraph--bridge--0-0-1";
 
 // Set the local engine (true: db || false: mongo)
 export const SUPAGRAPH_DEV_ENGINE = false;
@@ -39,10 +40,14 @@ export const SUPAGRAPH_REVALIDATE = 12;
 export const SUPAGRAPH_STALE_WHILE_REVALIDATE = 59;
 
 // Blocks to start collecting events from
-export const L1_START_BLOCK = 8191063;
+export const L1_START_BLOCK =
+  (process.env.SUPAGRAPH_L1_START_BLOCK &&
+    parseInt(process.env.SUPAGRAPH_L1_START_BLOCK || "0", 10)) ||
+  8191063;
 
 // StateCommitment Contract for L1
 export const L1_STATE_COMMITMENT_CHAIN =
+  process.env.SUPAGRAPH_L1_STATE_COMMITMENT_CHAIN ||
   "0x91A5D806BA73d0AA4bFA9B318126dDE60582e92a";
 
 // ABI for StateBatchAppended event

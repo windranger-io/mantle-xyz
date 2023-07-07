@@ -1,3 +1,4 @@
+import { L1_CHAIN_ID, CHAINS } from "@config/constants";
 import { NextRequest, NextResponse } from "next/server";
 
 import { cache } from "react";
@@ -9,7 +10,9 @@ const fetchInfura = async (
   params: any[]
 ) => {
   const res = await fetch(
-    `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
+    `https://${CHAINS[L1_CHAIN_ID].chainName.toLowerCase()}.infura.io/v3/${
+      process.env.NEXT_PUBLIC_INFURA_API_KEY
+    }`,
     {
       method: "post",
       headers: {
@@ -29,7 +32,7 @@ const fetchPublic = async (
   method: string,
   params: any[]
 ) => {
-  const res = await fetch(`https://rpc.ankr.com/eth_goerli`, {
+  const res = await fetch(CHAINS[L1_CHAIN_ID].rpcUrls[1], {
     method: "post",
     headers: {
       "Content-Type": "application/json",

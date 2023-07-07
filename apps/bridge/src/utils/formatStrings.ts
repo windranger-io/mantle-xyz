@@ -42,13 +42,10 @@ export const formatBigNumberString = (
   // reconnect the number parts and place templates seperator
   return `${mainFormatInt.format(integerPart)}${template[1]}${mainFormatFrac
     .format(
-      parseInt(
-        (fractionPart.length === 1 ? `${fractionPart}0` : fractionPart)
-          .split("")
-          .reverse()
-          .join(""),
-        10
-      )
+      (fractionPart.length === 1 ? `${fractionPart}0` : fractionPart)
+        .split("")
+        .reverse()
+        .join("") as unknown as number
     )
     .split("")
     .reverse()

@@ -66,13 +66,17 @@ function useTokenPairBridge(
           chainId === L1_CHAIN_ID ? destination.address : selection.address;
 
         // get the bridge for the given pair
-        const bridge = await crossChainMessenger?.getBridgeForTokenPair(
-          l1Address,
-          l2Address
-        );
+        const bridge =
+          destination.extensions.optimismBridgeAddress ||
+          (
+            await crossChainMessenger?.getBridgeForTokenPair(
+              l1Address,
+              l2Address
+            )
+          )?.[layer].address;
 
         // returns the bridge address
-        return bridge?.[layer].address;
+        return bridge;
       }
 
       return false;

@@ -73,7 +73,7 @@ export default function Deposit() {
         <tbody className="table-row-group">
           {isLoadingDeposits ? (
             <tr className="border-b-[1px] border-stroke-secondary">
-              <td className="py-4" colSpan={4}>
+              <td className="py-4" colSpan={5}>
                 <div className="w-full flex items-center justify-center">
                   <svg
                     aria-hidden="true"
@@ -141,7 +141,8 @@ export default function Deposit() {
                   <div className="flex pb-4 py-2 flex-row gap-2 items-center md:pb-2">
                     {
                       // eslint-disable-next-line no-nested-ternary
-                      transaction.status === "Relayed" ? (
+                      transaction.status === "Relayed" ||
+                      transaction.status === "2" ? (
                         <>
                           <svg
                             width="11"
