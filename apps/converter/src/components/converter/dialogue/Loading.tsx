@@ -28,10 +28,12 @@ export default function Loading({
       borderLeft: "bg-blue-600",
       content: (
         <div className="flex flex-col">
-          <Typography variant="body">
+          <Typography variant="body" className="break-words">
             <b>Conversion initiated</b>
           </Typography>
-          <Typography variant="body">Will be available in ~5 mins</Typography>
+          <Typography variant="body" className="break-words">
+            Will be available in ~5 mins
+          </Typography>
         </div>
       ),
       id: `${txHash}-pending-conversion`,

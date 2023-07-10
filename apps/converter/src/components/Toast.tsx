@@ -53,7 +53,7 @@ export function ToastBody({
       onKeyDown={(e) =>
         onClick && onClick(e as unknown as React.MouseEvent<HTMLElement>)
       }
-      className={`flex flex-row gap-4 h-full items-center font-normal py-1 pl-1 pr-4 focus:outline-none transition-all duration-75 hover:cursor-pointer rounded-lg mb-4 bg-black border border-1 border-stroke-disabled/50 hover:border-stroke-disabled ${
+      className={`flex flex-row h-full items-center font-normal py-1 pl-1 pr-4 focus:outline-none transition-all duration-75 hover:cursor-pointer rounded-lg mb-4 bg-black border border-1 border-stroke-disabled/50 hover:border-stroke-disabled ${
         (type === "error" && ` backdrop-blur-[40px] text-color-white`) || ""
       }${
         (type === "success" && `backdrop-blur-[40px] text-color-white`) || ""
@@ -62,11 +62,11 @@ export function ToastBody({
       }`}
     >
       <div
-        className={`rounded-lg h-20 w-[0.6rem] ${
+        className={`rounded-lg h-20 w-[0.6rem] min-w-[0.6rem] md:mr-4 mr-2 ${
           borderLeft ? `${`bg-${borderLeft.replace("bg-", "")}`}` : ""
         }`}
       />
-      <div className="flex justify-between w-full items-center py-2">
+      <div className="flex justify-between w-full items-center py-2 gap-2">
         {children}
       </div>
     </div>
@@ -97,7 +97,7 @@ export function Toast({
       borderLeft={borderLeft}
       onClick={(e) => handleClose(e)}
     >
-      <span className="truncate">{content}</span>
+      <span>{content}</span>
       {typeof ButtonText === "function" ? (
         <ButtonText />
       ) : (
