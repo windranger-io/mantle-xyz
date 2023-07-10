@@ -234,8 +234,8 @@ export const createMultiQuery = (
         orderBy
           ? parseFloat(
               direction +
-                ((a[orderBy as string] as string) || "").localeCompare(
-                  (b[orderBy as string] as string) || "",
+                String((a[orderBy as string] as string) || "").localeCompare(
+                  String((b[orderBy as string] as string) || ""),
                   undefined,
                   { numeric: true }
                 )
