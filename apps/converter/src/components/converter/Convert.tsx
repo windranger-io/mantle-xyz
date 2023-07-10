@@ -53,7 +53,7 @@ export default function Convert() {
       <Typography variant="body" className="text-center mt-6 mb-2">
         Convert tokens. Conversion is irreversible.
       </Typography>
-      <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row lg:block gap-4 lg:mx-auto ">
+      <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row md:items-start lg:block gap-4 lg:mx-auto ">
         <ConvertCard>
           <From />
           <Hr />
