@@ -52,6 +52,10 @@ const syncs: Sync[] = [];
 
 // list of public rpc endpoints
 const altProviders: Record<number, string[]> = {
+  1: [
+    `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
+    `https://rpc.ankr.com/eth`,
+  ],
   5: [
     `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
     `https://ethereum-goerli.publicnode.com`,
@@ -59,7 +63,8 @@ const altProviders: Record<number, string[]> = {
     `https://rpc.goerli.eth.gateway.fm`,
     `https://rpc.ankr.com/eth_goerli`,
   ],
-  5001: [process.env.MANTLE_RPC_URI || `https://rpc.testnet.mantle.xyz`],
+  5000: [`https://rpc.mantle.xyz`],
+  5001: [`https://rpc.testnet.mantle.xyz`],
 };
 
 // set the default RPC providers
@@ -67,8 +72,14 @@ const rpcProviders: Record<
   number,
   Record<number, providers.JsonRpcProvider>
 > = {
+  1: {
+    0: new providers.JsonRpcProvider(altProviders[1][0]),
+  },
   5: {
     0: new providers.JsonRpcProvider(altProviders[5][0]),
+  },
+  5000: {
+    0: new providers.JsonRpcProvider(altProviders[5000][0]),
   },
   5001: {
     0: new providers.JsonRpcProvider(altProviders[5001][0]),
@@ -962,7 +973,7 @@ export const sync = async ({
     console.log(
       "Total no. of timestamps placed:",
       events.length,
-      `(first entry has ts: ${events[0].timestamp})\n`
+      events.length && `(first entry has ts: ${events[0].timestamp})\n`
     );
   }
 
@@ -983,7 +994,7 @@ export const sync = async ({
     console.log(
       "Total no. of senders placed:",
       events.length,
-      `(first entry has sender: ${events[0].from})\n`
+      events.length && `(first entry has sender: ${events[0].from})\n`
     );
   }
 
@@ -1179,6 +1190,17 @@ export const sync = async ({
     chainUpdates.forEach((msg) => {
       console.log(msg);
     });
+  } else {
+    // otherwise release locks because we'e not altering db state
+    await Promise.all(
+      Array.from(chainIds).map(async (chainId) => {
+        // remove the lock for the next iteration
+        latestEntity[chainId].set("locked", false);
+
+        // persist changes into the store
+        await latestEntity[chainId].save();
+      })
+    );
   }
 
   // record when we finished the sync operation
