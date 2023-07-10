@@ -24,6 +24,7 @@ import Dialogue from "@components/bridge/dialogue";
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { Faq } from "@components/Faq";
 
 export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
   const { updateToast } = useToast();
@@ -314,61 +315,70 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
           setIsOpen={setIsCTAPageOpen}
         />
       )) || (
-        <SimpleCard className="max-w-lg w-full grid gap-4 relative">
-          <Tab.Group
-            selectedIndex={tab === Direction.Deposit ? 0 : 1}
-            onChange={(t) => {
-              if (t === 0) {
-                // setChainId(L1_CHAIN_ID);
-                // setSafeChains([L1_CHAIN_ID]);
-                // setTab(Direction.Deposit);
-                router.push("/deposit", { forceOptimisticNavigation: true });
-              } else {
-                // setChainId(L2_CHAIN_ID);
-                // setSafeChains([L2_CHAIN_ID]);
-                // setTab(Direction.Withdraw);
-                router.push("/withdraw", { forceOptimisticNavigation: true });
-              }
-            }}
-          >
-            <Tab.List className="flex space-x-2 rounded-[10px] bg-white/[0.05] p-1 select-none ">
-              {Object.keys(categories.current).map((category, index) => (
-                <span key={`cat-${category || index}`} className="w-full">
-                  <Tab
-                    className={({ selected: isSelected }) =>
-                      clsx(
-                        "w-full rounded-lg py-2.5 text-sm font-medium transition-all px-2.5",
-                        "ring-white ring-opacity-0 ring-offset-0 ring-offset-white focus:outline-none focus:ring-2",
-                        isSelected
-                          ? "text-type-inversed bg-white shadow"
-                          : "text-white hover:bg-white/[0.12] hover:text-white"
-                      )
-                    }
-                  >
-                    {category}
-                  </Tab>
-                </span>
-              ))}
-            </Tab.List>
-            <Tab.Panels className="mt-2" defaultValue="Withdraw">
-              {Object.keys(categories.current).map((category, index) => (
-                <span key={`tab-${category || index}`}>
-                  <Tab.Panel
-                    key={`tabPanel-${category || index}`}
-                    className={clsx("")}
-                    style={{ color: "#fff" }}
-                  >
-                    {
-                      categories.current[
-                        category as keyof typeof categories.current
-                      ][0]
-                    }
-                  </Tab.Panel>
-                </span>
-              ))}
-            </Tab.Panels>
-          </Tab.Group>
-        </SimpleCard>
+        <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row lg:block gap-4 lg:mx-auto ">
+          <SimpleCard className="max-w-lg w-full grid gap-4 relative">
+            <Tab.Group
+              selectedIndex={tab === Direction.Deposit ? 0 : 1}
+              onChange={(t) => {
+                if (t === 0) {
+                  // setChainId(L1_CHAIN_ID);
+                  // setSafeChains([L1_CHAIN_ID]);
+                  // setTab(Direction.Deposit);
+                  router.push("/deposit", { forceOptimisticNavigation: true });
+                } else {
+                  // setChainId(L2_CHAIN_ID);
+                  // setSafeChains([L2_CHAIN_ID]);
+                  // setTab(Direction.Withdraw);
+                  router.push("/withdraw", { forceOptimisticNavigation: true });
+                }
+              }}
+            >
+              <Tab.List className="flex space-x-2 rounded-[10px] bg-white/[0.05] p-1 select-none ">
+                {Object.keys(categories.current).map((category, index) => (
+                  <span key={`cat-${category || index}`} className="w-full">
+                    <Tab
+                      className={({ selected: isSelected }) =>
+                        clsx(
+                          "w-full rounded-lg py-2.5 text-sm font-medium transition-all px-2.5",
+                          "ring-white ring-opacity-0 ring-offset-0 ring-offset-white focus:outline-none focus:ring-2",
+                          isSelected
+                            ? "text-type-inversed bg-white shadow"
+                            : "text-white hover:bg-white/[0.12] hover:text-white"
+                        )
+                      }
+                    >
+                      {category}
+                    </Tab>
+                  </span>
+                ))}
+              </Tab.List>
+              <Tab.Panels className="mt-2" defaultValue="Withdraw">
+                {Object.keys(categories.current).map((category, index) => (
+                  <span key={`tab-${category || index}`}>
+                    <Tab.Panel
+                      key={`tabPanel-${category || index}`}
+                      className={clsx("")}
+                      style={{ color: "#fff" }}
+                    >
+                      {
+                        categories.current[
+                          category as keyof typeof categories.current
+                        ][0]
+                      }
+                    </Tab.Panel>
+                  </span>
+                ))}
+              </Tab.Panels>
+            </Tab.Group>
+          </SimpleCard>
+          {L1_CHAIN_ID === 1 ? (
+            <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] lg:max-w-[250px] xl:w-[320px] xl:max-w-[320px] lg:absolute lg:top-0 lg:right-[-55%] xl:right-[-80%]">
+              <Faq />
+            </div>
+          ) : (
+            <span />
+          )}
+        </div>
       ))) || <span />
   );
 }
