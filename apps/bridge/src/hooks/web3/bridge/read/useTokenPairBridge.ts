@@ -2,12 +2,13 @@ import {
   Direction,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
-  MANTLE_TOKEN_LIST,
+  MANTLE_TOKEN_LIST_URL,
   Token,
 } from "@config/constants";
 
 import { useQuery } from "wagmi";
 import { useMantleSDK } from "@providers/mantleSDKContext";
+import useTokenList from "./useTokenList";
 
 function useTokenPairBridge(
   chainId: number,
@@ -21,6 +22,9 @@ function useTokenPairBridge(
 ) {
   // use the mantle-sdk crossChainMessenger
   const { crossChainMessenger } = useMantleSDK();
+
+  // fetch the list and set into tokenList
+  const { tokenList } = useTokenList(MANTLE_TOKEN_LIST_URL);
 
   // request the appropriate bridge information from mantlesdk
   const { data: bridgeAddress } = useQuery(
@@ -49,15 +53,19 @@ function useTokenPairBridge(
         const selection =
           tokens.find((v) => {
             return selectedToken[type] === v.name && v.chainId === chainId;
-          }) || tokens[chainId === L1_CHAIN_ID ? 0 : 1];
+          }) ||
+          tokens[chainId === L1_CHAIN_ID ? 0 : 1] ||
+          {};
 
         // get the destination Token
         const destination =
-          MANTLE_TOKEN_LIST.tokens.find((v) => {
+          tokenList?.tokens.find((v) => {
             return (
               selection.logoURI === v.logoURI && v.chainId === targetChainID
             );
-          }) || tokens[chainId === L1_CHAIN_ID ? 1 : 0];
+          }) ||
+          tokens[chainId === L1_CHAIN_ID ? 1 : 0] ||
+          {};
 
         // rearrange the selection/destination
         const l1Address =
@@ -67,13 +75,16 @@ function useTokenPairBridge(
 
         // get the bridge for the given pair
         const bridge =
-          selection.extensions.optimismBridgeAddress ||
-          (
-            await crossChainMessenger?.getBridgeForTokenPair(
-              l1Address,
-              l2Address
-            )
-          )?.[layer].address;
+          selection.extensions?.optimismBridgeAddress ||
+          (l1Address &&
+            l2Address &&
+            (
+              await crossChainMessenger?.getBridgeForTokenPair(
+                l1Address,
+                l2Address
+              )
+            )?.[layer].address) ||
+          "";
 
         // returns the bridge address
         return bridge;

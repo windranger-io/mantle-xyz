@@ -10,13 +10,7 @@ import StateContext from "@providers/stateContext";
 import { Tab } from "@headlessui/react";
 import { Button, SimpleCard } from "@mantle/ui";
 
-import {
-  Direction,
-  L1_CHAIN_ID,
-  L2_CHAIN_ID,
-  MANTLE_TOKEN_LIST,
-  Views,
-} from "@config/constants";
+import { Direction, L1_CHAIN_ID, L2_CHAIN_ID, Views } from "@config/constants";
 
 import Deposit from "@components/bridge/Deposit";
 import Withdraw from "@components/bridge/Withdraw";
@@ -36,6 +30,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
     isCTAPageOpen,
     hasClaims,
     hasClosedClaims,
+    tokenList,
     setChainId,
     setSafeChains,
     setIsCTAPageOpen,
@@ -78,27 +73,31 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
   // memoise the selected Token instance
   const selected = useMemo(
     () =>
-      MANTLE_TOKEN_LIST.tokens.find(
+      tokenList?.tokens.find(
         (v) =>
           selectedToken[
             chainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw
           ] === v.name && v.chainId === chainId
-      ) || MANTLE_TOKEN_LIST.tokens[chainId === L1_CHAIN_ID ? 0 : 1],
-    [chainId, selectedToken]
+      ) ||
+      tokenList?.tokens[chainId === L1_CHAIN_ID ? 0 : 1] ||
+      {},
+    [chainId, selectedToken, tokenList]
   );
 
   // fetch the full destination token from name
   const destination = useMemo(
     () =>
-      MANTLE_TOKEN_LIST.tokens.find(
+      tokenList?.tokens.find(
         (v) =>
           destinationToken[
             chainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw
           ] === v.name &&
           v.chainId === (chainId === L1_CHAIN_ID ? L2_CHAIN_ID : L1_CHAIN_ID)
-      ) || MANTLE_TOKEN_LIST.tokens[chainId === L1_CHAIN_ID ? 1 : 0],
+      ) ||
+      tokenList?.tokens[chainId === L1_CHAIN_ID ? 1 : 0] ||
+      {},
 
-    [chainId, destinationToken]
+    [chainId, destinationToken, tokenList]
   );
 
   const categories = useRef({

@@ -2,7 +2,8 @@ import {
   Direction,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
-  MANTLE_TOKEN_LIST,
+  MANTLE_TOKEN_LIST_URL,
+  Token,
 } from "@config/constants";
 import { constants } from "ethers";
 
@@ -10,6 +11,7 @@ import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
 import { useQuery } from "wagmi";
 import { useMantleSDK } from "@providers/mantleSDKContext";
+import useTokenList from "./useTokenList";
 
 function useGasEstimate(
   chainId: number,
@@ -22,6 +24,9 @@ function useGasEstimate(
 ) {
   // pull crossChainMessenger
   const { crossChainMessenger } = useMantleSDK();
+
+  // fetch the list and set into tokenList
+  const { tokenList } = useTokenList(MANTLE_TOKEN_LIST_URL);
 
   // fetch the gas estimate for the selected operation on in the selected direction
   const { data: actualGasFee, refetch: resetGasEstimate } = useQuery(
@@ -38,6 +43,7 @@ function useGasEstimate(
           destinationToken[
             chainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw
           ],
+        tokenList: tokenList?.timestamp,
         bridgeAddress,
         destinationTokenAmount,
         allowance,
@@ -54,6 +60,7 @@ function useGasEstimate(
       };
 
       if (
+        tokenList?.timestamp &&
         selectedToken[type] &&
         destinationToken[type] &&
         crossChainMessenger
@@ -78,12 +85,16 @@ function useGasEstimate(
               return val.toString();
             });
         }
-        const l1Token = MANTLE_TOKEN_LIST.tokens.find((v) => {
-          return selectedToken[type] === v.name && v.chainId === L1_CHAIN_ID;
-        });
-        const l2Token = MANTLE_TOKEN_LIST.tokens.find((v) => {
-          return destinationToken[type] === v.name && v.chainId === L2_CHAIN_ID;
-        });
+        const l1Token: Token =
+          tokenList?.tokens.find((v) => {
+            return selectedToken[type] === v.name && v.chainId === L1_CHAIN_ID;
+          }) || ({} as Token);
+        const l2Token: Token =
+          tokenList?.tokens.find((v) => {
+            return (
+              destinationToken[type] === v.name && v.chainId === L2_CHAIN_ID
+            );
+          }) || ({} as Token);
         // check allocance first - if we don't have enough allowance allocated the gas-estimate will fail
         if (
           allowance &&

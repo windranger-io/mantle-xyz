@@ -3,27 +3,27 @@ import StateContext from "@providers/stateContext";
 
 import { Button } from "@mantle/ui";
 import { formatUnits, getAddress } from "ethers/lib/utils.js";
-import {
-  L1_CHAIN_ID,
-  L2_CHAIN_ID,
-  MANTLE_TOKEN_LIST,
-  Token,
-} from "@config/constants";
+import { L1_CHAIN_ID, L2_CHAIN_ID, Token } from "@config/constants";
 
 import TxLink from "@components/bridge/utils/TxLink";
 
 import { useKeyPress } from "@hooks/useKeyPress";
 import Status from "./Status";
 
-const TOKEN_INDEX = MANTLE_TOKEN_LIST.tokens.reduce((indx, token) => {
-  // eslint-disable-next-line no-param-reassign
-  indx[token.address as string] = token;
-  return indx;
-}, {} as Record<string, Token>);
-
 export default function Withdraw() {
-  const { withdrawals, isLoadingWithdrawals, withdrawalTx2Hashes } =
+  const { withdrawals, isLoadingWithdrawals, withdrawalTx2Hashes, tokenList } =
     useContext(StateContext);
+
+  // create an index from the list
+  const TOKEN_INDEX = useMemo(
+    () =>
+      tokenList?.tokens.reduce((indx, token) => {
+        // eslint-disable-next-line no-param-reassign
+        indx[token.address as string] = token;
+        return indx;
+      }, {} as Record<string, Token>),
+    [tokenList?.tokens]
+  );
 
   const [page, setPage] = useState(0);
 

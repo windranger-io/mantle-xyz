@@ -74,12 +74,12 @@ export default function CTA({
   }, [address, chainId, isLayer1ChainID, isMantleChainID]);
 
   // create an allowance approval request on the selected token
-  const { approve, approvalStatus } = useCallApprove(selected);
+  const { approve, approvalStatus } = useCallApprove(selected || {});
 
   // get the balance/allowanace details
   const spendDetails = useMemo(() => {
     return {
-      balance: balances?.[selected.address] || "0",
+      balance: balances?.[selected?.address || ""] || "0",
       allowance,
     };
   }, [selected, balances, allowance]);
@@ -98,13 +98,13 @@ export default function CTA({
         parseFloat(spendDetails.balance || "0") > 0
           ? spendDetails.balance
           : "-1",
-        selected.decimals
-      ).lt(parseUnits(destinationTokenAmount || "0", selected.decimals))
+        selected?.decimals || 18
+      ).lt(parseUnits(destinationTokenAmount || "0", selected?.decimals || 18))
     ) {
       text = "Insufficient balance";
     } else if (
-      parseUnits(allowance || "-1", selected.decimals).lt(
-        parseUnits(destinationTokenAmount || "0", selected.decimals)
+      parseUnits(allowance || "-1", selected?.decimals || 18).lt(
+        parseUnits(destinationTokenAmount || "0", selected?.decimals || 18)
       )
     ) {
       // I'm not sure we need to have an allocation to withdraw assets...
@@ -152,7 +152,7 @@ export default function CTA({
     isChainID,
     client?.address,
     spendDetails.balance,
-    selected.decimals,
+    selected?.decimals,
     destinationTokenAmount,
     allowance,
     direction,
@@ -182,8 +182,11 @@ export default function CTA({
           } else if (!isChainID) {
             switchToNetwork(chainId);
           } else if (
-            parseUnits(allowance || "-1", selected.decimals).lt(
-              parseUnits(destinationTokenAmount || "0", selected.decimals)
+            parseUnits(allowance || "-1", selected?.decimals || 18).lt(
+              parseUnits(
+                destinationTokenAmount || "0",
+                selected?.decimals || 18
+              )
             )
           ) {
             // allocate allowance
@@ -204,8 +207,14 @@ export default function CTA({
             !parseFloat(destinationTokenAmount) ||
             Number.isNaN(parseFloat(destinationTokenAmount)) ||
             Number.isNaN(parseFloat(selectedTokenAmount)) ||
-            parseUnits(spendDetails.balance || "-1", selected.decimals).lt(
-              parseUnits(destinationTokenAmount || "0", selected.decimals)
+            parseUnits(
+              spendDetails.balance || "-1",
+              selected?.decimals || 18
+            ).lt(
+              parseUnits(
+                destinationTokenAmount || "0",
+                selected?.decimals || 18
+              )
             ))
         }
       >
@@ -215,11 +224,14 @@ export default function CTA({
       {/* <hr className="border border-stroke-inputs mt-6 mb-8" /> */}
       {isChainID &&
         !!client.address &&
-        parseUnits(balances[selected.address] || "-1", selected.decimals).gte(
-          parseUnits(destinationTokenAmount || "0", selected.decimals)
+        parseUnits(
+          balances[selected.address] || "-1",
+          selected?.decimals || 18
+        ).gte(
+          parseUnits(destinationTokenAmount || "0", selected?.decimals || 18)
         ) &&
-        parseUnits(allowance || "-1", selected.decimals).gte(
-          parseUnits(destinationTokenAmount || "0", selected.decimals)
+        parseUnits(allowance || "-1", selected?.decimals || 18).gte(
+          parseUnits(destinationTokenAmount || "0", selected?.decimals || 18)
         ) &&
         destinationTokenAmount && <div className="my-8" />}
     </div>

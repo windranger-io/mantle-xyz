@@ -18,7 +18,10 @@ export default function DirectionLabel({
         className ? ` ${className}` : ""
       }`}
     >
-      <Typography variant="body">{direction}:</Typography>
+      <Typography variant="body">
+        {direction}
+        {direction && ":"}
+      </Typography>
       <div className="flex space-x-2 items-center">
         {logo}
         <Typography variant="body"> {chain}</Typography>

@@ -7,7 +7,7 @@ import Destination from "@components/bridge/Destination";
 import CTA from "@components/bridge/CTA";
 import TransactionPanel from "@components/bridge/TransactionPanel";
 
-export default function Withdraw({
+export default function Deposit({
   selected,
   destination,
   setIsOpen,

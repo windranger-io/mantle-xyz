@@ -42,7 +42,7 @@ export default function TransactionPanel({
   const isAllowanceInfinity = useMemo(
     () =>
       constants.MaxUint256.eq(
-        parseUnits(allowance || "0", destination.decimals)
+        parseUnits(allowance || "0", destination?.decimals || 18)
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [allowance]
@@ -84,11 +84,14 @@ export default function TransactionPanel({
   return (
     (isChainID &&
       destinationTokenAmount &&
-      parseUnits(balances[selected.address] || "-1", selected.decimals).gte(
-        parseUnits(destinationTokenAmount || "0", selected.decimals)
+      parseUnits(
+        balances[selected?.address || ""] || "-1",
+        selected?.decimals || 18
+      ).gte(
+        parseUnits(destinationTokenAmount || "0", selected?.decimals || 18)
       ) &&
-      parseUnits(allowance || "-1", selected.decimals).gte(
-        parseUnits(destinationTokenAmount || "0", selected.decimals)
+      parseUnits(allowance || "-1", selected?.decimals || 18).gte(
+        parseUnits(destinationTokenAmount || "0", selected?.decimals || 18)
       ) &&
       ((!isLoadingFeeData && (
         <div className="space-y-3" key="tx-panel-0">
@@ -223,11 +226,13 @@ export default function TransactionPanel({
                 Current Balance
               </Typography>
               <Typography variant="smallWidget" className="text-type-muted">
-                {Number.isNaN(parseFloat(balances?.[selected.address] || ""))
+                {Number.isNaN(
+                  parseFloat(balances?.[selected?.address || ""] || "")
+                )
                   ? localeZero
                   : formatBigNumberString(
-                      balances?.[selected.address],
-                      selected.decimals,
+                      balances?.[selected?.address || ""],
+                      selected?.decimals || 18,
                       true,
                       false
                     ) || localeZero}{" "}
@@ -248,7 +253,7 @@ export default function TransactionPanel({
                   ? Infinity.toLocaleString()
                   : formatBigNumberString(allowance, 18, true, false) ||
                     localeZero}{" "}
-                {selected.symbol}
+                {selected?.symbol}
               </Typography>
             </div>
           )}
@@ -261,7 +266,7 @@ export default function TransactionPanel({
                   ? localeZero
                   : formatBigNumberString(
                       destinationTokenAmount,
-                      destination.decimals,
+                      destination?.decimals || 18,
                       true,
                       false
                     ) || localeZero
@@ -276,11 +281,11 @@ export default function TransactionPanel({
                   ? localeZero
                   : formatBigNumberString(
                       destinationTokenAmount,
-                      destination.decimals,
+                      destination?.decimals || 18,
                       true,
                       false
                     ) || localeZero}{" "}
-                {destination.symbol}
+                {destination?.symbol}
               </Typography>
             </div>
           )}

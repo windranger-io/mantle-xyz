@@ -7,9 +7,10 @@ import {
   HISTORY_ITEMS_PER_PAGE,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
-  MANTLE_TOKEN_LIST,
+  MANTLE_TOKEN_LIST_URL,
   MULTICALL_CONTRACTS,
   Token,
+  TokenList,
   Views,
 } from "@config/constants";
 
@@ -46,6 +47,7 @@ import {
 
 import { getAddress } from "ethers/lib/utils.js";
 import { getMulticallContract } from "@utils/multicallContract";
+import useTokenList from "@hooks/web3/bridge/read/useTokenList";
 
 export type StateProps = {
   view: Views;
@@ -83,6 +85,7 @@ export type StateProps = {
   ctaErrorReset: MutableRefObject<(() => void | boolean) | undefined>;
 
   tokens: Token[];
+  tokenList: TokenList;
   balances: Record<string, string>;
   allowance: string;
   selectedToken: {
@@ -206,18 +209,22 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [destinationTokenAmount, setDestinationTokenAmount] =
     useState<string>("");
 
+  // fetch the tokenList from source
+  const { tokenList } = useTokenList(MANTLE_TOKEN_LIST_URL);
+
   // the current chains token list
   const tokens = useMemo(() => {
     const chainId1 = L1_CHAIN_ID === chainId ? L1_CHAIN_ID : L2_CHAIN_ID;
     const chainId2 = L1_CHAIN_ID === chainId ? L2_CHAIN_ID : L1_CHAIN_ID;
-
-    return MANTLE_TOKEN_LIST.tokens.filter((v) => {
-      const hasCorresponding = MANTLE_TOKEN_LIST.tokens.find((vv) => {
-        return vv.chainId === chainId2 && v.logoURI === vv.logoURI;
-      });
-      return hasCorresponding && v.chainId === chainId1;
-    });
-  }, [chainId]);
+    return (
+      tokenList?.tokens.filter((v) => {
+        const hasCorresponding = tokenList?.tokens.find((vv) => {
+          return vv.chainId === chainId2 && v.logoURI === vv.logoURI;
+        });
+        return hasCorresponding && v.chainId === chainId1;
+      }) || []
+    );
+  }, [chainId, tokenList]);
 
   // request the appropriate bridge information from mantlesdk
   const { bridgeAddress } = useTokenPairBridge(
@@ -462,14 +469,14 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
       // new destination as per the opposite chain
       const destination =
-        MANTLE_TOKEN_LIST.tokens.find((v) => {
+        tokenList?.tokens.find((v) => {
           return selection.logoURI === v.logoURI && v.chainId === targetChainID;
         }) || tokens[chainId === L1_CHAIN_ID ? 1 : 0];
 
       // prevent overflow
       if (
         oSelection.decimals > selection.decimals &&
-        selectedTokenAmount.split(".")[1].length > selection.decimals
+        (selectedTokenAmount.split(".")?.[1]?.length || 0) > selection.decimals
       ) {
         // only working against expo
         const [int, expo] = selectedTokenAmount.split(".");
@@ -581,6 +588,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       tokens,
       balances,
       allowance,
+      tokenList,
       selectedToken,
       destinationToken,
       selectedTokenAmount,
@@ -656,6 +664,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     tokens,
     balances,
     allowance,
+    tokenList,
     selectedToken,
     destinationToken,
     selectedTokenAmount,

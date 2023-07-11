@@ -2,25 +2,25 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import StateContext from "@providers/stateContext";
 
 import { formatUnits, getAddress } from "ethers/lib/utils.js";
-import {
-  L1_CHAIN_ID,
-  L2_CHAIN_ID,
-  MANTLE_TOKEN_LIST,
-  Token,
-} from "@config/constants";
+import { L1_CHAIN_ID, L2_CHAIN_ID, Token } from "@config/constants";
 import { Button } from "@mantle/ui";
 
 import TxLink from "@components/bridge/utils/TxLink";
 import { useKeyPress } from "@hooks/useKeyPress";
 
-const TOKEN_INDEX = MANTLE_TOKEN_LIST.tokens.reduce((indx, token) => {
-  // eslint-disable-next-line no-param-reassign
-  indx[token.address as string] = token;
-  return indx;
-}, {} as Record<string, Token>);
-
 export default function Deposit() {
-  const { deposits, isLoadingDeposits } = useContext(StateContext);
+  const { deposits, isLoadingDeposits, tokenList } = useContext(StateContext);
+
+  // create an index from the list
+  const TOKEN_INDEX = useMemo(
+    () =>
+      tokenList?.tokens.reduce((indx, token) => {
+        // eslint-disable-next-line no-param-reassign
+        indx[token.address as string] = token;
+        return indx;
+      }, {} as Record<string, Token>),
+    [tokenList?.tokens]
+  );
 
   const [page, setPage] = useState(0);
 

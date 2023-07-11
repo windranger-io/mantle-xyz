@@ -58,7 +58,8 @@ function useAllowanceCheck(
             tokens.find((v: { name: any; chainId: number }) => {
               return selectedToken[type] === v.name && v.chainId === chainId;
             })) ||
-          tokens[chainId === L1_CHAIN_ID ? 0 : 1];
+          tokens[chainId === L1_CHAIN_ID ? 0 : 1] ||
+          {};
 
         // native tokens don't need allowance checks
         if (
@@ -78,21 +79,26 @@ function useAllowanceCheck(
           // produce a contract for the selected contract
           const contract = new Contract(selection.address, TOKEN_ABI, provider);
           // check the allowance the user has allocated to the bridge
-          return contract
-            ?.allowance(client.address, bridgeAddress)
-            .catch(() => {
-              // eslint-disable-next-line no-console
-              // console.log("Allowance call error:", e);
-              return parseUnits(allowance || "0", selection.decimals);
-            })
-            .then((givenAllowance: BigNumberish) => {
-              const newAllowance = formatUnits(
-                givenAllowance || "0",
-                selection.decimals
-              ).toString();
-              // only trigger an update if we got a new allowance for selected token
-              return newAllowance;
-            });
+          return (
+            (selection.address &&
+              bridgeAddress &&
+              contract
+                ?.allowance(client.address, bridgeAddress)
+                .catch(() => {
+                  // eslint-disable-next-line no-console
+                  // console.log("Allowance call error:", e);
+                  return parseUnits(allowance || "0", selection.decimals);
+                })
+                .then((givenAllowance: BigNumberish) => {
+                  const newAllowance = formatUnits(
+                    givenAllowance || "0",
+                    selection.decimals
+                  ).toString();
+                  // only trigger an update if we got a new allowance for selected token
+                  return newAllowance;
+                })) ||
+            "0"
+          );
         }
         if (bridgeAddress) {
           return formatUnits(

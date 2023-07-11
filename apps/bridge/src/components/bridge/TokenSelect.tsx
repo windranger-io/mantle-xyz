@@ -43,9 +43,9 @@ export default function TokenSelect({
 
   const hasBalance = useMemo(() => {
     return parseUnits(
-      balances?.[selected.address] || "0",
-      selected.decimals
-    ).gte(parseUnits(selectedTokenAmount || "0", selected.decimals));
+      balances?.[selected?.address] || "0",
+      selected?.decimals || 18
+    ).gte(parseUnits(selectedTokenAmount || "0", selected?.decimals || 18));
   }, [selected, balances, selectedTokenAmount]);
 
   return (
@@ -94,9 +94,15 @@ export default function TokenSelect({
 
                       // if the decimals exceed 18dps we need to lose any additional digits
                       const amounts = amount.split(".");
-                      if (amounts?.[1]?.length >= selected.decimals) {
+                      if (
+                        (amounts?.[1] || "")?.length >=
+                        (selected?.decimals || 18)
+                      ) {
                         // lock to tokens decimals
-                        amounts[1] = amounts[1].substring(0, selected.decimals);
+                        amounts[1] = amounts[1].substring(
+                          0,
+                          selected?.decimals || 18
+                        );
                         amount = amounts.join(".");
                       }
 
@@ -106,15 +112,15 @@ export default function TokenSelect({
                       // fix the number to no greater than constants.MaxUint256 (with tokens decimals parsed)
                       const bnAmount = parseUnits(
                         amount || "0",
-                        selected.decimals
-                      ).gt(parseUnits(max, selected.decimals))
-                        ? parseUnits(max, selected.decimals)
-                        : parseUnits(amount || "0", selected.decimals);
+                        selected?.decimals || 18
+                      ).gt(parseUnits(max, selected?.decimals || 18))
+                        ? parseUnits(max, selected?.decimals || 18)
+                        : parseUnits(amount || "0", selected?.decimals || 18);
 
                       // ensure the number is positive
                       amount = formatUnits(
                         bnAmount.lt(0) ? bnAmount.mul(-1) : bnAmount,
-                        selected.decimals
+                        selected?.decimals || 18
                       );
 
                       // correct the decimal component
@@ -125,7 +131,7 @@ export default function TokenSelect({
                           ? amount.replace(/\.0$/, "")
                           : amount.split(".").length > 1
                           ? `${amount.split(".")[0]}.${
-                              amountExpo.length >= selected.decimals
+                              amountExpo.length >= (selected?.decimals || 18)
                                 ? amount.split(".")[1]
                                 : amountExpo ||
                                   amount.split(".")[1].replace(/[^0-9.]/g, "")
@@ -178,12 +184,14 @@ export default function TokenSelect({
               />
               <Listbox.Button className="h-12 relative cursor-default rounded-br-lg rounded-tr-lg bg-black py-1.5 pl-5 pr-10 text-left text-white shadow-sm focus:outline-none focus:ring-0 focus:ring-white/70">
                 <span className="flex items-center">
-                  <Image
-                    alt={`Logo for ${selected?.name}`}
-                    src={selected?.logoURI}
-                    width={24}
-                    height={24}
-                  />
+                  {selected?.logoURI && (
+                    <Image
+                      alt={`Logo for ${selected?.name}`}
+                      src={selected?.logoURI}
+                      width={24}
+                      height={24}
+                    />
+                  )}
                   <span className="ml-2 truncate hidden md:block">
                     {selected?.symbol}
                   </span>
@@ -236,7 +244,7 @@ export default function TokenSelect({
                           <div className="text-type-muted">
                             {formatBigNumberString(
                               `${balances?.[token.address] || 0}`,
-                              selected.decimals,
+                              selected?.decimals || 18,
                               true,
                               false
                             )}
@@ -284,8 +292,12 @@ export default function TokenSelect({
             type="button"
             className="text-[#0A8FF6]"
             onClick={() => {
-              setSelectedTokenAmount(balances?.[selected.address] || "0");
-              setDestinationTokenAmount(balances?.[selected.address] || "0");
+              setSelectedTokenAmount(
+                balances?.[selected?.address || ""] || "0"
+              );
+              setDestinationTokenAmount(
+                balances?.[selected?.address || ""] || "0"
+              );
             }}
           >
             Max
@@ -294,18 +306,24 @@ export default function TokenSelect({
       ) : (
         <DirectionLabel
           className="pt-4"
-          direction="Your balance"
+          direction={(selected?.address && "Your balance") || ""}
           logo={<span />}
-          chain={`${
-            Number.isNaN(parseFloat(balances?.[selected.address] || ""))
-              ? localeZero
-              : formatBigNumberString(
-                  balances?.[selected.address],
-                  selected.decimals,
-                  true,
-                  false
-                ) || localeZero
-          }${" "}${selected.symbol}`}
+          chain={
+            (selected?.address &&
+              `${
+                Number.isNaN(
+                  parseFloat(balances?.[selected?.address || ""] || "")
+                )
+                  ? localeZero
+                  : formatBigNumberString(
+                      balances?.[selected?.address || ""] || "",
+                      selected?.decimals || 18,
+                      true,
+                      false
+                    ) || localeZero
+              }${" "}${selected?.symbol}`) ||
+            ""
+          }
         />
       )}
     </div>
