@@ -72,7 +72,7 @@ export default function RootLayout({
             <PageContainer className="gap-8">
               {children}
               <div>
-                <Footer page="bridge" />
+                <Footer page="bridge" chain_id={L1_CHAIN_ID} />
               </div>
             </PageContainer>
           </PageWrapper>

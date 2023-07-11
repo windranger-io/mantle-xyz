@@ -50,7 +50,14 @@ const LEGAL_ITEMS = [
   },
 ]
 
-export const Footer = ({ page }: { page: string }) => {
+export const Footer = ({
+  page,
+  chain_id,
+}: {
+  page: string
+  // eslint-disable-next-line react/require-default-props
+  chain_id?: number
+}) => {
   const RESOURCE_ITEMS = [
     {
       name: 'Docs',
@@ -158,7 +165,11 @@ export const Footer = ({ page }: { page: string }) => {
         ))}
       </div>
 
-      {page === 'bridge' ? <MantleLetterMarkBridge /> : <MantleLetterMark />}
+      {page === 'bridge' && chain_id === 1 ? (
+        <MantleLetterMarkBridge />
+      ) : (
+        <MantleLetterMark />
+      )}
     </footer>
   )
 }
