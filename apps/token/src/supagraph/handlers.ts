@@ -1,5 +1,6 @@
 // We use BigNumber to handle all numeric operations
 import { BigNumber } from "ethers";
+import { getAddress } from "ethers/lib/utils";
 
 // Use Store to interact with entity storage
 import { Store } from "@mantle/supagraph";
@@ -16,8 +17,9 @@ import type {
 } from "./types";
 
 // Extract the Mantle token address so that we can detect which contract the event belongs to
-const MANTLE_TOKEN_ADDRESS =
-  process.env.MANTLE_ADDRESS || "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604";
+const MANTLE_TOKEN_ADDRESS = getAddress(
+  process.env.MANTLE_ADDRESS || "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604"
+);
 
 // Generic handler to consume DelegateChanged events
 export const DelegateChangedHandler = async (
