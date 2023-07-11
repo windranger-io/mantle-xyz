@@ -20,13 +20,13 @@ export function TransactionSummary({ actualGasFee }: Props) {
   return (
     <div className="space-y-3 pt-6" key="tx-panel-0">
       <div className="flex justify-between">
-        <Typography variant="smallWidget">Conversion rate</Typography>
+        <Typography variant="smallWidget">Migration rate</Typography>
         <Typography variant="smallWidget" className="text-white">
           1 BIT = 1 MNT
         </Typography>
       </div>
       {/* <div className="flex justify-between">
-        <Typography variant="smallWidget">Approx. time to convert</Typography>
+        <Typography variant="smallWidget">Approx. time to migrate</Typography>
         <Typography variant="smallWidget" className="text-white">
           ~ 5 min
         </Typography>

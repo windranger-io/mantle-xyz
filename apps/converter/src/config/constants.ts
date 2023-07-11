@@ -24,7 +24,7 @@ export const L1_CONVERTER_CONTRACT_ADDRESSES: Record<number, `0x${string}`> = {
   5: "0x144D9B7F34a4e3133C6F347886fBe2700c4cb268",
 };
 
-// Convert BitDAO tokens to Mantle tokens on L1
+// Migrate BitDAO tokens to Mantle tokens on L1
 export const L1_BITDAO_TOKEN_ADDRESS = L1_BITDAO_TOKEN_ADDRESSES[L1_CHAIN_ID];
 export const L1_MANTLE_TOKEN_ADDRESS = L1_MANTLE_TOKEN_ADDRESSES[L1_CHAIN_ID];
 export const L1_CONVERTER_CONTRACT_ADDRESS =
@@ -57,24 +57,24 @@ export const L1_MANTLE_TOKEN: Token = {
 };
 
 // Configure the applications name
-export const APP_NAME = "Mantle Converter";
+export const APP_NAME = "Mantle Migrator";
 
 // Configure deta description
-export const META = "Convert $BIT tokens to $MNT tokens - 1:1";
+export const META = "Migrate $BIT tokens to $MNT tokens - 1:1";
 
 // Configure OG Title
-export const OG_TITLE = "Convert $BIT tokens to $MNT tokens";
+export const OG_TITLE = "Migrate $BIT tokens to $MNT tokens";
 
 // Configure OG Desc
 export const OG_DESC =
-  "Convert $BIT tokens to $MNT tokens here... #BuildonMantle.";
+  "Migrate $BIT tokens to $MNT tokens here... #BuildonMantle.";
 
 // Configure Twitter Title
-export const TWITTER_TITLE = "Mantle Converter";
+export const TWITTER_TITLE = "Mantle Migrator";
 
 // Configure Twitter Desc
 export const TWITTER_DESC =
-  "Convert $BIT tokens to $MNT tokens here... #BuildonMantle.";
+  "Migrate $BIT tokens to $MNT tokens here... #BuildonMantle.";
 
 // Get the current absolute path from the env
 export function getBaseUrl() {
@@ -295,7 +295,7 @@ export const DELEGATION_URL: string = "https://delegatevote.mantle.xyz/";
 
 export enum ErrorMessages {
   INSUFFICIENT_GAS = "You do not have enough gas to cover the transaction cost.",
-  HALTED = "Conversion halted. Contract is under maintenance. Please check later.",
+  HALTED = "Migration halted. Please check again later.",
 }
 
 export const isComingSoon =

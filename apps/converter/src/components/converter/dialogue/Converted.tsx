@@ -86,10 +86,10 @@ export default function Deposited({
         content: (
           <div className="flex flex-col">
             <Typography variant="body" className="break-words">
-              <b>Success Conversion completed</b>
+              <b>Migration completed</b>
             </Typography>
             <Typography variant="body" className="break-words">
-              {from} BIT converted to MNT
+              {from} BIT migrated to MNT
             </Typography>
           </div>
         ),
@@ -132,12 +132,12 @@ export default function Deposited({
               <b>You still have remaining BIT tokens</b>
             </Typography>
             <Typography variant="body" className="break-words">
-              Would you like to convert the rest now?
+              Would you like to migrate the rest now?
             </Typography>
           </div>
         ),
         id: `${txHash}-remaining-balance`,
-        buttonText: "Convert",
+        buttonText: "Migrate",
         onButtonClick: () => {
           closeModal();
 

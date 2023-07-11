@@ -81,9 +81,9 @@ export async function GET(request: NextRequest) {
     start,
     stop,
     // skip extra steps to get block details about the logs
-    skipBlocks: true, // skip collecting blocks
-    skipTransactions: true, // skip collecting txs
-    skipOptionalArgs: true, // import slim version of { tx, block } to the handlers (without reading in the txs or the blocks)
+    skipBlocks: false, // collect blocks
+    skipTransactions: false, // collect txs
+    skipOptionalArgs: false, // import full version of { tx, block } to the handlers
   });
 
   // we don't need to sync more often than once per block - and if we're using vercel.json crons we can only sync 1/min

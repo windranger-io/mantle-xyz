@@ -869,7 +869,7 @@ export function walkTree(
       // if node has nodes...
       if (res && res[name] && typeof res[name] === "object") {
         // assign args to the structure
-        (res[name] as Record<string, any>).args = getArgs(node);
+        (res[name] as Record<string, any>).args = getArgs(node, opts.vars);
         (res[name] as Record<string, any>).fields = {};
 
         walkTree(
