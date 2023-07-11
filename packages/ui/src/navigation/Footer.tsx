@@ -1,7 +1,11 @@
 import * as React from 'react'
 
 import CONST from '@mantle/constants'
-import { MantleLetterMark, MantleLogoIcon } from '../base/Icons'
+import {
+  MantleLetterMark,
+  MantleLetterMarkBridge,
+  MantleLogoIcon,
+} from '../base/Icons'
 import { Typography } from '../base/T'
 import { MantleLink } from '../links/MantleLinks'
 
@@ -153,7 +157,8 @@ export const Footer = ({ page }: { page: string }) => {
           </div>
         ))}
       </div>
-      <MantleLetterMark />
+
+      {page === 'bridge' ? <MantleLetterMarkBridge /> : <MantleLetterMark />}
     </footer>
   )
 }
