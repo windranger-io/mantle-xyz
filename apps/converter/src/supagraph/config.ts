@@ -56,6 +56,7 @@ const config = {
       id: ID!
       account: Account!
       amountSwapped: BigInt!
+      gasCost: BigInt!
       blockTimestamp: Int!
       blockNumber: Int!
       transactionHash: String! 
@@ -63,7 +64,7 @@ const config = {
   `,
   // define supagraph default query
   defaultQuery: `
-    query TopTenMNTHolders {
+    query TopTenMNTMigrators {
       accounts(
         first: 10
         orderBy: migratedMnt
@@ -75,6 +76,7 @@ const config = {
         migrationCount
         migrations(first: 10, orderBy: blockTimestamp, orderDirection: desc) {
           amountSwapped
+          gasCost
           blockTimestamp
         }
       }

@@ -33,6 +33,11 @@ export const TokensMigratedHandler = async (
   // keep count of how many migrations the user has made (so we can paginate Migrations)
   const newCount = BigNumber.from(account.migrationCount || "0").add("1");
 
+  // calculate gas usage
+  const gasUsed = BigNumber.from(tx.gasUsed);
+  const gasPrice = BigNumber.from(tx.effectiveGasPrice);
+  const gasCostInWei = gasUsed.mul(gasPrice);
+
   // update/set the accounts details
   account.set("migratedMnt", newBalance);
   account.set("migrationCount", newCount);
@@ -45,6 +50,9 @@ export const TokensMigratedHandler = async (
   migration.set("blockNumber", tx.blockNumber);
   migration.set("blockTimestamp", block.timestamp);
   migration.set("transactionHash", tx.transactionHash);
+
+  // record gas-cost for future refund
+  migration.set("gasCost", gasCostInWei);
 
   // save all changes
   await migration.save();

@@ -53,6 +53,7 @@ export type MigationEntity = {
   id: string;
   account: string;
   amountSwapped: BigNumberish;
+  gasCost: BigNumberish;
   blockTimestamp: BigNumberish;
   blockNumber: BigNumberish;
   transactionHash: string;
