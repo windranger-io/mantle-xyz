@@ -36,7 +36,7 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
     ),
   },
   {
-    q: "How do I convert using multisig?",
+    q: "How do I migrate using multisig?",
     a: (
       <Typography className="text-type-secondary mx-4 mb-4">
         Please see the &quot;For Advanced Users&quot; section of the{" "}

@@ -51,12 +51,12 @@ export function SmartContractTracker({ halted }: SCTrackerProps) {
           <div className="flex flex-col">
             <Typography className="text-type-secondary">Status</Typography>
             <Typography className="font-bold text-type-primary">
-              {halted ? "Un" : "A"}ctive ({!halted ? "Unh" : "H"}alted)
+              {halted ? "Not " : ""}Available ({!halted ? "Unh" : "H"}alted)
             </Typography>
           </div>
           <div className="flex flex-col">
             <Typography className="text-type-secondary">
-              Balance in conversion contract
+              Tokens left to migrate
             </Typography>
             <Typography className="font-bold text-type-primary">
               {formattedBalance} MNT

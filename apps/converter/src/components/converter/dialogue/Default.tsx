@@ -45,14 +45,14 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
   return (
     <>
       <span className="flex justify-between align-middle">
-        <Typography variant="modalHeading">Confirm Conversion</Typography>
+        <Typography variant="modalHeading">Confirm migration</Typography>
         <Typography variant="modalHeading" className="text-white pt-1">
           <MdClear onClick={closeModal} className="cursor-pointer" />
         </Typography>
       </span>
       <div>
         <Values
-          label="Amount to convert"
+          label="Amount to migrate"
           value={
             <div className="flex items-center space-x-2">
               <span>
@@ -85,7 +85,7 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
           }
           border
         />
-        <Values label="Time to convert" value="~5 minutes" border />
+        <Values label="Time to migrate" value="~5 minutes" border />
         <Values
           label="Expected gas fee"
           value={`~${

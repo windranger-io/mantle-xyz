@@ -38,9 +38,9 @@ export default function Deposited({
         content: (
           <div className="flex flex-col">
             <Typography variant="body">
-              <b>Success Conversion completed</b>
+              <b>Migration completed</b>
             </Typography>
-            <Typography variant="body">{from} BIT converted to MNT</Typography>
+            <Typography variant="body">{from} BIT migrated to MNT</Typography>
           </div>
         ),
         id: txHash,
@@ -82,12 +82,12 @@ export default function Deposited({
               <b>You still have remaining BIT tokens</b>
             </Typography>
             <Typography variant="body">
-              Would you like to convert the rest now?
+              Would you like to migrate the rest now?
             </Typography>
           </div>
         ),
         id: `${txHash}-remaining-balance`,
-        buttonText: "Convert",
+        buttonText: "Migrate",
         onButtonClick: () => {
           closeModal();
 
@@ -100,7 +100,7 @@ export default function Deposited({
   return (
     <>
       <Typography variant="modalHeading" className="text-center w-full mt-4">
-        Conversion completed
+        Migration completed
       </Typography>
       <span className="w-full flex justify-center">
         <Image src={CheckedCircle} alt="Checked" height={80} width={80} />

@@ -195,7 +195,7 @@ export function useCallConvert(): UseMutateFunction<
         (data.receipt as TransactionResponse).hash ||
         (data.receipt as TransactionReceipt).transactionHash;
       // eslint-disable-next-line no-console
-      console.log(`[Conversion] successful! => `, txHash);
+      console.log(`[Migration] successful! => `, txHash);
       // set the chainID from this state
       setCTAChainId(chainId);
       // reset status on error
@@ -252,7 +252,7 @@ export function useCallConvert(): UseMutateFunction<
 
       // eslint-disable-next-line no-console
       console.log(
-        `[Conversion] errorMessage => `,
+        `[Migration] errorMessage => `,
         error.message,
         " txHash => ",
         txHash

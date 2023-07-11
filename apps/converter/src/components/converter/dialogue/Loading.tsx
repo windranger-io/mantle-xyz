@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import Image from "next/image";
 import { MdClear } from "react-icons/md";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 import { Typography } from "@mantle/ui";
 import { L1_CHAIN_ID } from "@config/constants";
-import { useToast } from "@hooks/useToast";
+// import { useToast } from "@hooks/useToast";
 import TxLink from "@components/converter/utils/TxLink";
 
 export default function Loading({
@@ -19,34 +19,34 @@ export default function Loading({
   from: string;
   to: string;
 }) {
-  const { createToast } = useToast();
-  const router = useRouter();
+  // const { createToast } = useToast();
+  // const router = useRouter();
+  // useEffect(() => {
+  //   createToast({
+  //     type: "onGoing",
+  //     borderLeft: "bg-blue-600",
+  //     content: (
+  //       <div className="flex flex-col">
+  //         <Typography variant="body">
+  //           <b>Migration initiated</b>
+  //         </Typography>
+  //         <Typography variant="body">Will be available in ~5 mins</Typography>
+  //       </div>
+  //     ),
+  //     id: `${txHash}-pending-migration`,
+  //     buttonText: "View",
+  //     onButtonClick: () => {
+  //       router.push("/");
+  //       return true;
+  //     },
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    createToast({
-      type: "onGoing",
-      borderLeft: "bg-blue-600",
-      content: (
-        <div className="flex flex-col">
-          <Typography variant="body">
-            <b>Conversion initiated</b>
-          </Typography>
-          <Typography variant="body">Will be available in ~5 mins</Typography>
-        </div>
-      ),
-      id: `${txHash}-pending-conversion`,
-      buttonText: "View",
-      onButtonClick: () => {
-        router.push("/");
-        return true;
-      },
-    });
-  }, []);
   return (
     <>
       <span className="flex justify-between align-middle">
         <Typography variant="modalHeadingSm" className="text-center w-full">
-          Pending Conversion
+          Pending migration
         </Typography>
         <Typography variant="modalHeading" className="text-white w-auto pt-1">
           <MdClear onClick={closeModal} className="cursor-pointer" />
@@ -62,7 +62,7 @@ export default function Loading({
       </div>
       <div className="text-center">
         <div>
-          You are converting {from} $BIT to {to} $MNT.
+          You are migrating {from} $BIT to {to} $MNT.
         </div>
         <div>Go grab some coffee, I promise it&apos;ll be done by then!</div>
       </div>

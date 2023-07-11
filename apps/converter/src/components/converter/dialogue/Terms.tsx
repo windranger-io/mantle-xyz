@@ -14,7 +14,7 @@ export default function Terms() {
         Terms
       </Typography>
       <Typography>
-        Just a heads up, once converted, the process cannot be reversed - MNT
+        Just a heads up, once migrated, the process cannot be reversed - MNT
         tokens can&apos;t be reverted back to BIT tokens.
       </Typography>
       <Button
