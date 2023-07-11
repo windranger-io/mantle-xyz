@@ -4,7 +4,7 @@ import { BigNumber } from "ethers";
 // Use Store to interact with entity storage
 import { Store } from "@mantle/supagraph";
 
-// Supagraph specific constants detailing the contracts we'll sync against
+// Each event is supplied the block and tx along with the typed args
 import { Block, TransactionReceipt } from "@ethersproject/providers";
 
 // - These types will be generated based on the event signatures exported by the defined contracts in config (coming soon TM);

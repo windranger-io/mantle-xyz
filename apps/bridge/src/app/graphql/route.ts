@@ -41,10 +41,7 @@ const graphql = createSupagraph<NextApiRequest, NextApiResponse>({
           // name the database (pesisted to mongodb)
           name: SUPAGRAPH_NAME,
           // connect to mongodb
-          client: getMongodb(
-            // this obviously needs putting in an env
-            process.env.MONGODB_URI
-          ),
+          client: getMongodb(process.env.MONGODB_URI),
           // skip groupBy on time/block - each id is unique in this set of syncs
           mutable: SUPAGRAPH_MUTABLE_ENTITIES,
         }),
