@@ -85,7 +85,7 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
           }
           border
         />
-        <Values label="Time to migrate" value="~5 minutes" border />
+        {/* <Values label="Time to migrate" value="~5 minutes" border /> */}
         <Values
           label="Expected gas fee"
           value={`~${

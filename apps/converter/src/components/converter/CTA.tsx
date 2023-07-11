@@ -159,7 +159,6 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
       <Button
         type="button"
         size="full"
-        className="h-14"
         onClick={() => {
           if (!client?.address) {
             connect({

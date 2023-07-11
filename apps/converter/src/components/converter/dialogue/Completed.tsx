@@ -37,10 +37,12 @@ export default function Deposited({
         borderLeft: "bg-green-600",
         content: (
           <div className="flex flex-col">
-            <Typography variant="body">
+            <Typography variant="body" className="break-words">
               <b>Migration completed</b>
             </Typography>
-            <Typography variant="body">{from} BIT migrated to MNT</Typography>
+            <Typography variant="body" className="break-words">
+              {from} BIT migrated to MNT
+            </Typography>
           </div>
         ),
         id: txHash,
@@ -78,10 +80,10 @@ export default function Deposited({
         borderLeft: "bg-yellow-500",
         content: (
           <div className="flex flex-col">
-            <Typography variant="body">
+            <Typography variant="body" className="break-words">
               <b>You still have remaining BIT tokens</b>
             </Typography>
-            <Typography variant="body">
+            <Typography variant="body" className="break-words">
               Would you like to migrate the rest now?
             </Typography>
           </div>

@@ -25,12 +25,12 @@ export function TransactionSummary({ actualGasFee }: Props) {
           1 BIT = 1 MNT
         </Typography>
       </div>
-      <div className="flex justify-between">
+      {/* <div className="flex justify-between">
         <Typography variant="smallWidget">Approx. time to migrate</Typography>
         <Typography variant="smallWidget" className="text-white">
           ~ 5 min
         </Typography>
-      </div>
+      </div> */}
       {/* Place gas rows */}
       <div
         key="tx-panel-1"
