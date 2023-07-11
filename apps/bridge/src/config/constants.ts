@@ -230,21 +230,11 @@ export enum ChainID {
   MantleTestnet = 5001,
 }
 
-export enum TokenSymbol {
-  MNT = "MNT",
-  ETH = "ETH",
-  LINK = "LINK",
-  UNI = "UNI",
-  USDC = "USDC",
-  USDT = "USDT",
-  WBTC = "WBTC",
-}
-
 export interface Token {
   chainId: ChainID;
   address: Address;
   name: string;
-  symbol: `${TokenSymbol}`;
+  symbol: string;
   decimals: number;
   logoURI: string;
   extensions: {
