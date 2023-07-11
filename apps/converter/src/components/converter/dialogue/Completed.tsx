@@ -57,6 +57,7 @@ export default function Deposited({
         },
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [txHash]);
 
   // get the balance/allowanace details
@@ -97,6 +98,7 @@ export default function Deposited({
         },
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadingBalances, txHash, BITBalance, hasBitBalanceRemaining]);
 
   return (

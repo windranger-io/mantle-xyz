@@ -14,6 +14,7 @@ export default function ErrorMsg({ halted }: { halted: boolean }) {
       // don't remove error msg if it is other existing error
       setErrorMsg("");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [halted]);
 
   if (errorMsg) {
