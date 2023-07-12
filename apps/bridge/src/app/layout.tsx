@@ -10,6 +10,7 @@ import {
   PageBackroundImage,
   PageContainer,
 } from "@mantle/ui";
+import LegalDisclaimer from "@components/LegalDisclaimer";
 
 import { L1_CHAIN_ID } from "@config/constants";
 
@@ -74,6 +75,7 @@ export default function RootLayout({
               {children}
             </PageContainer>
             <SlimFooter url={CONST.WEBSITE} />
+            {L1_CHAIN_ID === 1 ? <LegalDisclaimer /> : ""}
           </PageWrapper>
         </Providers>
       </body>
