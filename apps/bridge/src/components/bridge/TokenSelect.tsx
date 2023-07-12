@@ -253,7 +253,7 @@ export default function TokenSelect({
                           <div className="text-type-muted">
                             {formatBigNumberString(
                               `${balances?.[token.address] || 0}`,
-                              selected?.decimals || 18,
+                              3,
                               true,
                               false
                             )}
@@ -326,7 +326,7 @@ export default function TokenSelect({
                   ? localeZero
                   : formatBigNumberString(
                       balances?.[selected?.address || ""] || "",
-                      selected?.decimals || 18,
+                      3,
                       true,
                       false
                     ) || localeZero
