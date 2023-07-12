@@ -29,7 +29,7 @@ export default function Deposited({
       fetch(`/controller?address=${client.address}`).then(async (res) => {
         const resJson = await res.json();
         // only show the toast when the data is null - means user hasn't claimed the airdrop
-        if (resJson?.data) {
+        if (!resJson?.data) {
           createToast({
             type: "success",
             borderLeft: "bg-green-600",
