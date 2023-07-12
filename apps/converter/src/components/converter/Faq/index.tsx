@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { ConvertCard } from "@components/ConvertCard";
 import { Typography } from "@mantle/ui";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { DELEGATION_URL } from "@config/constants";
 
 // TODO: replace blog post URL
 const faqList: Array<{ q: string; a: JSX.Element }> = [
@@ -81,12 +82,12 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         $BIT delegation and voting works independently of $MNT due to the new
         token functionality. Visit{" "}
         <a
-          href="https://delegatevote.mantle.xyz/"
+          href={DELEGATION_URL}
           target="__blank"
           rel="noreferrer"
           className="underline"
         >
-          https://delegatevote.mantle.xyz/
+          {DELEGATION_URL}
         </a>{" "}
         to delegate your $MNT again.
       </Typography>
