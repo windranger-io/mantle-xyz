@@ -26,27 +26,33 @@ export default function Deposited({
   // display airdrop success toast if the user is qualified
   useEffect(() => {
     if (client.address) {
-      createToast({
-        type: "success",
-        borderLeft: "bg-green-600",
-        content: (
-          <div className="flex flex-col">
-            <Typography variant="body" className="break-words">
-              <b>MNT bonus sent!</b>
-            </Typography>
-            <Typography variant="body" className="break-words">
-              Your MNT bonus is sent to your wallet
-            </Typography>
-          </div>
-        ),
-        id: `airdrop-success-${client?.address}`,
-        buttonText: "Add Mantle Network",
-        onButtonClick: () => {
-          if (givenChain?.id !== L2_CHAIN_ID) {
-            addNetwork(L2_CHAIN_ID);
-          }
-          return true;
-        },
+      fetch(`/controller?address=${client.address}`).then(async (res) => {
+        const resJson = await res.json();
+        // only show the toast when the data is null - means user hasn't claimed the airdrop
+        if (resJson?.data) {
+          createToast({
+            type: "success",
+            borderLeft: "bg-green-600",
+            content: (
+              <div className="flex flex-col">
+                <Typography variant="body" className="break-words">
+                  <b>MNT bonus sent!</b>
+                </Typography>
+                <Typography variant="body" className="break-words">
+                  Your MNT bonus is sent to your wallet
+                </Typography>
+              </div>
+            ),
+            id: `airdrop-success-${client?.address}`,
+            buttonText: "Add Mantle Network",
+            onButtonClick: () => {
+              if (givenChain?.id !== L2_CHAIN_ID) {
+                addNetwork(L2_CHAIN_ID);
+              }
+              return true;
+            },
+          });
+        }
       });
     }
   }, [client.address]);
