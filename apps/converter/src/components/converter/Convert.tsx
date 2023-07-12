@@ -4,10 +4,12 @@ import {
   Views,
   L1_CONVERTER_CONTRACT_ABI,
   L1_CONVERTER_CONTRACT_ADDRESS,
+  L1_CHAIN_ID,
 } from "@config/constants";
 import StateContext from "@providers/stateContext";
-import { Suspense, useContext } from "react";
-import { useContractRead } from "wagmi";
+import { Suspense, useContext, useMemo } from "react";
+import { useProvider } from "wagmi";
+import { Contract } from "ethers";
 
 // by order of use...
 import Dialogue from "@components/converter/dialogue";
@@ -27,12 +29,20 @@ export default function Convert() {
   // unpack the context
   const { view, isCTAPageOpen, setIsCTAPageOpen } = useContext(StateContext);
 
-  const { data: halted } = useContractRead({
-    address: L1_CONVERTER_CONTRACT_ADDRESS,
-    abi: L1_CONVERTER_CONTRACT_ABI,
-    watch: true,
-    functionName: "halted",
+  // use provider for l1 chain
+  const provider = useProvider({
+    chainId: L1_CHAIN_ID,
   });
+
+  // read halted from contract
+  const halted = useMemo(async () => {
+    const contract = new Contract(
+      L1_CONVERTER_CONTRACT_ADDRESS,
+      L1_CONVERTER_CONTRACT_ABI,
+      provider
+    );
+    return contract.halted();
+  }, [provider]);
 
   if (view !== Views.Default) {
     return <span />;
