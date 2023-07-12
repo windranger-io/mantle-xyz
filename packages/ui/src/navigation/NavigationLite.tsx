@@ -16,15 +16,36 @@ interface NavItems {
   name: string
   href: string
   internal: boolean
-  active: boolean
+  key: string
 }
+
+const NAV_ITEMS: NavItems[] = [
+  {
+    name: 'Migrate $BIT',
+    href: CONST.RESOURCE_LINKS.MIGRATE_LINK || '#',
+    internal: true,
+    key: 'migrate',
+  },
+  {
+    name: 'Faucet',
+    href: CONST.RESOURCE_LINKS.FAUCET_LINK || '#',
+    internal: true,
+    key: 'faucet',
+  },
+  {
+    name: 'Bridge',
+    href: CONST.RESOURCE_LINKS.BRIDGE_LINK || '#',
+    internal: true,
+    key: 'bridge',
+  },
+]
 
 export const NavigationLite = ({
   walletConnect,
-  navItems,
+  activeKey,
 }: {
   walletConnect: React.ReactNode
-  navItems: NavItems[]
+  activeKey: string
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -47,23 +68,26 @@ export const NavigationLite = ({
           </Link>
         </div>
         <div className="hidden lg:flex justify-center gap-16">
-          {navItems.map((item, index) => (
-            <span key={`navLink-${item?.name || index}`}>
-              <MantleLink
-                variant="navLink"
-                href={item.href}
-                target={item.internal ? '_self' : '_blank'}
-                rel="noreferrer noopener"
-                className={item.active ? 'text-type-primary relative' : ``}
-              >
-                {item.name}
-                {/* Add dot if current site  */}
-                {item.active && (
-                  <div className="rounded-full bg-white h-1 w-1  absolute left-[50%] -bottom-[10px]" />
-                )}
-              </MantleLink>
-            </span>
-          ))}
+          {NAV_ITEMS.map((item, index) => {
+            const isActive = activeKey === item.key
+            return (
+              <span key={`navLink-${item?.name || index}`}>
+                <MantleLink
+                  variant="navLink"
+                  href={item.href}
+                  target={item.internal ? '_self' : '_blank'}
+                  rel="noreferrer noopener"
+                  className={isActive ? 'text-type-primary relative' : ``}
+                >
+                  {item.name}
+                  {/* Add dot if current site  */}
+                  {isActive && (
+                    <div className="rounded-full bg-white h-1 w-1  absolute left-[50%] -bottom-[10px]" />
+                  )}
+                </MantleLink>
+              </span>
+            )
+          })}
         </div>
 
         <div className="flex justify-end gap-10">
@@ -112,7 +136,7 @@ export const NavigationLite = ({
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-4 py-6 pl-4 ">
-                {navItems.map((item, index) => (
+                {NAV_ITEMS.map((item, index) => (
                   <span key={`navLink-${item?.name || index}`}>
                     <MantleLink
                       variant="navLink"

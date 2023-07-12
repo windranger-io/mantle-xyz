@@ -232,11 +232,7 @@ function ConnectWallet() {
               <BiError className="text-sm" />
               <p className="text-sm">Unsupported chain</p>
             </div>
-            <Button
-              className="max-w-[10em]"
-              variant="walletConnect"
-              onClick={() => changeNetwork()}
-            >
+            <Button variant="walletConnect" onClick={() => changeNetwork()}>
               Please switch to {CHAINS[chainId].chainName}
             </Button>
           </div>
