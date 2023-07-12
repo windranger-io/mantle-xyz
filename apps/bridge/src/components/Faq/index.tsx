@@ -95,7 +95,6 @@ function Accordion({
   );
 }
 
-// TO DO testing
 export function Faq() {
   return (
     <ConvertCard className="rounded-xl mt-8 md:mt-0">
