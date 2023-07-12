@@ -77,11 +77,14 @@ function useAllowanceCheck(
           )
         ) {
           // produce a contract for the selected contract
-          const contract = new Contract(selection.address, TOKEN_ABI, provider);
+          const contract =
+            selection.address &&
+            new Contract(selection.address, TOKEN_ABI, provider);
           // check the allowance the user has allocated to the bridge
           return (
             (selection.address &&
               bridgeAddress &&
+              contract.address &&
               contract
                 ?.allowance(client.address, bridgeAddress)
                 .catch(() => {
