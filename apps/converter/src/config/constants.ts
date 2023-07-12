@@ -57,24 +57,23 @@ export const L1_MANTLE_TOKEN: Token = {
 };
 
 // Configure the applications name
-export const APP_NAME = "Mantle Migrator";
+export const APP_NAME = "Migrate BIT to MNT | Mantle Network";
 
 // Configure deta description
-export const META = "Migrate $BIT tokens to $MNT tokens - 1:1";
+export const META = "Migrate you BIT tokens to MNT tokens on Mantle Network";
 
 // Configure OG Title
-export const OG_TITLE = "Migrate $BIT tokens to $MNT tokens";
+export const OG_TITLE = "Migrate BIT to MNT | Mantle Network";
 
 // Configure OG Desc
-export const OG_DESC =
-  "Migrate $BIT tokens to $MNT tokens here... #BuildonMantle.";
+export const OG_DESC = "Migrate you BIT tokens to MNT tokens on Mantle Network";
 
 // Configure Twitter Title
-export const TWITTER_TITLE = "Mantle Migrator";
+export const TWITTER_TITLE = "Migrate BIT to MNT | Mantle Network";
 
 // Configure Twitter Desc
 export const TWITTER_DESC =
-  "Migrate $BIT tokens to $MNT tokens here... #BuildonMantle.";
+  "Migrate you BIT tokens to MNT tokens on Mantle Network";
 
 // Get the current absolute path from the env
 export function getBaseUrl() {
