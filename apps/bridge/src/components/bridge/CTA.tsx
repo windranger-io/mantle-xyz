@@ -1,5 +1,5 @@
 import { Button } from "@mantle/ui";
-import { useContext, useState, useEffect, useMemo } from "react";
+import { useContext, useState, useEffect, useMemo, useCallback } from "react";
 
 import StateContext from "@providers/stateContext";
 
@@ -76,6 +76,22 @@ export default function CTA({
   // create an allowance approval request on the selected token
   const { approve, approvalStatus } = useCallApprove(selected || {});
 
+  // ensure we don't overflow
+  const fixDecimals = useCallback(
+    (value: string) => {
+      const split = value.split(".");
+
+      return parseUnits(
+        `${split[0]}.${(split[1] || "0").substring(
+          0,
+          selected?.decimals || 18
+        )}`,
+        selected?.decimals || 18
+      );
+    },
+    [selected]
+  );
+
   // get the balance/allowanace details
   const spendDetails = useMemo(() => {
     return {
@@ -94,17 +110,14 @@ export default function CTA({
       text = `Switch to ${CHAINS[chainId].chainName}`;
     } else if (
       destinationTokenAmount &&
-      parseUnits(
-        parseFloat(spendDetails.balance || "0") > 0
-          ? spendDetails.balance
-          : "-1",
-        selected?.decimals || 18
-      ).lt(parseUnits(destinationTokenAmount || "0", selected?.decimals || 18))
+      fixDecimals(spendDetails.balance || "0").lt(
+        fixDecimals(destinationTokenAmount || "0")
+      )
     ) {
       text = "Insufficient balance";
     } else if (
-      parseUnits(allowance || "-1", selected?.decimals || 18).lt(
-        parseUnits(destinationTokenAmount || "0", selected?.decimals || 18)
+      fixDecimals(allowance || "-1").lt(
+        fixDecimals(destinationTokenAmount || "0")
       )
     ) {
       // I'm not sure we need to have an allocation to withdraw assets...
@@ -149,15 +162,16 @@ export default function CTA({
 
     return text;
   }, [
-    isChainID,
-    client?.address,
     spendDetails.balance,
     selected?.decimals,
-    destinationTokenAmount,
     allowance,
+    destinationTokenAmount,
+    client?.address,
+    isChainID,
     direction,
     chainId,
     approvalStatus,
+    fixDecimals,
   ]);
 
   // set wagmi address to address for ssr
@@ -182,11 +196,8 @@ export default function CTA({
           } else if (!isChainID) {
             switchToNetwork(chainId);
           } else if (
-            parseUnits(allowance || "-1", selected?.decimals || 18).lt(
-              parseUnits(
-                destinationTokenAmount || "0",
-                selected?.decimals || 18
-              )
+            fixDecimals(allowance || "-1").lt(
+              fixDecimals(destinationTokenAmount || "0")
             )
           ) {
             // allocate allowance
@@ -207,14 +218,8 @@ export default function CTA({
             !parseFloat(destinationTokenAmount) ||
             Number.isNaN(parseFloat(destinationTokenAmount)) ||
             Number.isNaN(parseFloat(selectedTokenAmount)) ||
-            parseUnits(
-              spendDetails.balance || "-1",
-              selected?.decimals || 18
-            ).lt(
-              parseUnits(
-                destinationTokenAmount || "0",
-                selected?.decimals || 18
-              )
+            fixDecimals(spendDetails.balance || "-1").lt(
+              fixDecimals(destinationTokenAmount || "0")
             ))
         }
       >
@@ -224,14 +229,11 @@ export default function CTA({
       {/* <hr className="border border-stroke-inputs mt-6 mb-8" /> */}
       {isChainID &&
         !!client.address &&
-        parseUnits(
-          balances[selected.address] || "-1",
-          selected?.decimals || 18
-        ).gte(
-          parseUnits(destinationTokenAmount || "0", selected?.decimals || 18)
+        fixDecimals(balances[selected.address] || "-1").gte(
+          fixDecimals(destinationTokenAmount || "0")
         ) &&
-        parseUnits(allowance || "-1", selected?.decimals || 18).gte(
-          parseUnits(destinationTokenAmount || "0", selected?.decimals || 18)
+        fixDecimals(allowance || "-1").gte(
+          fixDecimals(destinationTokenAmount || "0")
         ) &&
         destinationTokenAmount && <div className="my-8" />}
     </div>

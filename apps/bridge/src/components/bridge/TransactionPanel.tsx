@@ -1,5 +1,5 @@
 /* eslint-disable react/require-default-props */
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import StateContext from "@providers/stateContext";
 
@@ -38,12 +38,46 @@ export default function TransactionPanel({
     isLoadingFeeData,
     destinationTokenAmount,
   } = useContext(StateContext);
+
+  // ensure we don't overflow
+  const fixDecimals = useCallback(
+    (value: string) => {
+      const split = value.split(".");
+
+      return parseUnits(
+        `${split[0]}.${(split[1] || "0").substring(
+          0,
+          selected?.decimals || 18
+        )}`,
+        selected?.decimals || 18
+      );
+    },
+    [selected]
+  );
+
   // only update on allowance change to maintain the correct decimals against constants if infinity
   const isAllowanceInfinity = useMemo(
-    () =>
-      constants.MaxUint256.eq(
-        parseUnits(allowance || "0", destination?.decimals || 18)
-      ),
+    () => {
+      const tokenInfinity = formatUnits(
+        constants.MaxUint256,
+        selected?.decimals || 18
+      );
+      const fullInfinity = formatUnits(constants.MaxUint256, 18);
+      const fullInfinitySplit = fullInfinity.split(".");
+      const fullInfinitySelectedDeci = `${fullInfinitySplit[0]}.${(
+        fullInfinitySplit[1] || "0"
+      ).substring(0, selected?.decimals || 18)}`;
+
+      const allowanceCheck = formatUnits(
+        fixDecimals(allowance || "0"),
+        selected?.decimals || 18
+      );
+
+      return (
+        tokenInfinity === allowanceCheck ||
+        fullInfinitySelectedDeci === allowanceCheck
+      );
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [allowance]
   );
@@ -84,14 +118,11 @@ export default function TransactionPanel({
   return (
     (isChainID &&
       destinationTokenAmount &&
-      parseUnits(
-        balances[selected?.address || ""] || "-1",
-        selected?.decimals || 18
-      ).gte(
-        parseUnits(destinationTokenAmount || "0", selected?.decimals || 18)
+      fixDecimals(balances[selected?.address || ""] || "-1").gte(
+        fixDecimals(destinationTokenAmount || "0")
       ) &&
-      parseUnits(allowance || "-1", selected?.decimals || 18).gte(
-        parseUnits(destinationTokenAmount || "0", selected?.decimals || 18)
+      fixDecimals(allowance || "-1").gte(
+        fixDecimals(destinationTokenAmount || "0")
       ) &&
       ((!isLoadingFeeData && (
         <div className="space-y-3" key="tx-panel-0">
