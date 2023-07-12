@@ -263,7 +263,7 @@ export default function TransactionPanel({
                   ? localeZero
                   : formatBigNumberString(
                       balances?.[selected?.address || ""],
-                      selected?.decimals || 18,
+                      3,
                       true,
                       false
                     ) || localeZero}{" "}
@@ -282,7 +282,7 @@ export default function TransactionPanel({
                   ? localeZero
                   : isAllowanceInfinity
                   ? Infinity.toLocaleString()
-                  : formatBigNumberString(allowance, 18, true, false) ||
+                  : formatBigNumberString(allowance, 3, true, false) ||
                     localeZero}{" "}
                 {selected?.symbol}
               </Typography>
@@ -297,7 +297,7 @@ export default function TransactionPanel({
                   ? localeZero
                   : formatBigNumberString(
                       destinationTokenAmount,
-                      destination?.decimals || 18,
+                      3,
                       true,
                       false
                     ) || localeZero
@@ -312,7 +312,7 @@ export default function TransactionPanel({
                   ? localeZero
                   : formatBigNumberString(
                       destinationTokenAmount,
-                      destination?.decimals || 18,
+                      3,
                       true,
                       false
                     ) || localeZero}{" "}
