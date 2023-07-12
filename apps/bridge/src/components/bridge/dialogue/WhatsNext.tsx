@@ -6,7 +6,6 @@ import CONST from "@mantle/constants";
 import { Typography } from "@mantle/ui";
 
 import StateContext from "@providers/stateContext";
-// import { useToast } from "@hooks/useToast";
 import { DELEGATION_URL, MANTLE_BRIDGE_URL } from "@config/constants";
 import AddNetworkBtn from "@components/bridge/dialogue/AddNetworkBtn";
 
@@ -61,7 +60,6 @@ function WhatNextLink({
 }
 
 export default function WhatsNext() {
-  // const { createToast } = useToast();
   const { chainId } = useContext(StateContext);
 
   return (
