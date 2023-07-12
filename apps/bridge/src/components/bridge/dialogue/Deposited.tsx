@@ -1,12 +1,15 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { MdClear } from "react-icons/md";
 
 import { Typography } from "@mantle/ui";
+import { useNetwork } from "wagmi";
 
 import StateContext from "@providers/stateContext";
 import { CTAPages, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 import TxLink from "@components/bridge/utils/TxLink";
 import AddNetworkBtn from "@components/bridge/dialogue/AddNetworkBtn";
+import { useToast } from "@hooks/useToast";
+import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 
 export default function Deposited({
   tx1Hash,
@@ -15,7 +18,38 @@ export default function Deposited({
   tx1Hash: string | boolean;
   tx2Hash: string | boolean;
 }) {
-  const { ctaChainId, setCTAPage } = useContext(StateContext);
+  const { ctaChainId, setCTAPage, client } = useContext(StateContext);
+  const { createToast } = useToast();
+  const { addNetwork } = useSwitchToNetwork();
+  const { chain: givenChain } = useNetwork();
+
+  // display airdrop success toast if the user is qualified
+  useEffect(() => {
+    if (client.address) {
+      createToast({
+        type: "success",
+        borderLeft: "bg-green-600",
+        content: (
+          <div className="flex flex-col">
+            <Typography variant="body" className="break-words">
+              <b>MNT bonus sent!</b>
+            </Typography>
+            <Typography variant="body" className="break-words">
+              Your MNT bonus is sent to your wallet
+            </Typography>
+          </div>
+        ),
+        id: `airdrop-success-${client?.address}`,
+        buttonText: "Add Mantle Network",
+        onButtonClick: () => {
+          if (givenChain?.id !== L2_CHAIN_ID) {
+            addNetwork(L2_CHAIN_ID);
+          }
+          return true;
+        },
+      });
+    }
+  }, [client.address]);
 
   const openWhatsNext = () => {
     setCTAPage(CTAPages.Deposited);
