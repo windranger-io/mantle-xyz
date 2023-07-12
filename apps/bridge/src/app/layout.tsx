@@ -5,7 +5,7 @@ import {
   GTWalsheimRegular,
   GTWalsheimMedium,
   Header,
-  Footer,
+  SlimFooter,
   PageWrapper,
   PageBackroundImage,
   PageContainer,
@@ -68,13 +68,12 @@ export default function RootLayout({
                 navItems={NAV_ITEMS}
               />
             }
+            className="min-h-screen justify-between"
           >
-            <PageContainer className="gap-8">
+            <PageContainer className="gap-8 min-h-fit justify-between">
               {children}
-              <div>
-                <Footer page="bridge" />
-              </div>
             </PageContainer>
+            <SlimFooter url={CONST.WEBSITE} />
           </PageWrapper>
         </Providers>
       </body>

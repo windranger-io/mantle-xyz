@@ -46,6 +46,28 @@ const LEGAL_ITEMS = [
   },
 ]
 
+export const SlimFooter = ({ url }: { url: string }) => {
+  return (
+    <div className="flex justify-center items-center pt-16 pb-8 mt-auto">
+      <div>
+        <a
+          href={url}
+          rel="noreferrer noopener"
+          target="_blank"
+          className="inline-block"
+        >
+          <div className="flex flex-row align-center gap-4">
+            <MantleLogoIcon height={40} width={40} />
+            <div className="flex items-center">
+              Mantle {new Date().getFullYear()}&nbsp;&#169;
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  )
+}
+
 export const Footer = ({ page }: { page: string }) => {
   const RESOURCE_ITEMS = [
     {

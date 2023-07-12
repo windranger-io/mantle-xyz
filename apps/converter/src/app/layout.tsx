@@ -7,6 +7,7 @@ import {
   PageWrapper,
   PageBackroundImage,
   PageContainer,
+  SlimFooter,
 } from "@mantle/ui";
 
 import Head from "@app/head";
@@ -14,7 +15,7 @@ import Providers from "@app/providers";
 
 import { isComingSoon } from "@config/constants";
 import Nav from "@components/Nav";
-import Footer from "@components/Footer";
+import CONST from "@mantle/constants";
 
 import bridgeBG from "../../public/bridge-bg.png";
 
@@ -41,10 +42,10 @@ export default function RootLayout({
               />
             }
             header={<Nav className="mb-0 m-0" hideConnectBtn={isComingSoon} />}
-            className="h-screen"
+            className="min-h-screen justify-between"
           >
             <PageContainer className="grow">{children}</PageContainer>
-            {!isComingSoon && <Footer />}
+            {!isComingSoon && <SlimFooter url={CONST.WEBSITE} />}
           </PageWrapper>
         </Providers>
       </body>

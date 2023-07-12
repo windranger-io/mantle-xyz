@@ -2,7 +2,7 @@
 // Dummy components
 import {
   Header,
-  Footer,
+  SlimFooter,
   PageWrapper,
   PageBackroundImage,
   PageContainer,
@@ -74,6 +74,7 @@ export default async function Page() {
           navItems={NAV_ITEMS}
         />
       }
+      className="min-h-screen justify-between"
     >
       {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
       <PageContainer className="gap-8">
@@ -84,12 +85,8 @@ export default async function Page() {
         <AuthTwitter />
         <MintTokens />
         <AdditionalLinks />
-
-        {/* @todo: Take footer out flex order */}
-        <div>
-          <Footer page="faucet" />
-        </div>
       </PageContainer>
+      <SlimFooter url={CONST.WEBSITE} />
     </PageWrapper>
   );
 }
