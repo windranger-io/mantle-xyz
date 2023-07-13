@@ -12,10 +12,13 @@
     "lint:converter": "eslint src --fix"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.16",
+    "@apollo/experimental-nextjs-app-support": "^0.2.2",
     "@ethersproject/providers": "^5.7.2",
-    "@mantle/ui": "workspace:*",
+    "@headlessui/react": "^1.7.13",
     "@mantle/constants": "workspace:*",
     "@mantle/supagraph": "workspace:*",
+    "@mantle/ui": "workspace:*",
     "@tanstack/react-query": "^4.14.5",
     "decimal.js": "^10.4.3",
     "ethers": "^5.7.2",
