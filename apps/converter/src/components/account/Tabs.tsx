@@ -106,7 +106,7 @@ export default function Tabs() {
               </span>
             ))}
           </Tab.List>
-          <Tab.Panels className="mt-2" defaultValue="Withdraw">
+          <Tab.Panels className="mt-2" defaultValue="Migrate">
             {Object.keys(categories).map((category, index) => (
               <span key={`tab-${category || index}`}>
                 <Tab.Panel

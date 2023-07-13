@@ -1,15 +1,14 @@
 import React, { useContext } from "react";
-import useCopyToClipboard from "@hooks/useCopyToClipboard";
-import StateContext from "@providers/stateContext";
-
-import Avatar from "@mantle/ui/src/presentational/Avatar";
+import { getAddress } from "ethers/lib/utils.js";
 import Link from "next/link";
-
 import { AiOutlineCopy } from "react-icons/ai";
 import { RxExternalLink } from "react-icons/rx";
-import { Typography } from "@mantle/ui";
 
-import { getAddress } from "ethers/lib/utils.js";
+import { Typography } from "@mantle/ui";
+import Avatar from "@mantle/ui/src/presentational/Avatar";
+
+import useCopyToClipboard from "@hooks/useCopyToClipboard";
+import StateContext from "@providers/stateContext";
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
 export default function Account() {
@@ -19,7 +18,7 @@ export default function Account() {
 
   return (
     (client && client.address && (
-      <div className="flex justify-center space-x-3 items-center">
+      <div className="flex flex-wrap gap-3 justify-center items-center">
         <Avatar walletAddress="address" size={54} />
         <Typography variant="bodyLongform" className="grid">
           <span className="truncate block m-0">
