@@ -37,7 +37,7 @@ export default function Tabs() {
   const [categories] = useState({
     Deposit: [<Deposit />],
     Withdraw: [<Withdraw />],
-    Migrations: [],
+    Migrate: [],
   });
 
   const router = useRouter();
