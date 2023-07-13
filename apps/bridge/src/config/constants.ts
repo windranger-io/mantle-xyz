@@ -270,3 +270,6 @@ export const TOKEN_ABI = [
   "function allowance(address owner, address spender) external view returns (uint256)",
   "function approve(address spender, uint256 amount) returns (bool)",
 ];
+
+export const MANTLE_MIGRATOR_URL = "https://migratebit.mantle.xyz";
+export const MANTLE_MIGRATOR_HISTORY_PATH = "/account/migrate";

@@ -14,7 +14,14 @@ import Account from "@components/account/Account";
 import { MdClear } from "react-icons/md";
 
 import Link from "next/link";
-import { Direction, L1_CHAIN_ID, L2_CHAIN_ID, Views } from "@config/constants";
+import {
+  Direction,
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
+  MANTLE_MIGRATOR_HISTORY_PATH,
+  MANTLE_MIGRATOR_URL,
+  Views,
+} from "@config/constants";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function Tabs() {
@@ -30,6 +37,7 @@ export default function Tabs() {
   const [categories] = useState({
     Deposit: [<Deposit />],
     Withdraw: [<Withdraw />],
+    Migrations: [],
   });
 
   const router = useRouter();
@@ -88,6 +96,14 @@ export default function Tabs() {
         <Tab.Group
           selectedIndex={selectedTab === 1 ? 0 : 1}
           onChange={(val) => {
+            // redirect to migrator app if the user chooses the last tab (index 2)
+            if (val === 2) {
+              window.open(
+                `${MANTLE_MIGRATOR_URL}${MANTLE_MIGRATOR_HISTORY_PATH}`,
+                "_self"
+              );
+              return;
+            }
             router.push(`/account/${val === 0 ? "deposit" : "withdraw"}`);
             // set the selected tab according to the direction
             setSelectedTab(val === 0 ? Direction.Deposit : Direction.Withdraw);
