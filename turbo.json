@@ -84,14 +84,6 @@
     "dev:cms": {
       "cache": false
     },
-    "dev:nft": {
-      "env": [
-        "GA_TRACKING_ID",
-        "NEXT_PUBLIC_VERCEL_ENV",
-        "NEXT_PUBLIC_VERCEL_URL"
-      ],
-      "cache": false
-    },
     "dev:events": {
       "cache": false
     },
