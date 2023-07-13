@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3005",
-    "dev:nft": "next dev --port 3005",
+    "dev": "",
+    "dev:nft": "",
     "build": "next build",
     "build:locales": "i18nexus pull -p ./src/i18n",
     "test": "echo 'Running nft tests'",
