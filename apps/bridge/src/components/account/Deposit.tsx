@@ -61,7 +61,7 @@ export default function Deposit() {
   return (
     <div>
       <table className="table-auto w-full overflow-x-auto">
-        <thead className="text-left collapse md:visible">
+        <thead className="text-left collapse md:visible hidden md:table-header-group">
           <tr className="border-b-[1px] border-stroke-secondary text-sm ">
             <th className="py-4">Block Timestamp</th>
             <th>Amount</th>

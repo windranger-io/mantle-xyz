@@ -1,4 +1,5 @@
 import { WagmiProvider } from "@providers/wagmiContext";
+import { ApolloWrapper } from "@providers/apolloProvider";
 import { StateProvider } from "@providers/stateContext";
 
 import { ToastContainer } from "@components/Toast";
@@ -10,9 +11,11 @@ export default async function Providers({
 }) {
   return (
     <WagmiProvider>
-      <StateProvider>
-        <ToastContainer>{children}</ToastContainer>
-      </StateProvider>
+      <ApolloWrapper>
+        <StateProvider>
+          <ToastContainer>{children}</ToastContainer>
+        </StateProvider>
+      </ApolloWrapper>
     </WagmiProvider>
   );
 }
