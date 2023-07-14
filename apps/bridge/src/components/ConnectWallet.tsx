@@ -191,34 +191,36 @@ function ConnectWallet() {
       {
         // eslint-disable-next-line no-nested-ternary
         isChainID || !client.address ? (
+          // eslint-disable-next-line react/jsx-no-useless-fragment
           <>
-            <WalletModal
-              onMetamask={() => {
-                if (!client.address) {
+            {!client.address ? (
+              <WalletModal
+                onMetamask={() => {
                   connect({
                     connector: connectors.find(
                       (conn) => conn.id === "metaMask"
                     ),
                   });
-                } else {
+                }}
+              >
+                <Button variant="walletConnect" size="regular">
+                  Connect Wallet
+                </Button>
+              </WalletModal>
+            ) : (
+              <Button
+                variant="walletConnect"
+                size="regular"
+                onClick={() => {
                   // clear the client before calling disconnect
                   client.address = undefined;
                   // disconnect
                   disconnect();
-                }
-              }}
-            >
-              <Button variant="walletConnect" size="regular">
-                {!client.address ? `Connect Wallet` : `Disconnect`}
+                }}
+              >
+                Disconnect
               </Button>
-            </WalletModal>
-            {/* <button
-              type="button"
-              className="text-white"
-              onClick={() => (!address ? connect() : disconnect())}
-            >
-              {!address ? `Connect Wallet` : `[disconnect]`}
-            </button> */}
+            )}
           </>
         ) : !isChainID ? (
           <div className="flex flex-row items-center gap-4 justify-end">
