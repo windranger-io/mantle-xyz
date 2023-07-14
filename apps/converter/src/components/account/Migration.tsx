@@ -49,6 +49,7 @@ export default function Migration() {
         setHistory((prevState) => prevState.concat(data.account.migrations));
       }
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log("Failed to get tx history", err);
     }
   };
@@ -69,7 +70,7 @@ export default function Migration() {
     ) {
       getHistory();
     }
-  }, [page, history]);
+  }, [page, history, historyTotal]);
 
   const paginated = useMemo(() => {
     return history.slice(page * TX_PER_PAGE, (page + 1) * TX_PER_PAGE);
@@ -78,7 +79,7 @@ export default function Migration() {
   return (
     <div>
       <table className="table-auto w-full overflow-x-auto">
-        <thead className="text-left collapse md:visible">
+        <thead className="text-left collapse md:visible hidden md:table-header-group">
           <tr className="border-b-[1px] border-stroke-secondary text-sm ">
             <th className="py-4">Block Timestamp</th>
             <th className="py-4">Transaction</th>
