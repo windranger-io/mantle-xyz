@@ -2,11 +2,9 @@ import { MantleLetterMark, T } from "@mantle/ui";
 
 function LegalDisclaimer() {
   return (
-    <div className="pb-8 md:pb-20 px-4 md:px-9 grid">
-      <div className="col-start-1 row-start-1">
-        <MantleLetterMark />
-      </div>
-      <div className="col-start-1 row-start-1 text-center flex flex-col justify-between w-full sm:w-2/3 md:w-1/2 m-auto h-full pb-5">
+    <div className="pb-8 md:pb-20 px-4 md:px-9">
+      <MantleLetterMark />
+      <div className="text-center py-6 w-full md:w-3/4 lg:w-1/2 m-auto">
         <T variant="legalDisclaimer">
           Neither the MNT Bonus nor any information provided in connection
           therewith constitutes an offer or sale of securities in or into the
