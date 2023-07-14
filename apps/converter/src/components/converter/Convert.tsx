@@ -7,7 +7,7 @@ import {
   L1_CHAIN_ID,
 } from "@config/constants";
 import StateContext from "@providers/stateContext";
-import { Suspense, useContext, useMemo } from "react";
+import { Suspense, useContext, useEffect, useState } from "react";
 import { useProvider } from "wagmi";
 import { Contract } from "ethers";
 
@@ -34,14 +34,20 @@ export default function Convert() {
     chainId: L1_CHAIN_ID,
   });
 
-  // read halted from contract
-  const halted = useMemo(async () => {
-    const contract = new Contract(
-      L1_CONVERTER_CONTRACT_ADDRESS,
-      L1_CONVERTER_CONTRACT_ABI,
-      provider
-    );
-    return contract.halted();
+  const [halted, setHalted] = useState<boolean>(true);
+
+  useEffect(() => {
+    // read halted from contract
+    const getHaltedStatus = async () => {
+      const contract = new Contract(
+        L1_CONVERTER_CONTRACT_ADDRESS,
+        L1_CONVERTER_CONTRACT_ABI,
+        provider
+      );
+      const status = await contract.halted();
+      setHalted(status);
+    };
+    getHaltedStatus();
   }, [provider]);
 
   if (view !== Views.Default) {
