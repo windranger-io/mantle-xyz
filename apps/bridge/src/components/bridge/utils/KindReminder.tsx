@@ -1,11 +1,30 @@
 import { Direction } from "@config/constants";
 import { Typography } from "@mantle/ui";
+import { useState } from "react";
 import { MdClear, MdInfoOutline } from "react-icons/md";
 
+const depositKey = "hideDepositReminder";
+const withdrawKey = "hideWithdrawReminder";
+
 export default function KindReminder({ direction }: { direction: Direction }) {
+  const [hideReminder, setHideReminder] = useState<string>(
+    localStorage.getItem(
+      direction === Direction.Deposit ? depositKey : withdrawKey
+    ) || "false"
+  );
+
   const dismissReminder = () => {
-    console.log("todo");
+    if (direction === Direction.Deposit) {
+      localStorage.setItem(depositKey, "true");
+    } else {
+      localStorage.setItem(withdrawKey, "true");
+    }
+    setHideReminder("true");
   };
+
+  if (hideReminder === "true") {
+    return null;
+  }
 
   return (
     <div className="bg-white/[.08] rounded-card p-4 mx-auto flex content-start gap-x-2">
