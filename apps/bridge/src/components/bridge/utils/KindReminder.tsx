@@ -12,14 +12,12 @@ export default function KindReminder({ direction }: { direction: Direction }) {
   const [hideReminder, setHideReminder] = useState<string>("false");
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setHideReminder(
-        localStorage?.getItem(
-          direction === Direction.Deposit ? depositKey : withdrawKey
-        ) || "false"
-      );
-    }
-  }, [window]);
+    setHideReminder(
+      localStorage?.getItem(
+        direction === Direction.Deposit ? depositKey : withdrawKey
+      ) || "false"
+    );
+  }, []);
 
   const dismissReminder = () => {
     if (direction === Direction.Deposit) {
