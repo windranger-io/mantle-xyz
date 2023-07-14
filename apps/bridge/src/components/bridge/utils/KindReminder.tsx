@@ -9,7 +9,7 @@ const depositKey = "hideDepositReminder";
 const withdrawKey = "hideWithdrawReminder";
 
 export default function KindReminder({ direction }: { direction: Direction }) {
-  const [hideReminder, setHideReminder] = useState<string>("false");
+  const [hideReminder, setHideReminder] = useState<string>("true");
 
   useEffect(() => {
     setHideReminder(
