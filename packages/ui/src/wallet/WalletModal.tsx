@@ -16,8 +16,8 @@ export const WalletModal = ({ children, onMetamask }: WalletModalProps) => (
   <Dialog.Root>
     <Dialog.Trigger asChild>{children}</Dialog.Trigger>
     <Dialog.Portal>
-      <Dialog.Overlay className="bg-black/60 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0" />
-      <Dialog.Content className="bg-black data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[403px] translate-x-[-50%] translate-y-[-50%] rounded-[32px] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border border-white/20 px-12 py-14">
+      <Dialog.Overlay className="bg-black/60 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0 z-[999]" />
+      <Dialog.Content className="bg-black data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[403px] translate-x-[-50%] translate-y-[-50%] rounded-[32px] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border border-white/20 px-12 py-14 z-[1000]">
         <div className="relative">
           <p className="text-2xl pb-6 mb-6 border-b border-white/20">
             Connect your wallet
