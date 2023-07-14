@@ -4,7 +4,6 @@ import { ConvertCard } from "@components/ConvertCard";
 import { Typography } from "@mantle/ui";
 import { DELEGATION_URL } from "@config/constants";
 
-// TODO: replace blog post URL
 const faqList: Array<{ q: string; a: JSX.Element }> = [
   {
     q: "Why should I migrate my $BIT tokens?",
@@ -41,9 +40,15 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
     a: (
       <Typography className="text-type-secondary mx-4 mb-4">
         Please see the &quot;For Advanced Users&quot; section of the{" "}
-        {/* <a href="/" target="__blank" rel="noreferrer" className="underline"> */}
-        blog post
-        {/* </a> */}.
+        <a
+          href="https://www.mantle.xyz/blog/announcements/bit-to-mnt-user-guide"
+          target="__blank"
+          rel="noreferrer"
+          className="underline"
+        >
+          blog post
+        </a>
+        .
       </Typography>
     ),
   },

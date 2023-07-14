@@ -71,6 +71,7 @@ export enum CTAPages {
   "Default" = 1,
   "Loading",
   "Deposit",
+  "Deposited",
   "Withdraw",
   "Withdrawn",
   "Error",
@@ -273,3 +274,13 @@ export const TOKEN_ABI = [
 
 export const MANTLE_MIGRATOR_URL = "https://migratebit.mantle.xyz";
 export const MANTLE_MIGRATOR_HISTORY_PATH = "/account/migrate";
+
+export const DELEGATION_URL: string = "https://delegatevote.mantle.xyz/";
+
+export const MANTLE_BRIDGE_URL: Record<number, string> = {
+  1: "https://bridge.mantle.xyz",
+  5: "https://bridge.testnet.mantle.xyz",
+};
+
+export const CONTROLLER_URL: string =
+  "https://airdrop-controller-production.up.railway.app";
