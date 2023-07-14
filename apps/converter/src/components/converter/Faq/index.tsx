@@ -98,6 +98,27 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
       </Typography>
     ),
   },
+  {
+    q: "Why will the Migrator contract be halted?",
+    a: (
+      <Typography className="text-type-secondary mx-4 mb-4">
+        The contract is initially halted, then unhalted as the official
+        migration period commences. The contract may be subsequenty halted in
+        case there is a problem, or as instructed by Mantle Governance.
+      </Typography>
+    ),
+  },
+  {
+    q: "Why will the Migrator contract be out of funds?",
+    a: (
+      <Typography className="text-type-secondary mx-4 mb-4">
+        For security purposes, the Migrator contract will hold a minimal amount
+        of funds and will require top-up from the relevant Mantle Treasury.
+        Excess tokens will be occasionally transferred to the relevant Mantle
+        Treasury via the &quot;defundContract&quot; mechanic.
+      </Typography>
+    ),
+  },
 ];
 
 function Accordion({
