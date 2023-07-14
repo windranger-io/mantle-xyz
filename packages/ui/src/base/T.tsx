@@ -8,6 +8,7 @@ type TypographyVariant =
   | 'appPageHeading'
   | 'body'
   | 'bodyLongform'
+  | 'legalDisclaimer'
   | 'smallWidget'
   | 'modalHeading'
   | 'transactionTableHeading'
@@ -52,6 +53,13 @@ const typographyMap: {
     classNames: classNames(
       bodyDefault,
       'font-normal text-[20px] leading-[28px] text-type-primary',
+    ),
+  },
+  legalDisclaimer: {
+    tag: 'p',
+    classNames: classNames(
+      bodyDefault,
+      'font-normal text-[14px] leading-[20px] text-type-secondary',
     ),
   },
   transactionTableHeading: {
