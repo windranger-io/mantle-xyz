@@ -22,7 +22,7 @@ export async function GET(request: Request) {
         headers: myHeaders,
       }
     );
-    const claimedRes = await res.json();
+    const claimedRes = await res.text();
     return NextResponse.json(claimedRes);
   } catch (e) {
     console.error(e);
