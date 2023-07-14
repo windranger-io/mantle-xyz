@@ -21,22 +21,22 @@ interface NavItems {
 
 const NAV_ITEMS: NavItems[] = [
   {
-    name: 'Migrate $BIT',
+    name: 'Migrate',
     href: CONST.RESOURCE_LINKS.MIGRATE_LINK || '#',
     internal: true,
     key: 'migrate',
-  },
-  {
-    name: 'Faucet',
-    href: CONST.RESOURCE_LINKS.FAUCET_LINK || '#',
-    internal: true,
-    key: 'faucet',
   },
   {
     name: 'Bridge',
     href: CONST.RESOURCE_LINKS.BRIDGE_LINK || '#',
     internal: true,
     key: 'bridge',
+  },
+  {
+    name: 'Faucet',
+    href: CONST.RESOURCE_LINKS.FAUCET_LINK || '#',
+    internal: true,
+    key: 'faucet',
   },
 ]
 
