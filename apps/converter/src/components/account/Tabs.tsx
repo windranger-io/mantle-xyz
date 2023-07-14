@@ -7,47 +7,31 @@ import { clsx } from "clsx";
 import { SimpleCard, Typography } from "@mantle/ui";
 
 import StateContext from "@providers/stateContext";
-import Deposit from "@components/account/Deposit";
-import Withdraw from "@components/account/Withdraw";
 import Account from "@components/account/Account";
 
 import { MdClear } from "react-icons/md";
 
 import Link from "next/link";
 import {
-  Direction,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
-  MANTLE_MIGRATOR_HISTORY_PATH,
-  MANTLE_MIGRATOR_URL,
   Views,
+  MANTLE_BRIDGE_URL,
 } from "@config/constants";
 import { usePathname, useRouter } from "next/navigation";
+import Migration from "./Migration";
 
 export default function Tabs() {
-  const {
-    chainId,
-    view,
-    setSafeChains,
-    setView,
-    refetchWithdrawals,
-    refetchDeposits,
-  } = useContext(StateContext);
+  const { chainId, view, setView, setSafeChains } = useContext(StateContext);
 
   const [categories] = useState({
-    Deposit: [<Deposit />],
-    Withdraw: [<Withdraw />],
-    Migrate: [],
+    Deposit: [],
+    Withdraw: [],
+    Migrate: [<Migration />],
   });
 
   const router = useRouter();
   const pathName = usePathname();
-
-  const [selectedTab, setSelectedTab] = useState(
-    pathName?.indexOf("/withdraw") !== -1
-      ? Direction.Withdraw
-      : Direction.Deposit
-  );
 
   // on first load
   useEffect(
@@ -55,22 +39,15 @@ export default function Tabs() {
       // this will disable the incorrect network check (but still display if not L1 or L2 chainId)
       setSafeChains([L1_CHAIN_ID, L2_CHAIN_ID]);
       // align the selected tab
-      if (pathName?.indexOf("/account") === 0) {
-        if (pathName?.indexOf("/withdraw") !== -1) {
-          refetchWithdrawals();
-          setSelectedTab(Direction.Withdraw);
-        } else {
-          refetchDeposits();
-          setSelectedTab(Direction.Deposit);
-        }
-        if (view !== Views.Account) {
-          setView(Views.Account);
-        }
+      if (pathName?.indexOf("/account") === 0 && view !== Views.Account) {
+        setView(Views.Account);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+
+  const [selectedIndex, setSelectedIndex] = useState<number>(2);
 
   return (
     (view === Views.Account && (
@@ -92,21 +69,22 @@ export default function Tabs() {
             </Link>
           </Typography>
         </span>
-        <Account selectedTab={selectedTab} />
+        <Account />
         <Tab.Group
-          selectedIndex={selectedTab === 1 ? 0 : 1}
+          selectedIndex={selectedIndex}
           onChange={(val) => {
-            // redirect to migrator app if the user chooses the last tab (index 2)
-            if (val === 2) {
+            setSelectedIndex(val);
+            // redirect to bridge app if the user chooses the deposit / withdraw app
+            if (val !== 2) {
               window.open(
-                `${MANTLE_MIGRATOR_URL}${MANTLE_MIGRATOR_HISTORY_PATH}`,
+                `${MANTLE_BRIDGE_URL[chainId]}/account/${
+                  val === 0 ? "deposit" : "withdraw"
+                }`,
                 "_self"
               );
               return;
             }
-            router.push(`/account/${val === 0 ? "deposit" : "withdraw"}`);
-            // set the selected tab according to the direction
-            setSelectedTab(val === 0 ? Direction.Deposit : Direction.Withdraw);
+            router.push(`/account/migrate`);
           }}
         >
           <Tab.List className="flex space-x-2 rounded-[10px] bg-white/[0.05] p-1 select-none md:w-1/2 md:mx-auto">
@@ -128,7 +106,7 @@ export default function Tabs() {
               </span>
             ))}
           </Tab.List>
-          <Tab.Panels className="mt-2" defaultValue="Withdraw">
+          <Tab.Panels className="mt-2" defaultValue="Migrate">
             {Object.keys(categories).map((category, index) => (
               <span key={`tab-${category || index}`}>
                 <Tab.Panel

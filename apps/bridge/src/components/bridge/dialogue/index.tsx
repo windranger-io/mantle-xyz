@@ -12,6 +12,7 @@ import Error from "@components/bridge/dialogue/Error";
 import Deposited from "@components/bridge/dialogue/Deposited";
 import Withdraw from "@components/bridge/dialogue/Withdraw";
 import Withdrawn from "@components/bridge/dialogue/Withdrawn";
+import WhatsNext from "@components/bridge/dialogue/WhatsNext";
 
 import { SimpleCard } from "@mantle/ui";
 
@@ -83,12 +84,9 @@ export default function Dialogue({
             />
           )}
           {ctaPage === CTAPages.Deposit && (
-            <Deposited
-              tx1Hash={tx1Hash}
-              tx2Hash={tx2Hash}
-              closeModal={closeModalAndReset}
-            />
+            <Deposited tx1Hash={tx1Hash} tx2Hash={tx2Hash} />
           )}
+          {ctaPage === CTAPages.Deposited && <WhatsNext />}
           {ctaPage === CTAPages.Withdraw && (
             <Withdraw
               tx1={tx1}

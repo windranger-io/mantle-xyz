@@ -1,5 +1,5 @@
 /* eslint-disable react/require-default-props */
-import { Fragment, useContext, useMemo } from "react";
+import { Fragment, useContext, useEffect, useMemo, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { HiChevronDown } from "react-icons/hi";
 import { SiEthereum } from "react-icons/si";
@@ -21,14 +21,18 @@ import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
 import DirectionLabel from "@components/bridge/utils/DirectionLabel";
 import { MantleLogo } from "@components/bridge/utils/MantleLogo";
+import KindReminder from "@components/bridge/utils/KindReminder";
 
 export default function TokenSelect({
-  direction,
-  selected,
+  direction: givenDirection,
+  selected: givenSelected,
 }: {
   direction: Direction;
   selected: Token;
 }) {
+  const [direction, setDirection] = useState<Direction>(givenDirection);
+  const [selected, setSelected] = useState<Token>({} as Token);
+
   // unpack the context
   const {
     tokens,
@@ -43,10 +47,16 @@ export default function TokenSelect({
 
   const hasBalance = useMemo(() => {
     return parseUnits(
-      balances?.[selected?.address] || "0",
+      balances?.[selected?.address || ""] || "0",
       selected?.decimals || 18
     ).gte(parseUnits(selectedTokenAmount || "0", selected?.decimals || 18));
   }, [selected, balances, selectedTokenAmount]);
+
+  // avoid hydration issues
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => setDirection(givenDirection), [givenDirection]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => setSelected(givenSelected), [givenSelected]);
 
   return (
     <div className="py-6">
@@ -244,7 +254,7 @@ export default function TokenSelect({
                           <div className="text-type-muted">
                             {formatBigNumberString(
                               `${balances?.[token.address] || 0}`,
-                              selected?.decimals || 18,
+                              3,
                               true,
                               false
                             )}
@@ -317,7 +327,7 @@ export default function TokenSelect({
                   ? localeZero
                   : formatBigNumberString(
                       balances?.[selected?.address || ""] || "",
-                      selected?.decimals || 18,
+                      3,
                       true,
                       false
                     ) || localeZero
@@ -326,6 +336,7 @@ export default function TokenSelect({
           }
         />
       )}
+      <KindReminder direction={direction} />
     </div>
   );
 }

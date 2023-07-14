@@ -1,9 +1,9 @@
 import { useState } from "react";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { ConvertCard } from "@components/ConvertCard";
 import { Typography } from "@mantle/ui";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { DELEGATION_URL } from "@config/constants";
 
-// TODO: replace blog post URL
 const faqList: Array<{ q: string; a: JSX.Element }> = [
   {
     q: "Why should I migrate my $BIT tokens?",
@@ -40,9 +40,15 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
     a: (
       <Typography className="text-type-secondary mx-4 mb-4">
         Please see the &quot;For Advanced Users&quot; section of the{" "}
-        {/* <a href="/" target="__blank" rel="noreferrer" className="underline"> */}
-        blog post
-        {/* </a> */}.
+        <a
+          href="https://www.mantle.xyz/blog/announcements/bit-to-mnt-user-guide"
+          target="__blank"
+          rel="noreferrer"
+          className="underline"
+        >
+          blog post
+        </a>
+        .
       </Typography>
     ),
   },
@@ -81,14 +87,35 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         $BIT delegation and voting works independently of $MNT due to the new
         token functionality. Visit{" "}
         <a
-          href="https://delegatevote.mantle.xyz/"
+          href={DELEGATION_URL}
           target="__blank"
           rel="noreferrer"
           className="underline"
         >
-          https://delegatevote.mantle.xyz/
+          {DELEGATION_URL}
         </a>{" "}
         to delegate your $MNT again.
+      </Typography>
+    ),
+  },
+  {
+    q: "Why will the Migrator contract be halted?",
+    a: (
+      <Typography className="text-type-secondary mx-4 mb-4">
+        The contract is initially halted, then unhalted as the official
+        migration period commences. The contract may be subsequenty halted in
+        case there is a problem, or as instructed by Mantle Governance.
+      </Typography>
+    ),
+  },
+  {
+    q: "Why will the Migrator contract be out of funds?",
+    a: (
+      <Typography className="text-type-secondary mx-4 mb-4">
+        For security purposes, the Migrator contract will hold a minimal amount
+        of funds and will require top-up from the relevant Mantle Treasury.
+        Excess tokens will be occasionally transferred to the relevant Mantle
+        Treasury via the &quot;defundContract&quot; mechanic.
       </Typography>
     ),
   },

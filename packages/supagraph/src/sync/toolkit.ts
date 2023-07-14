@@ -8,6 +8,7 @@ import {
   BaseProvider,
   TransactionReceipt,
 } from "@ethersproject/providers";
+import { getAddress } from "ethers/lib/utils";
 
 // Parse and write csv documents (using csv incase we have to move processing into readStreams)
 import csvParser from "csv-parser";
@@ -15,7 +16,6 @@ import csvWriter from "csv-write-stream";
 
 // Create new entities against the engine via the Store
 import { Entity, Store, getEngine } from "./store";
-import { getAddress } from "ethers/lib/utils";
 
 // Allow for stages to be skipped via config
 export enum Stage {
@@ -1058,7 +1058,8 @@ export const sync = async ({
     // iterate the sorted events and process the callbacks with the given args (sequentially)
     for (const opSorted of sorted) {
       // get an interface to parse the args
-      const iface = eventIfaces[`${getAddress(opSorted.data.address)}-${opSorted.type}`];
+      const iface =
+        eventIfaces[`${getAddress(opSorted.data.address)}-${opSorted.type}`];
 
       // make sure we've correctly discovered an iface
       if (iface) {
@@ -1105,7 +1106,9 @@ export const sync = async ({
               } as Block)
         );
         // await the response of the handler before moving to the next operation in the sorted ops
-        await callbacks[`${getAddress(opSorted.data.address)}-${opSorted.type}`](
+        await callbacks[
+          `${getAddress(opSorted.data.address)}-${opSorted.type}`
+        ](
           // pass the parsed args construct
           args,
           // read tx and block from file (this avoids filling the memory with blocks/txs as we collect them - in prod we store into /tmp/)

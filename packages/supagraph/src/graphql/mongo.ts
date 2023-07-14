@@ -1129,8 +1129,7 @@ export function createQuery(
         $skip: parseInt(args?.skip || "0", 10),
       },
       {
-        $limit:
-          parseInt(args?.skip || "0", 10) + parseInt(args?.first || "25", 10),
+        $limit: Math.min(500, parseInt(args?.first || "25", 10) || 25),
       },
       // project all fields that are being requested in the output
       ...(!mutable

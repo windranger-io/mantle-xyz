@@ -214,9 +214,18 @@ importers:
 
   apps/converter:
     dependencies:
+      '@apollo/client':
+        specifier: ^3.7.16
+        version: 3.7.16(graphql@16.6.0)(react-dom@18.2.0)(react@18.2.0)
+      '@apollo/experimental-nextjs-app-support':
+        specifier: ^0.2.2
+        version: 0.2.2(@apollo/client@3.7.16)(next@13.3.0)(react@18.2.0)
       '@ethersproject/providers':
         specifier: ^5.7.2
         version: 5.7.2
+      '@headlessui/react':
+        specifier: ^1.7.13
+        version: 1.7.13(react-dom@18.2.0)(react@18.2.0)
       '@mantle/constants':
         specifier: workspace:*
         version: link:../../packages/constants
@@ -281,6 +290,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.12
         version: 10.4.13(postcss@8.4.24)
+      clsx:
+        specifier: ^1.2.1
+        version: 1.2.1
       eslint:
         specifier: ^8.30.0
         version: 8.30.0
@@ -8342,7 +8354,7 @@ packages:
     dev: false
 
   /client-only@0.0.1:
-    resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==, tarball: https://registry.npmjs.com/client-only/-/client-only-0.0.1.tgz}
+    resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
 
   /cliui@5.0.0:
     resolution: {integrity: sha512-PYeGSEmmHM6zvoef2w8TPzlrnNpXIjTipYK780YswmIP9vjxmd6Y2a3CB2Ks6/AU8NHjZugXvo8w3oWM2qnwXA==}
