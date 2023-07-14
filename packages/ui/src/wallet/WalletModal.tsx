@@ -44,7 +44,7 @@ export const WalletModal = ({ children, onMetamask }: WalletModalProps) => (
         <Button
           type="button"
           variant="secondary"
-          size="regular"
+          size="full"
           onClick={onMetamask}
           className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 cursor-pointer w-full"
         >
