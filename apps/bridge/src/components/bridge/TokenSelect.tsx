@@ -21,6 +21,7 @@ import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
 import DirectionLabel from "@components/bridge/utils/DirectionLabel";
 import { MantleLogo } from "@components/bridge/utils/MantleLogo";
+import KindReminder from "@components/bridge/utils/KindReminder";
 
 export default function TokenSelect({
   direction: givenDirection,
@@ -335,6 +336,7 @@ export default function TokenSelect({
           }
         />
       )}
+      <KindReminder direction={direction} />
     </div>
   );
 }
