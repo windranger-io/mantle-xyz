@@ -278,6 +278,3 @@ export const MANTLE_BRIDGE_URL: Record<number, string> = {
   1: "https://bridge.mantle.xyz",
   5: "https://bridge.testnet.mantle.xyz",
 };
-
-export const CONTROLLER_URL: string =
-  "https://airdrop-controller-production.up.railway.app";
