@@ -207,37 +207,8 @@ function ConnectWallet() {
                   disconnect();
                 }
               }}
-              onWalletConnect={() => {
-                if (!client.address) {
-                  connect({
-                    connector: connectors.find(
-                      (connector) => connector.id === "walletConnect"
-                    ),
-                  });
-                } else {
-                  // clear the client before calling disconnect
-                  client.address = undefined;
-                  // disconnect
-                  disconnect();
-                }
-              }}
             >
-              <Button
-                variant="walletConnect"
-                size="regular"
-                // onClick={() => {
-                //   if (!client.address) {
-                //     connect({
-                //       connector,
-                //     });
-                //   } else {
-                //     // clear the client before calling disconnect
-                //     client.address = undefined;
-                //     // disconnect
-                //     disconnect();
-                //   }
-                // }}
-              >
+              <Button variant="walletConnect" size="regular">
                 {!client.address ? `Connect Wallet` : `Disconnect`}
               </Button>
             </WalletModal>

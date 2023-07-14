@@ -8,7 +8,6 @@ import { WagmiConfig, configureChains, createClient } from "wagmi";
 
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
-import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
@@ -34,14 +33,6 @@ const client = createClient({
       chains,
       options: {
         UNSTABLE_shimOnConnectSelectAccount: true,
-      },
-    }),
-    new WalletConnectConnector({
-      chains,
-      options: {
-        relayUrl: "https://relay.walletconnect.com",
-        qrcode: true,
-        projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
       },
     }),
     new InjectedConnector({
