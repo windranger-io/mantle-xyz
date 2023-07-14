@@ -1,3 +1,5 @@
+"use client";
+
 import { Direction } from "@config/constants";
 import { Typography } from "@mantle/ui";
 import { useState } from "react";
@@ -8,16 +10,16 @@ const withdrawKey = "hideWithdrawReminder";
 
 export default function KindReminder({ direction }: { direction: Direction }) {
   const [hideReminder, setHideReminder] = useState<string>(
-    localStorage.getItem(
+    localStorage?.getItem(
       direction === Direction.Deposit ? depositKey : withdrawKey
     ) || "false"
   );
 
   const dismissReminder = () => {
     if (direction === Direction.Deposit) {
-      localStorage.setItem(depositKey, "true");
+      localStorage?.setItem(depositKey, "true");
     } else {
-      localStorage.setItem(withdrawKey, "true");
+      localStorage?.setItem(withdrawKey, "true");
     }
     setHideReminder("true");
   };
