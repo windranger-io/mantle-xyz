@@ -5,19 +5,19 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import StateContext from "@providers/stateContext";
 
 import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { truncateAddress } from "@utils/formatStrings";
 import { CHAINS, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
-import { Button } from "@mantle/ui";
+import { Button, WalletModal } from "@mantle/ui";
 import { BiError } from "react-icons/bi";
 
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 import Link from "next/link";
 import { getAddress } from "ethers/lib/utils";
+import useIsMounted from "@hooks/useIsMounted";
 
 function ConnectWallet() {
   // get the currently connected wallet-selected-chain
@@ -55,21 +55,13 @@ function ConnectWallet() {
   // when disconnecting we want to retain control over whether or not to attempt a reconnect
   const reconnect = useRef(false);
 
+  const mounted = useIsMounted();
+
   // pull to network method
   const { switchToNetwork } = useSwitchToNetwork();
 
   // control wagmi connector
-  const { connect, connectAsync, connectors } = useConnect();
-
-  // Find the right connector by ID
-  const connector = useMemo(
-    // we can allow this connection.id to be set in connection modal phase
-    () =>
-      connectors.find((conn) => conn.id === "metamask") ||
-      // fallback to injected provider
-      new InjectedConnector(),
-    [connectors]
-  );
+  const { connect, connectors } = useConnect();
 
   const { disconnect, disconnectAsync } = useDisconnect({
     onMutate: () => {
@@ -80,13 +72,13 @@ function ConnectWallet() {
       }
     },
     onSettled: async () => {
-      if (reconnect.current) {
-        await new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(connectAsync({ connector }).catch(() => null));
-          }, 1000);
-        });
-      }
+      // if (reconnect.current) {
+      //   await new Promise((resolve) => {
+      //     setTimeout(() => {
+      //       resolve(connectAsync({ connector }).catch(() => null));
+      //     }, 1000);
+      //   });
+      // }
     },
   });
 
@@ -174,6 +166,10 @@ function ConnectWallet() {
     [currentChain]
   );
 
+  if (!mounted) {
+    return <div className="flex flex-row gap-4" />;
+  }
+
   // return connect/disconnect component
   return (
     <div className="flex flex-row gap-4">
@@ -195,32 +191,36 @@ function ConnectWallet() {
       {
         // eslint-disable-next-line no-nested-ternary
         isChainID || !client.address ? (
+          // eslint-disable-next-line react/jsx-no-useless-fragment
           <>
-            <Button
-              variant="walletConnect"
-              size="regular"
-              onClick={() => {
-                if (!client.address) {
+            {!client.address ? (
+              <WalletModal
+                onMetamask={() => {
                   connect({
-                    connector,
+                    connector: connectors.find(
+                      (conn) => conn.id === "metaMask"
+                    ),
                   });
-                } else {
+                }}
+              >
+                <Button variant="walletConnect" size="regular">
+                  Connect Wallet
+                </Button>
+              </WalletModal>
+            ) : (
+              <Button
+                variant="walletConnect"
+                size="regular"
+                onClick={() => {
                   // clear the client before calling disconnect
                   client.address = undefined;
                   // disconnect
                   disconnect();
-                }
-              }}
-            >
-              {!client.address ? `Connect Wallet` : `Disconnect`}
-            </Button>
-            {/* <button
-              type="button"
-              className="text-white"
-              onClick={() => (!address ? connect() : disconnect())}
-            >
-              {!address ? `Connect Wallet` : `[disconnect]`}
-            </button> */}
+                }}
+              >
+                Disconnect
+              </Button>
+            )}
           </>
         ) : !isChainID ? (
           <div className="flex flex-row items-center gap-4 justify-end">
@@ -232,11 +232,7 @@ function ConnectWallet() {
               <BiError className="text-sm" />
               <p className="text-sm">Unsupported chain</p>
             </div>
-            <Button
-              className="max-w-[10em]"
-              variant="walletConnect"
-              onClick={() => changeNetwork()}
-            >
+            <Button variant="walletConnect" onClick={() => changeNetwork()}>
               Please switch to {CHAINS[chainId].chainName}
             </Button>
           </div>

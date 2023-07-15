@@ -12,34 +12,12 @@ import {
 } from "@mantle/ui";
 import LegalDisclaimer from "@components/LegalDisclaimer";
 
-import { L1_CHAIN_ID } from "@config/constants";
-
 import CONST from "@mantle/constants";
 import ConnectWallet from "@components/ConnectWallet";
+import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 import Head from "./head";
 import bridgeBG from "../../public/bridge-bg.png";
 import Providers from "./providers";
-
-const NAV_ITEMS = [
-  L1_CHAIN_ID !== 1 && {
-    name: "Docs",
-    href: CONST.RESOURCE_LINKS.DOC_LINK || "#",
-    internal: false,
-    active: false,
-  },
-  L1_CHAIN_ID !== 1 && {
-    name: "Faucet",
-    href: CONST.RESOURCE_LINKS.FAUCET_LINK || "#",
-    internal: false,
-    active: false,
-  },
-  {
-    name: "Bridge",
-    href: CONST.RESOURCE_LINKS.BRIDGE_LINK || "#",
-    internal: false,
-    active: true,
-  },
-].filter((v) => v);
 
 export default function RootLayout({
   children,
@@ -66,7 +44,8 @@ export default function RootLayout({
               <Header
                 navLite
                 walletConnect={<ConnectWallet />}
-                navItems={NAV_ITEMS}
+                activeKey="bridge"
+                isTestnet={L1_CHAIN_ID === 5 || L2_CHAIN_ID === 5001}
               />
             }
             className="min-h-screen justify-between"

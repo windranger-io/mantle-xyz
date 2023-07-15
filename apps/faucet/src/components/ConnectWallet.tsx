@@ -10,7 +10,7 @@ import { CHAINS, CHAIN_ID } from "@config/constants";
 
 import useIsMounted from "@hooks/useIsMounted";
 import useIsChainID from "@hooks/useIsChainID";
-import { Button } from "@mantle/ui";
+import { Button, WalletModal } from "@mantle/ui";
 import Avatar from "@mantle/ui/src/presentational/Avatar";
 import { BiError } from "react-icons/bi";
 
@@ -128,24 +128,26 @@ function ConnectWallet() {
       {
         // eslint-disable-next-line no-nested-ternary
         isChainID || !address ? (
+          // eslint-disable-next-line react/jsx-no-useless-fragment
           <>
-            <Button
-              variant="walletConnect"
-              size="regular"
-              onClick={() => (!address ? connect() : disconnect())}
-            >
-              {!address ? `Connect Wallet` : `Disconnect`}
-            </Button>
-            {/* <button
-              type="button"
-              className="text-white"
-              onClick={() => (!address ? connect() : disconnect())}
-            >
-              {!address ? `Connect Wallet` : `[disconnect]`}
-            </button> */}
+            {!address ? (
+              <WalletModal onMetamask={() => connect()}>
+                <Button variant="walletConnect" size="regular">
+                  Connect Wallet
+                </Button>
+              </WalletModal>
+            ) : (
+              <Button
+                variant="walletConnect"
+                size="regular"
+                onClick={() => disconnect()}
+              >
+                Disconnect
+              </Button>
+            )}
           </>
         ) : !isChainID ? (
-          <div className="flex flex-row items-center gap-4">
+          <div className="flex flex-row items-center gap-4 justify-end">
             <div
               className="flex flex-row items-center gap-2 text-status-error
             h-fit  rounded-lg text-xs backdrop-blur-[50px] bg-white/10 w-fit px-4 py-2

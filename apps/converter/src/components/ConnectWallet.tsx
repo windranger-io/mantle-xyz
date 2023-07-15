@@ -11,7 +11,7 @@ import { truncateAddress } from "@utils/formatStrings";
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
-import { Button } from "@mantle/ui";
+import { Button, WalletModal } from "@mantle/ui";
 import { BiError } from "react-icons/bi";
 
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
@@ -184,32 +184,34 @@ function ConnectWallet() {
       {
         // eslint-disable-next-line no-nested-ternary
         isChainID || !client.address ? (
+          // eslint-disable-next-line react/jsx-no-useless-fragment
           <>
-            <Button
-              variant="walletConnect"
-              size="regular"
-              onClick={() => {
-                if (!client.address) {
+            {!client.address ? (
+              <WalletModal
+                onMetamask={() => {
                   connect({
                     connector,
                   });
-                } else {
+                }}
+              >
+                <Button variant="walletConnect" size="regular">
+                  {!client.address ? `Connect Wallet` : `Disconnect`}
+                </Button>
+              </WalletModal>
+            ) : (
+              <Button
+                variant="walletConnect"
+                size="regular"
+                onClick={() => {
                   // clear the client before calling disconnect
                   client.address = undefined;
                   // disconnect
                   disconnect();
-                }
-              }}
-            >
-              {!client.address ? `Connect Wallet` : `Disconnect`}
-            </Button>
-            {/* <button
-              type="button"
-              className="text-white"
-              onClick={() => (!address ? connect() : disconnect())}
-            >
-              {!address ? `Connect Wallet` : `[disconnect]`}
-            </button> */}
+                }}
+              >
+                Disconnect
+              </Button>
+            )}
           </>
         ) : !isChainID ? (
           <div className="flex flex-row items-center gap-4 justify-end">

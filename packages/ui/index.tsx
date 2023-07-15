@@ -5,6 +5,7 @@
  */
 export * from './src/actions/Button'
 export * from './src/actions/Links'
+export * from './src/wallet/WalletModal'
 
 /**
  *  Links

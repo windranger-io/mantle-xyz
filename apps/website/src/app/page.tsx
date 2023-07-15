@@ -14,7 +14,13 @@ import {
 export default function Page() {
   return (
     <PageWrapper
-      header={<Header walletConnect={<Button>Wallet Connect???</Button>} />}
+      header={
+        <Header
+          walletConnect={<Button>Wallet Connect???</Button>}
+          isTestnet
+          activeKey="website"
+        />
+      }
     >
       <PageContainer className="gap-8">
         <Typography variant="appPageHeading" className="text-center">

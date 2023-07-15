@@ -16,17 +16,62 @@ interface NavItems {
   name: string
   href: string
   internal: boolean
-  active: boolean
+  key: string
 }
+
+const NAV_ITEMS: NavItems[] = [
+  {
+    name: 'Docs',
+    href: 'https://docs.mantle.xyz',
+    internal: true,
+    key: 'docs',
+  },
+  {
+    name: 'Migrate',
+    href: 'https://migratebit.mantle.xyz',
+    internal: true,
+    key: 'migrate',
+  },
+  {
+    name: 'Bridge',
+    href: 'https://bridge.testnet.mantle.xyz',
+    internal: true,
+    key: 'bridge',
+  },
+]
+
+const NAV_ITEMS_TESTNET: NavItems[] = [
+  {
+    name: 'Docs',
+    href: 'https://docs.mantle.xyz',
+    internal: true,
+    key: 'docs',
+  },
+  {
+    name: 'Faucet',
+    href: 'https://faucet.testnet.mantle.xyz',
+    internal: true,
+    key: 'faucet',
+  },
+  {
+    name: 'Bridge',
+    href: 'https://bridge.testnet.mantle.xyz',
+    internal: true,
+    key: 'bridge',
+  },
+]
 
 export const NavigationLite = ({
   walletConnect,
-  navItems,
+  activeKey,
+  isTestnet,
 }: {
   walletConnect: React.ReactNode
-  navItems: NavItems[]
+  activeKey: string
+  isTestnet: boolean
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const navItems = isTestnet ? NAV_ITEMS_TESTNET : NAV_ITEMS
 
   return (
     <div className="relative">
@@ -47,23 +92,26 @@ export const NavigationLite = ({
           </Link>
         </div>
         <div className="hidden lg:flex justify-center gap-16">
-          {navItems.map((item, index) => (
-            <span key={`navLink-${item?.name || index}`}>
-              <MantleLink
-                variant="navLink"
-                href={item.href}
-                target={item.internal ? '_self' : '_blank'}
-                rel="noreferrer noopener"
-                className={item.active ? 'text-type-primary relative' : ``}
-              >
-                {item.name}
-                {/* Add dot if current site  */}
-                {item.active && (
-                  <div className="rounded-full bg-white h-1 w-1  absolute left-[50%] -bottom-[10px]" />
-                )}
-              </MantleLink>
-            </span>
-          ))}
+          {navItems.map((item, index) => {
+            const isActive = activeKey === item.key
+            return (
+              <span key={`navLink-${item?.name || index}`}>
+                <MantleLink
+                  variant="navLink"
+                  href={item.href}
+                  target={item.internal ? '_self' : '_blank'}
+                  rel="noreferrer noopener"
+                  className={isActive ? 'text-type-primary relative' : ``}
+                >
+                  {item.name}
+                  {/* Add dot if current site  */}
+                  {isActive && (
+                    <div className="rounded-full bg-white h-1 w-1  absolute left-[50%] -bottom-[10px]" />
+                  )}
+                </MantleLink>
+              </span>
+            )
+          })}
         </div>
 
         <div className="flex justify-end gap-10">

@@ -23,33 +23,6 @@ import CONST from "@mantle/constants";
 import faucetBG from "../../public/faucet-bg.png";
 // import { getSession } from "./session";
 
-/**
- *
- * @todo Updated with real components and content when ready
- *
- */
-
-const NAV_ITEMS = [
-  {
-    name: "Docs",
-    href: CONST.RESOURCE_LINKS.DOC_LINK || "#",
-    internal: false,
-    active: false,
-  },
-  {
-    name: "Faucet",
-    href: CONST.RESOURCE_LINKS.FAUCET_LINK || "#",
-    internal: false,
-    active: true,
-  },
-  {
-    name: "Bridge",
-    href: CONST.RESOURCE_LINKS.BRIDGE_LINK || "#",
-    internal: false,
-    active: false,
-  },
-];
-
 export default async function Page() {
   // * [Passing data between a parent layout and its children is not possible.
   //   However, you can fetch the same data in a route more than once, and React
@@ -71,7 +44,9 @@ export default async function Page() {
         <Header
           navLite
           walletConnect={<ConnectWallet />}
-          navItems={NAV_ITEMS}
+          activeKey="faucet"
+          // Faucet should only be on testnet
+          isTestnet
         />
       }
       className="min-h-screen justify-between"

@@ -2,7 +2,7 @@
 
 import { Header } from "@mantle/ui/src/navigation/Header";
 import ConnectWallet from "@components/ConnectWallet";
-import { usePathname } from "next/navigation";
+import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
 type NavProps = {
   className: string;
@@ -10,33 +10,13 @@ type NavProps = {
 };
 
 function Nav({ className, hideConnectBtn }: NavProps) {
-  // use the given pathName to set active on navItem
-  const pathName = usePathname();
-
-  // these nav items will navigate internally
-  const NAV_ITEMS = [
-    {
-      name: "Migrate",
-      href: "/",
-      internal: false,
-      active: pathName === "/",
-      shallow: true,
-    },
-    // {
-    //   name: "Dashboard",
-    //   href: "/dashboard",
-    //   internal: true,
-    //   active: pathName === "/dashboard",
-    //   shallow: true,
-    // },
-  ];
-
   return (
     <Header
       navLite
       walletConnect={hideConnectBtn ? null : <ConnectWallet />}
-      navItems={NAV_ITEMS}
       className={className}
+      activeKey="migrate"
+      isTestnet={L1_CHAIN_ID === 5 || L2_CHAIN_ID === 5001}
     />
   );
 }
