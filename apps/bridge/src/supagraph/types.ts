@@ -56,6 +56,8 @@ export type L1ToL2MessageEntity = {
   amount: BigNumber;
   l1Tx: string;
   l2Tx?: string;
+  l1BlockNumber?: number;
+  l2BlockNumber?: number;
   l1Token?: string;
   l2Token?: string;
   gasDropped?: boolean;

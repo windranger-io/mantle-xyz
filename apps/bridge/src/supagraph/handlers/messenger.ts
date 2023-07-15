@@ -1,7 +1,4 @@
 /* eslint-disable no-console */
-// RelayedMessage
-// FailedRelayedMessage
-
 import { TransactionReceipt } from "@ethersproject/providers";
 import { Store } from "@mantle/supagraph";
 import {
@@ -28,6 +25,7 @@ export const RelayedMessageHandler = async (
   if (message.l1Tx) {
     message.set("status", 1);
     message.set("l2Tx", tx.transactionHash);
+    message.set("l2BlockNumber", tx.blockNumber);
 
     await message.save();
   }
@@ -56,6 +54,7 @@ export const FailedRelayedMessageHandler = async (
   if (message.l1Tx) {
     message.set("status", 2);
     message.set("l2Tx", tx.transactionHash);
+    message.set("l2BlockNumber", tx.blockNumber);
 
     await message.save();
   }

@@ -26,6 +26,7 @@ export const StateBatchAppendedHandler = async (
   entity.set("prevTotalElements", args.prevTotalElements);
   entity.set("signature", args.signature);
   entity.set("extraData", args.extraData);
+
   // set the tx details into the entity
   entity.set("txBlock", tx.blockNumber);
   entity.set("txHash", tx.transactionHash);

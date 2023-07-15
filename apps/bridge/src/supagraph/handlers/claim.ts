@@ -15,7 +15,7 @@ export const claim = async (reservedFor: string) => {
       }),
       // attempt a new claim for this user
       body: JSON.stringify({
-        // Strategy ID for the faucet
+        // strategy ID for the faucet
         strategyId:
           process.env.PRODUCTION_FAUCET_STRATEGY || "64a4030a17d32f867b5270a3",
         // recipient of the gas-drop

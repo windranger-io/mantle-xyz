@@ -127,6 +127,8 @@ const config = {
       message: String
       l1Tx: String
       l2Tx: String
+      l1BlockNumber: Int
+      l2BlockNumber: Int
       l1Token: String
       l2Token: String
       gasDropped: Boolean
