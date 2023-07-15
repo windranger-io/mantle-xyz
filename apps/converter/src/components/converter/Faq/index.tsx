@@ -57,9 +57,9 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
     a: (
       <Typography className="text-type-secondary mx-4 mb-4">
         Yes, most users will be refunded their cost of migration in ETH. Users
-        will not have to take any action and the ETH will be airdropped to the
-        address. The status of the rebate will be available in a future
-        dashboard.
+        will not need to take any action and the ETH will be sent directly to
+        the address used in the migration. The status of the rebate will be
+        available in a future dashboard.
       </Typography>
     ),
   },
