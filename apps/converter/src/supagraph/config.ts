@@ -3,11 +3,20 @@ import { withDefault } from "@mantle/supagraph";
 
 // Export the complete supagraph configuration (sync & graph) - we can add everything from Mappings to this config
 const config = {
+  // set the local engine (true: db || false: mongo)
+  dev: false,
   // name your supagraph (this will inform mongo table name etc...)
   name: withDefault(
     process.env.SUPAGRAPH_NAME,
     "supagraph--migrator--testnet--0-0-1"
   ),
+  // flag mutable to insert by upsert only on id field
+  // - otherwise use _block_number + id to make a unique entry and do a distinct groupBy on the id when querying
+  //   ie: do everything the immutable way (this can be a lot more expensive)
+  mutable: true,
+  // how often do we want queries to be revalidated?
+  revalidate: 12,
+  staleWhileRevalidate: 59,
   // configure providers
   providers: {
     1: {
@@ -20,6 +29,14 @@ const config = {
   // configure available Contracts and their block details
   contracts: {
     migrator: {
+      // set the handlers
+      handlers: "migrator",
+      // Establish all event signatures available on this contract (we could also accept a .sol or .json file here)
+      events: [
+        process.env.NEXT_PUBLIC_L1_CHAIN_ID === "1"
+          ? "event TokensMigrated(address indexed to, uint256 amountSwapped)"
+          : "event TokensMigrated(address indexed to, uint256 amountSwapped, uint256 amountReceived)",
+      ],
       // set config from env
       chainId: withDefault(process.env.NEXT_PUBLIC_L1_CHAIN_ID, 5),
       address: withDefault(
@@ -34,12 +51,6 @@ const config = {
         process.env.L1_CONVERTER_CONTRACT_END_BLOCK,
         "latest"
       ),
-      // Establish all event signatures available on this contract (we could also accept a .sol or .json file here)
-      events: [
-        process.env.NEXT_PUBLIC_L1_CHAIN_ID === "1"
-          ? "event TokensMigrated(address indexed to, uint256 amountSwapped)"
-          : "event TokensMigrated(address indexed to, uint256 amountSwapped, uint256 amountReceived)",
-      ],
     },
   },
   // define supagraph schema
@@ -82,15 +93,6 @@ const config = {
       }
     }
   `,
-  // set the local engine (true: db || false: mongo)
-  dev: false,
-  // flag mutable to insert by upsert only on id field
-  // - otherwise use _block_number + id to make a unique entry and do a distinct groupBy on the id when querying
-  //   ie: do everything the immutable way (this can be a lot more expensive)
-  mutable: true,
-  // how often do we want queries to be revalidated?
-  revalidate: 12,
-  staleWhileRevalidate: 59,
 };
 
 // export config as default export

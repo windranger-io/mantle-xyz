@@ -2,35 +2,7 @@
 import type { BigNumber } from "ethers";
 
 // Each sync will be provided its own provider
-import type { BigNumberish, providers } from "ethers/lib/ethers";
-
-// Handler definitions to map eventName to handler
-export type Handlers = {
-  [key: string]: (
-    args: any,
-    {
-      tx,
-      block,
-    }: {
-      tx: providers.TransactionReceipt;
-      block: providers.Block;
-    }
-  ) => void;
-};
-
-// Mappings definition, to map handlers to contracts
-export type Mappings = {
-  handlers: {
-    [key: string]: Handlers;
-  };
-  register: {
-    handlers: Handlers | keyof Mappings["handlers"];
-    rpcUrl: string;
-    abi: string[];
-    address: string;
-    startBlock: number;
-  }[];
-};
+import type { BigNumberish } from "ethers/lib/ethers";
 
 // Definitions for the TokensMigrated Events args (as defined in the abi)
 export type TokensMigratedEvent = {

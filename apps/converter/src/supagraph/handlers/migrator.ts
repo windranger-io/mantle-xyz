@@ -12,7 +12,7 @@ import type {
   AccountEntity,
   MigationEntity,
   TokensMigratedEvent,
-} from "./types";
+} from "../types";
 
 // Generic handler to consume TokensMigrated events
 export const TokensMigratedHandler = async (

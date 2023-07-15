@@ -39,7 +39,7 @@ const graphql = createSupagraph<NextApiRequest, NextApiResponse>({
           name: config.name,
           // connect to mongodb
           client: getMongodb(process.env.MONGODB_URI),
-          // skip groupBy on time/block - each id is unique in this set of syncs (treat as mutable entities)
+          // if we want supagraph to produce a new entry for every event set this to `false`
           mutable: config.mutable,
         }),
   // set the default query to show in graphiql

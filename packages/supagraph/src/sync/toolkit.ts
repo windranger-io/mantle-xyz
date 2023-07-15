@@ -35,8 +35,33 @@ export type Sync = {
   eventAbi: ethers.Contract["abi"];
   onEvent: (
     args: any,
-    { tx, block }: { tx: TransactionReceipt; block: Block }
+    {
+      tx,
+      block,
+      logIndex,
+    }: { tx: TransactionReceipt; block: Block; logIndex: number }
   ) => void;
+  opts?: {
+    collectTxReceipts: boolean;
+  };
+};
+
+// Handlers definition, to map handlers to contracts
+export type Handlers = {
+  [key: string]: {
+    [key: string]: (
+      args: any,
+      {
+        tx,
+        block,
+        logIndex,
+      }: {
+        tx: providers.TransactionReceipt;
+        block: providers.Block;
+        logIndex: number;
+      }
+    ) => void;
+  };
 };
 
 // how many ranges to request at a time
@@ -108,8 +133,15 @@ export function addSync<T extends Record<string, unknown>>(
         eventAbi: ethers.Contract["abi"];
         onEvent: (
           args: T,
-          { tx, block }: { tx: TransactionReceipt; block: Block }
+          {
+            tx,
+            block,
+            logIndex,
+          }: { tx: TransactionReceipt; block: Block; logIndex: number }
         ) => void;
+        opts?: {
+          collectTxReceipts: boolean;
+        };
       },
   provider?: BaseProvider,
   startBlock?: number,
@@ -117,9 +149,23 @@ export function addSync<T extends Record<string, unknown>>(
   eventAbi?: ethers.Contract["abi"],
   onEvent?: (
     args: T,
-    { tx, block }: { tx: TransactionReceipt; block: Block }
-  ) => void
-): (args: T, { tx, block }: { tx: TransactionReceipt; block: Block }) => void {
+    {
+      tx,
+      block,
+      logIndex,
+    }: { tx: TransactionReceipt; block: Block; logIndex: number }
+  ) => void,
+  opts?: {
+    collectTxReceipts: boolean;
+  }
+): (
+  args: T,
+  {
+    tx,
+    block,
+    logIndex,
+  }: { tx: TransactionReceipt; block: Block; logIndex: number }
+) => void {
   let params;
 
   // hydrate the params
@@ -131,6 +177,7 @@ export function addSync<T extends Record<string, unknown>>(
       onEvent: onEvent!,
       provider: provider!,
       startBlock: startBlock!,
+      opts: opts || { collectTxReceipts: false },
     };
   } else {
     params = eventNameOrParams;
@@ -317,7 +364,8 @@ const cancelAndSplit =
 const wrapEventRes = async (
   event: string,
   entries: ethers.Event[],
-  provider: BaseProvider
+  provider: BaseProvider,
+  collectTxReceipt: boolean
 ) => {
   return Promise.all(
     entries.map(async (entry) => {
@@ -325,6 +373,7 @@ const wrapEventRes = async (
         type: event,
         data: entry,
         chainId: (await provider.getNetwork()).chainId,
+        collectTxReceipt,
       };
     })
   );
@@ -337,12 +386,14 @@ const getNewEvents = async (
   eventName: string,
   fromBlock: number,
   toBlock: number,
-  provider: BaseProvider
+  provider: BaseProvider,
+  collectTxReceipt: boolean
 ): Promise<
   {
     type: string;
     data: ethers.Event;
     chainId: number;
+    collectTxReceipt: boolean;
   }[]
 > => {
   // collect a list of events then map the event type to each so that we can rebuild all events into a single array later
@@ -389,7 +440,12 @@ const getNewEvents = async (
   }
 
   // wrap the events with the known type
-  return wrapEventRes(eventName, Array.from(result), provider);
+  return wrapEventRes(
+    eventName,
+    Array.from(result),
+    provider,
+    collectTxReceipt
+  );
 };
 
 // read the file from disk
@@ -567,6 +623,7 @@ const readCSV = async (
     type: string;
     data: ethers.Event;
     chainId: number;
+    collectTxReceipt: boolean;
     timestamp?: number;
     from?: string;
   }[]
@@ -575,6 +632,7 @@ const readCSV = async (
     type: string;
     data: ethers.Event;
     chainId: number;
+    collectTxReceipt: boolean;
     timestamp?: number;
     from?: string;
   }[] = [];
@@ -600,6 +658,7 @@ const readCSV = async (
               eventSignature: data.eventSignature,
               args: data.args?.split(",") || [],
             } as ethers.Event,
+            collectTxReceipt: data.collectTxReceipt === "true",
             chainId: parseInt(data.chainId, 10),
             timestamp: data.blockTimestamp,
             from: data.from,
@@ -622,6 +681,7 @@ const saveCSV = async (
     type: string;
     data: ethers.Event;
     chainId: number;
+    collectTxReceipt: boolean;
     timestamp?: number;
     from?: string;
   }[]
@@ -634,6 +694,7 @@ const saveCSV = async (
     sendHeaders: true,
     headers: [
       "type",
+      "collectTxReceipt",
       "blockTimestamp",
       "blockNumber",
       "blockHash",
@@ -663,11 +724,13 @@ const saveCSV = async (
       type: string;
       data: ethers.Event;
       chainId: number;
+      collectTxReceipt: boolean;
       timestamp?: number;
       from?: string;
     }) => {
       writer.write({
         type: event.type,
+        collectTxReceipt: event.collectTxReceipt,
         blockTimestamp: event.timestamp,
         blockNumber: event.data.blockNumber,
         blockHash: event.data.blockHash,
@@ -757,7 +820,11 @@ export const sync = async ({
     string,
     (
       args: any,
-      { tx, block }: { tx: TransactionReceipt; block: Block }
+      {
+        tx,
+        block,
+        logIndex,
+      }: { tx: TransactionReceipt; block: Block; logIndex: number }
     ) => void | Promise<void>
   > = {};
   // collect each events abi iface
@@ -776,6 +843,7 @@ export const sync = async ({
     type: string;
     data: ethers.Event;
     chainId: number;
+    collectTxReceipt: boolean;
     timestamp?: number;
     from?: string;
   }[] = [];
@@ -795,8 +863,15 @@ export const sync = async ({
     let newEvents: any;
 
     // extract info from the sync operation
-    const { address, eventAbi, eventName, provider, startBlock, onEvent } =
-      opSync;
+    const {
+      address,
+      eventAbi,
+      eventName,
+      provider,
+      startBlock,
+      opts,
+      onEvent,
+    } = opSync;
     // get this chains id
     const { chainId } = await provider.getNetwork();
 
@@ -868,6 +943,8 @@ export const sync = async ({
 
     // set the chainId into the engine
     Store.setChainId(chainId);
+    // clear the current block state so we don't disrupt timestamps on the entity
+    Store.clearBlock();
 
     // set the lock (this will be released on successful update)
     latestEntity[chainId].set("locked", true);
@@ -913,7 +990,8 @@ export const sync = async ({
               eventName,
               fromBlock,
               toBlock,
-              provider
+              provider,
+              opts?.collectTxReceipts || !skipTransactions
             )
           : [];
 
@@ -978,15 +1056,22 @@ export const sync = async ({
     );
   }
 
+  // check if we're globally including, or individually including the txReceipts
+  const collectTxReceipts = syncs.reduce((collectTxReceipt, opSync) => {
+    return collectTxReceipt || opSync.opts?.collectTxReceipts || false;
+  }, !skipTransactions);
+
   // check if we're gathering transactions in this sync
   if (
-    !skipTransactions &&
+    collectTxReceipts &&
     (!start || Stage[start] <= Stage.sort) &&
     (!stop || Stage[stop] >= Stage.transactions)
   ) {
-    // extract transactions and call getBlock once for each discovered block - then index against blocks number
+    const filtered = events.filter((evt) => !!evt.collectTxReceipt);
+
+    // extract transactions and call getTransactionReceipt once for each discovered tx
     await getFnResultForProp<TransactionReceipt>(
-      events,
+      filtered,
       "transactions",
       "transactionHash",
       "getTransactionReceipt",
@@ -994,8 +1079,8 @@ export const sync = async ({
     );
     console.log(
       "Total no. of senders placed:",
-      events.length,
-      events.length && `(first entry has sender: ${events[0].from})\n`
+      filtered.length,
+      filtered.length && `(first entry has sender: ${filtered[0].from})\n`
     );
   }
 
@@ -1068,9 +1153,9 @@ export const sync = async ({
           topics: opSorted.data.topics,
           data: opSorted.data.data,
         });
-        // transactions can be skipped if we don't need the details in out sync handlers
+        // transactions can be skipped if we don't need the details in our sync handlers
         const tx =
-          skipOptionalArgs || skipTransactions
+          (skipOptionalArgs || skipTransactions) && !opSorted.collectTxReceipt
             ? ({
                 contractAddress: opSorted.data.address,
                 transactionHash: opSorted.data.transactionHash,
@@ -1115,6 +1200,7 @@ export const sync = async ({
           {
             tx,
             block,
+            logIndex: opSorted.data.logIndex,
           }
         );
       }
@@ -1198,6 +1284,10 @@ export const sync = async ({
     // otherwise release locks because we'e not altering db state
     await Promise.all(
       Array.from(chainIds).map(async (chainId) => {
+        // clear the block to leave pointers untouched
+        Store.clearBlock();
+        // set the chainId into the engine
+        Store.setChainId(chainId);
         // remove the lock for the next iteration
         latestEntity[chainId].set("locked", false);
 

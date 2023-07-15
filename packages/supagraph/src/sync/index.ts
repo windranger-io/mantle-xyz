@@ -6,4 +6,7 @@ export { Mongo } from "./mongo";
 export { Store, getEntities, getEngine } from "./store";
 
 // add syncs and execute them
-export { Stage, sync, addSync } from "./toolkit";
+export { sync, addSync } from "./toolkit";
+
+// set up configs and syncs
+export type { Handlers, Stage } from "./toolkit";

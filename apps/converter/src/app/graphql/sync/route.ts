@@ -2,7 +2,15 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // Import the sync command and db drivers to setup engine
-import { DB, Mongo, Stage, Store, addSync, sync } from "@mantle/supagraph";
+import {
+  DB,
+  Mongo,
+  Stage,
+  Store,
+  Handlers,
+  addSync,
+  sync,
+} from "@mantle/supagraph";
 
 // Each sync will be provided its own provider
 import { providers } from "ethers/lib/ethers";
@@ -11,13 +19,54 @@ import { providers } from "ethers/lib/ethers";
 import { getMongodb } from "@providers/mongoClient";
 
 // Import all mappings to be registered
-import { Mappings, mappings } from "@supagraph/register";
+import { handlers } from "@supagraph/handlers";
 
 // Import revalidation timings from config
 import config from "@supagraph/config";
 
 // Object of providers by rpcUrl
 const providerCache: { [rpcUrl: string]: providers.JsonRpcProvider } = {};
+
+// Register each of the syncs from the mapping
+Object.keys(config.contracts).forEach((contract) => {
+  // extract this syncOp
+  const syncOp = config.contracts[contract as keyof typeof config.contracts];
+
+  // extract rpc url
+  const { rpcUrl } =
+    config.providers[syncOp.chainId as keyof typeof config.providers];
+
+  // pull the handlers for the registration
+  const mapping =
+    typeof syncOp.handlers === "string"
+      ? handlers?.[syncOp.handlers || ("" as keyof Handlers)] || {}
+      : syncOp.handlers;
+
+  // extract events
+  const events =
+    typeof syncOp.events === "string" &&
+    Object.hasOwnProperty.call(config, "events")
+      ? (config as unknown as { events: Record<string, string[]> })?.events[
+          syncOp.events
+        ]
+      : syncOp.events;
+
+  // configure JsonRpcProvider for contracts chainId
+  providerCache[rpcUrl] =
+    providerCache[rpcUrl] || new providers.JsonRpcProvider(rpcUrl);
+
+  // for each handler register a sync
+  Object.keys(mapping).forEach((eventName) => {
+    addSync({
+      eventName,
+      eventAbi: events,
+      address: syncOp.address,
+      startBlock: syncOp.startBlock,
+      provider: providerCache[rpcUrl],
+      onEvent: mapping[eventName],
+    });
+  });
+});
 
 // Switch out the engine for development to avoid the mongo requirment locally
 Store.setEngine({
@@ -36,34 +85,6 @@ Store.setEngine({
           mutable: config.mutable,
           client: getMongodb(process.env.MONGODB_URI!),
         }),
-});
-
-// Register each of the syncs from the mapping
-mappings.register.forEach((syncOp) => {
-  // pull the handlers for the registration
-  const handlers =
-    typeof syncOp.handlers === "object"
-      ? syncOp.handlers
-      : mappings.handlers?.[
-          syncOp.handlers || ("" as keyof Mappings["handlers"])
-        ] || {};
-
-  // configure JsonRpcProvider for contracts chainId
-  providerCache[syncOp.rpcUrl] =
-    providerCache[syncOp.rpcUrl] ||
-    new providers.JsonRpcProvider(syncOp.rpcUrl);
-
-  // for each handler register a sync
-  Object.keys(handlers).forEach((eventName) => {
-    addSync({
-      eventName,
-      eventAbi: syncOp.abi,
-      address: syncOp.address,
-      startBlock: syncOp.startBlock,
-      provider: providerCache[syncOp.rpcUrl],
-      onEvent: handlers[eventName],
-    });
-  });
 });
 
 // Expose the sync command on a route so that we can call it with a cron job

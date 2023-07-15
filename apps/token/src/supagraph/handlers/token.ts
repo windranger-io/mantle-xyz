@@ -14,7 +14,7 @@ import type {
   DelegateEntity,
   DelegateVotesChangedEvent,
   TransferEvent,
-} from "./types";
+} from "../types";
 
 // Extract the Mantle token address so that we can detect which contract the event belongs to
 const MANTLE_TOKEN_ADDRESS = getAddress(
