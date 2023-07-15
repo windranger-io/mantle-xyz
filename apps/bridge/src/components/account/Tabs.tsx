@@ -34,11 +34,20 @@ export default function Tabs() {
     refetchDeposits,
   } = useContext(StateContext);
 
-  const [categories] = useState({
-    Deposit: [<Deposit />],
-    Withdraw: [<Withdraw />],
-    Migrate: [],
-  });
+  const isTestnet = L1_CHAIN_ID === 5 || L2_CHAIN_ID === 5001;
+
+  const defaultCategories = isTestnet
+    ? {
+        Deposit: [<Deposit />],
+        Withdraw: [<Withdraw />],
+      }
+    : {
+        Deposit: [<Deposit />],
+        Withdraw: [<Withdraw />],
+        Migrate: [],
+      };
+
+  const [categories] = useState(defaultCategories);
 
   const router = useRouter();
   const pathName = usePathname();
