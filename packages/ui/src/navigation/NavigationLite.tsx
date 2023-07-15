@@ -34,7 +34,7 @@ const NAV_ITEMS: NavItems[] = [
   },
   {
     name: 'Bridge',
-    href: 'https://bridge.testnet.mantle.xyz',
+    href: 'https://bridge.mantle.xyz',
     internal: true,
     key: 'bridge',
   },
@@ -101,7 +101,11 @@ export const NavigationLite = ({
                   href={item.href}
                   target={item.internal ? '_self' : '_blank'}
                   rel="noreferrer noopener"
-                  className={isActive ? 'text-type-primary relative' : ``}
+                  className={
+                    isActive
+                      ? 'text-type-primary relative select-none pointer-events-none	'
+                      : ``
+                  }
                 >
                   {item.name}
                   {/* Add dot if current site  */}
