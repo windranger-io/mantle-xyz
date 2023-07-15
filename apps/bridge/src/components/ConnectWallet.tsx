@@ -17,7 +17,6 @@ import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 import Link from "next/link";
 import { getAddress } from "ethers/lib/utils";
-import useIsMounted from "@hooks/useIsMounted";
 
 function ConnectWallet() {
   // get the currently connected wallet-selected-chain
@@ -54,8 +53,6 @@ function ConnectWallet() {
 
   // when disconnecting we want to retain control over whether or not to attempt a reconnect
   const reconnect = useRef(false);
-
-  const mounted = useIsMounted();
 
   // pull to network method
   const { switchToNetwork } = useSwitchToNetwork();
@@ -165,10 +162,6 @@ function ConnectWallet() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentChain]
   );
-
-  if (!mounted) {
-    return <div className="flex flex-row gap-4" />;
-  }
 
   // return connect/disconnect component
   return (

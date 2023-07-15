@@ -8,15 +8,12 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { truncateAddress } from "@utils/truncateAddress";
 import { CHAINS, CHAIN_ID } from "@config/constants";
 
-import useIsMounted from "@hooks/useIsMounted";
 import useIsChainID from "@hooks/useIsChainID";
 import { Button, WalletModal } from "@mantle/ui";
 import Avatar from "@mantle/ui/src/presentational/Avatar";
 import { BiError } from "react-icons/bi";
 
 function ConnectWallet() {
-  // only render when mounted
-  const isMounted = useIsMounted();
   // check that we're connected to the appropriate chain
   const isChainID = useIsChainID(CHAIN_ID);
   // set address with useState to avoid hydration errors
@@ -115,7 +112,7 @@ function ConnectWallet() {
   }, [wagmiAddress]);
 
   // return connect/disconnect component
-  return isMounted() ? (
+  return (
     <div className="flex flex-row gap-4">
       {address && isChainID && client.isConnected ? (
         <div className="flex flex-row items-center gap-2  text-xs rounded-lg  backdrop-blur-[50px] bg-white/10 w-fit px-4 py-2">
@@ -165,8 +162,6 @@ function ConnectWallet() {
         )
       }
     </div>
-  ) : (
-    <div />
   );
 }
 
