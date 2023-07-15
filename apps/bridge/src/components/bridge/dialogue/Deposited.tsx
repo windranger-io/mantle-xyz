@@ -67,9 +67,9 @@ export default function Deposited({
     }
   );
 
-  // display airdrop success toast if the user qualified (this should only be shown once, subsequents will have more drops)
+  // display gas-drop success toast if the user qualified (this should only be shown once, subsequents will have more drops)
   useEffect(() => {
-    // qualifying users should only have one airdrop entry
+    // qualifying users should only have one gas-drop entry
     if (
       client.address &&
       // either there is a single gasDrop
@@ -101,7 +101,7 @@ export default function Deposited({
                 </Typography>
               </div>
             ),
-            id: `airdrop-success-${client?.address}`,
+            id: `gas-drop-success-${client?.address}`,
             buttonText: "Add Mantle Network",
             onButtonClick: () => {
               if (givenChain?.id !== L2_CHAIN_ID) {
