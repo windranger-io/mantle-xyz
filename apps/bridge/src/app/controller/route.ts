@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  if (!process.env.CONTROLLER_AUTH_KEY) {
+  if (!process.env.PRODUCTION_FAUCET_KEY) {
     return NextResponse.json({ error: "Missing controller auth key" });
   }
 
-  if (!process.env.CONTROLLER_URL) {
+  if (!process.env.PRODUCTION_FAUCET_URL) {
     return NextResponse.json({ error: "Missing controller url" });
   }
 
@@ -14,10 +14,10 @@ export async function GET(request: Request) {
     const address = searchParams.get("address");
 
     const myHeaders = new Headers();
-    myHeaders.append("auth-key", process.env.CONTROLLER_AUTH_KEY);
+    myHeaders.append("auth-key", process.env.PRODUCTION_FAUCET_KEY);
 
     const res = await fetch(
-      `${process.env.CONTROLLER_URL}/claim/find/wallet/${address}`,
+      `${process.env.PRODUCTION_FAUCET_URL}/claim/find/wallet/${address}`,
       {
         headers: myHeaders,
       }
