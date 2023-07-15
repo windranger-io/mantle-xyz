@@ -9,21 +9,25 @@ import StateContext from "@providers/stateContext";
 import { DELEGATION_URL, MANTLE_BRIDGE_URL } from "@config/constants";
 import AddNetworkBtn from "@components/bridge/dialogue/AddNetworkBtn";
 
+interface WhatNextLinkProp {
+  href: string;
+  title: string;
+  description: string;
+  image: string;
+  newTab: boolean;
+  onClick?: () => void;
+}
+
 function WhatNextLink({
   href,
   title,
   description,
   image,
   newTab,
-}: {
-  href: string;
-  title: string;
-  description: string;
-  image: string;
-  newTab: boolean;
-}) {
+  onClick,
+}: WhatNextLinkProp) {
   return (
-    <Link href={href} target={newTab ? "_blank" : "_self"}>
+    <Link href={href} target={newTab ? "_blank" : "_self"} onClick={onClick}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4">
           <div className="relative h-[100px] md:w-[180px] w-[140px] rounded-lg border border-[#1C1E20] bg-black">
@@ -59,7 +63,11 @@ function WhatNextLink({
   );
 }
 
-export default function WhatsNext() {
+WhatNextLink.defaultProps = {
+  onClick: () => {},
+};
+
+export default function WhatsNext({ closeModal }: { closeModal: () => void }) {
   const { chainId } = useContext(StateContext);
 
   return (
@@ -90,6 +98,7 @@ export default function WhatsNext() {
           description="Move your tokens to Mantle Network"
           href={MANTLE_BRIDGE_URL[chainId] || "#"}
           newTab={false}
+          onClick={closeModal}
         />
       </div>
       <div>
