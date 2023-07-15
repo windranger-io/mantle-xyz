@@ -60,11 +60,7 @@ export default function Tabs() {
             Account
           </Typography>
           <Typography variant="modalHeading" className="text-white w-auto pt-1">
-            <Link
-              className="text-white"
-              href={`/${chainId === L1_CHAIN_ID ? "deposit" : "withdraw"}`}
-              shallow
-            >
+            <Link className="text-white" href="/" shallow>
               <MdClear className="cursor-pointer" />
             </Link>
           </Typography>
