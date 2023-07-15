@@ -5,6 +5,7 @@ import {
   L1_MANTLE_TOKEN,
   MANTLE_BRIDGE_URL,
   DELEGATION_URL,
+  L1_CHAIN_ID,
 } from "@config/constants";
 
 import { Button, Typography } from "@mantle/ui";
@@ -167,7 +168,7 @@ export default function Deposited({
           image="/converted/link-2.png"
           title="Bridge"
           description="Move your tokens to Mantle Network"
-          href={MANTLE_BRIDGE_URL[chainId] || "#"}
+          href={MANTLE_BRIDGE_URL[L1_CHAIN_ID] || "#"}
         />
         <WhatNextLink
           image="/converted/link-3.png"
