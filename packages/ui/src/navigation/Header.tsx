@@ -14,6 +14,7 @@ export const Header = ({
   sticky,
   navLite = false,
   activeKey,
+  isTestnet,
 }: {
   // eslint-disable-next-line react/require-default-props
   walletConnect: React.ReactNode
@@ -24,6 +25,7 @@ export const Header = ({
   // eslint-disable-next-line react/require-default-props
   navLite?: boolean
   activeKey: string
+  isTestnet: boolean
 }) => (
   <header
     className={
@@ -33,7 +35,11 @@ export const Header = ({
     }
   >
     {navLite ? (
-      <NavigationLite walletConnect={walletConnect} activeKey={activeKey} />
+      <NavigationLite
+        walletConnect={walletConnect}
+        activeKey={activeKey}
+        isTestnet={isTestnet}
+      />
     ) : (
       <NavigationFull walletConnect={walletConnect} />
     )}

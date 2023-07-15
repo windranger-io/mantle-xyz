@@ -21,33 +21,57 @@ interface NavItems {
 
 const NAV_ITEMS: NavItems[] = [
   {
+    name: 'Docs',
+    href: 'https://docs.mantle.xyz',
+    internal: true,
+    key: 'docs',
+  },
+  {
     name: 'Migrate',
-    href: CONST.RESOURCE_LINKS.MIGRATE_LINK || '#',
+    href: 'https://migratebit.mantle.xyz',
     internal: true,
     key: 'migrate',
   },
   {
     name: 'Bridge',
-    href: CONST.RESOURCE_LINKS.BRIDGE_LINK || '#',
+    href: 'https://bridge.testnet.mantle.xyz',
     internal: true,
     key: 'bridge',
   },
+]
+
+const NAV_ITEMS_TESTNET: NavItems[] = [
+  {
+    name: 'Docs',
+    href: 'https://docs.mantle.xyz',
+    internal: true,
+    key: 'docs',
+  },
   {
     name: 'Faucet',
-    href: CONST.RESOURCE_LINKS.FAUCET_LINK || '#',
+    href: 'https://faucet.testnet.mantle.xyz',
     internal: true,
     key: 'faucet',
+  },
+  {
+    name: 'Bridge',
+    href: 'https://bridge.testnet.mantle.xyz',
+    internal: true,
+    key: 'bridge',
   },
 ]
 
 export const NavigationLite = ({
   walletConnect,
   activeKey,
+  isTestnet,
 }: {
   walletConnect: React.ReactNode
   activeKey: string
+  isTestnet: boolean
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const navItems = isTestnet ? NAV_ITEMS_TESTNET : NAV_ITEMS
 
   return (
     <div className="relative">
@@ -68,7 +92,7 @@ export const NavigationLite = ({
           </Link>
         </div>
         <div className="hidden lg:flex justify-center gap-16">
-          {NAV_ITEMS.map((item, index) => {
+          {navItems.map((item, index) => {
             const isActive = activeKey === item.key
             return (
               <span key={`navLink-${item?.name || index}`}>
@@ -136,7 +160,7 @@ export const NavigationLite = ({
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-4 py-6 pl-4 ">
-                {NAV_ITEMS.map((item, index) => (
+                {navItems.map((item, index) => (
                   <span key={`navLink-${item?.name || index}`}>
                     <MantleLink
                       variant="navLink"

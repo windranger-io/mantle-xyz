@@ -41,7 +41,13 @@ export default async function Page() {
         />
       }
       header={
-        <Header navLite walletConnect={<ConnectWallet />} activeKey="faucet" />
+        <Header
+          navLite
+          walletConnect={<ConnectWallet />}
+          activeKey="faucet"
+          // Faucet should only be on testnet
+          isTestnet
+        />
       }
       className="min-h-screen justify-between"
     >
