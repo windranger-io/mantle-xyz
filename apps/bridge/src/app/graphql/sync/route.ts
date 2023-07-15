@@ -1,42 +1,96 @@
-// use addSync to add operations and sync to process them all in block/tx order
+// Use addSync to add operations and sync to process them all in block/tx order
 import { NextRequest, NextResponse } from "next/server";
 
-// import the sync command
-import { DB, Mongo, Stage, Store, sync } from "@mantle/supagraph";
+// Import the sync command and db drivers to setup engine
+import {
+  DB,
+  Mongo,
+  Stage,
+  Store,
+  Handlers,
+  addSync,
+  sync,
+} from "@mantle/supagraph";
+
+// Each sync will be provided its own provider
+import { providers } from "ethers/lib/ethers";
+
+// Import mongodb client
 import { getMongodb } from "@providers/mongoClient";
 
-// import revalidation timings from config
-import {
-  SUPAGRAPH_DEV_ENGINE,
-  SUPAGRAPH_NAME,
-  SUPAGRAPH_REVALIDATE,
-  SUPAGRAPH_STALE_WHILE_REVALIDATE,
-  SUPAGRAPH_MUTABLE_ENTITIES,
-} from "../config";
+// Import all mappings to be registered
+import { handlers } from "@supagraph/handlers";
 
-// import all sync handlers
-import "../syncs";
+// Import revalidation timings from config
+import config from "@supagraph/config";
 
-// switch out the engine for development to avoid the mongo requirment locally
+// Object of providers by rpcUrl
+const providerCache: { [rpcUrl: string]: providers.JsonRpcProvider } = {};
+
+// Register each of the syncs from the mapping
+Object.keys(config.contracts).forEach((contract) => {
+  // extract this syncOp
+  const syncOp = config.contracts[contract as keyof typeof config.contracts];
+
+  // extract rpc url
+  const { rpcUrl } =
+    config.providers[syncOp.chainId as keyof typeof config.providers];
+
+  // pull the handlers for the registration
+  const mapping =
+    typeof syncOp.handlers === "string"
+      ? handlers?.[syncOp.handlers || ("" as keyof Handlers)] || {}
+      : syncOp.handlers;
+
+  // extract events
+  const events =
+    typeof syncOp.events === "string" &&
+    Object.hasOwnProperty.call(config, "events")
+      ? (config as unknown as { events: Record<string, string[]> })?.events[
+          syncOp.events
+        ]
+      : syncOp.events;
+
+  // configure JsonRpcProvider for contracts chainId
+  providerCache[rpcUrl] =
+    providerCache[rpcUrl] || new providers.JsonRpcProvider(rpcUrl);
+
+  // for each handler register a sync
+  Object.keys(mapping).forEach((eventName) => {
+    addSync({
+      eventName,
+      eventAbi: events,
+      address: syncOp.address,
+      startBlock: syncOp.startBlock,
+      provider: providerCache[rpcUrl],
+      opts: {
+        collectTxReceipts: syncOp.collectTxReceipts || false,
+      },
+      onEvent: mapping[eventName],
+    });
+  });
+});
+
+// Switch out the engine for development to avoid the mongo requirment locally
 Store.setEngine({
   // name the connection
-  name: SUPAGRAPH_NAME,
+  name: config.name,
   // db is dependent on state
   db:
     // in production/production like environments we want to store mutations to mongo otherwise we can store them locally
-    process.env.NODE_ENV === "development" && SUPAGRAPH_DEV_ENGINE
+    process.env.NODE_ENV === "development" && config.dev
       ? // connect store to in-memory/node-persist store
-        DB.create({ kv: {}, name: SUPAGRAPH_NAME })
+        DB.create({ kv: {}, name: config.name })
       : // connect store to MongoDB
         Mongo.create({
           kv: {},
-          name: SUPAGRAPH_NAME,
-          mutable: SUPAGRAPH_MUTABLE_ENTITIES,
+          name: config.name,
+          mutable: config.mutable,
           client: getMongodb(process.env.MONGODB_URI!),
         }),
 });
 
-// expose the sync command on a route so that we can call it with a cron job
+// Expose the sync command on a route so that we can call it with a cron job
 export async function GET(request: NextRequest) {
   // set the start stage of the sync ("events", "blocks", "transactions", "sort", "process")
   const start =
@@ -50,16 +104,16 @@ export async function GET(request: NextRequest) {
     // where should we start and stop this run? (allowing for staggered runs to build up the cache before executing the final step (process))
     start,
     stop,
-    // skip extra steps to get block details about the logs
-    skipBlocks: true, // skip collecting blocks
-    skipTransactions: true, // skip collecting txs
-    skipOptionalArgs: true, // import slim version of { tx, block } to the handlers (without reading in the txs or the blocks)
+    // include extra steps to get block details for the logs (we need to be able to calculate the gasCost and store the block.timestamp)
+    skipBlocks: true, // collect blocks
+    skipTransactions: true, // collect txs
+    skipOptionalArgs: true, // import full version of { tx, block } to the handlers
   });
 
   // we don't need to sync more often than once per block - and if we're using vercel.json crons we can only sync 1/min
   return NextResponse.json(summary, {
     headers: {
-      "Cache-Control": `max-age=${SUPAGRAPH_REVALIDATE}, public, s-maxage=${SUPAGRAPH_REVALIDATE}, stale-while-revalidate=${SUPAGRAPH_STALE_WHILE_REVALIDATE}`,
+      "Cache-Control": `max-age=${config.revalidate}, public, s-maxage=${config.revalidate}, stale-while-revalidate=${config.staleWhileRevalidate}`,
     },
   });
 }
