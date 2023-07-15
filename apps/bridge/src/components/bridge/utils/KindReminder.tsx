@@ -1,6 +1,6 @@
 "use client";
 
-import { Direction } from "@config/constants";
+import { Direction, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 import { Typography } from "@mantle/ui";
 import { useEffect, useState } from "react";
 import { MdClear, MdInfoOutline } from "react-icons/md";
@@ -9,6 +9,8 @@ const depositKey = "hideDepositReminder";
 const withdrawKey = "hideWithdrawReminder";
 
 export default function KindReminder({ direction }: { direction: Direction }) {
+  const isTestnet = L1_CHAIN_ID === 5 || L2_CHAIN_ID === 5001;
+
   const [hideReminder, setHideReminder] = useState<string>("true");
 
   useEffect(() => {
@@ -41,13 +43,35 @@ export default function KindReminder({ direction }: { direction: Direction }) {
 
       <div className="grow">
         <Typography variant="smallWidget" className="uppercase">
-          kind reminder
+          gas fee required
         </Typography>
-        <Typography variant="smallWidget">
-          {direction === Direction.Deposit
-            ? "You will need ETH on L1 as gas fees to deposit your tokens and MNT on L2 as gas fees to transact your deposited tokens on Mantle Network."
-            : "You will need MNT on L2 as gas fees to initiate the withdrawal and ETH on L1 as gas fees to claim the tokens on Ethereum Mainnet."}
-        </Typography>
+        {isTestnet ? (
+          <>
+            <Typography variant="smallWidget">
+              {direction === Direction.Deposit
+                ? "ETH (L1) to deposit from Goerli Testnet"
+                : "MNT (L2) to withdraw from Mantle Testnet"}
+            </Typography>
+            <Typography variant="smallWidget">
+              {direction === Direction.Deposit
+                ? "MNT (L2) to transact on Mantle Testnet"
+                : "ETH (L1) to claim withdrawal on Goerli Testnet"}
+            </Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant="smallWidget">
+              {direction === Direction.Deposit
+                ? "ETH (L1) to deposit from Ethereum Mainnet"
+                : "MNT (L2) to withdraw from Mantle Mainnet"}
+            </Typography>
+            <Typography variant="smallWidget">
+              {direction === Direction.Deposit
+                ? "MNT (L2) to transact on Mantle Mainnet"
+                : "ETH (L1) to claim withdrawal on Ethereum Mainnet"}
+            </Typography>
+          </>
+        )}
       </div>
 
       <Typography variant="modalHeadingSm" className="text-[#C4C4C4]">
