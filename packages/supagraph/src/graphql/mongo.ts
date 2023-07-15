@@ -218,8 +218,11 @@ function getArgs(
     return {
       ...carr,
       [arg.name.value]:
+        // eslint-disable-next-line no-nested-ternary
         (arg.value.kind === "Variable"
           ? variables[arg.value.name.value]
+          : arg.value.kind === "IntValue"
+          ? parseFloat(arg.value.value)
           : arg.value.value) ||
         (arg.value.kind === "ListValue" &&
           arg.value.values &&

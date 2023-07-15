@@ -2,14 +2,16 @@ import { useContext, useEffect } from "react";
 import { MdClear } from "react-icons/md";
 
 import { Typography } from "@mantle/ui";
-import { useNetwork } from "wagmi";
+import { useNetwork, useQuery } from "wagmi";
 
 import StateContext from "@providers/stateContext";
 import { CTAPages, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 import TxLink from "@components/bridge/utils/TxLink";
 import AddNetworkBtn from "@components/bridge/dialogue/AddNetworkBtn";
+import { gql, useApolloClient } from "@apollo/client";
 import { useToast } from "@hooks/useToast";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
+import { getAddress } from "ethers/lib/utils.js";
 
 export default function Deposited({
   tx1Hash,
@@ -23,9 +25,53 @@ export default function Deposited({
   const { addNetwork } = useSwitchToNetwork();
   const { chain: givenChain } = useNetwork();
 
-  // display airdrop success toast if the user is qualified
+  // get the apolloClient
+  const gqclient = useApolloClient();
+
+  // Construct query to pull successful l1ToL2Messages gasDrop invocations for the given address
+  const GasDropsFor = gql`
+    query GasDropsFor($for: String!) {
+      l1ToL2Messages(where: { from: $for, status: 1 }) {
+        gasDropped
+        status
+      }
+    }
+  `;
+
+  // Query to check if the gasDrop has been sent from the bridge supagraph to the controller
+  const { data: gasDrops } = useQuery(
+    [
+      "GAS_DROPS_CHECK",
+      {
+        address: client?.address,
+      },
+    ],
+    async () => {
+      // fetch the appendStateBatch event from supagraph that matches this transactionIndex
+      const { data } = await gqclient.query({
+        query: GasDropsFor,
+        variables: {
+          for: `${getAddress(client.address || "")}`,
+        },
+        // disable apollo cache to force new fetch call every invoke
+        fetchPolicy: "no-cache",
+        // use next cache to store the responses for 30s
+        context: {
+          fetchOptions: {
+            next: { revalidate: 30 },
+          },
+        },
+      });
+
+      return data?.l1ToL2Messages || [];
+    }
+  );
+
+  // display airdrop success toast if the user qualified (this should only be shown once, subsequents will have more drops)
   useEffect(() => {
-    if (client.address) {
+    // qualifying users should only have one airdrop entry
+    if (client.address && gasDrops?.length === 1) {
+      // pull the claim from the controller (this confirms the gas-drop was reconginsed by the controller and successfully enqueued)
       fetch(`/controller?address=${client.address}`).then(async (res) => {
         const resJson = await res.json();
         // only show the toast when the data is null - means user hasn't claimed the airdrop
@@ -55,7 +101,8 @@ export default function Deposited({
         }
       });
     }
-  }, [client.address]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [client.address, gasDrops]);
 
   const openWhatsNext = () => {
     setCTAPage(CTAPages.Deposited);
