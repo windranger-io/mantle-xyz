@@ -71,7 +71,10 @@ const CONCURRENCY = 10;
 const RANGE_LIMIT = 100000;
 
 // working directory of the calling project or tmp if in prod
-const cwd = process.env.NODE_ENV === "development" ? process.cwd() : "/tmp"; // we should use /tmp/ on prod for an ephemeral store during the execution of this process (max 512mb of space)
+const cwd =
+  process.env.NODE_ENV === "development"
+    ? `${process.cwd()}/data/`
+    : "/tmp/data"; // we should use /tmp/ on prod for an ephemeral store during the execution of this process (max 512mb of space)
 
 // sync operations will be appended in the route.ts file using addSync
 const syncs: Sync[] = [];
@@ -454,18 +457,14 @@ const readJSON = async <T extends Record<string, any>>(
   filename: string
 ): Promise<T> => {
   return new Promise((resolve, reject) => {
-    fs.readFile(
-      `${cwd}/data/${type}/${filename}.json`,
-      "utf8",
-      async (err, file) => {
-        if (!err && file && file.length) {
-          const data = JSON.parse(file);
-          resolve(data as T);
-        } else {
-          reject(err);
-        }
+    fs.readFile(`${cwd}${type}-${filename}.json`, "utf8", async (err, file) => {
+      if (!err && file && file.length) {
+        const data = JSON.parse(file);
+        resolve(data as T);
+      } else {
+        reject(err);
       }
-    );
+    });
   });
 };
 
@@ -478,7 +477,7 @@ const saveJSON = async (
   return new Promise((resolve, reject) => {
     // write the file
     fs.writeFile(
-      `${cwd}/data/${type}/${filename}.json`,
+      `${cwd}${type}-${filename}.json`,
       JSON.stringify(resData),
       "utf8",
       async (err) => {
@@ -560,7 +559,7 @@ const getFnResultForProp = async <T extends Record<string, any>>(
     reqStack.push(() =>
       new Promise<unknown>((resolve, reject) => {
         fs.readFile(
-          `${cwd}/data/${type}/${dets.chainId}-${dets.data[prop]}.json`,
+          `${cwd}${type}-${dets.chainId}-${dets.data[prop]}.json`,
           "utf8",
           async (err, file) => {
             if (!err && file && file.length) {
@@ -774,17 +773,6 @@ export const sync = async ({
   // record when we started this operation
   const startTime = performance.now();
 
-  // create events, blocks & transactions dir
-  if (!fs.existsSync(`${cwd}/data/events`)) {
-    fs.mkdirSync(`${cwd}/data/events`, { recursive: true });
-  }
-  if (!skipBlocks && !fs.existsSync(`${cwd}/data/blocks`)) {
-    fs.mkdirSync(`${cwd}/data/blocks`, { recursive: true });
-  }
-  if (!skipTransactions && !fs.existsSync(`${cwd}/data/transactions`)) {
-    fs.mkdirSync(`${cwd}/data/transactions`, { recursive: true });
-  }
-
   // detect newDBs and mark locally
   let newDb = false;
 
@@ -957,7 +945,7 @@ export const sync = async ({
       !start ||
       Stage[start] === Stage.events ||
       !fs.existsSync(
-        `${cwd}/data/events/latestRun-${address}-${eventName}-${chainId}.csv`
+        `${cwd}events-latestRun-${address}-${eventName}-${chainId}.csv`
       )
     ) {
       // start the run from the blocks
@@ -997,15 +985,15 @@ export const sync = async ({
 
       // record the entities run so we can step back to this spot
       await saveCSV(
-        `${cwd}/data/events/latestRun-${address}-${eventName}-${chainId}.csv`,
+        `${cwd}events-latestRun-${address}-${eventName}-${chainId}.csv`,
         newEvents
       );
     } else if (
       !start ||
       Stage[start] < Stage.process ||
-      (!fs.existsSync(`${cwd}/data/events/latestRun-allData.csv`) &&
+      (!fs.existsSync(`${cwd}events-latestRun-allData.csv`) &&
         fs.existsSync(
-          `${cwd}/data/events/latestRun-${address}-${eventName}-${chainId}.csv`
+          `${cwd}events-latestRun-${address}-${eventName}-${chainId}.csv`
         ))
     ) {
       // assume that we're starting a fresh db
@@ -1016,7 +1004,7 @@ export const sync = async ({
       }
       // read in events from disk
       newEvents = await readCSV(
-        `${cwd}/data/events/latestRun-${address}-${eventName}-${chainId}.csv`
+        `${cwd}events-latestRun-${address}-${eventName}-${chainId}.csv`
       );
     }
 
@@ -1103,7 +1091,7 @@ export const sync = async ({
     });
 
     // save all events to disk
-    await saveCSV(`${cwd}/data/events/latestRun-allData.csv`, sorted);
+    await saveCSV(`${cwd}events-latestRun-allData.csv`, sorted);
 
     // sorted by timestamp
     console.log("--\n\nEvents sorted", sorted.length);
@@ -1120,7 +1108,7 @@ export const sync = async ({
     newDb = engine.newDb = true;
 
     // restore the sorted collection
-    sorted = await readCSV(`${cwd}/data/events/latestRun-allData.csv`);
+    sorted = await readCSV(`${cwd}events-latestRun-allData.csv`);
 
     // detail everything which was loaded in this run
     console.log("Total no. events discovered:", sorted.length);

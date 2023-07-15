@@ -179,7 +179,8 @@ const storeL1toL2Message = async (
     // add this messageHash to the db and wait for it to show up in the RelayedMessages/FailedRelayedMessages before adding a claim
     const message = await Store.get<L1ToL2MessageEntity>(
       "L1ToL2Message",
-      messageHash
+      messageHash,
+      true
     );
 
     // default the status
