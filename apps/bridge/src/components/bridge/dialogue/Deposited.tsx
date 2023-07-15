@@ -11,7 +11,6 @@ import AddNetworkBtn from "@components/bridge/dialogue/AddNetworkBtn";
 import { gql, useApolloClient } from "@apollo/client";
 import { useToast } from "@hooks/useToast";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
-import { getAddress } from "ethers/lib/utils.js";
 
 export default function Deposited({
   tx1Hash,
@@ -28,12 +27,11 @@ export default function Deposited({
   // get the apolloClient
   const gqclient = useApolloClient();
 
-  // Construct query to pull successful l1ToL2Messages gasDrop invocations for the given address
+  // Construct query to pull successful l1ToL2Messages gasDrop invocations for the given l1Tx
   const GasDropsFor = gql`
-    query GasDropsFor($for: String!) {
-      l1ToL2Messages(where: { from: $for }) {
+    query GasDropsFor($l1Tx: String!) {
+      l1ToL2Messages(where: { l1Tx: $l1Tx }) {
         gasDropped
-        status
       }
     }
   `;
@@ -43,6 +41,7 @@ export default function Deposited({
     [
       "GAS_DROPS_CHECK",
       {
+        tx1,
         address: client?.address,
       },
     ],
@@ -51,7 +50,7 @@ export default function Deposited({
       const { data } = await gqclient.query({
         query: GasDropsFor,
         variables: {
-          for: `${getAddress(client.address || "")}`,
+          l1Tx: `${tx1}`,
         },
         // disable apollo cache to force new fetch call every invoke
         fetchPolicy: "no-cache",
@@ -70,15 +69,7 @@ export default function Deposited({
   // display gas-drop success toast if the user qualified (this should only be shown once, subsequents will have more drops)
   useEffect(() => {
     // qualifying users should only have one gas-drop entry
-    if (
-      client.address &&
-      // either there is a single gasDrop
-      (gasDrops?.length === 1 ||
-        // or the first gasDrop has gasDropped and is for this l1Tx
-        (gasDrops?.length > 1 &&
-          gasDrops[0].gasDropped === true &&
-          gasDrops[0].l1Tx === tx1))
-    ) {
+    if (client.address && gasDrops[0].gasDropped === true) {
       // pull the claim from the controller (this confirms the gas-drop was reconginsed by the controller and successfully enqueued)
       fetch(`/controller?address=${client.address}`, {
         next: {
