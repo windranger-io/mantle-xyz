@@ -1,3 +1,4 @@
+import { getAddress } from "ethers/lib/utils";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -13,18 +14,26 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const address = searchParams.get("address");
 
-    const myHeaders = new Headers();
-    myHeaders.append("auth-key", process.env.PRODUCTION_FAUCET_KEY);
-
     const res = await fetch(
-      `${process.env.PRODUCTION_FAUCET_URL}/claim/find/wallet/${address}`,
+      `${process.env.PRODUCTION_FAUCET_URL.replace(
+        /\/$/,
+        ""
+      )}/claim/find/wallet/${getAddress(address?.toLowerCase() || "")}`,
       {
-        headers: myHeaders,
+        method: "GET",
+        headers: new Headers({
+          "auth-key": process.env.PRODUCTION_FAUCET_KEY,
+        }),
+        redirect: "follow" as RequestRedirect,
+        next: {
+          revalidate: 30,
+        },
       }
     );
     const claimedRes = await res.json();
     return NextResponse.json(claimedRes);
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error(e);
   }
 }

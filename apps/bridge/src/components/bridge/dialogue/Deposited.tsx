@@ -72,10 +72,14 @@ export default function Deposited({
     // qualifying users should only have one airdrop entry
     if (client.address && gasDrops?.length === 1) {
       // pull the claim from the controller (this confirms the gas-drop was reconginsed by the controller and successfully enqueued)
-      fetch(`/controller?address=${client.address}`).then(async (res) => {
+      fetch(`/controller?address=${client.address}`, {
+        next: {
+          revalidate: 30,
+        },
+      }).then(async (res) => {
         const resJson = await res.json();
-        // only show the toast when the data is null - means user hasn't claimed the airdrop
-        if (!resJson?.error && !resJson?.data) {
+        // only show the toast when the data is present this means the users claim has been successfully enqueued on the controller
+        if (!resJson?.error && resJson?.data) {
           createToast({
             type: "success",
             borderLeft: "bg-green-600",
