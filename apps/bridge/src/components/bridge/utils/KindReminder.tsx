@@ -49,26 +49,26 @@ export default function KindReminder({ direction }: { direction: Direction }) {
           <>
             <Typography variant="smallWidget">
               {direction === Direction.Deposit
-                ? "ETH (L1) to deposit from Goerli Testnet"
-                : "MNT (L2) to withdraw from Mantle Testnet"}
+                ? "• ETH (L1) to deposit from Goerli Testnet"
+                : "• MNT (L2) to withdraw from Mantle Testnet"}
             </Typography>
             <Typography variant="smallWidget">
               {direction === Direction.Deposit
-                ? "MNT (L2) to transact on Mantle Testnet"
-                : "ETH (L1) to claim withdrawal on Goerli Testnet"}
+                ? "• MNT (L2) to transact on Mantle Testnet"
+                : "• ETH (L1) to claim withdrawal on Goerli Testnet"}
             </Typography>
           </>
         ) : (
           <>
             <Typography variant="smallWidget">
               {direction === Direction.Deposit
-                ? "ETH (L1) to deposit from Ethereum Mainnet"
-                : "MNT (L2) to withdraw from Mantle Mainnet"}
+                ? "• ETH (L1) to deposit from Ethereum Mainnet"
+                : "• MNT (L2) to withdraw from Mantle Mainnet"}
             </Typography>
             <Typography variant="smallWidget">
               {direction === Direction.Deposit
-                ? "MNT (L2) to transact on Mantle Mainnet"
-                : "ETH (L1) to claim withdrawal on Ethereum Mainnet"}
+                ? "• MNT (L2) to transact on Mantle Mainnet"
+                : "• ETH (L1) to claim withdrawal on Ethereum Mainnet"}
             </Typography>
           </>
         )}
