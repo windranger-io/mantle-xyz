@@ -1,6 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 
 import StateContext from "@providers/stateContext";
 
@@ -169,15 +170,17 @@ function ConnectWallet() {
   return (
     <div className="flex flex-row gap-4">
       {isChainID && client.isConnected && client.address ? (
-        <Button
-          type="button"
-          size="regular"
-          variant="walletLabel"
-          className="flex items-center text-xs text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit h-[36px]"
-        >
-          <Avatar walletAddress="address" />
-          {truncateAddress(getAddress(client.address) as `0x${string}`)}
-        </Button>
+        <Link href="/account/migrate" scroll shallow>
+          <Button
+            type="button"
+            size="regular"
+            variant="walletLabel"
+            className="flex items-center text-xs text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit h-[36px]"
+          >
+            <Avatar walletAddress="address" />
+            {truncateAddress(getAddress(client.address) as `0x${string}`)}
+          </Button>
+        </Link>
       ) : (
         ``
       )}
