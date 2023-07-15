@@ -20,7 +20,7 @@ export default function Deposited({
   tx1Hash: string | boolean;
   tx2Hash: string | boolean;
 }) {
-  const { ctaChainId, setCTAPage, client } = useContext(StateContext);
+  const { ctaChainId, setCTAPage, client, tx1 } = useContext(StateContext);
   const { createToast } = useToast();
   const { addNetwork } = useSwitchToNetwork();
   const { chain: givenChain } = useNetwork();
@@ -31,7 +31,7 @@ export default function Deposited({
   // Construct query to pull successful l1ToL2Messages gasDrop invocations for the given address
   const GasDropsFor = gql`
     query GasDropsFor($for: String!) {
-      l1ToL2Messages(where: { from: $for, status: 1 }) {
+      l1ToL2Messages(where: { from: $for }) {
         gasDropped
         status
       }
@@ -70,7 +70,15 @@ export default function Deposited({
   // display airdrop success toast if the user qualified (this should only be shown once, subsequents will have more drops)
   useEffect(() => {
     // qualifying users should only have one airdrop entry
-    if (client.address && gasDrops?.length === 1) {
+    if (
+      client.address &&
+      // either there is a single gasDrop
+      (gasDrops?.length === 1 ||
+        // or the first gasDrop has gasDropped and is for this l1Tx
+        (gasDrops?.length > 1 &&
+          gasDrops[0].gasDropped === true &&
+          gasDrops[0].l1Tx === tx1))
+    ) {
       // pull the claim from the controller (this confirms the gas-drop was reconginsed by the controller and successfully enqueued)
       fetch(`/controller?address=${client.address}`, {
         next: {
