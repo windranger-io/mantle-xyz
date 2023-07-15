@@ -248,7 +248,7 @@ export default function TokenSelect({
                             />
 
                             <span className={clsx("ml-3 block truncate ")}>
-                              {token.name}
+                              {token.symbol}
                             </span>
                           </div>
                           <div className="text-type-muted">
