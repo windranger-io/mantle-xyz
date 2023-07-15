@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import * as React from 'react'
 import { cn } from '../utils'
 import { NavigationLite } from './NavigationLite'
@@ -16,13 +17,9 @@ export const Header = ({
   activeKey,
   isTestnet,
 }: {
-  // eslint-disable-next-line react/require-default-props
   walletConnect: React.ReactNode
-  // eslint-disable-next-line react/require-default-props
   className?: string
-  // eslint-disable-next-line react/require-default-props
   sticky?: boolean
-  // eslint-disable-next-line react/require-default-props
   navLite?: boolean
   activeKey: string
   isTestnet: boolean
