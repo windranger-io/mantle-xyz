@@ -203,9 +203,7 @@ const storeL1toL2Message = async (
     message.set("l1Tx", tx.transactionHash);
 
     // add an airdrop claim for this sender
-    await (
-      await claim(tx.from)
-    )
+    await claim(tx.from)
       .then((result: any) => {
         if (!result?.error) {
           // mark that we've sent the gas-drop
