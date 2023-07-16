@@ -37,7 +37,11 @@ export default function Tabs() {
   const [categories] = useState({
     Deposit: [<Deposit />],
     Withdraw: [<Withdraw />],
-    Migrate: [],
+    ...(L1_CHAIN_ID === 1
+      ? {
+          Migrate: [],
+        }
+      : {}),
   });
 
   const router = useRouter();
@@ -136,7 +140,8 @@ export default function Tabs() {
                   className={clsx("")}
                   style={{ color: "#fff" }}
                 >
-                  {categories[category as keyof typeof categories][0]}
+                  {(categories?.[category as keyof typeof categories] ||
+                    [])[0] || ""}
                 </Tab.Panel>
               </span>
             ))}
