@@ -19,7 +19,7 @@ export default function Deposited({
   tx1Hash: string | boolean;
   tx2Hash: string | boolean;
 }) {
-  const { ctaChainId, setCTAPage, client, tx1 } = useContext(StateContext);
+  const { ctaChainId, setCTAPage, client } = useContext(StateContext);
   const { createToast } = useToast();
   const { addNetwork } = useSwitchToNetwork();
   const { chain: givenChain } = useNetwork();
@@ -41,16 +41,16 @@ export default function Deposited({
     [
       "GAS_DROPS_CHECK",
       {
-        tx1,
+        tx1Hash,
         address: client?.address,
       },
     ],
     async () => {
-      // fetch the appendStateBatch event from supagraph that matches this transactionIndex
+      // fetch the gasDrop that matches this tx1Hash
       const { data } = await gqclient.query({
         query: GasDropsFor,
         variables: {
-          l1Tx: `${tx1}`,
+          l1Tx: `${tx1Hash}`,
         },
         // disable apollo cache to force new fetch call every invoke
         fetchPolicy: "no-cache",
@@ -68,8 +68,14 @@ export default function Deposited({
 
   // display gas-drop success toast if the user qualified (this should only be shown once, subsequents will have more drops)
   useEffect(() => {
-    // qualifying users should only have one gas-drop entry
-    if (client.address && gasDrops[0].gasDropped === true) {
+    // a valid deposit will have gasDropped===true on the associated L1ToL2Message entity for this tx1
+    if (
+      client.address &&
+      // make sure we have a gasDrop here before checking...
+      gasDrops &&
+      gasDrops.length === 1 &&
+      gasDrops[0].gasDropped === true
+    ) {
       // pull the claim from the controller (this confirms the gas-drop was reconginsed by the controller and successfully enqueued)
       fetch(`/controller?address=${client.address}`, {
         next: {
