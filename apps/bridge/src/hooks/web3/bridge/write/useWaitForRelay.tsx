@@ -148,7 +148,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
             <div>
               <div>Deposit initiated</div>
               <div className="text-sm">
-                Assets will be available on Mantle in ~10 minutess
+                Assets will be available on Mantle in ~10 mins
               </div>
             </div>
           ),
@@ -212,7 +212,8 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
                 {`~${formatTime(
                   challengePeriod && challengePeriod < 1200
                     ? 1200
-                    : challengePeriod || 1200
+                    : challengePeriod || 1200,
+                  true
                 )}`}
               </div>
             </div>
