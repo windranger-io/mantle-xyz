@@ -15,8 +15,14 @@ import {
 
 import { formatEther, formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { BigNumber, constants } from "ethers";
-import { localeZero, formatBigNumberString } from "@utils/formatStrings";
+import {
+  localeZero,
+  formatBigNumberString,
+  formatTime,
+} from "@utils/formatStrings";
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
+import { useMantleSDK } from "@providers/mantleSDKContext";
+import { useQuery } from "wagmi";
 
 export default function TransactionPanel({
   direction,
@@ -38,6 +44,22 @@ export default function TransactionPanel({
     isLoadingFeeData,
     destinationTokenAmount,
   } = useContext(StateContext);
+
+  // use crossChainMessenger to get challengePeriod
+  const { crossChainMessenger } = useMantleSDK();
+
+  // get and store the challengePeriod
+  const { data: challengePeriod } = useQuery(
+    [
+      "CHALLENGE_PERIOD",
+      {
+        l1: crossChainMessenger?.l1ChainId,
+      },
+    ],
+    async () => {
+      return crossChainMessenger?.getChallengePeriodSeconds();
+    }
+  );
 
   // ensure we don't overflow
   const fixDecimals = useCallback(
@@ -129,7 +151,13 @@ export default function TransactionPanel({
           <div className="flex justify-between">
             <Typography variant="smallWidget">Time to transfer</Typography>
             <Typography variant="smallWidget" className="text-white">
-              {direction === Direction.Deposit ? `~ 10 min` : `~ 20 min`}{" "}
+              {direction === Direction.Deposit
+                ? `~ 10 minutes`
+                : `~ ${formatTime(
+                    challengePeriod && challengePeriod < 1200
+                      ? 1200
+                      : challengePeriod || 1200
+                  )}`}{" "}
               {/* TELAPORTR takes 1-2 mins */}
             </Typography>
           </div>

@@ -13,7 +13,8 @@ import { timeout } from "@utils/toolSet";
 import { parseUnits } from "ethers/lib/utils.js";
 
 import { ToastProps, useToast } from "@hooks/useToast";
-import { useMutation } from "wagmi";
+import { useMutation, useQuery } from "wagmi";
+import { formatTime } from "@utils/formatStrings";
 import { useWaitForRelay } from "./useWaitForRelay";
 
 class TxError extends Error {
@@ -47,6 +48,19 @@ export function useCallBridge(
 
   // import crossChain comms
   const { crossChainMessenger } = useMantleSDK();
+
+  // get and store the challengePeriod
+  const { data: challengePeriod } = useQuery(
+    [
+      "CHALLENGE_PERIOD",
+      {
+        l1: crossChainMessenger?.l1ChainId,
+      },
+    ],
+    async () => {
+      return crossChainMessenger?.getChallengePeriodSeconds();
+    }
+  );
 
   // build toast to return to the current page
   const { updateToast, deleteToast } = useToast();
@@ -152,8 +166,12 @@ export function useCallBridge(
               </div>
               <div className="text-sm">
                 {ctaChainId === L1_CHAIN_ID
-                  ? "Assets will be available on Mantle in ~10 mins"
-                  : "Will be available to claim in  ~20mins"}
+                  ? "Assets will be available on Mantle in ~10 minutes"
+                  : `Will be available to claim in ${`~${formatTime(
+                      challengePeriod && challengePeriod < 1200
+                        ? 1200
+                        : challengePeriod || 1200
+                    )}`}`}
               </div>
             </div>
           ),

@@ -18,6 +18,9 @@ import { constants } from "ethers";
 import { Button, Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
 import Values from "@components/bridge/utils/Values";
+import { useMantleSDK } from "@providers/mantleSDKContext";
+import { formatTime } from "@utils/formatStrings";
+import { useQuery } from "wagmi";
 
 export default function Default({
   direction,
@@ -42,6 +45,22 @@ export default function Default({
 
   // @TODO: we should keep track of which relays we have running
   // const [openToasts, setOpenToasts] = useState<string[]>([]);
+
+  // use crossChainMessenger to get challengePeriod
+  const { crossChainMessenger } = useMantleSDK();
+
+  // get and store the challengePeriod
+  const { data: challengePeriod } = useQuery(
+    [
+      "CHALLENGE_PERIOD",
+      {
+        l1: crossChainMessenger?.l1ChainId,
+      },
+    ],
+    async () => {
+      return crossChainMessenger?.getChallengePeriodSeconds();
+    }
+  );
 
   // only update on allowance change to maintain the correct decimals against constants if infinity
   const isActualGasFeeInfinity = useMemo(
@@ -93,7 +112,13 @@ export default function Default({
         <Values
           label="Time to transfer"
           value={
-            direction === Direction.Deposit ? "~10 minutes" : "~20 Minutes"
+            direction === Direction.Deposit
+              ? "~10 minutes"
+              : `~${formatTime(
+                  challengePeriod && challengePeriod < 1200
+                    ? 1200
+                    : challengePeriod || 1200
+                )}`
           }
           border
         />
@@ -158,8 +183,14 @@ export default function Default({
               htmlFor="checkbox-understand-1"
               className="ml-2 text-sm font-medium text-gray-300"
             >
-              I understand it will take ~ 20 minutes until my funds are
-              claimable on {CHAINS_FORMATTED[L1_CHAIN_ID].name}.
+              I understand it will take
+              {` ~${formatTime(
+                challengePeriod && challengePeriod < 1200
+                  ? 1200
+                  : challengePeriod || 1200
+              )}`}{" "}
+              until my funds are claimable on{" "}
+              {CHAINS_FORMATTED[L1_CHAIN_ID].name}.
             </label>
           </div>
         )}

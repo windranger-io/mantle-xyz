@@ -19,6 +19,8 @@ import {
 } from "@config/constants";
 import MantleToL1SVG from "@components/bridge/utils/MantleToL1SVG";
 import { useMantleSDK } from "@providers/mantleSDKContext";
+import { formatTime } from "@utils/formatStrings";
+import { useQuery } from "wagmi";
 
 // How long to stay inside the waitForMessageStatus while loop for
 const ONE_HOUR_MS = 3600000;
@@ -47,6 +49,19 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
   // import sdk comms
   const { crossChainMessenger, waitForMessageStatus, getMessageStatus } =
     useMantleSDK();
+
+  // get and store the challengePeriod
+  const { data: challengePeriod } = useQuery(
+    [
+      "CHALLENGE_PERIOD",
+      {
+        l1: crossChainMessenger?.l1ChainId,
+      },
+    ],
+    async () => {
+      return crossChainMessenger?.getChallengePeriodSeconds();
+    }
+  );
 
   // build toast to return to the current page
   const { updateToast, deleteToast } = useToast();
@@ -133,7 +148,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
             <div>
               <div>Deposit initiated</div>
               <div className="text-sm">
-                Assets will be available on Mantle in ~10 mins
+                Assets will be available on Mantle in ~10 minutess
               </div>
             </div>
           ),
@@ -193,7 +208,12 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
             <div>
               <div>Withdrawal initiated</div>
               <div className="text-sm">
-                Will be available to claim in ~20 mins
+                Will be available to claim in{" "}
+                {`~${formatTime(
+                  challengePeriod && challengePeriod < 1200
+                    ? 1200
+                    : challengePeriod || 1200
+                )}`}
               </div>
             </div>
           ),

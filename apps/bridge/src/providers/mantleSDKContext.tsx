@@ -215,7 +215,13 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
             layer1ProviderRef.current!
           );
 
-        const period = await contract.FRAUD_PROOF_WINDOW();
+        // get the proof window
+        const period =
+          challengePeriod.current || (await contract.FRAUD_PROOF_WINDOW());
+
+        // store the new period
+        challengePeriod.current = period;
+
         return period.toNumber();
       };
 
