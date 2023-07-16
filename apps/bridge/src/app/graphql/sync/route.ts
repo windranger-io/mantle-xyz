@@ -113,7 +113,8 @@ export async function GET(request: NextRequest) {
   // we don't need to sync more often than once per block - and if we're using vercel.json crons we can only sync 1/min
   return NextResponse.json(summary, {
     headers: {
-      "Cache-Control": `max-age=${config.revalidate}, public, s-maxage=${config.revalidate}, stale-while-revalidate=${config.staleWhileRevalidate}`,
+      // allow to be cached for revalidate seconds and allow caching in shared public cache (upto revalidate seconds)
+      "Cache-Control": `max-age=${config.revalidate}, public, s-maxage=${config.revalidate}`,
     },
   });
 }
