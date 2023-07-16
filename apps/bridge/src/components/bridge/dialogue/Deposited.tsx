@@ -60,7 +60,7 @@ export default function Deposited({
     }
   );
 
-  // display gas-drop success toast if the user qualified (this should only be shown once, subsequents will have more drops)
+  // display gas-drop success toast if the user qualified (this should only be shown once, subsequents will not have gasDropped=true)
   useEffect(() => {
     // a valid deposit will have gasDropped===true on the associated L1ToL2Message entity for this tx1
     if (
