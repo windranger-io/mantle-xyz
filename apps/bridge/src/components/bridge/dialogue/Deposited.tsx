@@ -54,12 +54,6 @@ export default function Deposited({
         },
         // disable apollo cache to force new fetch call every invoke
         fetchPolicy: "no-cache",
-        // use next cache to store the responses for 30s
-        context: {
-          fetchOptions: {
-            next: { revalidate: 30 },
-          },
-        },
       });
 
       return data?.l1ToL2Messages || [];

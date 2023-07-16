@@ -28,13 +28,19 @@ export async function GET(request: NextRequest) {
           "auth-key": process.env.PRODUCTION_FAUCET_KEY,
         }),
         redirect: "follow" as RequestRedirect,
-        next: {
-          revalidate: 30,
-        },
+        // don't store responses
+        cache: "no-store",
       }
     );
     const claimedRes = await res.json();
-    return NextResponse.json(claimedRes);
+
+    // return the response with headers
+    return new NextResponse(JSON.stringify(claimedRes), {
+      status: 200,
+      headers: new Headers({
+        "Cache-control": "no-store",
+      }),
+    });
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);

@@ -212,8 +212,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
                 {`~${formatTime(
                   challengePeriod && challengePeriod < 1200
                     ? 1200
-                    : challengePeriod || 1200,
-                  true
+                    : challengePeriod || 1200
                 )}`}
               </div>
             </div>
