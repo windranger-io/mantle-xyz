@@ -43,63 +43,66 @@ const storeL1toL2Message = async (
       direction: MessageDirection.L1_TO_L2,
     });
 
-    // from the point of deposit/withdrawal we have the data we need to construct the hashCrossDomainMessage for this message
-    const resolved = messages[0];
+    // only proceed if the message details were discovered (this should always be the case, but just make sure...)
+    if (messages && messages[0]) {
+      // from the point of deposit/withdrawal we have the data we need to construct the hashCrossDomainMessage for this message
+      const resolved = messages[0];
 
-    // produce the hash from the resolved message data retrieved from the tx's log data
-    // - this hash will correspond with a `RelayedMessage` event on the opposite chains CrossDomainMessenger
-    const messageHash = hashCrossDomainMessage(
-      resolved.messageNonce,
-      resolved.sender,
-      resolved.target,
-      resolved.value,
-      resolved.minGasLimit,
-      resolved.message
-    );
+      // produce the hash from the resolved message data retrieved from the tx's log data
+      // - this hash will correspond with a `RelayedMessage` event on the opposite chains CrossDomainMessenger
+      const messageHash = hashCrossDomainMessage(
+        resolved.messageNonce,
+        resolved.sender,
+        resolved.target,
+        resolved.value,
+        resolved.minGasLimit,
+        resolved.message
+      );
 
-    // add this messageHash to the db and wait for it to show up in the RelayedMessages/FailedRelayedMessages before updating status (see mesenger handlers)
-    const message = await Store.get<L1ToL2MessageEntity>(
-      "L1ToL2Message",
-      messageHash,
-      true
-    );
+      // add this messageHash to the db and wait for it to show up in the RelayedMessages/FailedRelayedMessages before updating status (see mesenger handlers)
+      const message = await Store.get<L1ToL2MessageEntity>(
+        "L1ToL2Message",
+        messageHash,
+        true
+      );
 
-    // default the status
-    message.set("status", 0);
+      // default the status
+      message.set("status", 0);
 
-    // save details to restore the hash
-    message.set("messageNonce", resolved.messageNonce);
-    message.set("sender", resolved.sender);
-    message.set("target", resolved.target);
-    message.set("value", resolved.value);
-    message.set("minGasLimit", resolved.minGasLimit);
-    message.set("message", resolved.message);
+      // save details to restore the hash
+      message.set("messageNonce", resolved.messageNonce);
+      message.set("sender", resolved.sender);
+      message.set("target", resolved.target);
+      message.set("value", resolved.value);
+      message.set("minGasLimit", resolved.minGasLimit);
+      message.set("message", resolved.message);
 
-    // set the args of the deposit
-    message.set("amount", args.amount);
-    message.set("l1Token", args.l1Token);
-    message.set("l2Token", args.l2Token);
+      // set the args of the deposit
+      message.set("amount", args.amount);
+      message.set("l1Token", args.l1Token);
+      message.set("l2Token", args.l2Token);
 
-    // save from the transaction that made the deposit
-    message.set("from", tx.from);
-    message.set("l1Tx", tx.transactionHash);
-    message.set("l1BlockNumber", tx.blockNumber);
+      // save from the transaction that made the deposit
+      message.set("from", tx.from);
+      message.set("l1Tx", tx.transactionHash);
+      message.set("l1BlockNumber", tx.blockNumber);
 
-    // add a gas-drop claim for this sender
-    await claim(tx.from)
-      .then((result: any) => {
-        if (!result?.error) {
-          // mark that we've sent the gas-drop
-          message.set("gasDropped", true);
-          // log in stdout
-          // console.log(`Gas-drop created for ${result?.data?.reservedFor}`);
-        }
-      })
-      // noop any errors
-      .catch(() => ({}));
+      // add a gas-drop claim for this sender
+      await claim(tx.from)
+        .then((result: any) => {
+          if (!result?.error) {
+            // mark that we've sent the gas-drop
+            message.set("gasDropped", true);
+            // log in stdout
+            // console.log(`Gas-drop created for ${result?.data?.reservedFor}`);
+          }
+        })
+        // noop any errors
+        .catch(() => ({}));
 
-    // commit the save
-    await message.save();
+      // commit the save
+      await message.save();
+    }
   } catch (e) {
     console.log(e);
   }
