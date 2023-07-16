@@ -86,7 +86,9 @@ export default function Dialogue({
           {ctaPage === CTAPages.Deposit && (
             <Deposited tx1Hash={tx1Hash} tx2Hash={tx2Hash} />
           )}
-          {ctaPage === CTAPages.Deposited && <WhatsNext />}
+          {ctaPage === CTAPages.Deposited && (
+            <WhatsNext closeModal={closeModalAndReset} />
+          )}
           {ctaPage === CTAPages.Withdraw && (
             <Withdraw
               tx1={tx1}

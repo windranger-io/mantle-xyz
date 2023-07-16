@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { MouseEventHandler, useContext } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -15,15 +15,22 @@ function WhatNextLink({
   description,
   image,
   newTab,
+  onClick,
 }: {
   href: string;
   title: string;
   description: string;
   image: string;
   newTab: boolean;
+  // eslint-disable-next-line react/require-default-props
+  onClick?: MouseEventHandler<HTMLAnchorElement> | undefined;
 }) {
   return (
-    <Link href={href} target={newTab ? "_blank" : "_self"}>
+    <Link
+      href={href}
+      target={newTab ? "_blank" : "_self"}
+      onClick={(ev) => onClick?.(ev)}
+    >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4">
           <div className="relative h-[100px] md:w-[180px] w-[140px] rounded-lg border border-[#1C1E20] bg-black">
@@ -59,7 +66,7 @@ function WhatNextLink({
   );
 }
 
-export default function WhatsNext() {
+export default function WhatsNext({ closeModal }: { closeModal: () => void }) {
   const { chainId } = useContext(StateContext);
 
   return (
@@ -90,6 +97,10 @@ export default function WhatsNext() {
           description="Move your tokens to Mantle Network"
           href={MANTLE_BRIDGE_URL[chainId] || "#"}
           newTab={false}
+          onClick={() => {
+            // this link will be ignored (but cmd+clicks will work) - manually close the modal and reset
+            closeModal();
+          }}
         />
       </div>
       <div>
