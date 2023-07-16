@@ -10,7 +10,7 @@ const config = {
     process.env.SUPAGRAPH_NAME,
     "supagraph--migrator--testnet--0-0-1"
   ),
-  // flag mutable to insert by upsert only on id field
+  // flag mutable to insert by upsert only on id field (mutate entities)
   // - otherwise use _block_number + id to make a unique entry and do a distinct groupBy on the id when querying
   //   ie: do everything the immutable way (this can be a lot more expensive)
   mutable: true,
@@ -51,6 +51,8 @@ const config = {
         process.env.L1_CONVERTER_CONTRACT_END_BLOCK,
         "latest"
       ),
+      // We will always collect receipts here to construct gas-cost of call Migration for refund
+      collectTxReceipts: true,
     },
   },
   // define supagraph schema

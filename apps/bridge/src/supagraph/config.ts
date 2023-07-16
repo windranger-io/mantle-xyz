@@ -7,7 +7,7 @@ const config = {
   dev: false,
   // name your supagraph (this will inform mongo table name etc...)
   name: withDefault(process.env.SUPAGRAPH_NAME, "supergraph--bridge--0-0-1"),
-  // flag mutable to insert by upsert only on id field
+  // flag mutable to insert by upsert only on id field (mutate entities)
   // - otherwise use _block_number + id to make a unique entry and do a distinct groupBy on the id when querying
   //   ie: do everything the immutable way (this can be a lot more expensive)
   mutable: true,

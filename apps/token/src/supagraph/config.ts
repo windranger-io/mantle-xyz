@@ -10,7 +10,7 @@ const config = {
     process.env.SUPAGRAPH_NAME,
     "supagraph--token--testnet--0-0-1"
   ),
-  // flag mutable to insert by upsert only on id field
+  // flag mutable to insert by upsert only on id field (mutate entities)
   // - otherwise use _block_number + id to make a unique entry and do a distinct groupBy on the id when querying
   //   ie: do everything the immutable way (this can be a lot more expensive)
   mutable: true,
@@ -49,6 +49,8 @@ const config = {
       ),
       startBlock: withDefault(process.env.MANTLE_START_BLOCK, 9127688),
       endBlock: withDefault(process.env.MANTLE_END_BLOCK, "latest"),
+      // we don't receipts here
+      collectTxReceipts: false,
     },
     bitdao: {
       // Establish all event signatures available on this contract (we could also accept a .sol or .json file here)
@@ -63,6 +65,8 @@ const config = {
       ),
       startBlock: withDefault(process.env.BITDAO_START_BLOCK, 7728490),
       endBlock: withDefault(process.env.BITDAO_END_BLOCK, "latest"),
+      // we don't receipts here
+      collectTxReceipts: false,
     },
   },
   // define supagraph schema
