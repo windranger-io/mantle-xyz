@@ -12,7 +12,7 @@ import { truncateAddress } from "@utils/formatStrings";
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
-import { Button, WalletModal } from "@mantle/ui";
+import { ArrowDownIcon, Button, WalletModal } from "@mantle/ui";
 import { BiError } from "react-icons/bi";
 
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
@@ -178,7 +178,10 @@ function ConnectWallet() {
             className="flex items-center text-xs text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit h-[36px]"
           >
             <Avatar walletAddress="address" />
-            {truncateAddress(getAddress(client.address) as `0x${string}`)}
+            <div className="flex items-center justify-center gap-2">
+              {truncateAddress(getAddress(client.address) as `0x${string}`)}
+              <ArrowDownIcon className="w-3.5 h-3.5" />
+            </div>
           </Button>
         </Link>
       ) : (
