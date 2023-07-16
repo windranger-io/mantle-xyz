@@ -1,7 +1,7 @@
 import { getAddress } from "ethers/lib/utils";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   if (!process.env.PRODUCTION_FAUCET_KEY) {
     return NextResponse.json({ error: "Missing controller auth key" });
   }
@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(request.nextUrl);
     const address = searchParams.get("address");
 
     const res = await fetch(
