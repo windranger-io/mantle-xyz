@@ -59,7 +59,7 @@ export default function Migration() {
     if (client?.address) {
       getHistory();
     }
-  }, [client?.address]);
+  }, [client?.address, getHistory]);
 
   // pre-fetch when reaching the end of the current fetched list
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function Migration() {
     ) {
       getHistory();
     }
-  }, [page, history, historyTotal]);
+  }, [page, history, historyTotal, getHistory]);
 
   const paginated = useMemo(() => {
     return history.slice(page * TX_PER_PAGE, (page + 1) * TX_PER_PAGE);

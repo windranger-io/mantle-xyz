@@ -22,7 +22,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Migration from "./Migration";
 
 export default function Tabs() {
-  const { chainId, view, setView, setSafeChains } = useContext(StateContext);
+  const { view, setView, setSafeChains } = useContext(StateContext);
 
   const [categories] = useState({
     Deposit: [],
