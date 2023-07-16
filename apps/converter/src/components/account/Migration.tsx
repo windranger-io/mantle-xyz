@@ -59,6 +59,7 @@ export default function Migration() {
     if (client?.address) {
       getHistory();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client?.address]);
 
   // pre-fetch when reaching the end of the current fetched list
@@ -70,6 +71,7 @@ export default function Migration() {
     ) {
       getHistory();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, history, historyTotal]);
 
   const paginated = useMemo(() => {

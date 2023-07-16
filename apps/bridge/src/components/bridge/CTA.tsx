@@ -163,7 +163,6 @@ export default function CTA({
     return text;
   }, [
     spendDetails.balance,
-    selected?.decimals,
     allowance,
     destinationTokenAmount,
     client?.address,

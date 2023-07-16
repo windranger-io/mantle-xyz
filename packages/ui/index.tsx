@@ -5,14 +5,19 @@
  */
 export * from './src/actions/Button'
 export * from './src/actions/Links'
-export * from './src/wallet/WalletModal'
+
+/**
+ *  Web3 Wallect Connector system
+ *
+ *  Modal asks the user to accept terms before connecting wallet
+ */
+export { WalletModal } from './src/wallet/WalletModal'
 
 /**
  *  Links
  *
  *  Buttons and links since they share styling
  */
-
 export * from './src/links/MantleLinks'
 
 /**
@@ -35,7 +40,6 @@ export * from './src/navigation/Footer'
  *  Single Page Containers shared across all sites
  *
  */
-
 export * from './src/layout/PageWrapper'
 export * from './src/layout/PageContainer'
 
@@ -56,13 +60,13 @@ export * from './src/presentational/SimpleCard'
 export * from './src/presentational/PageBackgroundImage'
 
 /**
- *
-
-/**
  * Global App Fonts
  *
  */
-
 export * from './src/fonts/ThemeFonts'
 
-export * from './src/LocaleSwitcher'
+/**
+ * Locale Selector (given a list of locales and the currect selection)
+ *
+ */
+export { LocaleSwitcher } from './src/LocaleSwitcher'

@@ -19,6 +19,7 @@ export default function KindReminder({ direction }: { direction: Direction }) {
         direction === Direction.Deposit ? depositKey : withdrawKey
       ) || "false"
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const dismissReminder = () => {
