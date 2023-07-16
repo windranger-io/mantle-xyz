@@ -81,7 +81,7 @@ export default function Withdraw() {
         <tbody className="table-row-group">
           {isLoadingWithdrawals ? (
             <tr className="border-b-[1px] border-stroke-secondary">
-              <td className="py-4" colSpan={4}>
+              <td className="py-4" colSpan={5}>
                 <div className="w-full flex items-center justify-center">
                   <svg
                     aria-hidden="true"

@@ -152,8 +152,8 @@ export default function TransactionPanel({
             <Typography variant="smallWidget">Time to transfer</Typography>
             <Typography variant="smallWidget" className="text-white">
               {direction === Direction.Deposit
-                ? `~ 10 minutes`
-                : `~ ${formatTime(
+                ? `~10 minutes`
+                : `~${formatTime(
                     challengePeriod && challengePeriod < 1200
                       ? 1200
                       : challengePeriod || 1200
