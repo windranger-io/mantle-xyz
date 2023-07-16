@@ -1,6 +1,9 @@
 import { getAddress } from "ethers/lib/utils";
 import { NextResponse, NextRequest } from "next/server";
 
+// force-dynamic rendering as we're basing reqs on url
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   if (!process.env.PRODUCTION_FAUCET_KEY) {
     return NextResponse.json({ error: "Missing controller auth key" });
