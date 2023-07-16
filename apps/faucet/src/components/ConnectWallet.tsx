@@ -145,11 +145,7 @@ function ConnectWallet() {
           </>
         ) : !isChainID ? (
           <div className="flex flex-row items-center gap-4 justify-end">
-            <div
-              className="flex flex-row items-center gap-2 text-status-error
-            h-fit  rounded-lg text-xs backdrop-blur-[50px] bg-white/10 w-fit px-4 py-2
-            "
-            >
+            <div className="flex flex-row items-center gap-2 text-status-error h-fit rounded-lg text-xs backdrop-blur-[50px] bg-white/10 w-fit px-4 py-2 whitespace-nowrap">
               <BiError className="text-sm" />
               <p className="text-sm">Unsupported chain</p>
             </div>
