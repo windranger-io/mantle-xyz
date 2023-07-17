@@ -133,7 +133,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `/rpc`,
+      `${getBaseUrl()}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth`,
     ],

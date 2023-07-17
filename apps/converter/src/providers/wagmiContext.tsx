@@ -6,7 +6,6 @@ import { CHAINS_FORMATTED, L1_CHAIN_ID } from "@config/constants";
 // Required components for wagmi...
 import { WagmiConfig, configureChains, createClient } from "wagmi";
 
-import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 
@@ -34,12 +33,6 @@ const client = createClient({
       chains,
       options: {
         UNSTABLE_shimOnConnectSelectAccount: true,
-      },
-    }),
-    new CoinbaseWalletConnector({
-      chains,
-      options: {
-        appName: "wagmi",
       },
     }),
     new InjectedConnector({
