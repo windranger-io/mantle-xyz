@@ -54,29 +54,31 @@ export const getMessagesByTransaction = async (
 
   // retrieve the receipt (from opts if provided, else from provider)
   let { receipt } = opts;
-  if (opts.direction !== undefined) {
-    // Get the receipt for the requested direction.
-    if (opts.direction === MessageDirection.L1_TO_L2) {
+  if (!receipt) {
+    if (opts.direction !== undefined) {
+      // Get the receipt for the requested direction.
+      if (opts.direction === MessageDirection.L1_TO_L2) {
+        receipt = await crossChainMessenger.l1Provider.getTransactionReceipt(
+          txHash
+        );
+      } else {
+        receipt = await crossChainMessenger.l2Provider.getTransactionReceipt(
+          txHash
+        );
+      }
+    } else {
+      // Try both directions, starting with L1 => L2.
       receipt = await crossChainMessenger.l1Provider.getTransactionReceipt(
         txHash
       );
-    } else {
-      receipt = await crossChainMessenger.l2Provider.getTransactionReceipt(
-        txHash
-      );
-    }
-  } else {
-    // Try both directions, starting with L1 => L2.
-    receipt = await crossChainMessenger.l1Provider.getTransactionReceipt(
-      txHash
-    );
-    if (receipt) {
-      opts.direction = MessageDirection.L1_TO_L2;
-    } else {
-      receipt = await crossChainMessenger.l2Provider.getTransactionReceipt(
-        txHash
-      );
-      opts.direction = MessageDirection.L2_TO_L1;
+      if (receipt) {
+        opts.direction = MessageDirection.L1_TO_L2;
+      } else {
+        receipt = await crossChainMessenger.l2Provider.getTransactionReceipt(
+          txHash
+        );
+        opts.direction = MessageDirection.L2_TO_L1;
+      }
     }
   }
 
