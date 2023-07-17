@@ -11,7 +11,15 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
     a: (
       <Typography className="text-type-secondary mx-4 mb-4">
         Deposit any token from Ethereum Mainnet to Mantle Network to receive a
-        dust bonus in MNT. Limited to once per wallet address.
+        dust bonus in MNT. Limited to once per wallet address.{" "}
+        <a
+          href="https://www.mantle.xyz/blog/announcements/bridging-on-mantle-mainnet"
+          target="__blank"
+          rel="noreferrer"
+          className="underline block mt-4"
+        >
+          Learn more
+        </a>
       </Typography>
     ),
   },
@@ -29,7 +37,7 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
           className="underline block mt-4"
         >
           Try on Testnet Bridge
-        </a>{" "}
+        </a>
       </Typography>
     ),
   },
@@ -59,6 +67,14 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
             </Typography>
           </li>
         </ul>
+        <a
+          href="https://www.mantle.xyz/blog/announcements/bridging-on-mantle-mainnet"
+          target="__blank"
+          rel="noreferrer"
+          className="underline block mt-4 text-md"
+        >
+          <Typography className="text-sm">Learn more</Typography>
+        </a>
       </div>
     ),
   },
