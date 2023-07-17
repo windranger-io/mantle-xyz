@@ -31,7 +31,7 @@ export default function Loading({
 
   return (
     <>
-      <span className="flex justify-between align-middle">
+      <span className="flex gap-4 justify-between align-middle">
         <Typography variant="modalHeadingSm" className="text-center w-full">
           {direction === Direction.Deposit ? "Deposit" : "Withdrawal"} is on its
           way to{" "}
