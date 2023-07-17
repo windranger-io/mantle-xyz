@@ -1,8 +1,7 @@
-// import { useBalance } from "wagmi";
+import { cn } from "@mantle/ui/src/utils";
+import { Typography } from "@mantle/ui";
 import { useEffect, useMemo, useState } from "react";
 import { formatUnits } from "ethers/lib/utils.js";
-import { Typography } from "@mantle/ui";
-import { cn } from "@mantle/ui/src/utils";
 import { ConvertCard } from "@components/ConvertCard";
 import {
   L1_CONVERTER_CONTRACT_ADDRESS,

@@ -44,9 +44,11 @@ export default function Migration() {
         },
       });
 
-      if (data.account) {
-        setHistoryTotal(data.account.migrationCount);
-        setHistory((prevState) => prevState.concat(data.account.migrations));
+      if (data.accounts) {
+        setHistoryTotal(data.accounts[0].migrationCount);
+        setHistory((prevState) =>
+          prevState.concat(data.accounts[0].migrations)
+        );
       }
     } catch (err) {
       // eslint-disable-next-line no-console
