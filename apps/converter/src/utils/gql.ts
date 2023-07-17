@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GetMigrationHistoryQuery = gql`
-  query MigrationsForAccount($account: String!, $skip: Int, $first: Int) {
-    account(id: $account) {
+  query MigrationsForAccount($account: ID!, $skip: Int, $first: Int) {
+    accounts(where: { id: $account }) {
       id
       migratedMnt
       migrationCount

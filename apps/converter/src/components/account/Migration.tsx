@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useApolloClient } from "@apollo/client";
-import { formatUnits } from "ethers/lib/utils.js";
+import { formatUnits, getAddress } from "ethers/lib/utils";
 
 import StateContext from "@providers/stateContext";
 
@@ -30,7 +30,7 @@ export default function Migration() {
       const { data } = await gqclient.query({
         query: GetMigrationHistoryQuery,
         variables: {
-          account: client.address,
+          account: getAddress(client.address || ""),
           skip: history.length,
           first: TX_PER_FETCH,
         },
