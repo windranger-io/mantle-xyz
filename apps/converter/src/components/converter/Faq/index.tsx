@@ -59,7 +59,18 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         Yes, most users will be refunded their cost of migration in ETH. Users
         will not need to take any action and the ETH will be sent directly to
         the address used in the migration. The status of the rebate will be
-        available in a future dashboard.
+        available in a future dashboard. There will be policies in place to
+        reduce risk of rebate exploitation and griefing as mentioned in the
+        following{" "}
+        <a
+          href="https://forum.mantle.xyz/t/passed-mip-22-mantle-token-design-conversion-parameters-and-asset-handling/6352/2#re-conversion-costs-3"
+          target="__blank"
+          rel="noreferrer"
+          className="underline"
+        >
+          link
+        </a>
+        .
       </Typography>
     ),
   },
