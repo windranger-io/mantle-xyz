@@ -24,7 +24,7 @@ export function SmartContractTracker({ halted }: SCTrackerProps) {
   // to avoid hydration error
   const [balanceDataClient, setBalanceDataClient] = useState<string>("");
   useEffect(() => {
-    setBalanceDataClient(balance.toString() || "");
+    setBalanceDataClient(balance?.toString() || "");
   }, [balance]);
 
   const formattedBalance = useMemo(() => {
