@@ -132,8 +132,8 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      `https://mainnet.infura.io/v3/${process.env["NEXT_PUBLIC_INFURA_API_KEY"]}`,
+      // infura backed redirect gateway
+      `/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth`,
     ],
@@ -149,8 +149,10 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      `https://goerli.infura.io/v3/${process.env["NEXT_PUBLIC_INFURA_API_KEY"]}`,
+      // infura backed redirect gateway
+      `/rpc`,
+      // public gateway
+      `https://rpc.ankr.com/eth_goerli`,
     ],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
