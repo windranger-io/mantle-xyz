@@ -166,7 +166,7 @@ export function useCallBridge(
               </div>
               <div className="text-sm">
                 {ctaChainId === L1_CHAIN_ID
-                  ? "Assets will be available on Mantle in ~10 mins"
+                  ? "Assets will be available on Mantle in ~30 mins"
                   : `Will be available to claim in ${`~${formatTime(
                       challengePeriod && challengePeriod < 1200
                         ? 1200

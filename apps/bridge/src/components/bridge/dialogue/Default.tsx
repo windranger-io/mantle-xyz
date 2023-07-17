@@ -113,7 +113,7 @@ export default function Default({
           label="Time to transfer"
           value={
             direction === Direction.Deposit
-              ? "~10 minutes"
+              ? "~30 minutes"
               : `~${formatTime(
                   challengePeriod && challengePeriod < 1200
                     ? 1200
