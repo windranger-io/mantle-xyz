@@ -125,7 +125,7 @@ export const CHAINS: Record<
 > = {
   1: {
     chainId: "0x1",
-    chainName: "Ethereum Mainnet",
+    chainName: "Mainnet",
     nativeCurrency: {
       name: "ETH",
       symbol: "ETH",
@@ -133,7 +133,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `${getBaseUrl()}/rpc`,
+      `/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth`,
     ],
@@ -169,7 +169,7 @@ export const CHAINS: Record<
     blockExplorerUrls: ["https://explorer.testnet.mantle.xyz/"],
   },
   5000: {
-    chainId: "0x1389",
+    chainId: "0x1388",
     chainName: "Mantle Mainnet",
     nativeCurrency: {
       name: "Mantle",

@@ -1,6 +1,6 @@
-import { useBalance } from "wagmi";
+// import { useBalance } from "wagmi";
 import { useEffect, useMemo, useState } from "react";
-import { formatUnits, parseUnits } from "ethers/lib/utils.js";
+import { formatUnits } from "ethers/lib/utils.js";
 import { Typography } from "@mantle/ui";
 import { cn } from "@mantle/ui/src/utils";
 import { ConvertCard } from "@components/ConvertCard";
@@ -9,27 +9,27 @@ import {
   L1_MANTLE_TOKEN,
   L1_MANTLE_TOKEN_ADDRESS,
 } from "@config/constants";
+import useAccountBalance from "@hooks/web3/read/useAccountBalance";
 
 type SCTrackerProps = {
   halted: boolean;
 };
 
 export function SmartContractTracker({ halted }: SCTrackerProps) {
-  const { data: balanceData } = useBalance({
-    address: L1_CONVERTER_CONTRACT_ADDRESS,
-    token: L1_MANTLE_TOKEN_ADDRESS,
-    suspense: true,
-  });
+  const { balance } = useAccountBalance(
+    L1_CONVERTER_CONTRACT_ADDRESS,
+    L1_MANTLE_TOKEN_ADDRESS
+  );
 
   // to avoid hydration error
   const [balanceDataClient, setBalanceDataClient] = useState<string>("");
   useEffect(() => {
-    setBalanceDataClient(balanceData?.formatted || "");
-  }, [balanceData?.formatted]);
+    setBalanceDataClient(balance.toString() || "");
+  }, [balance]);
 
   const formattedBalance = useMemo(() => {
     const formatted = formatUnits(
-      parseUnits(balanceDataClient || "0", L1_MANTLE_TOKEN.decimals),
+      balanceDataClient || "0",
       L1_MANTLE_TOKEN.decimals
     );
     const formattedMoney = new Intl.NumberFormat("us-US", {}).format(
