@@ -22,9 +22,11 @@ export function FixedToastContainer({
 }) {
   return (
     <div
-      className={`fixed ${hidden ? "opacity-0 -z-1 pointer-events-none" : ""} ${
+      className={`block h-auto md:fixed ${
+        hidden ? "opacity-0 -z-1 pointer-events-none" : ""
+      } ${
         fromTop ? `flex flex-col-reverse top-0` : `bottom-0`
-      } mt-20 right-0 w-full md:w-[560px] pl-4 pr-8 pt-6 z-[9999]`}
+      } md:mt-20 right-0 w-full md:w-[560px] pl-4 pr-8 z-[9999] empty:pt-0 pt-4 md:pt-6`}
     >
       {children}
     </div>
@@ -62,11 +64,11 @@ export function ToastBody({
       }`}
     >
       <div
-        className={`rounded-lg h-20 w-[0.6rem] ${
+        className={`hidden md:block rounded-lg h-20 w-[0.6rem] min-w-[0.6rem] ${
           borderLeft ? `${`bg-${borderLeft.replace("bg-", "")}`}` : ""
         }`}
       />
-      <div className="flex justify-between w-full items-center py-2">
+      <div className="flex justify-between w-full items-center py-2 gap-2 flex-col md:flex-row text-center md:text-left">
         {children}
       </div>
     </div>
@@ -102,6 +104,7 @@ export function Toast({
         <ButtonText />
       ) : (
         <Button
+          className="mt-4 md:mt-0"
           variant="primary"
           onClick={(e) => {
             e.preventDefault();
@@ -147,7 +150,6 @@ export function ToastContainer({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {children}
       <FixedToastContainer
         hidden={pathName?.indexOf("/account") !== -1 || view === Views.Account}
       >
@@ -164,6 +166,7 @@ export function ToastContainer({ children }: { children: ReactNode }) {
           ))}
         </AnimatePresence>
       </FixedToastContainer>
+      {children}
     </>
   );
 }
