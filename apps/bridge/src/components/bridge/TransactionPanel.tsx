@@ -152,7 +152,7 @@ export default function TransactionPanel({
             <Typography variant="smallWidget">Time to transfer</Typography>
             <Typography variant="smallWidget" className="text-white">
               {direction === Direction.Deposit
-                ? `~30 minutes`
+                ? `~12 minutes`
                 : `~${formatTime(
                     challengePeriod && challengePeriod < 1200
                       ? 1200
@@ -164,38 +164,38 @@ export default function TransactionPanel({
           {/* Place gas rows */}
           {direction === Direction.Deposit
             ? [
-                <div
-                  key="tx-panel-1"
-                  className="flex justify-between"
-                  title={
-                    parseInt(actualGasFee || "0", 10) === 0
-                      ? "This transaction will fail, check approved allowance"
-                      : `${
-                          isActualGasFeeInfinity
-                            ? Infinity.toLocaleString()
-                            : actualGasFee || 0
-                        } GWEI`
-                  }
-                >
-                  <Typography variant="smallWidget">Gas fee</Typography>
-                  <Typography
-                    variant="smallWidget"
-                    className={
-                      parseInt(actualGasFee || "0", 10) === 0
-                        ? "text-[#E22F3D]"
-                        : "text-white"
-                    }
-                  >
-                    <>
-                      {isActualGasFeeInfinity
-                        ? Infinity.toLocaleString()
-                        : formatEther(
-                            parseUnits(actualGasFee || "0", "gwei") || "0"
-                          )}{" "}
-                      ETH
-                    </>
-                  </Typography>
-                </div>,
+                // <div
+                //   key="tx-panel-1"
+                //   className="flex justify-between"
+                //   title={
+                //     parseInt(actualGasFee || "0", 10) === 0
+                //       ? "This transaction will fail, check approved allowance"
+                //       : `${
+                //           isActualGasFeeInfinity
+                //             ? Infinity.toLocaleString()
+                //             : actualGasFee || 0
+                //         } GWEI`
+                //   }
+                // >
+                //   <Typography variant="smallWidget">Gas fee</Typography>
+                //   <Typography
+                //     variant="smallWidget"
+                //     className={
+                //       parseInt(actualGasFee || "0", 10) === 0
+                //         ? "text-[#E22F3D]"
+                //         : "text-white"
+                //     }
+                //   >
+                //     <>
+                //       {isActualGasFeeInfinity
+                //         ? Infinity.toLocaleString()
+                //         : formatEther(
+                //             parseUnits(actualGasFee || "0", "gwei") || "0"
+                //           )}{" "}
+                //       ETH
+                //     </>
+                //   </Typography>
+                // </div>,
               ]
             : [
                 <div

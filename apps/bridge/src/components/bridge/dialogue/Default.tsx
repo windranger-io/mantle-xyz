@@ -113,7 +113,7 @@ export default function Default({
           label="Time to transfer"
           value={
             direction === Direction.Deposit
-              ? "~30 minutes"
+              ? "~12 minutes"
               : `~${formatTime(
                   challengePeriod && challengePeriod < 1200
                     ? 1200
@@ -123,7 +123,7 @@ export default function Default({
           border
         />
         {/* different between chains */}
-        {direction === Direction.Deposit && (
+        {/* {direction === Direction.Deposit && (
           <Values
             label="Expected gas fee"
             value={`${
@@ -133,7 +133,7 @@ export default function Default({
             } ETH`}
             border={false}
           />
-        )}
+        )} */}
         {direction === Direction.Withdraw && (
           <Values
             label="Gas fee to initiate"
