@@ -60,9 +60,7 @@ function MintTokens() {
     abi: ABI,
     functionName: "mint",
     async onSettled(data, err) {
-      // wait for full resolve
-      await data?.wait();
-
+      // check for error first...
       if (err) {
         setError(
           err.toString().toLowerCase().indexOf("user rejected") !== -1
@@ -72,13 +70,21 @@ function MintTokens() {
         return false;
       }
 
-      setAmount(undefined);
-      setSuccess(
-        `Success! We minted ${amount} MNT and sent ${
-          (amount || 0) === 1 ? "it" : "them"
-        } to ${truncateAddress(address as `0x${string}`)}`
-      );
-      return true;
+      // wait for full resolve
+      const receipt = await data?.wait();
+
+      // check that the transaction actually succeeded
+      if (parseInt(receipt?.status?.toString() || "0x0", 16) === 1) {
+        setAmount(undefined);
+        setSuccess(
+          `Success! We minted ${amount} MNT and sent ${
+            (amount || 0) === 1 ? "it" : "them"
+          } to ${truncateAddress(address as `0x${string}`)}`
+        );
+        return true;
+      }
+      setError("Transaction failed - did the transaction run out of gas?");
+      return false;
     },
   });
 
