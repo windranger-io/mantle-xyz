@@ -123,7 +123,7 @@ export default function Default({
           border
         />
         {/* different between chains */}
-        {direction === Direction.Deposit && (
+        {/* {direction === Direction.Deposit && (
           <Values
             label="Expected gas fee"
             value={`${
@@ -133,7 +133,7 @@ export default function Default({
             } ETH`}
             border={false}
           />
-        )}
+        )} */}
         {direction === Direction.Withdraw && (
           <Values
             label="Gas fee to initiate"
