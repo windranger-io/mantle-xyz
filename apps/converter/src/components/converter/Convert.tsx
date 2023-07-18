@@ -67,8 +67,7 @@ export default function Convert() {
         Migrator
       </Typography>
       <Typography variant="body" className="text-center mt-6 mb-2">
-        The migration is irreversible. The migrator will be available at 2023
-        July 17, 6AM UTC.
+        The migration is irreversible.
       </Typography>
       <div className="w-full lg:grid lg:grid-cols-3 flex flex-col md:flex-row md:items-start gap-4 lg:mx-auto ">
         <div className="hidden lg:block" />
