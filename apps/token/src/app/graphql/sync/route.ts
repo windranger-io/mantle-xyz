@@ -104,10 +104,10 @@ export async function GET(request: NextRequest) {
     // where should we start and stop this run? (allowing for staggered runs to build up the cache before executing the final step (process))
     start,
     stop,
-    // include extra steps to get block details for the logs (we need to be able to calculate the gasCost and store the block.timestamp)
-    skipBlocks: false, // collect blocks
-    skipTransactions: false, // collect txs
-    skipOptionalArgs: false, // import full version of { tx, block } to the handlers
+    // skip extra steps to get block details for the logs
+    skipBlocks: true, // skip collecting blocks
+    skipTransactions: true, // skip collecting txs
+    skipOptionalArgs: true, // skip importing full version of { tx, block } to the handlers
   });
 
   // we don't need to sync more often than once per block - and if we're using vercel.json crons we can only sync 1/min
