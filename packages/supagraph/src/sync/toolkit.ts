@@ -344,7 +344,7 @@ const cancelAndSplit =
           contract,
           event,
           fromBlock,
-          middle - 1,
+          middle,
           reqStack,
           result
         ),
@@ -895,7 +895,8 @@ export const sync = async ({
     if (
       !newDb &&
       locked[chainId] &&
-      blocked[chainId] + 10 < (latestBlock[chainId].number || 0)
+      // this offset should be chain dependent - 10 blocks on mantle is 1hr but is ~1min on mantle testnet
+      +(blocked[chainId]) + 10 < (latestBlock[chainId].number || 0)
     ) {
       // mark the operation in the log
       console.log("--\n\nSync error:", chainId, " - DB is locked", "\n");
