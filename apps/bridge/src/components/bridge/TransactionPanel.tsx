@@ -258,14 +258,7 @@ export default function TransactionPanel({
                   <Typography variant="smallWidget">
                     Gas fee to complete
                   </Typography>
-                  <Typography
-                    variant="smallWidget"
-                    className={
-                      parseInt(actualGasFee || "0", 10) === 0
-                        ? "text-[#E22F3D]"
-                        : "text-white"
-                    }
-                  >
+                  <Typography variant="smallWidget" className="text-white">
                     {parseInt(actualGasFee || "0", 10) === 0
                       ? localeZero
                       : `~${formatEther(
