@@ -20,7 +20,7 @@ export const TWITTER_DESC =
   "Fund your testnet wallet here to start to #BuildonMantle.";
 
 // To be changed before launch
-export const ABSOLUTE_PATH = "https://mantle-faucet-orpin.vercel.app/";
+export const ABSOLUTE_PATH = "https://faucet.testnet.mantle.xyz/";
 
 // Configure which chain to use (goerli)
 export const CHAIN_ID = 5;
@@ -36,6 +36,9 @@ export const REQUIRED_TWEET =
 export const NETWORKS: Record<number, `0x${string}`> = {
   5: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
 };
+
+// goerli only
+export const L1_CHAIN_ID = 5;
 
 // set the available chains configuration to allow network to be added
 export const CHAINS: Record<
@@ -61,7 +64,12 @@ export const CHAINS: Record<
       symbol: "GoerliETH",
       decimals: 18,
     },
-    rpcUrls: ["https://goerli.infura.io/v3/9f0c70345c8d4f9ea915af6a6141cf70"],
+    rpcUrls: [
+      // infura backed redirect gateway
+      `/rpc`,
+      // public gateway
+      `https://rpc.ankr.com/eth_goerli`,
+    ],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
 };
