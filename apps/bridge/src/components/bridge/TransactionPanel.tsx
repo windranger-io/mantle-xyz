@@ -105,13 +105,13 @@ export default function TransactionPanel({
   );
 
   // only update on allowance change to maintain the correct decimals against constants if infinity
-  const isActualGasFeeInfinity = useMemo(
-    () => {
-      return constants.MaxUint256.eq(parseUnits(actualGasFee || "0", "gwei"));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [actualGasFee]
-  );
+  // const isActualGasFeeInfinity = useMemo(
+  //   () => {
+  //     return constants.MaxUint256.eq(parseUnits(actualGasFee || "0", "gwei"));
+  //   },
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   [actualGasFee]
+  // );
 
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
@@ -198,40 +198,40 @@ export default function TransactionPanel({
                 // </div>,
               ]
             : [
-                <div
-                  className="flex justify-between"
-                  key="tx-panel-1"
-                  title={
-                    parseInt(actualGasFee || "0", 10) === 0
-                      ? "This transaction will fail, withdrawal amount must not exceed your balance"
-                      : `${
-                          isActualGasFeeInfinity
-                            ? Infinity.toLocaleString()
-                            : actualGasFee || 0
-                        } GWEI`
-                  }
-                >
-                  <Typography variant="smallWidget">
-                    Gas fee to initiate
-                  </Typography>
-                  <Typography
-                    variant="smallWidget"
-                    className={
-                      parseInt(actualGasFee || "0", 10) === 0
-                        ? "text-[#E22F3D]"
-                        : "text-white"
-                    }
-                  >
-                    <>
-                      {isActualGasFeeInfinity
-                        ? Infinity.toLocaleString()
-                        : formatEther(
-                            parseUnits(actualGasFee || "0", "gwei") || "0"
-                          )}{" "}
-                      MNT
-                    </>
-                  </Typography>
-                </div>,
+                // <div
+                //   className="flex justify-between"
+                //   key="tx-panel-1"
+                //   title={
+                //     parseInt(actualGasFee || "0", 10) === 0
+                //       ? "This transaction will fail, withdrawal amount must not exceed your balance"
+                //       : `${
+                //           isActualGasFeeInfinity
+                //             ? Infinity.toLocaleString()
+                //             : actualGasFee || 0
+                //         } GWEI`
+                //   }
+                // >
+                //   <Typography variant="smallWidget">
+                //     Gas fee to initiate
+                //   </Typography>
+                //   <Typography
+                //     variant="smallWidget"
+                //     className={
+                //       parseInt(actualGasFee || "0", 10) === 0
+                //         ? "text-[#E22F3D]"
+                //         : "text-white"
+                //     }
+                //   >
+                //     <>
+                //       {isActualGasFeeInfinity
+                //         ? Infinity.toLocaleString()
+                //         : formatEther(
+                //             parseUnits(actualGasFee || "0", "gwei") || "0"
+                //           )}{" "}
+                //       MNT
+                //     </>
+                //   </Typography>
+                // </div>,
                 <div
                   className="flex justify-between"
                   key="tx-panel-2"
@@ -258,14 +258,7 @@ export default function TransactionPanel({
                   <Typography variant="smallWidget">
                     Gas fee to complete
                   </Typography>
-                  <Typography
-                    variant="smallWidget"
-                    className={
-                      parseInt(actualGasFee || "0", 10) === 0
-                        ? "text-[#E22F3D]"
-                        : "text-white"
-                    }
-                  >
+                  <Typography variant="smallWidget" className="text-white">
                     {parseInt(actualGasFee || "0", 10) === 0
                       ? localeZero
                       : `~${formatEther(

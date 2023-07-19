@@ -7,13 +7,12 @@ import {
   CHAINS_FORMATTED,
 } from "@config/constants";
 
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import StateContext from "@providers/stateContext";
 
 import { useCallBridge } from "@hooks/web3/bridge/write/useCallBridge";
 
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
-import { constants } from "ethers";
 
 import { Button, Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
@@ -35,13 +34,8 @@ export default function Default({
   ctaStatus: string | boolean;
   closeModal: () => void;
 }) {
-  const {
-    destinationToken,
-    destinationTokenAmount,
-    actualGasFee,
-    l1FeeData,
-    setCTAChainId,
-  } = useContext(StateContext);
+  const { destinationToken, destinationTokenAmount, l1FeeData, setCTAChainId } =
+    useContext(StateContext);
 
   // @TODO: we should keep track of which relays we have running
   // const [openToasts, setOpenToasts] = useState<string[]>([]);
@@ -63,13 +57,13 @@ export default function Default({
   );
 
   // only update on allowance change to maintain the correct decimals against constants if infinity
-  const isActualGasFeeInfinity = useMemo(
-    () => {
-      return constants.MaxUint256.eq(parseUnits(actualGasFee || "0", "gwei"));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [actualGasFee]
-  );
+  // const isActualGasFeeInfinity = useMemo(
+  //   () => {
+  //     return constants.MaxUint256.eq(parseUnits(actualGasFee || "0", "gwei"));
+  //   },
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   [actualGasFee]
+  // );
 
   // convert the enum direction to a string (but retain strict typings for Deposit | Withdraw)
   const directionString = Direction[direction] as keyof typeof Direction;
@@ -134,7 +128,7 @@ export default function Default({
             border={false}
           />
         )} */}
-        {direction === Direction.Withdraw && (
+        {/* {direction === Direction.Withdraw && (
           <Values
             label="Gas fee to initiate"
             value={`${
@@ -144,7 +138,7 @@ export default function Default({
             } MNT`}
             border
           />
-        )}
+        )} */}
         {direction === Direction.Withdraw && (
           <Values
             label="Gas fee to complete"
