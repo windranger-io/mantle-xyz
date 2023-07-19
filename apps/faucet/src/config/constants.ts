@@ -28,6 +28,9 @@ export const CHAIN_ID = 5;
 // Configure the maximum balance the ui will mint until
 export const MAX_BALANCE = 1000;
 
+// The max amount that can be minted in a single tx (this is not enforced by the contract)
+export const MAX_MINT = 1000;
+
 // User must tweet the following before they can mint tokens...
 export const REQUIRED_TWEET =
   /To #BuildonMantle, I am claiming test \$MNT tokens on https:\/\/([^\s]+) for @0xMantle, a next generation high-performance modular @Ethereum L2 built for hyperscaled dApps.\n\nLearn more: \[https:\/\/([^\]]+)\]/;
@@ -80,6 +83,7 @@ export const ABI = [
   "function totalSupply() view returns (uint totalSupply)",
   "function balanceOf(address who) view returns (uint balance)",
   "function allowance(address owner, address spender) view returns (uint allowance)",
+  "function mintRecord(address for) view returns (uint256 blockNumber)",
 
   // transaction methods
   "function transfer(address to, uint value)",
