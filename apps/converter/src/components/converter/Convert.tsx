@@ -69,7 +69,7 @@ export default function Convert() {
       <Typography variant="body" className="text-center mt-6 mb-2">
         The migration is irreversible.
       </Typography>
-      <div className="w-full lg:grid lg:grid-cols-3 flex flex-col md:flex-row md:items-start gap-4 lg:mx-auto ">
+      <div className="w-full lg:grid lg:grid-cols-3 lg:grid-cols-[1fr_2fr_1fr] flex flex-col md:flex-row md:items-start gap-8 lg:mx-auto ">
         <div className="hidden lg:block" />
         <ConvertCard className="lg:min-w-[320px]">
           <From />
@@ -81,7 +81,7 @@ export default function Convert() {
             <TX />
           </div>
         </ConvertCard>
-        <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] lg:max-w-[250px] xl:w-[320px] xl:max-w-[320px] ">
+        <div className="flex flex-col w-full md:w-[70%] lg:w-auto lg:min-w-[250px] lg:max-w-[250px] xl:w-[320px] xl:max-w-[320px] ">
           <Suspense fallback={<SCLoading />}>
             <SmartContractTracker halted={!!halted} />
           </Suspense>
