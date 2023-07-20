@@ -109,7 +109,7 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
             </div>
           )}
         </Button>
-        {!ctaStatus && (
+        {/* {!ctaStatus && (
           <Button
             size="full"
             variant="secondary"
@@ -118,7 +118,7 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
           >
             Back
           </Button>
-        )}
+        )} */}
       </div>
     </>
   );
