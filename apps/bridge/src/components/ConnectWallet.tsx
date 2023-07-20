@@ -225,7 +225,7 @@ function ConnectWallet() {
               <p className="text-sm">Unsupported chain</p>
             </div>
             <Button variant="walletConnect" onClick={() => changeNetwork()}>
-              Please switch to {CHAINS[chainId].chainName}
+              Switch to {CHAINS[chainId].chainName}
             </Button>
           </div>
         ) : (
