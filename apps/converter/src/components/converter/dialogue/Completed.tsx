@@ -17,7 +17,6 @@ import { useToast } from "@hooks/useToast";
 import StateContext from "@providers/stateContext";
 import CheckedCircle from "public/converted/check_circle.svg";
 import MetamaskSvg from "public/converted/metamask.svg";
-import { MdClear } from "react-icons/md";
 
 export default function Deposited({
   txHash,
@@ -110,15 +109,9 @@ export default function Deposited({
 
   return (
     <>
-      <span className="flex justify-between align-middle">
-        <Typography variant="modalHeading" className="text-center w-full mt-4">
-          Migration completed
-        </Typography>
-        <Typography variant="modalHeading" className="text-white w-auto pt-1">
-          <MdClear onClick={openWhatsNext} className="cursor-pointer" />
-        </Typography>
-      </span>
-
+      <Typography variant="modalHeading" className="text-center w-full mt-4">
+        Migration completed
+      </Typography>
       <span className="w-full flex justify-center">
         <Image src={CheckedCircle} alt="Checked" height={80} width={80} />
       </span>
@@ -133,11 +126,20 @@ export default function Deposited({
           type="button"
           size="full"
           className="h-14 flex flex-row gap-4 text-center items-center justify-center my-4"
-          variant="secondary"
+          variant="dark"
           onClick={() => addToken(L1_MANTLE_TOKEN)}
         >
           <Image src={MetamaskSvg} alt="metamask" height={26} width={26} />
           Add MNT to Wallet
+        </Button>
+        <Button
+          type="button"
+          size="full"
+          className="h-14 flex flex-row gap-4 text-center items-center justify-center my-4"
+          variant="primary"
+          onClick={openWhatsNext}
+        >
+          Close
         </Button>
       </div>
     </>
