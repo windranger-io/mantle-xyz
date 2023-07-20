@@ -14,7 +14,7 @@ import Loading from "@components/converter/dialogue/Loading";
 import Error from "@components/converter/dialogue/Error";
 
 import Converted from "@components/converter/dialogue/Completed";
-
+import WhatsNext from "@components/converter/dialogue/WhatsNext";
 import { ConvertCard } from "@components/ConvertCard";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
@@ -83,6 +83,13 @@ export default function Dialogue() {
           )}
           {ctaPage === CTAPages.Converted && (
             <Converted
+              txHash={txHash}
+              from={from}
+              closeModal={closeModalAndReset}
+            />
+          )}
+          {ctaPage === CTAPages.WhatsNext && (
+            <WhatsNext
               txHash={txHash}
               from={from}
               closeModal={closeModalAndReset}

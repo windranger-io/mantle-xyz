@@ -8,6 +8,7 @@ import {
   L1_BITDAO_TOKEN_ADDRESS,
   L1_MANTLE_TOKEN,
   L1_CHAIN_ID,
+  CTAPages,
 } from "@config/constants";
 import { Button, Typography } from "@mantle/ui";
 import TxLink from "@components/converter/utils/TxLink";
@@ -16,6 +17,7 @@ import { useToast } from "@hooks/useToast";
 import StateContext from "@providers/stateContext";
 import CheckedCircle from "public/converted/check_circle.svg";
 import MetamaskSvg from "public/converted/metamask.svg";
+import { MdClear } from "react-icons/md";
 
 export default function Deposited({
   txHash,
@@ -28,7 +30,8 @@ export default function Deposited({
 }) {
   const { addToken } = useAddToken();
   const { createToast } = useToast();
-  const { chainId, isLoadingBalances, balances } = useContext(StateContext);
+  const { chainId, isLoadingBalances, balances, setCTAPage } =
+    useContext(StateContext);
 
   useEffect(() => {
     if (typeof txHash === "string") {
@@ -101,11 +104,21 @@ export default function Deposited({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadingBalances, txHash, BITBalance, hasBitBalanceRemaining]);
 
+  const openWhatsNext = () => {
+    setCTAPage(CTAPages.WhatsNext);
+  };
+
   return (
     <>
-      <Typography variant="modalHeading" className="text-center w-full mt-4">
-        Migration completed
-      </Typography>
+      <span className="flex justify-between align-middle">
+        <Typography variant="modalHeading" className="text-center w-full mt-4">
+          Migration completed
+        </Typography>
+        <Typography variant="modalHeading" className="text-white w-auto pt-1">
+          <MdClear onClick={openWhatsNext} className="cursor-pointer" />
+        </Typography>
+      </span>
+
       <span className="w-full flex justify-center">
         <Image src={CheckedCircle} alt="Checked" height={80} width={80} />
       </span>

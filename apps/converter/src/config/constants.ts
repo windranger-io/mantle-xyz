@@ -105,6 +105,7 @@ export enum CTAPages {
   "Default",
   "Loading",
   "Converted",
+  "WhatsNext",
   "Error",
 }
 
