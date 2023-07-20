@@ -142,26 +142,26 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
       // Perform the action using the crossChainMessenger
       if (direction === Direction.Deposit) {
         // update the content and the callbacks
-        doUpdateToast({
-          borderLeft: "bg-yellow-500",
-          content: (
-            <div>
-              <div>Deposit initiated</div>
-              <div className="text-sm">
-                Assets will be available on Mantle in ~12 mins
-              </div>
-            </div>
-          ),
-          type: "success",
-          id: `${txHash}`,
-          buttonText: `Restore loading screen`,
-          chainId: L1_CHAIN_ID,
-          receipt,
-          tx1Hash: txHash,
-          tx2Hash: false,
-          page: CTAPages.Loading,
-          safeChains: [L1_CHAIN_ID],
-        });
+        // doUpdateToast({
+        //   borderLeft: "bg-yellow-500",
+        //   content: (
+        //     <div>
+        //       <div>Deposit initiated</div>
+        //       <div className="text-sm">
+        //         Assets will be available on Mantle in ~12 mins
+        //       </div>
+        //     </div>
+        //   ),
+        //   type: "success",
+        //   id: `${txHash}`,
+        //   buttonText: `Restore loading screen`,
+        //   chainId: L1_CHAIN_ID,
+        //   receipt,
+        //   tx1Hash: txHash,
+        //   tx2Hash: false,
+        //   page: CTAPages.Loading,
+        //   safeChains: [L1_CHAIN_ID],
+        // });
         // get the new deposits
         refetchDeposits();
         // wait for 1 min before we start checking
