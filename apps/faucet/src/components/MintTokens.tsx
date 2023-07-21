@@ -94,7 +94,7 @@ function MintTokens() {
   });
 
   // get the users mint record from the contract
-  const { data: mintRecord } = useQuery(
+  const { data: mintRecord, refetch: refetchMintRecord } = useQuery(
     [
       "MINT_RECORD",
       {
@@ -155,18 +155,21 @@ function MintTokens() {
       // wait for full resolve
       const receipt = await data?.wait();
 
+      // fetch the mint-record again to check for warning states
+      await refetchMintRecord();
+
       // check that the transaction actually succeeded
       if (parseInt(receipt?.status?.toString() || "0x0", 16) === 1) {
         setAmount(undefined);
         setSuccess(
-          `Success!\n\n We minted ${formatBigNumberString(
+          `Success!\n We minted ${formatBigNumberString(
             `${amount || 0}`,
             18,
             true,
             false
           )} MNT and sent ${
             +(amount || 0) === 1 ? "it" : "them"
-          } to ${truncateAddress(address as `0x${string}`)}`
+          } to ${truncateAddress(address as `0x${string}`)}\n\n`
         );
 
         return true;
@@ -205,7 +208,7 @@ function MintTokens() {
       error ===
         `You can mint a maximum of ${MAX_MINT_FORMATTED} MNT per transaction` ||
       error?.indexOf("Please wait 1,000 blocks starting from") === 0 ||
-      error?.indexOf("Warning: Balance will exceed 1,000 MNT") === 0;
+      error?.indexOf("Warning: Balance will equal or exceed 1,000 MNT") === 0;
 
     setHasMintError(hasError);
   }, [error]);
@@ -217,7 +220,7 @@ function MintTokens() {
       setError("");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount, hasMintError]);
+  }, [amount]);
 
   useEffect(() => {
     // check if the error is to be set
@@ -225,10 +228,9 @@ function MintTokens() {
       // check mintable conditions
       const validBlock =
         mintRecord === 0 || (blockNumber || 0) - (mintRecord || 0) > 1000;
-      const validBalance = balanceMNT && +`${myBalanceMNT || 0}` <= MAX_BALANCE;
+      const validBalance = balanceMNT && +`${myBalanceMNT || 0}` < MAX_BALANCE;
       const validFutureBalance =
-        balanceMNT &&
-        +`${myBalanceMNT || 0}` + +`${amount || 0}` <= MAX_BALANCE;
+        balanceMNT && +`${myBalanceMNT || 0}` + +`${amount || 0}` < MAX_BALANCE;
 
       // mintable when both are valid
       setMintLock(!(validBlock || validBalance));
@@ -247,13 +249,13 @@ function MintTokens() {
       } else if (!validFutureBalance) {
         // balance is more than max allowed (in block time - but we're imposing this all the time)
         setError(
-          `Warning: Balance will exceed 1,000 MNT (current balance: ${myBalanceMNT} MNT)`
+          `Warning: Balance will equal or exceed 1,000 MNT (current balance: ${myBalanceMNT} MNT)`
         );
       } else if (
         error ===
           `You can mint a maximum of ${MAX_MINT_FORMATTED} MNT per transaction` ||
         error?.indexOf("Please wait 1,000 blocks starting from") === 0 ||
-        error?.indexOf("Warning: Balance will exceed 1,000 MNT") === 0
+        error?.indexOf("Warning: Balance will equal or exceed 1,000 MNT") === 0
       ) {
         // clear the error
         setError("");
@@ -274,8 +276,8 @@ function MintTokens() {
     <SimpleCard className="max-w-lg grid gap-4">
       <CardHeading numDisplay="2" header="Set your mint amount" />
       <Typography variant="body" className="mb-4">
-        If your wallet holds more than 1,000 MNT you must wait 1,000 blocks
-        (about 4 hours) before you can perform another mint.
+        If your wallet holds 1,000 MNT or more you must wait 1,000 blocks (about
+        4 hours) before you can perform another mint operation.
       </Typography>
 
       {/* hide avatar and disconnect to avoid waiting for wallet connect to load */}
@@ -412,7 +414,7 @@ function MintTokens() {
                     18,
                     true,
                     false
-                  )} MNT.\n\nAfter this transaction, your balance will exceed 1,000 MNT and you will be locked out from performing any more mints for 1,000 blocks.`
+                  )} MNT.\n\nAfter this transaction, your balance will equal or exceed 1,000 MNT and you will be locked out from performing any more mints for 1,000 blocks.`
                 : `You will receive ${
                     formatBigNumberString(`${amount || 0}`, 18, true, false) ||
                     0
