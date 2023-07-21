@@ -177,23 +177,26 @@ export function useCallBridge(
           ),
         } as ToastProps;
 
-        // update the content and the callbacks
-        updateToast({
-          ...toastProps,
-          onButtonClick: () => {
-            setCTAChainId(chainId);
-            setTx1(receipt);
-            setTx1Hash(txHash);
-            setTx2Hash(false);
-            setCTAPage(CTAPages.Loading);
-            setIsCTAPageOpen(true);
-            // mark open now
-            isCTAPageOpenRef.current = true;
+        // only update toast when it is not deposit
+        if (ctaChainId !== L1_CHAIN_ID) {
+          // update the content and the callbacks
+          updateToast({
+            ...toastProps,
+            onButtonClick: () => {
+              setCTAChainId(chainId);
+              setTx1(receipt);
+              setTx1Hash(txHash);
+              setTx2Hash(false);
+              setCTAPage(CTAPages.Loading);
+              setIsCTAPageOpen(true);
+              // mark open now
+              isCTAPageOpenRef.current = true;
 
-            // close the toast when clicked...
-            return false;
-          },
-        });
+              // close the toast when clicked...
+              return false;
+            },
+          });
+        }
 
         // set the l1 into storage
         setTx1(receipt);
