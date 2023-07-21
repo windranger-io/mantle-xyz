@@ -8,6 +8,7 @@ import {
   L1_BITDAO_TOKEN_ADDRESS,
   L1_MANTLE_TOKEN,
   L1_CHAIN_ID,
+  CTAPages,
 } from "@config/constants";
 import { Button, Typography } from "@mantle/ui";
 import TxLink from "@components/converter/utils/TxLink";
@@ -28,7 +29,8 @@ export default function Deposited({
 }) {
   const { addToken } = useAddToken();
   const { createToast } = useToast();
-  const { chainId, isLoadingBalances, balances } = useContext(StateContext);
+  const { chainId, isLoadingBalances, balances, setCTAPage } =
+    useContext(StateContext);
 
   useEffect(() => {
     if (typeof txHash === "string") {
@@ -101,6 +103,10 @@ export default function Deposited({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadingBalances, txHash, BITBalance, hasBitBalanceRemaining]);
 
+  const openWhatsNext = () => {
+    setCTAPage(CTAPages.WhatsNext);
+  };
+
   return (
     <>
       <Typography variant="modalHeading" className="text-center w-full mt-4">
@@ -120,11 +126,20 @@ export default function Deposited({
           type="button"
           size="full"
           className="h-14 flex flex-row gap-4 text-center items-center justify-center my-4"
-          variant="secondary"
+          variant="dark"
           onClick={() => addToken(L1_MANTLE_TOKEN)}
         >
           <Image src={MetamaskSvg} alt="metamask" height={26} width={26} />
           Add MNT to Wallet
+        </Button>
+        <Button
+          type="button"
+          size="full"
+          className="h-14 flex flex-row gap-4 text-center items-center justify-center my-4"
+          variant="primary"
+          onClick={openWhatsNext}
+        >
+          Close
         </Button>
       </div>
     </>

@@ -66,7 +66,7 @@ function WhatNextLink({
   );
 }
 
-export default function Deposited({
+export default function WhatsNext({
   txHash,
   from,
   closeModal,
