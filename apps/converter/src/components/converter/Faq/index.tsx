@@ -165,7 +165,7 @@ function Accordion({
 
 export function Faq() {
   return (
-    <ConvertCard className="rounded-xl w-full mt-8 overflow-x-auto">
+    <ConvertCard className="rounded-xl w-full mt-5 overflow-x-auto">
       <div className="flex gap-3">
         <div className="flex flex-col w-full">
           {faqList.map((el, idx) => (
