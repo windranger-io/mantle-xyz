@@ -46,14 +46,7 @@ export function TransactionSummary({ actualGasFee }: Props) {
         }
       >
         <Typography variant="smallWidget">Gas fee</Typography>
-        <Typography
-          variant="smallWidget"
-          className={
-            parseInt(actualGasFee || "0", 10) === 0
-              ? "text-[#E22F3D]"
-              : "text-white"
-          }
-        >
+        <Typography variant="smallWidget" className="text-white">
           {isActualGasFeeInfinity
             ? Infinity.toLocaleString()
             : formatEther(parseUnits(actualGasFee || "0", "gwei") || "0")}{" "}
