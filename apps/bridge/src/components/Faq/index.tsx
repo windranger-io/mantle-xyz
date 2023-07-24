@@ -78,6 +78,26 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
       </div>
     ),
   },
+  {
+    q: "Where can I see the bridge token mapping?",
+    a: (
+      <div className="text-type-secondary mx-4 mb-4">
+        <Typography className="mb-4">
+          You can view the bridge token mapping by visiting{" "}
+          <a
+            href="https://docs.mantle.xyz/network/for-devs/resources-and-tooling/mantle-bridge-api#the-token-list"
+            target="__blank"
+            rel="noreferrer"
+            className="underline text-md"
+          >
+            this link
+          </a>{" "}
+          which directs to the Mantle documentation. It provides comprehensive
+          details on the token list and other related information.
+        </Typography>
+      </div>
+    ),
+  },
 ];
 
 function Accordion({
