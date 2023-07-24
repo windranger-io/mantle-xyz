@@ -70,3 +70,9 @@ export * from './src/fonts/ThemeFonts'
  *
  */
 export { LocaleSwitcher } from './src/LocaleSwitcher'
+
+/**
+ * Format string utils
+ *
+ */
+export * from './src/formatString'
