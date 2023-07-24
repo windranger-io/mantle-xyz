@@ -7,9 +7,6 @@ export const localeZero = new Intl.NumberFormat(
   }
 ).format(Number("0.0"));
 
-export const truncateAddress = (address: `0x${string}`) =>
-  `${address.slice(0, 6)}...${address.slice(-4)}`;
-
 // format a given time into a nice representation
 export const formatTime = (
   seconds: number,
