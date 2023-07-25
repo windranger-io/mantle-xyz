@@ -17,12 +17,12 @@ export const WalletModal = ({ children, onMetamask }: WalletModalProps) => (
     <Dialog.Trigger asChild>{children}</Dialog.Trigger>
     <Dialog.Portal>
       <Dialog.Overlay className="bg-black/60 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0 z-[999]" />
-      <Dialog.Content className="bg-black data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[484px] translate-x-[-50%] translate-y-[-50%] rounded-[32px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border border-white/20 px-[76px] py-[46px] z-[1000]">
+      <Dialog.Content className="bg-black data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[484px] translate-x-[-50%] translate-y-[-50%] rounded-[32px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border border-white/20 md:px-[76px] md:py-[46px] px-4 py-5 z-[1000]">
         <div className="relative">
-          <p className="text-[28px] pb-[31px] mb-10 border-b border-white/20">
+          <p className="text-[28px] md:pb-[31px] pb-[17px] md:mb-10 mb-[44px] border-b border-white/20 pr-6 leading-[1.2]">
             Connect your wallet
           </p>
-          <div className="absolute -right-8 -top-1">
+          <div className="absolute md:-right-14 -right-4 -top-1">
             <Dialog.Close asChild>
               <Button variant="ghost">
                 <svg
@@ -51,7 +51,7 @@ export const WalletModal = ({ children, onMetamask }: WalletModalProps) => (
           <MetaMaskSvg className="h-6 w-6" />
           Metamask
         </Button>
-        <p className="text-sm mt-6">
+        <p className="text-sm mt-6 tracking-[-0.02em] text-type-secondary text-center">
           By connecting your wallet, you hereby acknowledge that you have read
           and accept the{' '}
           <a
