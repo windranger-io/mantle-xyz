@@ -854,10 +854,6 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     layer1SignerRef.current = layer1Signer as Signer;
   }, [layer1Signer]);
 
-  React.useEffect(() => {
-    console.log(crossChainMessenger);
-  }, [crossChainMessenger]);
-
   return (
     <MantleSDKContext.Provider value={crossChainMessenger as MantleSDK}>
       {children}
