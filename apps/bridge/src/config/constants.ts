@@ -39,16 +39,16 @@ export const TWITTER_DESC = `Bridge your ${
 
 // Get the current absolute path from the env
 export function getBaseUrl() {
-  const vercel =
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
-    process.env.NEXT_PUBLIC_VERCEL_URL;
   // return the fully resolved absolute url
-  return vercel
-    ? `https://${vercel}`
-    : // this should match the port used by the current app
-      "http://localhost:3003";
+  return (
+    process.env.NEXT_PUBLIC_VERCEL_URL ||
+    (process.env.NEXT_PUBLIC_SITE_URL
+      ? `https://${
+          L1_CHAIN_ID === 1 ? "bridge.mantle.xyz" : "bridge.testnet.mantle.xyz"
+        }`
+      : // this should match the port used by the current app
+        "http://localhost:3003")
+  );
 }
 
 // export the absolute path
@@ -116,7 +116,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `/rpc`,
+      `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth`,
     ],
@@ -144,7 +144,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `/rpc`,
+      `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth_goerli`,
     ],
