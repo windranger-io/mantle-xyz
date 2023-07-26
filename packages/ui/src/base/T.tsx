@@ -122,136 +122,94 @@ const typographyMap: {
   // the variants below are typographies in mantle core style guide
   h1HeaderXXL: {
     tag: 'h1',
-    classNames: classNames(
-      headingDefault,
+    classNames:
       'text-[100px] leading-none tracking-[-0.04em] text-type-primary font-medium text-left',
-    ),
   },
   h2HeaderXL: {
     tag: 'h2',
-    classNames: classNames(
-      headingDefault,
+    classNames:
       'text-[80px] leading-none tracking-[-0.04em] text-type-primary font-medium text-left',
-    ),
   },
   h3Subheader: {
     tag: 'h3',
-    classNames: classNames(
-      headingDefault,
+    classNames:
       'text-[68px] leading-[1.1] tracking-[-0.04em] text-type-primary font-medium text-left',
-    ),
   },
   h4PageInfo: {
     tag: 'h4',
-    classNames: classNames(
-      headingDefault,
+    classNames:
       'text-[60px] leading-[1.1] tracking-[-0.04em] text-type-primary font-medium text-left',
-    ),
   },
   h5Title: {
     tag: 'h5',
-    classNames: classNames(
-      headingDefault,
+    classNames:
       'text-[42px] leading-[1.1] tracking-[-0.04em] text-type-primary font-medium text-left',
-    ),
   },
   h6TitleSmaller: {
     tag: 'h6',
-    classNames: classNames(
-      headingDefault,
+    classNames:
       'text-[32px] leading-[1.2] tracking-[-0.04em] text-type-primary font-medium text-left',
-    ),
   },
   h6TitleMini: {
     tag: 'h6',
-    classNames: classNames(
-      headingDefault,
+    classNames:
       'text-[28px] leading-[1.2] tracking-[-0.04em] text-type-primary font-medium text-left',
-    ),
   },
   body24: {
     tag: 'p',
-    classNames: classNames(
-      bodyDefault,
+    classNames:
       'text-[24px] leading-[1.4] tracking-[-0.02em] text-type-secondary text-left',
-    ),
   },
   body22: {
     tag: 'p',
-    classNames: classNames(
-      bodyDefault,
-      'text-[22px] leading-[1.4] text-type-secondary text-left',
-    ),
+    classNames: 'text-[22px] leading-[1.4] text-type-secondary text-left',
   },
   body20: {
     tag: 'p',
-    classNames: classNames(
-      bodyDefault,
-      'text-[20px] leading-[1.4] text-type-secondary text-left',
-    ),
+    classNames: 'text-[20px] leading-[1.4] text-type-secondary text-left',
   },
   body20Medium: {
     tag: 'p',
-    classNames: classNames(
-      headingDefault,
+    classNames:
       'text-[20px] leading-[1.4] text-type-secondary font-medium text-left',
-    ),
   },
   body18: {
     tag: 'p',
-    classNames: classNames(
-      bodyDefault,
-      'text-[18px] leading-[1.4] text-type-secondary text-left',
-    ),
+    classNames: 'text-[18px] leading-[1.4] text-type-secondary text-left',
   },
   smallTitle18: {
     tag: 'p',
-    classNames: classNames(
-      bodyDefault,
+    classNames:
       'text-[18px] leading-[20px] tracking-[-0.02em] text-type-primary text-left',
-    ),
   },
   buttonLarge: {
     tag: 'p',
-    classNames: classNames(
-      headingDefault,
+    classNames:
       'text-[16px] leading-[1.4] text-type-secondary font-medium text-left',
-    ),
   },
   smallWidget16: {
     tag: 'p',
-    classNames: classNames(
-      bodyDefault,
-      'text-[16px] leading-[1.4] text-type-secondary text-left',
-    ),
+    classNames: 'text-[16px] leading-[1.4] text-type-secondary text-left',
   },
   microBody14: {
     tag: 'p',
-    classNames: classNames(
-      bodyDefault,
+    classNames:
       'text-[14px] leading-[20px] tracking-[-0.02em] text-type-secondary text-left',
-    ),
   },
   buttonMedium: {
     tag: 'p',
-    classNames: classNames(
-      headingDefault,
+    classNames:
       'text-[14px] leading-[1.3] text-type-secondary font-medium text-left',
-    ),
   },
   footerLink: {
     tag: 'p',
-    classNames: classNames(
-      bodyDefault,
+    classNames:
       'text-[14px] leading-[25px] tracking-[-0.01em] uppercase text-type-primary text-left',
-    ),
   },
   textBtn12: {
     tag: 'p',
-    classNames: classNames(
-      bodyDefault,
+    classNames:
       'text-[12px] leading-[20px] tracking-[-0.02em] text-type-secondary text-left',
-    ),
   },
 }
 
