@@ -10,9 +10,11 @@ const fetchInfura = async (
   params: any[]
 ) => {
   const res = await fetch(
-    `https://${CHAINS[L1_CHAIN_ID].chainName.toLowerCase()}.infura.io/v3/${
-      process.env.NEXT_PUBLIC_INFURA_API_KEY
-    }`,
+    `https://${
+      CHAINS[L1_CHAIN_ID].chainName.toLowerCase() === "goerli"
+        ? "goerli"
+        : "mainnet"
+    }.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
     {
       method: "post",
       headers: {
