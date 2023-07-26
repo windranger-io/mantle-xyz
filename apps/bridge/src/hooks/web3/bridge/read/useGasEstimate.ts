@@ -15,7 +15,7 @@ import useTokenList from "./useTokenList";
 
 function useGasEstimate(
   chainId: number,
-  client: { address?: `0x${string}` | undefined },
+  client: { address?: string | undefined },
   selectedToken: { [x: string]: string },
   destinationToken: { [x: string]: string },
   bridgeAddress: string | false | undefined,

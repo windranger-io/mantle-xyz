@@ -15,7 +15,7 @@ import { useQuery } from "wagmi";
 
 function useAllowanceCheck(
   chainId: number,
-  client: { address?: `0x${string}` | undefined },
+  client: { address?: string | undefined },
   bridgeAddress: string | false | undefined,
   selectedToken: { [x: string]: string },
   tokens: Token[],

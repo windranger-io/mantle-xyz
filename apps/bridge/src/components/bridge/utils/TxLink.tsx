@@ -55,7 +55,7 @@ export default function TxLink({
 
         <span>
           {asHash
-            ? truncateAddress(txHash as `0x${string}`)
+            ? truncateAddress(txHash as string)
             : `${CHAINS[chainId].chainName} Explorer`}
         </span>
       </a>

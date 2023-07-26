@@ -116,7 +116,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `/rpc`,
+      `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth`,
     ],
@@ -144,7 +144,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `/rpc`,
+      `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth_goerli`,
     ],
@@ -187,7 +187,7 @@ export const CHAINS_FORMATTED: Record<number, Chain> = {
         http: [CHAINS[5000].rpcUrls[0]],
       },
       public: {
-        http: [CHAINS[5000].rpcUrls[1]],
+        http: [CHAINS[5000].rpcUrls[0]],
       },
     },
     id: 5000,
@@ -258,7 +258,7 @@ export const MANTLE_TOKEN_LIST_URL =
   "https://token-list.mantle.xyz/mantle.tokenlist.json";
 
 // Address for multicall3 contract on each network - Multicall3: https://github.com/mds1/multicall
-export const MULTICALL_CONTRACTS: Record<number, `0x${string}`> = {
+export const MULTICALL_CONTRACTS: Record<number, string> = {
   1: "0xcA11bde05977b3631167028862bE2a173976CA11",
   5000: "0x9155FcC40E05616EBFf068446136308e757e43dA",
   5: "0xcA11bde05977b3631167028862bE2a173976CA11",
@@ -267,9 +267,44 @@ export const MULTICALL_CONTRACTS: Record<number, `0x${string}`> = {
 
 // ERC-20 abi for balanceOf && allowanceOf
 export const TOKEN_ABI = [
-  "function balanceOf(address account) external view returns (uint256)",
-  "function allowance(address owner, address spender) external view returns (uint256)",
-  "function approve(address spender, uint256 amount) returns (bool)",
+  {
+    constant: true,
+    inputs: [
+      {
+        name: "_owner",
+        type: "address",
+      },
+    ],
+    name: "balanceOf",
+    outputs: [
+      {
+        name: "balance",
+        type: "uint256",
+      },
+    ],
+    payable: false,
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "owner", type: "address" },
+      { internalType: "address", name: "spender", type: "address" },
+    ],
+    name: "allowance",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "spender", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+    ],
+    name: "approve",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ];
 
 export const MANTLE_MIGRATOR_URL = "https://migratebit.mantle.xyz";
