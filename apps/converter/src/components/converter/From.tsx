@@ -4,11 +4,10 @@ import StateContext from "@providers/stateContext";
 import Image from "next/image";
 
 import { L1_BITDAO_TOKEN } from "@config/constants";
-import { formatBigNumberString } from "@utils/formatStrings";
+import { formatBigNumberString, Button } from "@mantle/ui";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
 import BalanceLabel from "@components/converter/utils/BalanceLabel";
-import { Button } from "@mantle/ui";
 import { MantleLogo } from "./utils/MantleLogo";
 
 export default function TokenSelect() {
@@ -280,7 +279,10 @@ export default function TokenSelect() {
                 )
                   ? "0.0"
                   : formatBigNumberString(
-                      balances?.[L1_BITDAO_TOKEN.address]
+                      balances?.[L1_BITDAO_TOKEN.address],
+                      L1_BITDAO_TOKEN.decimals,
+                      true,
+                      false
                     ) || "0.0"
               }${" "}${L1_BITDAO_TOKEN.symbol}`}
             />

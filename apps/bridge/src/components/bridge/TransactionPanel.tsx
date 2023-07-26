@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import StateContext from "@providers/stateContext";
 
-import { Typography } from "@mantle/ui";
+import { Typography, formatBigNumberString } from "@mantle/ui";
 
 import {
   Direction,
@@ -15,11 +15,7 @@ import {
 
 import { formatEther, formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { BigNumber, constants } from "ethers";
-import {
-  localeZero,
-  formatBigNumberString,
-  formatTime,
-} from "@utils/formatStrings";
+import { localeZero, formatTime } from "@utils/formatStrings";
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 import { useQuery } from "wagmi";
