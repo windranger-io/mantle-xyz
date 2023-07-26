@@ -12,7 +12,7 @@ export type Deposit = {
 };
 
 function useHistoryDeposits(
-  client: { address?: `0x${string}` | undefined },
+  client: { address?: string | undefined },
   depositsUrl: string,
   deposits: Deposit[] | undefined,
   setDeposits: (val: Deposit[]) => void

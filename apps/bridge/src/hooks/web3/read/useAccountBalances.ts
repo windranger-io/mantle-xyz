@@ -1,25 +1,25 @@
 import {
   CHAINS_FORMATTED,
   L1_CHAIN_ID,
+  L2_CHAIN_ID,
+  MULTICALL_CONTRACTS,
   TOKEN_ABI,
   Token,
 } from "@config/constants";
-import { Network } from "@ethersproject/providers";
 import { BigNumberish, Contract, providers } from "ethers";
-import { MutableRefObject } from "react";
 
-import { callMulticallContract } from "@utils/multicallContract";
+import {
+  callMulticallContract,
+  getMulticallContract,
+} from "@utils/multicallContract";
 import { formatUnits } from "ethers/lib/utils.js";
 
 import { useQuery } from "wagmi";
 
 function useAccountBalances(
   chainId: number,
-  client: { address?: `0x${string}` | undefined },
+  client: { address?: string | undefined },
   tokens: Token[],
-  multicall: MutableRefObject<
-    { network: Network; multicallContract: Contract } | undefined
-  >,
   setIsLoadingBalances: (arg: boolean) => void
 ) {
   // perform a multicall on the given network to get all token balances for user
@@ -36,24 +36,23 @@ function useAccountBalances(
       {
         address: client?.address,
         chainId,
-        multicall: multicall.current?.network.name,
       },
     ],
     async () => {
       // connect to L1 on public gateway but use default rpc for L2
-      const provider =
-        chainId === L1_CHAIN_ID
-          ? new providers.JsonRpcProvider(
-              CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
-            )
-          : multicall.current?.multicallContract.provider;
-      // only run the multicall if we're connected to the correct network
-      if (
-        client?.address &&
-        client?.address !== "0x" &&
-        multicall.current?.network.chainId === chainId &&
+      const provider = new providers.JsonRpcProvider(
+        CHAINS_FORMATTED[
+          chainId === L1_CHAIN_ID ? L1_CHAIN_ID : L2_CHAIN_ID
+        ].rpcUrls.public.http[0]
+      );
+      // get the current multicall contract
+      const multicall = await getMulticallContract(
+        MULTICALL_CONTRACTS[chainId],
         provider
-      ) {
+      );
+
+      // only run the multicall if we're connected to the correct network
+      if (client?.address && client?.address !== "0x" && multicall) {
         // filter any native tokens from the selection
         const filteredTokens = tokens.filter(
           (v: { address: string }) =>
@@ -66,7 +65,7 @@ function useAccountBalances(
         // produce a set of balanceOf calls to check users balance against every token
         const calls = filteredTokens.map((token: { address: string }) => {
           return {
-            target: token.address as `0x${string}`,
+            target: token.address as string,
             contract: new Contract(token.address, TOKEN_ABI, provider),
             fns: [
               {
@@ -79,7 +78,7 @@ function useAccountBalances(
         // run all calls...
         const responses = await callMulticallContract(
           // connect to provider if different multicallContract default
-          multicall.current.multicallContract.connect(provider),
+          multicall,
           calls
         );
         const newBalances = responses.reduce((fillBalances, value, key) => {

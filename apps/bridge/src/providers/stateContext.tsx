@@ -14,9 +14,9 @@ import {
   Views,
 } from "@config/constants";
 
-import { Contract } from "ethers";
+import { Contract, providers } from "ethers";
 import { MessageLike } from "@mantleio/sdk";
-import { Network } from "@ethersproject/providers";
+import { BaseProvider, Network } from "@ethersproject/providers";
 
 import {
   createContext,
@@ -26,7 +26,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useProvider } from "wagmi";
+import { usePublicClient } from "wagmi";
 import { usePathname } from "next/navigation";
 import {
   useAccountBalances,
@@ -53,11 +53,13 @@ export type StateProps = {
   view: Views;
   client: {
     isConnected: boolean;
+    connector?: string;
     chainId?: number;
-    address?: `0x${string}`;
+    address?: string;
   };
   safeChains: number[];
   chainId: number;
+  provider: BaseProvider;
   multicall: MutableRefObject<{
     network: Network;
     multicallContract: Contract;
@@ -113,8 +115,9 @@ export type StateProps = {
   setChainId: (v: number) => void;
   setClient: (client: {
     isConnected: boolean;
+    connector?: string;
     chainId?: number;
-    address?: `0x${string}`;
+    address?: string;
   }) => void;
   setSafeChains: (chains: number[]) => void;
   resetBalances: () => void;
@@ -156,19 +159,40 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [safeChains, setSafeChains] = useState([5]);
 
   // get the provider for the chosen chain
-  const provider = useProvider({ chainId });
+  const publicClient = usePublicClient({ chainId });
+
+  // create an ethers provider from the publicClient
+  const provider = useMemo(() => {
+    const { chain, transport } = publicClient;
+    const network = {
+      chainId: chain.id,
+      name: chain.name,
+      ensAddress: chain.contracts?.ensRegistry?.address,
+    };
+    if (transport.type === "fallback")
+      return new providers.FallbackProvider(
+        (transport.transports as { value: { url: string } }[]).map(
+          ({ value }) => new providers.JsonRpcProvider(value?.url, network)
+        )
+      );
+    return new providers.JsonRpcProvider(transport.url, network);
+  }, [publicClient]);
 
   // keep hold of all wallet connection details
   const [client, setClient] = useState<{
     isConnected: boolean;
     chainId?: number;
-    address?: `0x${string}`;
+    address?: string;
   }>({
     isConnected: false,
   });
 
   // page toggled chainId (set according to Deposit/Withdraw)
-  const multicall = useRef<{ network: Network; multicallContract: Contract }>();
+  const multicall = useRef<{
+    network: Network;
+    multicallContract: Contract;
+    chainId: number;
+  }>();
 
   // the selected page within CTAPage to open
   const [ctaPage, setCTAPage] = useState<CTAPages>(CTAPages.Default);
@@ -343,13 +367,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // perform a multicall on the given network to get all token balances for user
   const { balances, resetBalances, isFetchingBalances, isRefetchingBalances } =
-    useAccountBalances(
-      chainId,
-      client,
-      tokens,
-      multicall,
-      setIsLoadingBalances
-    );
+    useAccountBalances(chainId, client, tokens, setIsLoadingBalances);
 
   // corrent view on page turn
   useEffect(
@@ -369,15 +387,28 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // make sure the multicall contract in the current context is assigned to the current network
   useEffect(() => {
+    // save the chainId to indicate we're moving chains
+    multicall.current = {
+      chainId,
+    } as {
+      network: Network;
+      multicallContract: Contract;
+      chainId: number;
+    };
+    // construct a new muticall contract for this chain
     getMulticallContract(MULTICALL_CONTRACTS[chainId], provider).then(
       async (multicallContract) => {
         // check that we're using the corrent network before proceeding
         const network = await multicallContract.provider.getNetwork();
-        // setMulticall(multicallContract);
-        multicall.current = {
-          network,
-          multicallContract,
-        };
+        // make sure we're still on the same chainId
+        if (multicall.current?.chainId === chainId) {
+          // setMulticall(multicallContract);
+          multicall.current = {
+            chainId,
+            network,
+            multicallContract,
+          };
+        }
       }
     );
   }, [chainId, provider, client]);
@@ -550,6 +581,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       client,
       chainId,
       safeChains,
+      provider,
       multicall,
       bridgeAddress,
 
@@ -627,6 +659,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     client,
     chainId,
     safeChains,
+    provider,
     multicall,
     bridgeAddress,
 
