@@ -311,7 +311,7 @@ export const TOKEN_ABI = [
     stateMutability: "nonpayable",
     type: "function",
   },
-];
+] as const;
 
 export const MANTLE_BRIDGE_URL: Record<number, string> = {
   1: "https://bridge.mantle.xyz",

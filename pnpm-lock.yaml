@@ -154,7 +154,7 @@ importers:
         version: 4.8.0(react@18.2.0)
       wagmi:
         specifier: ^1.3.9
-        version: registry.npmjs.org/wagmi@1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@4.9.4)(viem@1.4.1)
+        version: registry.npmjs.org/wagmi@1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.1)
       zustand:
         specifier: ^4.0.0-rc.1
         version: 4.3.3(react@18.2.0)
@@ -199,8 +199,8 @@ importers:
         specifier: ^3.2.1
         version: 3.2.4(postcss@8.4.20)
       typescript:
-        specifier: 4.9.4
-        version: 4.9.4
+        specifier: 5.0.4
+        version: registry.npmjs.org/typescript@5.0.4
 
   apps/cms:
     dependencies:
@@ -263,7 +263,7 @@ importers:
         version: 4.8.0(react@18.2.0)
       wagmi:
         specifier: ^1.3.9
-        version: registry.npmjs.org/wagmi@1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@4.9.4)(viem@1.4.1)
+        version: registry.npmjs.org/wagmi@1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.1)
       zustand:
         specifier: ^4.0.0-rc.1
         version: 4.3.3(react@18.2.0)
@@ -302,8 +302,8 @@ importers:
         specifier: ^3.2.1
         version: 3.2.4(postcss@8.4.24)
       typescript:
-        specifier: 4.9.4
-        version: 4.9.4
+        specifier: 5.0.4
+        version: registry.npmjs.org/typescript@5.0.4
 
   apps/events:
     dependencies:
@@ -16606,7 +16606,7 @@ packages:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 4.9.4
+      typescript: registry.npmjs.org/typescript@4.9.4
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     dev: true
@@ -19371,13 +19371,13 @@ packages:
       - utf-8-validate
     dev: false
 
-  registry.npmjs.org/@safe-global/safe-apps-provider@0.17.1(typescript@4.9.4):
+  registry.npmjs.org/@safe-global/safe-apps-provider@0.17.1(typescript@5.0.4):
     resolution: {integrity: sha512-lYfRqrbbK1aKU1/UGkYWc/X7PgySYcumXKc5FB2uuwAs2Ghj8uETuW5BrwPqyjBknRxutFbTv+gth/JzjxAhdQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@safe-global/safe-apps-provider/-/safe-apps-provider-0.17.1.tgz}
     id: registry.npmjs.org/@safe-global/safe-apps-provider/0.17.1
     name: '@safe-global/safe-apps-provider'
     version: 0.17.1
     dependencies:
-      '@safe-global/safe-apps-sdk': registry.npmjs.org/@safe-global/safe-apps-sdk@8.0.0(typescript@4.9.4)
+      '@safe-global/safe-apps-sdk': registry.npmjs.org/@safe-global/safe-apps-sdk@8.0.0(typescript@5.0.4)
       events: registry.npmjs.org/events@3.3.0
     transitivePeerDependencies:
       - bufferutil
@@ -19413,14 +19413,14 @@ packages:
       - utf-8-validate
     dev: false
 
-  registry.npmjs.org/@safe-global/safe-apps-sdk@8.0.0(typescript@4.9.4):
+  registry.npmjs.org/@safe-global/safe-apps-sdk@8.0.0(typescript@5.0.4):
     resolution: {integrity: sha512-gYw0ki/EAuV1oSyMxpqandHjnthZjYYy+YWpTAzf8BqfXM3ItcZLpjxfg+3+mXW8HIO+3jw6T9iiqEXsqHaMMw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@safe-global/safe-apps-sdk/-/safe-apps-sdk-8.0.0.tgz}
     id: registry.npmjs.org/@safe-global/safe-apps-sdk/8.0.0
     name: '@safe-global/safe-apps-sdk'
     version: 8.0.0
     dependencies:
       '@safe-global/safe-gateway-typescript-sdk': registry.npmjs.org/@safe-global/safe-gateway-typescript-sdk@3.7.0
-      viem: registry.npmjs.org/viem@1.4.1(typescript@4.9.4)
+      viem: registry.npmjs.org/viem@1.4.1(typescript@5.0.4)
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -19794,7 +19794,7 @@ packages:
       typescript: 4.9.4
     dev: false
 
-  registry.npmjs.org/@wagmi/chains@1.6.0(typescript@4.9.4):
+  registry.npmjs.org/@wagmi/chains@1.6.0(typescript@5.0.4):
     resolution: {integrity: sha512-5FRlVxse5P4ZaHG3GTvxwVANSmYJas1eQrTBHhjxVtqXoorm0aLmCHbhmN8Xo1yu09PaWKlleEvfE98yH4AgIw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@wagmi/chains/-/chains-1.6.0.tgz}
     id: registry.npmjs.org/@wagmi/chains/1.6.0
     name: '@wagmi/chains'
@@ -19805,7 +19805,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      typescript: 4.9.4
+      typescript: registry.npmjs.org/typescript@5.0.4
     dev: false
 
   registry.npmjs.org/@wagmi/connectors@0.2.7(@types/node@18.11.3)(@wagmi/core@0.9.7)(ethers@5.7.2)(lokijs@1.5.12)(react@18.2.0)(typescript@4.9.4):
@@ -19850,7 +19850,7 @@ packages:
       - zod
     dev: false
 
-  registry.npmjs.org/@wagmi/connectors@2.6.6(@wagmi/chains@1.6.0)(react@18.2.0)(typescript@4.9.4)(viem@1.4.1):
+  registry.npmjs.org/@wagmi/connectors@2.6.6(@wagmi/chains@1.6.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.1):
     resolution: {integrity: sha512-/o1c/TCivQs8DOAUOcQvY2UIt3p2mWOAHi39D0LC74+ncpXzLC5/gyaWU38qnTxPM8s/PmTmaWDgz+VhICXrag==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@wagmi/connectors/-/connectors-2.6.6.tgz}
     id: registry.npmjs.org/@wagmi/connectors/2.6.6
     name: '@wagmi/connectors'
@@ -19867,17 +19867,17 @@ packages:
     dependencies:
       '@coinbase/wallet-sdk': registry.npmjs.org/@coinbase/wallet-sdk@3.7.1
       '@ledgerhq/connect-kit-loader': registry.npmjs.org/@ledgerhq/connect-kit-loader@1.1.0
-      '@safe-global/safe-apps-provider': registry.npmjs.org/@safe-global/safe-apps-provider@0.17.1(typescript@4.9.4)
-      '@safe-global/safe-apps-sdk': registry.npmjs.org/@safe-global/safe-apps-sdk@8.0.0(typescript@4.9.4)
-      '@wagmi/chains': registry.npmjs.org/@wagmi/chains@1.6.0(typescript@4.9.4)
+      '@safe-global/safe-apps-provider': registry.npmjs.org/@safe-global/safe-apps-provider@0.17.1(typescript@5.0.4)
+      '@safe-global/safe-apps-sdk': registry.npmjs.org/@safe-global/safe-apps-sdk@8.0.0(typescript@5.0.4)
+      '@wagmi/chains': registry.npmjs.org/@wagmi/chains@1.6.0(typescript@5.0.4)
       '@walletconnect/ethereum-provider': registry.npmjs.org/@walletconnect/ethereum-provider@2.9.0(@walletconnect/modal@2.5.9)
       '@walletconnect/legacy-provider': registry.npmjs.org/@walletconnect/legacy-provider@2.0.0
       '@walletconnect/modal': registry.npmjs.org/@walletconnect/modal@2.5.9(react@18.2.0)
       '@walletconnect/utils': registry.npmjs.org/@walletconnect/utils@2.9.0
-      abitype: registry.npmjs.org/abitype@0.8.7(typescript@4.9.4)
+      abitype: registry.npmjs.org/abitype@0.8.7(typescript@5.0.4)
       eventemitter3: registry.npmjs.org/eventemitter3@4.0.7
-      typescript: 4.9.4
-      viem: registry.npmjs.org/viem@1.4.1(typescript@4.9.4)
+      typescript: registry.npmjs.org/typescript@5.0.4
+      viem: registry.npmjs.org/viem@1.4.1(typescript@5.0.4)
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
       - bufferutil
@@ -19924,7 +19924,7 @@ packages:
       - zod
     dev: false
 
-  registry.npmjs.org/@wagmi/core@1.3.8(react@18.2.0)(typescript@4.9.4)(viem@1.4.1):
+  registry.npmjs.org/@wagmi/core@1.3.8(react@18.2.0)(typescript@5.0.4)(viem@1.4.1):
     resolution: {integrity: sha512-OYSxikoMizqVnpSkFTwGE7PwFaz2k0PXteSiI0W2Mtk4j4sZzRFdP+9AWeDB6AYm0yU3WvgN1IATx0EEBKUe3w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@wagmi/core/-/core-1.3.8.tgz}
     id: registry.npmjs.org/@wagmi/core/1.3.8
     name: '@wagmi/core'
@@ -19936,12 +19936,12 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@wagmi/chains': registry.npmjs.org/@wagmi/chains@1.6.0(typescript@4.9.4)
-      '@wagmi/connectors': registry.npmjs.org/@wagmi/connectors@2.6.6(@wagmi/chains@1.6.0)(react@18.2.0)(typescript@4.9.4)(viem@1.4.1)
-      abitype: registry.npmjs.org/abitype@0.8.7(typescript@4.9.4)
+      '@wagmi/chains': registry.npmjs.org/@wagmi/chains@1.6.0(typescript@5.0.4)
+      '@wagmi/connectors': registry.npmjs.org/@wagmi/connectors@2.6.6(@wagmi/chains@1.6.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.1)
+      abitype: registry.npmjs.org/abitype@0.8.7(typescript@5.0.4)
       eventemitter3: registry.npmjs.org/eventemitter3@4.0.7
-      typescript: 4.9.4
-      viem: registry.npmjs.org/viem@1.4.1(typescript@4.9.4)
+      typescript: registry.npmjs.org/typescript@5.0.4
+      viem: registry.npmjs.org/viem@1.4.1(typescript@5.0.4)
       zustand: registry.npmjs.org/zustand@4.3.3(react@18.2.0)
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
@@ -20806,7 +20806,7 @@ packages:
       typescript: 4.9.4
     dev: false
 
-  registry.npmjs.org/abitype@0.8.7(typescript@4.9.4):
+  registry.npmjs.org/abitype@0.8.7(typescript@5.0.4):
     resolution: {integrity: sha512-wQ7hV8Yg/yKmGyFpqrNZufCxbszDe5es4AZGYPBitocfSqXtjrTG9JMWFcc4N30ukl2ve48aBTwt7NJxVQdU3w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/abitype/-/abitype-0.8.7.tgz}
     id: registry.npmjs.org/abitype/0.8.7
     name: abitype
@@ -20818,10 +20818,10 @@ packages:
       zod:
         optional: true
     dependencies:
-      typescript: 4.9.4
+      typescript: registry.npmjs.org/typescript@5.0.4
     dev: false
 
-  registry.npmjs.org/abitype@0.9.3(typescript@4.9.4):
+  registry.npmjs.org/abitype@0.9.3(typescript@5.0.4):
     resolution: {integrity: sha512-dz4qCQLurx97FQhnb/EIYTk/ldQ+oafEDUqC0VVIeQS1Q48/YWt/9YNfMmp9SLFqN41ktxny3c8aYxHjmFIB/w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/abitype/-/abitype-0.9.3.tgz}
     id: registry.npmjs.org/abitype/0.9.3
     name: abitype
@@ -20835,7 +20835,7 @@ packages:
       zod:
         optional: true
     dependencies:
-      typescript: 4.9.4
+      typescript: registry.npmjs.org/typescript@5.0.4
     dev: false
 
   registry.npmjs.org/accepts@1.3.8:
@@ -23970,6 +23970,21 @@ packages:
       is-typedarray: registry.npmjs.org/is-typedarray@1.0.0
     dev: false
 
+  registry.npmjs.org/typescript@4.9.4:
+    resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/typescript/-/typescript-4.9.4.tgz}
+    name: typescript
+    version: 4.9.4
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true
+
+  registry.npmjs.org/typescript@5.0.4:
+    resolution: {integrity: sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/typescript/-/typescript-5.0.4.tgz}
+    name: typescript
+    version: 5.0.4
+    engines: {node: '>=12.20'}
+    hasBin: true
+
   registry.npmjs.org/uint8arrays@3.1.0:
     resolution: {integrity: sha512-ei5rfKtoRO8OyOIor2Rz5fhzjThwIHJZ3uyDPnDHTXbP0aMQ1RN/6AI5B5d9dBxJOU+BvOAk7ZQ1xphsX8Lrog==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/uint8arrays/-/uint8arrays-3.1.0.tgz}
     name: uint8arrays
@@ -24076,7 +24091,7 @@ packages:
       use-sync-external-store: registry.npmjs.org/use-sync-external-store@1.2.0(react@18.2.0)
     dev: false
 
-  registry.npmjs.org/viem@1.4.1(typescript@4.9.4):
+  registry.npmjs.org/viem@1.4.1(typescript@5.0.4):
     resolution: {integrity: sha512-MtaoBHDSJDqa+QyXKG5d+S6EQSebRO0tzw6anSP4zC7AbC614vMeg9Y8LbkmEkWCw8swFYkort+H9l7GkWB0uA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/viem/-/viem-1.4.1.tgz}
     id: registry.npmjs.org/viem/1.4.1
     name: viem
@@ -24092,10 +24107,10 @@ packages:
       '@noble/hashes': registry.npmjs.org/@noble/hashes@1.3.0
       '@scure/bip32': registry.npmjs.org/@scure/bip32@1.3.0
       '@scure/bip39': registry.npmjs.org/@scure/bip39@1.2.0
-      '@wagmi/chains': registry.npmjs.org/@wagmi/chains@1.6.0(typescript@4.9.4)
-      abitype: registry.npmjs.org/abitype@0.9.3(typescript@4.9.4)
+      '@wagmi/chains': registry.npmjs.org/@wagmi/chains@1.6.0(typescript@5.0.4)
+      abitype: registry.npmjs.org/abitype@0.9.3(typescript@5.0.4)
       isomorphic-ws: registry.npmjs.org/isomorphic-ws@5.0.0(ws@8.12.0)
-      typescript: 4.9.4
+      typescript: registry.npmjs.org/typescript@5.0.4
       ws: registry.npmjs.org/ws@8.12.0
     transitivePeerDependencies:
       - bufferutil
@@ -24142,7 +24157,7 @@ packages:
       - zod
     dev: false
 
-  registry.npmjs.org/wagmi@1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@4.9.4)(viem@1.4.1):
+  registry.npmjs.org/wagmi@1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.1):
     resolution: {integrity: sha512-BQbl+vWLNpLraXd/MWsl1P3I41l7DHrujx6qshIa1HDV7Mdh0GNrDuluRYBtuK2bBx9WM/Fjw45Ef2aKADan9A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/wagmi/-/wagmi-1.3.9.tgz}
     id: registry.npmjs.org/wagmi/1.3.9
     name: wagmi
@@ -24158,12 +24173,12 @@ packages:
       '@tanstack/query-sync-storage-persister': registry.npmjs.org/@tanstack/query-sync-storage-persister@4.29.19
       '@tanstack/react-query': registry.npmjs.org/@tanstack/react-query@4.29.19(react-dom@18.2.0)(react@18.2.0)
       '@tanstack/react-query-persist-client': registry.npmjs.org/@tanstack/react-query-persist-client@4.29.19(@tanstack/react-query@4.29.19)
-      '@wagmi/core': registry.npmjs.org/@wagmi/core@1.3.8(react@18.2.0)(typescript@4.9.4)(viem@1.4.1)
-      abitype: registry.npmjs.org/abitype@0.8.7(typescript@4.9.4)
+      '@wagmi/core': registry.npmjs.org/@wagmi/core@1.3.8(react@18.2.0)(typescript@5.0.4)(viem@1.4.1)
+      abitype: registry.npmjs.org/abitype@0.8.7(typescript@5.0.4)
       react: 18.2.0
-      typescript: 4.9.4
+      typescript: registry.npmjs.org/typescript@5.0.4
       use-sync-external-store: registry.npmjs.org/use-sync-external-store@1.2.0(react@18.2.0)
-      viem: registry.npmjs.org/viem@1.4.1(typescript@4.9.4)
+      viem: registry.npmjs.org/viem@1.4.1(typescript@5.0.4)
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
       - bufferutil
