@@ -116,7 +116,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `${ABSOLUTE_PATH}/rpc`,
+      `/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth`,
     ],
@@ -144,7 +144,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `${ABSOLUTE_PATH}/rpc`,
+      `/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth_goerli`,
     ],
