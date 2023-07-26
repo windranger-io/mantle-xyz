@@ -2,6 +2,7 @@
 
 import { CHAINS } from "@config/constants";
 import { useToast } from "@hooks/useToast";
+import { useEffect, useState } from "react";
 
 import { useSwitchNetwork } from "wagmi";
 
@@ -12,7 +13,11 @@ declare global {
 }
 
 export function useSwitchToNetwork() {
-  const { switchNetwork } = useSwitchNetwork();
+  // allow wagmi to attempt to switch networks
+  const { switchNetwork, error } = useSwitchNetwork();
+
+  // set the given error into context to control dismissals
+  const [displayError, setDisplayError] = useState("");
 
   // create an error toast if required
   const { updateToast } = useToast();
@@ -29,10 +34,13 @@ export function useSwitchToNetwork() {
 
   // trigger change of network
   const switchToNetwork = async (chainId: number): Promise<number | void> => {
-    // we should req this via wagmi
-    // if (!window.ethereum) throw new Error("No crypto wallet found");
+    // perform switch with wagmi
     try {
+      // reset prev error
+      setDisplayError("");
+      // attempt to switch the network
       switchNetwork?.(chainId);
+      // on success return the chainID we moved to
       return chainId;
     } catch (switchError: any) {
       // This error code indicates that the chain has not been added to MetaMask.
@@ -49,6 +57,32 @@ export function useSwitchToNetwork() {
     }
     return Promise.resolve();
   };
+
+  // hydrate error
+  useEffect(() => {
+    setDisplayError(error?.toString() || "");
+  }, [error]);
+
+  // place toast on error
+  useEffect(
+    () => {
+      if (displayError) {
+        updateToast({
+          id: "switch-error",
+          content: "Error: Unable to switch chains",
+          type: "error",
+          borderLeft: "red-600",
+          buttonText: "Close",
+          onButtonClick: () => {
+            setDisplayError("");
+            return true;
+          },
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [displayError]
+  );
 
   return {
     addNetwork,
