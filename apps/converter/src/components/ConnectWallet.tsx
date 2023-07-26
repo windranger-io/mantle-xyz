@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 "use client";
 
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -55,7 +57,7 @@ function ConnectWallet() {
   const { switchToNetwork } = useSwitchToNetwork();
 
   // control wagmi connector
-  const { connect, connectAsync, connectors } = useConnect();
+  const { connect, connectAsync, connectors, pendingConnector } = useConnect();
 
   // Find the right connector by ID
   const connector = useMemo(
@@ -86,51 +88,6 @@ function ConnectWallet() {
     },
   });
 
-  // record change of account
-  const changeAccount = async () => {
-    const accounts = await window.ethereum?.request({
-      method: "eth_requestAccounts",
-    });
-
-    if (accounts) {
-      setClient({
-        chainId: parseInt(
-          (await window.ethereum?.request({
-            method: "eth_chainId",
-          })) || "-1",
-          16
-        ),
-        isConnected: true,
-        address: accounts[0],
-      });
-    }
-  };
-
-  // trigger change of network
-  const changeNetwork = async () => {
-    if (!window.ethereum) throw new Error("No crypto wallet found");
-    // trigger a change of network
-    await switchToNetwork(chainId);
-  };
-
-  // check the connection is valid
-  const checkConnection = async () => {
-    const { ethereum } = window;
-    if (ethereum) {
-      const accounts = await ethereum.request({ method: "eth_accounts" });
-      if (accounts.length > 0) {
-        setClient({
-          isConnected: true,
-          address: accounts[0],
-        });
-      } else {
-        setClient({
-          isConnected: false,
-        });
-      }
-    }
-  };
-
   // pick up connection details from wagmi
   const { address: wagmiAddress } = useAccount({
     onConnect: async () => {
@@ -144,6 +101,39 @@ function ConnectWallet() {
       await changeAccount();
     },
   });
+
+  // record change of account
+  // record change of account
+  const changeAccount = async () => {
+    setClient({
+      chainId,
+      isConnected: true,
+      address: wagmiAddress,
+      connector: client?.connector || pendingConnector?.id,
+    });
+  };
+
+  // trigger change of network
+  const changeNetwork = async () => {
+    if (!window.ethereum) throw new Error("No crypto wallet found");
+    // trigger a change of network
+    await switchToNetwork(chainId);
+  };
+
+  // check the connection is valid
+  const checkConnection = async () => {
+    if (wagmiAddress) {
+      setClient({
+        isConnected: true,
+        address: wagmiAddress,
+        connector: client?.connector,
+      });
+    } else {
+      setClient({
+        isConnected: false,
+      });
+    }
+  };
 
   // set wagmi address to address for ssr
   useEffect(() => {
@@ -199,14 +189,34 @@ function ConnectWallet() {
             {!client.address ? (
               <WalletModal
                 onMetamask={() => {
+                  setClient({
+                    ...client,
+                    connector: "metaMask",
+                  });
                   connect({
-                    connector,
+                    connector: connectors.find(
+                      (conn) => conn.id === "metaMask"
+                    ),
+                  });
+                }}
+                onWalletConnect={() => {
+                  setClient({
+                    ...client,
+                    connector: "walletConnect",
+                  });
+                  connect({
+                    chainId,
+                    connector: connectors.find(
+                      (conn) => conn.id === "walletConnect"
+                    ),
                   });
                 }}
               >
-                <Button variant="walletConnect" size="regular">
-                  {!client.address ? `Connect Wallet` : `Disconnect`}
-                </Button>
+                <div>
+                  <Button variant="walletConnect" size="regular">
+                    Connect Wallet
+                  </Button>
+                </div>
               </WalletModal>
             ) : (
               <Button

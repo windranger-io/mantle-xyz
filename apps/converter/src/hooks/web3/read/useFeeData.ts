@@ -1,4 +1,4 @@
-import { BaseProvider } from "@ethersproject/providers";
+import { BaseProvider, JsonRpcProvider } from "@ethersproject/providers";
 import { BigNumber } from "ethers";
 import { useQuery } from "wagmi";
 
@@ -6,10 +6,10 @@ export type FeeData = {
   data: Awaited<ReturnType<BaseProvider["getFeeData"]>>;
 };
 
-function useFeeData(provider: BaseProvider) {
+function useFeeData(provider: JsonRpcProvider) {
   // fetch the gas estimate for the selected operation on in the selected direction
   const { data: feeData, refetch: refetchFeeData } = useQuery<FeeData>(
-    ["FEE_DATA", { network: provider?.network.name }],
+    ["FEE_DATA", { network: provider?.connection?.url }],
     async () => {
       return {
         data: await provider.getFeeData(),

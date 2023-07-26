@@ -12,13 +12,13 @@ import {
 } from "@ethersproject/providers";
 import { UseMutateFunction } from "@tanstack/react-query";
 
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import StateContext from "@providers/stateContext";
 
 import { timeout } from "@utils/toolSet";
 
-import { useMutation, useSigner } from "wagmi";
-import { Contract, Signer } from "ethers";
+import { useMutation, useWalletClient } from "wagmi";
+import { Contract, providers } from "ethers";
 import { parseUnits } from "ethers/lib/utils.js";
 
 class TxError extends Error {
@@ -47,9 +47,24 @@ export function useCallConvert(): UseMutateFunction<
   // const { updateToast, deleteToast } = useToast();
 
   // get l1 provider
-  const { data: provider } = useSigner({
+  const walletClient = useWalletClient({
     chainId: L1_CHAIN_ID,
   });
+
+  const layer1Signer = useMemo(() => {
+    if (walletClient.data) {
+      const { account, chain: l1Chain, transport } = walletClient.data!;
+      const network = {
+        chainId: l1Chain?.id,
+        name: l1Chain?.name,
+        ensAddress: l1Chain?.contracts?.ensRegistry?.address,
+      };
+      const provider = new providers.Web3Provider(transport, network);
+      const signer = provider.getSigner(account.address);
+      return signer;
+    }
+    return undefined;
+  }, [walletClient]);
 
   // hydrate context into state
   const {
@@ -91,7 +106,7 @@ export function useCallConvert(): UseMutateFunction<
           const contract = new Contract(
             L1_CONVERTER_CONTRACT_ADDRESS,
             L1_CONVERTER_CONTRACT_ABI,
-            provider as unknown as Signer
+            layer1Signer
           );
           // return result of running migrateBIT with given amount
           receipt = await contract.migrateBIT(

@@ -1,10 +1,9 @@
-import { BigNumber, Contract } from "ethers";
+import { CHAINS_FORMATTED, L1_CHAIN_ID } from "@config/constants";
+import { BigNumber, Contract, providers } from "ethers";
 
-import { useProvider, useQuery } from "wagmi";
+import { useQuery } from "wagmi";
 
 function useAccountBalance(address: `0x${string}`, token: string) {
-  // as connected
-  const provider = useProvider();
   // perform a multicall on the given network to get all token balances for user
   const {
     data: balance,
@@ -16,18 +15,37 @@ function useAccountBalance(address: `0x${string}`, token: string) {
       "BALANCE_FOR_ADDRESS",
       {
         address,
-        provider: provider?.network.name,
       },
     ],
     async () => {
+      const provider = new providers.JsonRpcProvider(
+        CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
+      );
       const abi = [
-        "function balanceOf(address account) external view returns (uint256)",
+        {
+          constant: true,
+          inputs: [
+            {
+              name: "_owner",
+              type: "address",
+            },
+          ],
+          name: "balanceOf",
+          outputs: [
+            {
+              name: "balance",
+              type: "uint256",
+            },
+          ],
+          payable: false,
+          type: "function",
+        },
       ];
       const contract = new Contract(token, abi, provider);
       const finalBalance = await contract.balanceOf(address);
 
       // return
-      return finalBalance;
+      return finalBalance.toString();
     },
     {
       // refetch every 60s or when refetched
