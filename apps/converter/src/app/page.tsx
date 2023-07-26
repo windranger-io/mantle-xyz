@@ -7,6 +7,5 @@ export default async function Page() {
   if (isComingSoon) {
     return <ComingSoon />;
   }
-
   return <Converter />;
 }
