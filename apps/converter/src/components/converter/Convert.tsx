@@ -4,11 +4,9 @@ import {
   Views,
   L1_CONVERTER_CONTRACT_ABI,
   L1_CONVERTER_CONTRACT_ADDRESS,
-  L1_CHAIN_ID,
 } from "@config/constants";
 import StateContext from "@providers/stateContext";
 import { Suspense, useContext, useEffect, useState } from "react";
-import { useProvider } from "wagmi";
 import { Contract } from "ethers";
 
 // by order of use...
@@ -27,12 +25,8 @@ import { Faq } from "./Faq";
 
 export default function Convert() {
   // unpack the context
-  const { view, isCTAPageOpen, setIsCTAPageOpen } = useContext(StateContext);
-
-  // use provider for l1 chain
-  const provider = useProvider({
-    chainId: L1_CHAIN_ID,
-  });
+  const { provider, view, isCTAPageOpen, setIsCTAPageOpen } =
+    useContext(StateContext);
 
   const [halted, setHalted] = useState<boolean>(true);
 

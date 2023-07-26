@@ -10,7 +10,7 @@ import {
   Views,
 } from "@config/constants";
 
-import { Contract } from "ethers";
+import { Contract, providers } from "ethers";
 import { Network } from "@ethersproject/providers";
 
 import {
@@ -22,7 +22,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useProvider } from "wagmi";
+import { usePublicClient } from "wagmi";
 import { usePathname } from "next/navigation";
 import { useAccountBalances, useL1FeeData, FeeData } from "@hooks/web3/read";
 
@@ -36,9 +36,11 @@ export type StateProps = {
     isConnected: boolean;
     chainId?: number;
     address?: `0x${string}`;
+    connector?: string;
   };
   safeChains: number[];
   chainId: number;
+  provider: providers.JsonRpcProvider | providers.FallbackProvider;
   multicall: MutableRefObject<{
     network: Network;
     multicallContract: Contract;
@@ -75,6 +77,7 @@ export type StateProps = {
     isConnected: boolean;
     chainId?: number;
     address?: `0x${string}`;
+    connector?: string;
   }) => void;
   setSafeChains: (chains: number[]) => void;
   resetBalances: () => void;
@@ -110,13 +113,31 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [safeChains, setSafeChains] = useState([L1_CHAIN_ID]);
 
   // get the provider for the chosen chain
-  const provider = useProvider({ chainId });
+  const publicClient = usePublicClient({ chainId });
+
+  // create an ethers provider from the publicClient
+  const provider = useMemo(() => {
+    const { chain, transport } = publicClient;
+    const network = {
+      chainId: chain.id,
+      name: chain.name,
+      ensAddress: chain.contracts?.ensRegistry?.address,
+    };
+    if (transport.type === "fallback")
+      return new providers.FallbackProvider(
+        (transport.transports as { value: { url: string } }[]).map(
+          ({ value }) => new providers.JsonRpcProvider(value?.url, network)
+        )
+      );
+    return new providers.JsonRpcProvider(transport.url, network);
+  }, [publicClient]);
 
   // keep hold of all wallet connection details
   const [client, setClient] = useState<{
     isConnected: boolean;
     chainId?: number;
     address?: `0x${string}`;
+    connector?: string;
   }>({
     isConnected: false,
   });
@@ -165,15 +186,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // get current gas fees on selected network
   const feeData = useMemo(() => l1FeeData, [l1FeeData]);
 
-  // perform a multicall on the given network to get all token balances for user
+  // perform a multicall on the given network to get token balances for user
   const { balances, resetBalances, isFetchingBalances, isRefetchingBalances } =
-    useAccountBalances(
-      chainId,
-      client,
-      tokens,
-      multicall,
-      setIsLoadingBalances
-    );
+    useAccountBalances(chainId, client, tokens, setIsLoadingBalances);
 
   // fetch the allowance for the selected token on the selected chain
   const { allowance, resetAllowance } = useAllowanceCheck(chainId, client);
@@ -248,6 +263,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       client,
       chainId,
       safeChains,
+      provider,
       multicall,
 
       feeData,
@@ -297,6 +313,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     client,
     chainId,
     safeChains,
+    provider,
     multicall,
 
     feeData,
