@@ -44,7 +44,9 @@ export default function RootLayout({
             header={<Nav className="mb-0 m-0" hideConnectBtn={isComingSoon} />}
             className="min-h-screen justify-between"
           >
-            <PageContainer className="grow">{children}</PageContainer>
+            <PageContainer className="grow items-center">
+              {children}
+            </PageContainer>
             {!isComingSoon && <SlimFooter url={CONST.WEBSITE} />}
           </PageWrapper>
         </Providers>
