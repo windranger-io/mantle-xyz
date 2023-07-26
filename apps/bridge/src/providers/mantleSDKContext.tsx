@@ -24,21 +24,18 @@ import { hashCrossDomainMessage } from "@mantleio/core-utils";
 
 import { CHAINS_FORMATTED, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
-import { useSigner, useProvider, useNetwork } from "wagmi";
+import { useNetwork, usePublicClient, useWalletClient } from "wagmi";
 import type {
-  FallbackProvider,
   Provider,
   TransactionReceipt,
   TransactionResponse,
 } from "@ethersproject/providers";
 import { BytesLike, Signer, ethers, providers } from "ethers";
 
-import ErrorFallback from "@components/ErrorFallback";
-import { withErrorBoundary, useErrorHandler } from "react-error-boundary";
-
 import { timeout } from "@utils/toolSet";
 
 import { gql, useApolloClient } from "@apollo/client";
+import { useMemo } from "react";
 
 type WaitForMessageStatus = (
   message: MessageLike,
@@ -127,10 +124,22 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   const gqclient = useApolloClient();
 
   // pull all the signers/privders and set handlers and associate boundaries as we go
-  const { data: layer1Signer, error: layer1SignerError } = useSigner({
-    chainId: L1_CHAIN_ID,
-  });
-  useErrorHandler(layer1SignerError);
+  const walletClient = useWalletClient({ chainId: L1_CHAIN_ID });
+  const layer1Signer = useMemo(() => {
+    if (walletClient.data) {
+      const { account, chain: l1Chain, transport } = walletClient.data!;
+      const network = {
+        chainId: l1Chain?.id,
+        name: l1Chain?.name,
+        ensAddress: l1Chain?.contracts?.ensRegistry?.address,
+      };
+      const provider = new providers.Web3Provider(transport, network);
+      const signer = provider.getSigner(account.address);
+      return signer;
+    }
+    return undefined;
+  }, [walletClient]);
+
   // get an infura backed provider so we can search through more blocks - this enables the full sdk to work
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const layer1Infura = React.useMemo(
@@ -150,24 +159,54 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       ),
     []
   );
-  const { data: mantleTestnetSigner, error: mantleTestnetSignerError } =
-    useSigner({
-      chainId: L2_CHAIN_ID,
-    });
-  useErrorHandler(mantleTestnetSignerError);
-  const mantleTestnetProvider = useProvider({
-    chainId: L2_CHAIN_ID,
-  });
+
+  // pull all the signers/privders and set handlers and associate boundaries as we go
+  const mantleWalletClient = useWalletClient({ chainId: L2_CHAIN_ID });
+  const mantleSigner = useMemo(() => {
+    if (mantleWalletClient?.data) {
+      const { account, chain: l2Chain, transport } = mantleWalletClient.data!;
+      const network = {
+        chainId: l2Chain?.id,
+        name: l2Chain?.name,
+        ensAddress: l2Chain?.contracts?.ensRegistry?.address,
+      };
+      const provider = new providers.Web3Provider(transport, network);
+      const signer = provider.getSigner(account.address);
+      return signer;
+    }
+    return undefined;
+  }, [mantleWalletClient]);
+
+  // get the provider for the chosen chain
+  const publicClient = usePublicClient({ chainId: L2_CHAIN_ID });
+
+  // create an ethers provider from the publicClient
+  const mantleProvider = useMemo(() => {
+    const { chain: mantleChain, transport } = publicClient;
+    const network = {
+      chainId: mantleChain.id,
+      name: mantleChain.name,
+      ensAddress: mantleChain.contracts?.ensRegistry?.address,
+    };
+    if (transport.type === "fallback")
+      return new providers.FallbackProvider(
+        (transport.transports as { value: { url: string } }[]).map(
+          ({ value }) => new providers.JsonRpcProvider(value?.url, network)
+        )
+      );
+    return new providers.JsonRpcProvider(transport.url, network);
+  }, [publicClient]);
 
   // construct a crossChainMessenger - this is responsible for nearly all of our web3 interactions
   const crossChainMessenger = React.useMemo(() => {
+    // avoid building the manager if we don't have an approproate signer for the currently selected chain (this avoids errors on hw wallets)
     if (
-      layer1Signer === undefined ||
-      layer1Signer === null ||
-      mantleTestnetSigner === undefined ||
-      mantleTestnetSigner === null ||
+      (chain?.id === L1_CHAIN_ID &&
+        (layer1Signer === undefined || layer1Signer === null)) ||
+      (chain?.id === L2_CHAIN_ID &&
+        (mantleSigner === undefined || mantleSigner === null)) ||
       !layer1Provider ||
-      !mantleTestnetProvider
+      !mantleProvider
     )
       return { crossChainMessenger: undefined };
 
@@ -177,13 +216,9 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
         l1ChainId: L1_CHAIN_ID,
         l2ChainId: L2_CHAIN_ID,
         l1SignerOrProvider:
-          chain?.id === L1_CHAIN_ID ? layer1Signer : layer1Provider,
+          chain?.id === L1_CHAIN_ID ? layer1Signer! : layer1Provider!,
         l2SignerOrProvider:
-          chain?.id === L2_CHAIN_ID
-            ? mantleTestnetSigner
-            : // RE: https://github.com/ethers-io/ethers.js/discussions/2703
-              (mantleTestnetProvider as FallbackProvider).providerConfigs[0]
-                .provider,
+          chain?.id === L2_CHAIN_ID ? mantleSigner! : mantleProvider!,
       }),
     } as MantleSDK;
 
@@ -794,8 +829,8 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     layer1Provider,
     layer1InfuraRef,
     layer1ProviderRef,
-    mantleTestnetSigner,
-    mantleTestnetProvider,
+    mantleSigner,
+    mantleProvider,
     gqclient,
     chain,
     challengePeriod,
@@ -812,12 +847,16 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   }, [layer1Provider]);
 
   React.useEffect(() => {
-    mantleTestnetRef.current = mantleTestnetProvider;
-  }, [mantleTestnetProvider]);
+    mantleTestnetRef.current = mantleProvider;
+  }, [mantleProvider]);
 
   React.useEffect(() => {
     layer1SignerRef.current = layer1Signer as Signer;
   }, [layer1Signer]);
+
+  React.useEffect(() => {
+    console.log(crossChainMessenger);
+  }, [crossChainMessenger]);
 
   return (
     <MantleSDKContext.Provider value={crossChainMessenger as MantleSDK}>
@@ -835,17 +874,4 @@ const useMantleSDK = () => {
   return context;
 };
 
-const MantleSDKProviderWithErrorBoundary = withErrorBoundary(
-  MantleSDKProvider,
-  {
-    FallbackComponent: ErrorFallback,
-    onReset: () => {
-      window.location.reload();
-    },
-  }
-);
-
-export {
-  MantleSDKProviderWithErrorBoundary as MantleSDKProvider,
-  useMantleSDK,
-};
+export { useMantleSDK, MantleSDKProvider };

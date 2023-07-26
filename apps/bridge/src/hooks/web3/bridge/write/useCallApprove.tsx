@@ -6,7 +6,7 @@ import { useContractWrite } from "wagmi";
 
 export function useCallApprove(selected: Token) {
   // hydrate context into state
-  const { bridgeAddress, destinationTokenAmount, resetAllowance } =
+  const { provider, bridgeAddress, destinationTokenAmount, resetAllowance } =
     useContext(StateContext);
 
   // if we're running an approve tx, we'll track the state on approvalStatus
@@ -14,7 +14,6 @@ export function useCallApprove(selected: Token) {
 
   // setup a call to approve an allowance on the selected token
   const { writeAsync: writeApprove } = useContractWrite({
-    mode: "recklesslyUnprepared",
     address: selected.address,
     abi: TOKEN_ABI,
     functionName: "approve",
@@ -26,10 +25,13 @@ export function useCallApprove(selected: Token) {
       // mark as waiting...
       setApprovalStatus("Waiting for tx approval...");
       // perform the tx call
-      const txRes = await writeApprove({
-        recklesslySetUnpreparedArgs: [
+      const txRes = await writeApprove?.({
+        args: [
           bridgeAddress,
-          parseUnits(destinationTokenAmount || "0", selected.decimals),
+          parseUnits(
+            destinationTokenAmount || "1",
+            selected.decimals
+          ).toString(),
         ],
       }).catch((e) => {
         throw e;
@@ -37,9 +39,11 @@ export function useCallApprove(selected: Token) {
       // mark approval...
       setApprovalStatus("Tx approved, waiting for confirmation...");
       // wait for one confirmation
-      await txRes.wait(1).catch((e) => {
-        throw e;
-      });
+      await provider
+        .waitForTransaction(txRes?.hash || "", 1)
+        .catch((e: any) => {
+          throw e;
+        });
       // final update
       setApprovalStatus("Tx settled");
     } catch {
@@ -57,8 +61,9 @@ export function useCallApprove(selected: Token) {
   }, [
     bridgeAddress,
     destinationTokenAmount,
-    selected.decimals,
+    provider,
     resetAllowance,
+    selected.decimals,
     writeApprove,
   ]);
 

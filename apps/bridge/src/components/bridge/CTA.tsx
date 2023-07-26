@@ -1,4 +1,4 @@
-import { Button } from "@mantle/ui";
+import { Button, WalletModal } from "@mantle/ui";
 import { useContext, useState, useEffect, useMemo, useCallback } from "react";
 
 import StateContext from "@providers/stateContext";
@@ -14,7 +14,6 @@ import {
 
 import { useConnect } from "wagmi";
 import { parseUnits } from "ethers/lib/utils.js";
-import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useCallApprove } from "@hooks/web3/bridge/write/useCallApprove";
@@ -39,27 +38,18 @@ export default function CTA({
     selectedTokenAmount = "",
     destinationTokenAmount = "",
     setCTAPage,
+    setClient,
   } = useContext(StateContext);
 
   // control wagmi connector
   const { connect, connectors } = useConnect();
-
-  // Find the right connector by ID
-  const connector = useMemo(
-    // we can allow this connection.id to be set in connection modal phase
-    () =>
-      connectors.find((conn) => conn.id === "metamask") ||
-      // fallback to injected provider
-      new InjectedConnector(),
-    [connectors]
-  );
 
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
   const isMantleChainID = useIsChainID(L2_CHAIN_ID);
 
   // set address with useState to avoid hydration errors
-  const [address, setAddress] = useState<`0x${string}`>(client?.address!);
+  const [address, setAddress] = useState<string>(client?.address!);
 
   // switch to the correct network if missing
   const { switchToNetwork } = useSwitchToNetwork();
@@ -183,47 +173,73 @@ export default function CTA({
 
   return (
     <div className="mt-4">
-      <Button
-        type="button"
-        size="full"
-        className="h-14"
-        onClick={() => {
-          if (!client?.address) {
-            connect({
-              connector,
+      {!client?.address ? (
+        <WalletModal
+          onMetamask={() => {
+            setClient({
+              ...client,
+              connector: "metaMask",
             });
-          } else if (!isChainID) {
-            switchToNetwork(chainId);
-          } else if (
-            fixDecimals(allowance || "-1").lt(
-              fixDecimals(destinationTokenAmount || "0")
-            )
-          ) {
-            // allocate allowance
-            approve();
-          } else {
-            // always from the default page
-            setCTAPage(CTAPages.Default);
-            // complete the transaction inside the modal
-            setIsOpen(true);
+            connect({
+              connector: connectors.find((conn) => conn.id === "metaMask"),
+            });
+          }}
+          onWalletConnect={() => {
+            setClient({
+              ...client,
+              connector: "walletConnect",
+            });
+            connect({
+              chainId,
+              connector: connectors.find((conn) => conn.id === "walletConnect"),
+            });
+          }}
+        >
+          <div>
+            <Button type="button" size="full" className="h-14">
+              Please connect your wallet
+            </Button>
+          </div>
+        </WalletModal>
+      ) : (
+        <Button
+          type="button"
+          size="full"
+          className="h-14"
+          onClick={() => {
+            if (!isChainID) {
+              switchToNetwork(chainId);
+            } else if (
+              fixDecimals(allowance || "-1").lt(
+                fixDecimals(destinationTokenAmount || "0")
+              )
+            ) {
+              // allocate allowance
+              approve();
+            } else {
+              // always from the default page
+              setCTAPage(CTAPages.Default);
+              // complete the transaction inside the modal
+              setIsOpen(true);
+            }
+          }}
+          disabled={
+            isChainID &&
+            !!client.address &&
+            (!!approvalStatus ||
+              !destinationTokenAmount ||
+              !selectedTokenAmount ||
+              !parseFloat(destinationTokenAmount) ||
+              Number.isNaN(parseFloat(destinationTokenAmount)) ||
+              Number.isNaN(parseFloat(selectedTokenAmount)) ||
+              fixDecimals(spendDetails.balance || "-1").lt(
+                fixDecimals(destinationTokenAmount || "0")
+              ))
           }
-        }}
-        disabled={
-          isChainID &&
-          !!client.address &&
-          (!!approvalStatus ||
-            !destinationTokenAmount ||
-            !selectedTokenAmount ||
-            !parseFloat(destinationTokenAmount) ||
-            Number.isNaN(parseFloat(destinationTokenAmount)) ||
-            Number.isNaN(parseFloat(selectedTokenAmount)) ||
-            fixDecimals(spendDetails.balance || "-1").lt(
-              fixDecimals(destinationTokenAmount || "0")
-            ))
-        }
-      >
-        {CTAButtonText}
-      </Button>
+        >
+          {CTAButtonText}
+        </Button>
+      )}
 
       {/* <hr className="border border-stroke-inputs mt-6 mb-8" /> */}
       {isChainID &&
