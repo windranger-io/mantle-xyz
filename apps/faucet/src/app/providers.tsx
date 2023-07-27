@@ -1,7 +1,9 @@
 import { headers } from "next/headers";
 import { Session } from "next-auth";
 
-import { WagmiProvider } from "@providers/wagmi-context";
+import { WagmiProvider } from "@providers/wagmiContext";
+import { StateProvider } from "@providers/stateContext";
+import { ToastContainer } from "@components/Toast";
 
 import { getSession } from "./session";
 import AuthContext from "./context";
@@ -17,9 +19,11 @@ export default async function Providers({
 
   return (
     <WagmiProvider>
-      <AuthContext session={session || ({} as unknown as Session)}>
-        {children}
-      </AuthContext>
+      <StateProvider>
+        <AuthContext session={session || ({} as unknown as Session)}>
+          <ToastContainer>{children}</ToastContainer>
+        </AuthContext>
+      </StateProvider>
     </WagmiProvider>
   );
 }

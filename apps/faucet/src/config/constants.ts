@@ -1,3 +1,5 @@
+import { Chain } from "wagmi";
+
 // Configure the applications name
 export const APP_NAME = "Mantle Testnet Faucet";
 
@@ -19,11 +21,23 @@ export const TWITTER_TITLE = "Mantle Testnet Faucet";
 export const TWITTER_DESC =
   "Fund your testnet wallet here to start to #BuildonMantle.";
 
-// To be changed before launch
-export const ABSOLUTE_PATH = "https://faucet.testnet.mantle.xyz/";
+// Get the current absolute path from the env
+export function getBaseUrl() {
+  // return the fully resolved absolute url
+  return (
+    process.env.NEXT_PUBLIC_VERCEL_URL ||
+    (process.env.NEXT_PUBLIC_SITE_URL
+      ? `https://faucet.testnet.mantle.xyz`
+      : // this should match the port used by the current app
+        "http://localhost:3003")
+  );
+}
+
+// export the absolute path
+export const ABSOLUTE_PATH = getBaseUrl();
 
 // Configure which chain to use (goerli)
-export const CHAIN_ID = 5;
+export const L1_CHAIN_ID = 5;
 
 // Configure the maximum balance the ui will mint until
 export const MAX_BALANCE = 1000;
@@ -39,9 +53,6 @@ export const REQUIRED_TWEET =
 export const NETWORKS: Record<number, `0x${string}`> = {
   5: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
 };
-
-// goerli only
-export const L1_CHAIN_ID = 5;
 
 // set the available chains configuration to allow network to be added
 export const CHAINS: Record<
@@ -69,7 +80,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `/rpc`,
+      `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth_goerli`,
     ],
@@ -77,30 +88,65 @@ export const CHAINS: Record<
   },
 };
 
-// export the mintable erc20 tokens ABI
+// Formatted chains for use in wagmi
+export const CHAINS_FORMATTED: Record<number, Chain> = {
+  5: {
+    testnet: true,
+    name: CHAINS[5].chainName,
+    network: CHAINS[5].chainName,
+    rpcUrls: {
+      default: {
+        http: [CHAINS[5].rpcUrls[0]],
+      },
+      public: {
+        http: [CHAINS[5].rpcUrls[1]],
+      },
+    },
+    id: 5,
+    nativeCurrency: CHAINS[5].nativeCurrency,
+  },
+};
+
+// export the mintable erc20 tokens mint function ABI
 export const ABI = [
-  // view methods
-  "function totalSupply() view returns (uint totalSupply)",
-  "function balanceOf(address who) view returns (uint balance)",
-  "function allowance(address owner, address spender) view returns (uint allowance)",
-  "function mintRecord(address for) view returns (uint256 blockNumber)",
-
-  // transaction methods
-  "function transfer(address to, uint value)",
-  "function transferFrom(address from, address to, uint value)",
-  "function approve(address spender, uint value)",
-  "function mint(uint256 amount)",
-  "function withdraw()",
-
-  // events
-  "event Transfer(address indexed from, address indexed to, uint value)",
-  "event Approval(address indexed owner, address indexed spender, uint value)",
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
+    ],
+    name: "mint",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "for",
+        type: "address",
+      },
+    ],
+    name: "mintRecord",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "blockNumber",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ];
 
 // everything by default
 export default {
   APP_NAME,
-  CHAIN_ID,
+  L1_CHAIN_ID,
   MAX_BALANCE,
   REQUIRED_TWEET,
   NETWORKS,
