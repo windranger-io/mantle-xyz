@@ -12,8 +12,8 @@ import config from "@supagraph/config";
 import { claim } from "@supagraph/handlers/claim";
 import { L1ToL2MessageEntity } from "@supagraph/types";
 
-// Get the mongo client
-const client = getMongodb(process.env.MONGODB_URI!);
+// forces the route handler to be dynamic
+export const dynamic = "force-dynamic";
 
 // Switch out the engine for development to avoid the mongo requirment locally
 Store.setEngine({
@@ -28,7 +28,7 @@ Store.setEngine({
       : // connect store to MongoDB
         Mongo.create({
           kv: {},
-          client,
+          client: getMongodb(process.env.MONGODB_URI!),
           name: config.name,
           mutable: config.mutable,
         }),
@@ -157,30 +157,45 @@ const processMissedDrops = async (
 
 // Expose the sync command on a route so that we can call it with a cron job
 export async function GET() {
-  // select the named db
-  const db = (await client).db(config.name || "supagraph");
-
   // open a checkpoint on the db...
   const engine = await getEngine();
 
-  // create a checkpoint
-  engine?.stage?.checkpoint();
+  // select the named db
+  const db = engine?.db as Mongo;
 
-  // pull the missed drops
-  const result = await getMissedDrops(db);
-  const missed = await result.toArray();
+  // if we have a db
+  if (db.db) {
+    // create a checkpoint
+    engine?.stage?.checkpoint();
 
-  // process the missed claims
-  const claimed = await processMissedDrops(missed);
+    // pull the missed drops
+    const result = await getMissedDrops(await Promise.resolve(db.db));
+    const missed = await result.toArray();
 
-  // write all updates to db
-  await engine?.stage?.commit();
+    // process the missed claims
+    const claimed = await processMissedDrops(missed);
 
-  // we don't need to sync more often than once per block - and if we're using vercel.json crons we can only sync 1/min - 1/10mins seems reasonable for this
+    // write all updates to db
+    await engine?.stage?.commit();
+
+    // we don't need to sync more often than once per block - and if we're using vercel.json crons we can only sync 1/min - 1/10mins seems reasonable for this
+    return NextResponse.json(
+      {
+        missed: missed.length,
+        claimed: claimed.filter((v) => v).length,
+      },
+      {
+        headers: {
+          // allow to be cached for revalidate seconds and allow caching in shared public cache (upto revalidate seconds)
+          "Cache-Control": `max-age=${config.revalidate}, public, s-maxage=${config.revalidate}`,
+        },
+      }
+    );
+  }
+
   return NextResponse.json(
     {
-      missed: missed.length,
-      claimed: claimed.filter((v) => v).length,
+      error: "no db",
     },
     {
       headers: {
