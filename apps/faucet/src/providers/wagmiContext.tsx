@@ -1,16 +1,20 @@
 "use client";
 
-import { WagmiConfig, configureChains, createClient } from "wagmi";
-import { goerli } from "wagmi/chains";
-import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
+// this version of L1_CHAIN will use infura
+import { CHAINS_FORMATTED, L1_CHAIN_ID } from "@config/constants";
+
+// Required components for wagmi...
+import { WagmiConfig, configureChains, createConfig } from "wagmi";
+
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
 
-const { chains, provider, webSocketProvider } = configureChains(
-  // Only goerli is supported here
-  [goerli],
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  [CHAINS_FORMATTED[L1_CHAIN_ID]],
   [
     jsonRpcProvider({
       rpc: (chain) => ({
@@ -18,23 +22,16 @@ const { chains, provider, webSocketProvider } = configureChains(
       }),
     }),
     publicProvider(),
-  ],
-  { targetQuorum: 1 }
+  ]
 );
 
-const client = createClient({
+const config = createConfig({
   autoConnect: true,
   connectors: [
     new MetaMaskConnector({
       chains,
       options: {
         UNSTABLE_shimOnConnectSelectAccount: true,
-      },
-    }),
-    new CoinbaseWalletConnector({
-      chains,
-      options: {
-        appName: "wagmi",
       },
     }),
     new InjectedConnector({
@@ -49,9 +46,15 @@ const client = createClient({
         shimDisconnect: true,
       },
     }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_ID || "",
+      },
+    }),
   ],
-  provider,
-  webSocketProvider,
+  publicClient,
+  webSocketPublicClient,
 });
 
 interface WagmiProviderProps {
@@ -59,7 +62,7 @@ interface WagmiProviderProps {
 }
 
 function WagmiProvider({ children }: WagmiProviderProps) {
-  return <WagmiConfig client={client}>{children}</WagmiConfig>;
+  return <WagmiConfig config={config}>{children}</WagmiConfig>;
 }
 
 export { WagmiProvider };

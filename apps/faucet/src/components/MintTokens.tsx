@@ -2,14 +2,13 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import {
   useAccount,
   useBalance,
   useBlockNumber,
   useContractWrite,
-  useProvider,
   useQuery,
 } from "wagmi";
 import useIsChainID from "@hooks/useIsChainID";
@@ -27,13 +26,16 @@ import { validate } from "@utils/validateMintData";
 import {
   ABI,
   NETWORKS,
-  CHAIN_ID,
+  L1_CHAIN_ID,
   MAX_BALANCE,
   MAX_MINT,
 } from "@config/constants";
 import { formatBigNumberString } from "@mantle/utils";
-import { Button, SimpleCard, Typography } from "@mantle/ui";
 import { BigNumber, Contract } from "ethers";
+import StateContext from "@providers/stateContext";
+
+import { Button, SimpleCard, Typography } from "@mantle/ui";
+
 import { CardHeading } from "./CardHeadings";
 import ConnectWallet from "./ConnectWallet";
 
@@ -47,9 +49,12 @@ const MAX_MINT_FORMATTED = formatBigNumberString(
 
 function MintTokens() {
   // check that we're connected to the appropriate chain
-  const isChainID = useIsChainID(CHAIN_ID);
+  const isChainID = useIsChainID(L1_CHAIN_ID);
   // check that user is authenticated
   const { data: session } = useSession();
+
+  // import the provider
+  const { provider } = useContext(StateContext);
 
   const [error, setError] = useState<string | undefined>();
   const [hasMintError, setHasMintError] = useState<boolean | undefined>();
@@ -67,30 +72,29 @@ function MintTokens() {
   // set address with useState to avoid hydration errors
   const [address, setAddress] = useState<string>();
   const [sendTo, setSendTo] = useState<string>();
+  const [blockNumber, setBlockNumber] = useState<string>();
   const { address: wagmiAddress } = useAccount();
-
-  // use the provider
-  const provider = useProvider({
-    chainId: CHAIN_ID,
-  });
 
   // use wagmi to get balances
   const { data: balanceETH } = useBalance({
     address: wagmiAddress,
     watch: true,
-    chainId: CHAIN_ID,
+    chainId: L1_CHAIN_ID,
   });
   const { data: balanceMNT } = useBalance({
     address: wagmiAddress,
     watch: true,
-    token: NETWORKS[CHAIN_ID],
-    chainId: CHAIN_ID,
+    token: NETWORKS[L1_CHAIN_ID],
+    chainId: L1_CHAIN_ID,
   });
 
   // current blockNumber
-  const { data: blockNumber } = useBlockNumber({
-    chainId: CHAIN_ID,
+  useBlockNumber({
+    chainId: L1_CHAIN_ID,
     watch: true,
+    onSettled: (data) => {
+      setBlockNumber(data?.toString());
+    },
   });
 
   // get the users mint record from the contract
@@ -106,10 +110,10 @@ function MintTokens() {
     async () => {
       if (
         sendTo &&
-        provider?.network?.chainId === CHAIN_ID &&
-        NETWORKS[CHAIN_ID]
+        provider?.network?.chainId === L1_CHAIN_ID &&
+        NETWORKS[L1_CHAIN_ID]
       ) {
-        const contract = new Contract(NETWORKS[CHAIN_ID], ABI, provider);
+        const contract = new Contract(NETWORKS[L1_CHAIN_ID], ABI, provider);
         const record = await contract.mintRecord(sendTo);
 
         return BigNumber.from(record).toNumber();
@@ -130,8 +134,7 @@ function MintTokens() {
 
   // use wagmi to call mint on selected contract
   const { writeAsync: mint, isLoading: minting } = useContractWrite({
-    mode: "recklesslyUnprepared",
-    address: NETWORKS[CHAIN_ID],
+    address: NETWORKS[L1_CHAIN_ID],
     abi: ABI,
     functionName: "mint",
     // check for transaction success on settled
@@ -152,8 +155,12 @@ function MintTokens() {
       // clear errors between calls
       setError("");
 
-      // wait for full resolve
-      const receipt = await data?.wait();
+      // wait for one confirmation
+      const receipt = await provider
+        .waitForTransaction(data?.hash || "", 1)
+        .catch((e: any) => {
+          throw e;
+        });
 
       // fetch the mint-record again to check for warning states
       await refetchMintRecord();
@@ -227,7 +234,7 @@ function MintTokens() {
     if (blockNumber && typeof mintRecord !== "undefined" && hasMintError) {
       // check mintable conditions
       const validBlock =
-        mintRecord === 0 || (blockNumber || 0) - (mintRecord || 0) > 1000;
+        mintRecord === 0 || +(blockNumber || 0) - (mintRecord || 0) > 1000;
       const validBalance = balanceMNT && +`${myBalanceMNT || 0}` < MAX_BALANCE;
       const validFutureBalance =
         balanceMNT && +`${myBalanceMNT || 0}` + +`${amount || 0}` < MAX_BALANCE;
@@ -439,9 +446,7 @@ function MintTokens() {
                 if (!eAddress && !eAmount) {
                   // attempt to mint
                   mint({
-                    recklesslySetUnpreparedArgs: [
-                      parseEther(`${amount}`).toString(),
-                    ],
+                    args: [parseEther(`${amount}`).toString()],
                   })
                     .then((tx: { hash: string }) => {
                       if (tx.hash) {

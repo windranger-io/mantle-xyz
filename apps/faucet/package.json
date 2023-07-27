@@ -14,15 +14,18 @@
   "dependencies": {
     "@mantle/constants": "workspace:*",
     "@mantle/ui": "workspace:*",
+    "decimal.js": "^10.4.3",
     "ethers": "^5.7.2",
-    "next": "13.1.1",
+    "framer-motion": "^10.12.10",
+    "next": "13.3.0",
     "next-auth": "^4.19.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
     "server-only": "^0.0.1",
     "twitter-api-sdk": "^1.2.1",
-    "wagmi": "^0.11.6"
+    "wagmi": "^1.3.9",
+    "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

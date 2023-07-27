@@ -46,9 +46,10 @@ const Dialog = ({
   }, [escFunction])
 
   return (
-    <div>
+    <div className="w-full">
       {/* dialog trigger */}
       <div
+        className="w-full"
         onClick={() => {
           setOpen(true)
         }}

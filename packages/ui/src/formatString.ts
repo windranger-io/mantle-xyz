@@ -45,5 +45,5 @@ export const formatBigNumberString = (
     .join('')}`
 }
 
-export const truncateAddress = (address: `0x${string}`) =>
+export const truncateAddress = (address: string) =>
   `${address.slice(0, 6)}...${address.slice(-4)}`
