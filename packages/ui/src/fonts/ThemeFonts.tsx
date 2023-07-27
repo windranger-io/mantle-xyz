@@ -23,6 +23,7 @@ const GTWalsheim = localFont({
       style: 'normal',
     },
   ],
+  variable: '--font-GTWalsheim',
 })
 
 export { GTWalsheimRegular, GTWalsheimMedium, GTWalsheim }
