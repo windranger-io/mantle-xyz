@@ -16,8 +16,8 @@ import { BiError } from "react-icons/bi";
 
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
-import Link from "next/link";
 import { getAddress } from "ethers/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
 
 function ConnectWallet() {
   // get the currently connected wallet-selected-chain
@@ -152,24 +152,35 @@ function ConnectWallet() {
     [currentChain]
   );
 
+  const router = useRouter();
+  const pathName = usePathname();
+
+  const handleAccountClicked = () => {
+    router.push(
+      pathName?.indexOf("/withdraw") !== -1
+        ? "/account/withdraw"
+        : "/account/deposit"
+    );
+    // TODO: close mobile modal if any
+  };
+
   // return connect/disconnect component
   return (
     <div className="flex flex-row gap-4 w-full">
       {isChainID && client.isConnected && client.address ? (
-        <Link href="/account/desposit" className="w-full" scroll shallow>
-          <Button
-            type="button"
-            variant="walletLabel"
-            size="regular"
-            className="flex flex-row items-center text-xs h-full text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 justify-center w-full"
-          >
-            <Avatar walletAddress="address" />
-            <div className="flex items-center justify-center gap-2">
-              {truncateAddress(getAddress(client.address))}
-              <ArrowDownIcon className="w-3.5 h-3.5" />
-            </div>
-          </Button>
-        </Link>
+        <Button
+          type="button"
+          variant="walletLabel"
+          size="regular"
+          onClick={handleAccountClicked}
+          className="flex flex-row items-center text-xs h-full text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 justify-center w-full"
+        >
+          <Avatar walletAddress="address" />
+          <div className="flex items-center justify-center gap-2">
+            {truncateAddress(getAddress(client.address))}
+            <ArrowDownIcon className="w-3.5 h-3.5" />
+          </div>
+        </Button>
       ) : (
         ``
       )}
