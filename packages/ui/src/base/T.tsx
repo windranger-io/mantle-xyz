@@ -4,8 +4,6 @@ import { ReactNode } from 'react'
 import Balancer from 'react-wrap-balancer'
 import { twMerge } from 'tailwind-merge'
 
-// TODO: font regular and medium don't seem correct
-
 type TypographyVariant =
   | 'appPageHeading'
   | 'body'
