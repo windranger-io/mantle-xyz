@@ -126,7 +126,7 @@ export const CHAINS: Record<
 > = {
   1: {
     chainId: "0x1",
-    chainName: "Mainnet",
+    chainName: "Ethereum Mainnet",
     nativeCurrency: {
       name: "ETH",
       symbol: "ETH",
