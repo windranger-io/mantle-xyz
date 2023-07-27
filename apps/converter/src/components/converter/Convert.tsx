@@ -54,10 +54,7 @@ export default function Convert() {
 
   return (
     <div className="md:px-8 w-full">
-      <Typography
-        variant="appPageHeading"
-        className="text-center mt-4 text-[42px]"
-      >
+      <Typography variant="appPageHeading" className="text-center text-[42px]">
         Migrator
       </Typography>
       <Typography variant="body" className="text-center mt-6 mb-2">

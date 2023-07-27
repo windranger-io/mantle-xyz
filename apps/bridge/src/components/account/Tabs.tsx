@@ -78,7 +78,7 @@ export default function Tabs() {
 
   return (
     (view === Views.Account && (
-      <SimpleCard className="max-w-5xl w-full grid gap-8 relative px-8">
+      <SimpleCard className="max-w-5xl w-full grid gap-8 relative px-8 mt-6">
         <span className="flex justify-between align-middle">
           <Typography
             variant="transactionTableHeading"

@@ -37,7 +37,7 @@ export default function RootLayout({
                 className={isComingSoon ? "blur-md" : ""}
               />
             }
-            header={<Nav className="mb-0 m-0" hideConnectBtn={isComingSoon} />}
+            header={<Nav hideConnectBtn={isComingSoon} />}
             className="min-h-screen justify-between"
           >
             <PageContainer className="grow items-center">

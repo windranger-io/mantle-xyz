@@ -28,7 +28,7 @@ export const Header = ({
     className={
       sticky
         ? cn('sticky top-0', ` ${className || ``}`)
-        : cn('mb-20', ` ${className || ``}`)
+        : cn('mb-12', ` ${className || ``}`)
     }
   >
     {navLite ? (
