@@ -3,6 +3,10 @@
     {
       "path": "/graphql/sync",
       "schedule": "* * * * *"
+    },
+    {
+      "path": "/graphql/sync/gas",
+      "schedule": "*/10 * * * *"
     }
   ]
 }
