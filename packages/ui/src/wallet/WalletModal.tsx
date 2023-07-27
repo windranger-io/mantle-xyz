@@ -2,7 +2,7 @@
 
 /* eslint-disable react/jsx-no-target-blank, react/require-default-props */
 
-import { ReactNode, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 // import * as Dialog from '@radix-ui/react-dialog'
 import { Button } from '../actions/Button'
 import { MetaMaskSvg } from './MetaMask'
@@ -26,6 +26,25 @@ const Dialog = ({
   trigger: ReactNode
   children: ReactNode
 }) => {
+  // on escape close the dialog
+  const escFunction = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpen(false)
+      }
+    },
+    [setOpen],
+  )
+
+  // attach globally
+  useEffect(() => {
+    document.addEventListener('keydown', escFunction, false)
+
+    return () => {
+      document.removeEventListener('keydown', escFunction, false)
+    }
+  }, [escFunction])
+
   return (
     <div>
       {/* dialog trigger */}
@@ -37,7 +56,15 @@ const Dialog = ({
       >
         {trigger}
       </div>
-      <div className={open ? 'block' : 'hidden'}>
+      <div
+        className={open ? 'block' : 'hidden'}
+        onKeyDown={event => {
+          if (event.key === 'Escape') {
+            setOpen(false)
+          }
+        }}
+        role="presentation"
+      >
         {/* bg overlay */}
         <div
           className="bg-black/60 backdrop-blur-sm data-[state=open]:animate-overlayShow fixed inset-0 z-[1]"
