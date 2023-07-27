@@ -24,6 +24,9 @@ import { handlers } from "@supagraph/handlers";
 // Import revalidation timings from config
 import config from "@supagraph/config";
 
+// forces the route handler to be dynamic
+export const dynamic = "force-dynamic";
+
 // Object of providers by rpcUrl
 const providerCache: { [rpcUrl: string]: providers.JsonRpcProvider } = {};
 
