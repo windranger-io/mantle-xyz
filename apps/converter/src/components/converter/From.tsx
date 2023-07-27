@@ -38,7 +38,7 @@ export default function TokenSelect() {
   }, []);
 
   return (
-    <div className="z-10">
+    <div className="z-1">
       {/* <BalanceLabel
         direction="Convert"
         logo={

@@ -5,11 +5,12 @@ import ConnectWallet from "@components/ConnectWallet";
 import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
 type NavProps = {
-  className: string;
   hideConnectBtn: boolean;
+  // eslint-disable-next-line react/require-default-props
+  className?: string | undefined;
 };
 
-function Nav({ className, hideConnectBtn }: NavProps) {
+function Nav({ hideConnectBtn, className = "" }: NavProps) {
   return (
     <Header
       navLite

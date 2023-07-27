@@ -103,7 +103,6 @@ function ConnectWallet() {
   });
 
   // record change of account
-  // record change of account
   const changeAccount = async () => {
     setClient({
       chainId,
@@ -162,14 +161,14 @@ function ConnectWallet() {
 
   // return connect/disconnect component
   return (
-    <div className="flex flex-row gap-4">
+    <div className="flex flex-row gap-4 w-full">
       {isChainID && client.isConnected && client.address ? (
         <Link href="/account/migrate" scroll shallow>
           <Button
             type="button"
             size="regular"
             variant="walletLabel"
-            className="flex items-center text-xs text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit h-[36px]"
+            className="flex items-center text-xs text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 justify-center w-full h-full"
           >
             <Avatar walletAddress="address" />
             <div className="flex items-center justify-center gap-2">
@@ -234,12 +233,18 @@ function ConnectWallet() {
             )}
           </>
         ) : !isChainID ? (
-          <div className="flex flex-row items-center gap-4 justify-end">
-            <div className="flex flex-row items-center gap-2 text-status-error h-fit rounded-lg text-xs backdrop-blur-[50px] bg-white/10 w-fit px-4 py-2 whitespace-nowrap">
+          <div className="grid grid-cols-2 items-center gap-4 w-full">
+            <div className="flex flex-row items-center gap-2 text-status-error h-full rounded-lg text-xs backdrop-blur-[50px] bg-white/10 justify-center px-4 py-2 whitespace-nowrap">
               <BiError className="text-sm" />
-              <p className="text-sm">Unsupported chain</p>
+              <p className="text-sm whitespace-normal text-center">
+                Unsupported chain
+              </p>
             </div>
-            <Button variant="walletConnect" onClick={() => changeNetwork()}>
+            <Button
+              variant="walletConnect"
+              onClick={() => changeNetwork()}
+              className="xl:whitespace-nowrap h-full"
+            >
               Switch to {CHAINS[chainId].chainName}
             </Button>
           </div>
