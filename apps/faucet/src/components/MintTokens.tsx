@@ -92,7 +92,7 @@ function MintTokens() {
   useBlockNumber({
     chainId: L1_CHAIN_ID,
     watch: true,
-    onSettled: (data) => {
+    onBlock: (data) => {
       setBlockNumber(data?.toString());
     },
   });
