@@ -446,7 +446,7 @@ function MintTokens() {
                 if (!eAddress && !eAmount) {
                   // attempt to mint
                   mint({
-                    args: [parseEther(`${amount}`).toString()],
+                    args: [BigInt(parseEther(`${amount}`).toString())],
                   })
                     .then((tx: { hash: string }) => {
                       if (tx.hash) {
