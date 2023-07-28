@@ -1,5 +1,5 @@
 import { CHAINS } from "@config/constants";
-import { truncateAddress } from "@mantle/ui/src/formatString";
+import { truncateAddress } from "@mantle/utils";
 
 // a link to the networks block explorer
 export default function TxLink({

@@ -14,7 +14,7 @@ import { parseUnits } from "ethers/lib/utils.js";
 
 import { ToastProps, useToast } from "@hooks/useToast";
 import { useMutation, useQuery } from "wagmi";
-import { formatTime } from "@utils/formatStrings";
+import { formatTime } from "@mantle/utils";
 import { useWaitForRelay } from "./useWaitForRelay";
 
 class TxError extends Error {

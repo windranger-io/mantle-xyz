@@ -13,12 +13,9 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
-import {
-  ArrowDownIcon,
-  Button,
-  WalletModal,
-  truncateAddress,
-} from "@mantle/ui";
+import { ArrowDownIcon, Button, WalletModal } from "@mantle/ui";
+import { truncateAddress } from "@mantle/utils";
+
 import { BiError } from "react-icons/bi";
 
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";

@@ -20,7 +20,6 @@ import {
   parseEther,
   // isAddress,
 } from "ethers/lib/utils.js";
-import { truncateAddress } from "@utils/truncateAddress";
 import { validate } from "@utils/validateMintData";
 
 import {
@@ -30,7 +29,7 @@ import {
   MAX_BALANCE,
   MAX_MINT,
 } from "@config/constants";
-import { formatBigNumberString } from "@mantle/utils";
+import { truncateAddress, formatBigNumberString } from "@mantle/utils";
 import { BigNumber, Contract } from "ethers";
 import StateContext from "@providers/stateContext";
 
