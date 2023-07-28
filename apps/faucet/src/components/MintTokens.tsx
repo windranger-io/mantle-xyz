@@ -393,7 +393,7 @@ function MintTokens() {
                   target: { value: React.SetStateAction<string> };
                 }) => {
                   // pass the targer amount
-                  setAmount(`${e.target.value}`);
+                  setAmount(`${Math.abs(+(e.target.value || "")) || ""}`);
                 }}
               />
             </div>

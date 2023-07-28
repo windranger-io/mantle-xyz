@@ -29,7 +29,7 @@ export function getBaseUrl() {
     (process.env.NEXT_PUBLIC_SITE_URL
       ? `https://faucet.testnet.mantle.xyz`
       : // this should match the port used by the current app
-        "http://localhost:3003")
+        "http://localhost:3002")
   );
 }
 
