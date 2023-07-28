@@ -55,7 +55,7 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
           label="Amount to migrate"
           value={
             <div className="flex items-center space-x-2">
-              <span>
+              <span className="leading-[24px]">
                 {amount} ${L1_BITDAO_TOKEN.symbol}
               </span>
               <Image
@@ -72,7 +72,7 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
           label="You will receive"
           value={
             <div className="flex items-center space-x-2">
-              <span>
+              <span className="leading-[24px]">
                 {amount} ${L1_MANTLE_TOKEN.symbol}
               </span>
               <Image
