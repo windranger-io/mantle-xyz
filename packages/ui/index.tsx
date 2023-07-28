@@ -72,14 +72,7 @@ export * from './src/fonts/ThemeFonts'
 export { LocaleSwitcher } from './src/LocaleSwitcher'
 
 /**
- * Format string utils
- *
- */
-export * from './src/formatString'
-
-/**
  * Locale Selector (given a list of locales and the currect selection)
  *
  */
 export { Cookies } from './src/scripts/Cookies'
-

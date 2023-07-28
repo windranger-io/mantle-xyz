@@ -18,7 +18,7 @@ import { Button, Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
 import Values from "@components/bridge/utils/Values";
 import { useMantleSDK } from "@providers/mantleSDKContext";
-import { formatTime } from "@utils/formatStrings";
+import { formatTime } from "@mantle/utils";
 import { useQuery } from "wagmi";
 
 export default function Default({

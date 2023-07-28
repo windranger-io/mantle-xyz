@@ -111,6 +111,9 @@ importers:
       '@mantle/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@mantle/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@mantleio/contracts':
         specifier: ^0.2.0
         version: 0.2.0(ethers@5.7.2)
@@ -123,9 +126,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^4.14.5
         version: 4.24.10(react-dom@18.2.0)(react@18.2.0)
-      decimal.js:
-        specifier: ^10.4.3
-        version: 10.4.3
       ethers:
         specifier: ^5.7.2
         version: 5.7.2
@@ -235,12 +235,12 @@ importers:
       '@mantle/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@mantle/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@tanstack/react-query':
         specifier: ^4.14.5
         version: 4.24.10(react-dom@18.2.0)(react@18.2.0)
-      decimal.js:
-        specifier: ^10.4.3
-        version: 10.4.3
       ethers:
         specifier: ^5.7.2
         version: 5.7.2
@@ -796,9 +796,6 @@ importers:
       clsx:
         specifier: ^1.2.1
         version: 1.2.1
-      decimal.js:
-        specifier: ^10.4.3
-        version: registry.npmjs.org/decimal.js@10.4.3
       react-wrap-balancer:
         specifier: ^0.4.0
         version: 0.4.0(react@18.2.0)
@@ -6584,10 +6581,6 @@ packages:
     resolution: {integrity: sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==}
     engines: {node: '>=0.10.0'}
     dev: true
-
-  /decimal.js@10.4.3:
-    resolution: {integrity: sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==}
-    dev: false
 
   /decode-uri-component@0.2.2:
     resolution: {integrity: sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==}

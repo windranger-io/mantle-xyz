@@ -4,7 +4,8 @@ import StateContext from "@providers/stateContext";
 import Image from "next/image";
 
 import { L1_BITDAO_TOKEN } from "@config/constants";
-import { formatBigNumberString, Button } from "@mantle/ui";
+import { Button } from "@mantle/ui";
+import { formatBigNumberString } from "@mantle/utils";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
 import BalanceLabel from "@components/converter/utils/BalanceLabel";

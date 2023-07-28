@@ -9,7 +9,7 @@ import BalanceLabel from "@components/converter/utils/BalanceLabel";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { useContext, useMemo } from "react";
 import StateContext from "@providers/stateContext";
-import { formatBigNumberString } from "@mantle/ui";
+import { formatBigNumberString } from "@mantle/utils";
 
 export default function Destination() {
   const { amount, balances } = useContext(StateContext);

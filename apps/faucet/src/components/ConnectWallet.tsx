@@ -7,12 +7,9 @@ import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
-import {
-  ArrowDownIcon,
-  Button,
-  WalletModal,
-  truncateAddress,
-} from "@mantle/ui";
+import { ArrowDownIcon, Button, WalletModal } from "@mantle/ui";
+import { truncateAddress } from "@mantle/utils";
+
 import { BiError } from "react-icons/bi";
 
 import useIsChainID from "@hooks/useIsChainID";

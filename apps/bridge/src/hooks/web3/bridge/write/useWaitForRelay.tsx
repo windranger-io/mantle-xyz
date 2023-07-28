@@ -19,7 +19,7 @@ import {
 } from "@config/constants";
 import MantleToL1SVG from "@components/bridge/utils/MantleToL1SVG";
 import { useMantleSDK } from "@providers/mantleSDKContext";
-import { formatTime } from "@utils/formatStrings";
+import { formatTime } from "@mantle/utils";
 import { useQuery } from "wagmi";
 
 // How long to stay inside the waitForMessageStatus while loop for
