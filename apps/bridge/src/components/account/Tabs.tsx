@@ -25,14 +25,8 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 
 export default function Tabs() {
-  const {
-    chainId,
-    view,
-    setSafeChains,
-    setView,
-    refetchWithdrawals,
-    refetchDeposits,
-  } = useContext(StateContext);
+  const { view, setSafeChains, setView, refetchWithdrawals, refetchDeposits } =
+    useContext(StateContext);
 
   const [categories] = useState({
     Deposit: [<Deposit />],
@@ -89,7 +83,9 @@ export default function Tabs() {
           <Typography variant="modalHeading" className="text-white w-auto pt-1">
             <Link
               className="text-white"
-              href={`/${chainId === L1_CHAIN_ID ? "deposit" : "withdraw"}`}
+              href={`/${
+                pathName?.indexOf("/withdraw") === -1 ? "deposit" : "withdraw"
+              }`}
               shallow
             >
               <MdClear className="cursor-pointer" />
