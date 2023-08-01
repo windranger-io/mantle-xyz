@@ -78,16 +78,17 @@ export const TWITTER_DESC =
 
 // Get the current absolute path from the env
 export function getBaseUrl() {
-  const vercel =
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
-    process.env.NEXT_PUBLIC_VERCEL_URL;
   // return the fully resolved absolute url
-  return vercel
-    ? `https://${vercel}`
-    : // this should match the port used by the current app
-      "http://localhost:3004";
+  return (
+    process.env.NEXT_PUBLIC_VERCEL_URL ||
+    // eslint-disable-next-line no-nested-ternary
+    (process.env.NEXT_PUBLIC_SITE_URL
+      ? L1_CHAIN_ID === 1
+        ? `https://migratebit.mantle.xyz`
+        : process.env.NEXT_PUBLIC_SITE_URL
+      : // this should match the port used by the current app
+        "http://localhost:3004")
+  );
 }
 
 // export the absolute path
@@ -134,7 +135,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `/rpc`,
+      `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth`,
     ],
@@ -151,7 +152,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `/rpc`,
+      `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth_goerli`,
     ],
