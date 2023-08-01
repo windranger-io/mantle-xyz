@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop, no-restricted-syntax, @typescript-eslint/no-loop-func, no-param-reassign */
 import { NextResponse } from "next/server";
 
 // Import mongodb client
@@ -19,7 +20,7 @@ export const dynamic = "force-dynamic";
 Store.setEngine({
   // name the connection
   name: config.name,
-  // db is dependent on state
+  // db is dependent on env
   db:
     // in production/production like environments we want to store mutations to mongo otherwise we can store them locally
     process.env.NODE_ENV === "development" && config.dev
@@ -119,40 +120,68 @@ const markDrop = async (tx: { id: string }) => {
   return true;
 };
 
-// Process any drops that have been missed between operations
+// Process any drops that have been missed between operations (send them over one at a time, one after the other)
 const processMissedDrops = async (
-  missed: {
+  missedIn: {
     from: string;
     id: string;
   }[]
 ) => {
-  return Promise.all(
-    missed.map(async (tx) => {
-      // add a gas-drop claim for the sender
-      return (
-        claim(tx.from)
-          .then(async (result: any) => {
-            // so long as the claim hasn't errored (alredy claimed etc...)
-            if (
-              !result?.error ||
-              result.error?.meta?.target === "ClaimCode_code_key"
-            ) {
-              // log in stdout
-              // eslint-disable-next-line no-console
-              console.log(
-                `Gas-drop created for ${result?.data?.reservedFor || tx.from}`
-              );
-              // issue the gasDrop
-              return markDrop(tx);
-            }
-            // mark as failed
-            return false;
-          })
-          // noop any errors
-          .catch(() => false)
-      );
-    })
+  // set how many claims to process at once
+  const perBlock = 25;
+  // split the input into blocks to process n [perBlock] at a time
+  const missed = missedIn.reduce(
+    (missedOut, item, index) => {
+      // get index for block
+      const blockIndex = Math.floor(index / perBlock);
+      // set new block
+      missedOut[blockIndex] = missedOut[blockIndex] || [];
+      // push item to block
+      missedOut[blockIndex].push(item);
+
+      return missedOut;
+    },
+    [] as {
+      from: string;
+      id: string;
+    }[][]
   );
+  // push true/false for all claims here
+  const processed: boolean[] = [];
+
+  // process in blocks to avoid fetch timeouts
+  for (const block of missed) {
+    await Promise.all(
+      block.map(async (tx) => {
+        // add a gas-drop claim for the sender
+        return (
+          claim(tx.from)
+            .then(async (result: any) => {
+              // so long as the claim hasn't errored (alredy claimed etc...)
+              if (
+                !result?.error ||
+                result.error?.meta?.target === "ClaimCode_code_key"
+              ) {
+                // eslint-disable-next-line no-console
+                console.log(
+                  `Gas-drop created for ${result?.data?.reservedFor || tx.from}`
+                );
+                // issue the gasDrop
+                processed.push(await markDrop(tx));
+              }
+              // mark as failed
+              processed.push(false);
+            })
+            // noop any errors
+            .catch(() => {
+              processed.push(false);
+            })
+        );
+      })
+    );
+  }
+
+  return processed;
 };
 
 // Expose the sync command on a route so that we can call it with a cron job
@@ -172,17 +201,23 @@ export async function GET() {
     const result = await getMissedDrops(await Promise.resolve(db.db));
     const missed = await result.toArray();
 
+    // eslint-disable-next-line no-console
+    console.log("Missed", missed.length);
+
     // process the missed claims
-    const claimed = await processMissedDrops(missed);
+    const claimed = (await processMissedDrops(missed)).filter((v) => v);
 
     // write all updates to db
     await engine?.stage?.commit();
+
+    // eslint-disable-next-line no-console
+    console.log("Claimed", claimed.length);
 
     // we don't need to sync more often than once per block - and if we're using vercel.json crons we can only sync 1/min - 1/10mins seems reasonable for this
     return NextResponse.json(
       {
         missed: missed.length,
-        claimed: claimed.filter((v) => v).length,
+        claimed: claimed.length,
       },
       {
         headers: {
