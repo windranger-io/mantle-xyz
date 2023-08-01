@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { ConvertCard } from "@components/ConvertCard";
 import { Typography } from "@mantle/ui";
@@ -131,12 +131,24 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
 function Accordion({
   controlText,
   panel,
+  expandedIdx,
+  setExpandedIdx,
+  index,
 }: {
   controlText: string;
   panel: JSX.Element;
+  expandedIdx: number | null;
+  setExpandedIdx: Dispatch<SetStateAction<number | null>>;
+  index: number;
 }) {
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const togglePanel = () => setIsExpanded((curr) => !curr);
+  const isExpanded = expandedIdx === index;
+  const togglePanel = () => {
+    if (!isExpanded) {
+      setExpandedIdx(index);
+    } else if (isExpanded) {
+      setExpandedIdx(null);
+    }
+  };
 
   return (
     <div className="flex flex-col">
@@ -160,13 +172,21 @@ function Accordion({
 }
 
 export function Faq() {
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(0);
+
   return (
     <ConvertCard className="rounded-xl w-full mt-5 overflow-x-auto">
       <div className="flex gap-3">
         <div className="flex flex-col w-full">
           {faqList.map((el, idx) => (
             <div key={el.q}>
-              <Accordion controlText={el.q} panel={el.a} />
+              <Accordion
+                controlText={el.q}
+                panel={el.a}
+                expandedIdx={expandedIdx}
+                setExpandedIdx={setExpandedIdx}
+                index={idx}
+              />
               {idx < faqList.length - 1 && (
                 <div className="border-t border-[#1C1E20]" />
               )}
