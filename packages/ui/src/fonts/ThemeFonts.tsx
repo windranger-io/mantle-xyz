@@ -10,4 +10,20 @@ const GTWalsheimMedium = localFont({
   variable: '--font-GTWalsheim-Medium',
 })
 
-export { GTWalsheimRegular, GTWalsheimMedium }
+const GTWalsheim = localFont({
+  src: [
+    {
+      path: './GT-Walsheim-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: './GT-Walsheim-Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-GTWalsheim',
+})
+
+export { GTWalsheimRegular, GTWalsheimMedium, GTWalsheim }

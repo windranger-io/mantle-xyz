@@ -5,7 +5,7 @@ import {
   OG_DESC,
   OG_TITLE,
 } from "@config/constants";
-import { GTWalsheimMedium, GTWalsheimRegular } from "@mantle/ui";
+import { GTWalsheim } from "@mantle/ui";
 import { GoogleAnalytics } from "@src/components/GoogleAnalytics";
 import { Metadata } from "next";
 import { useLocale } from "next-intl";
@@ -35,16 +35,13 @@ export default function RootLayout({
 }) {
   const locale = useLocale();
   return (
-    <html
-      lang={locale}
-      className={`${GTWalsheimRegular.variable} ${GTWalsheimMedium.variable}`}
-    >
+    <html lang={locale} className={`${GTWalsheim.className}`}>
       <GoogleAnalytics GA_TRACKING_ID={GOOGLE_TAG} />
       <Cookies />
 
       {/* <Head /> */}
 
-      <body>{children}</body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
