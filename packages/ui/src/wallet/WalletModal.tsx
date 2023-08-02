@@ -123,7 +123,7 @@ export const WalletModal = ({
           variant="secondary"
           size="full"
           onClick={onMetamask}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 cursor-pointer w-full my-2"
+          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full my-2"
         >
           <MetaMaskSvg className="h-6 w-6" />
           Metamask
@@ -135,7 +135,7 @@ export const WalletModal = ({
           variant="secondary"
           size="full"
           onClick={onWalletConnect}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 cursor-pointer w-full my-2"
+          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full my-2"
         >
           <WalletConnectSvg className="h-6 w-6" />
           Wallet Connect
