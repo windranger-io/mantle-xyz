@@ -27,7 +27,7 @@ export default function Head() {
       <meta name="twitter:description" content={`${TWITTER_DESC}`} />
       <meta name="twitter:image" content={`${ABSOLUTE_PATH}/twitter.png`} />
       <meta name="google" content="nositelinkssearchbox" />
-      <Cookies />
+      <Cookies siteId="181" />
     </>
   );
 }

@@ -1,10 +1,10 @@
 import Script from 'next/script'
 
-export const Cookies = () => {
+export const Cookies = ({ siteId }: { siteId: string }) => {
   return (
     <Script strategy="afterInteractive" id="cookie3-script">
       {`
-        var cookie3Options = {"siteId":5,"additionalTracking":true,"cookielessEnabled":true}
+        var cookie3Options = {"siteId":${siteId},"additionalTracking":true,"cookielessEnabled":true}
         window._paq = window._paq || [];
         (function () {
             var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];

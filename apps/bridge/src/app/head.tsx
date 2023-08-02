@@ -1,6 +1,8 @@
 import {
   ABSOLUTE_PATH,
   APP_NAME,
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
   META,
   OG_TITLE,
   TWITTER_DESC,
@@ -9,6 +11,8 @@ import {
 import { Cookies } from "@mantle/ui";
 
 export default function Head() {
+  const isTestnet = L1_CHAIN_ID === 5 || L2_CHAIN_ID === 5001;
+
   return (
     <>
       <title>{APP_NAME}</title>
@@ -27,7 +31,7 @@ export default function Head() {
       <meta name="twitter:description" content={`${TWITTER_DESC}`} />
       <meta name="twitter:image" content={`${ABSOLUTE_PATH}/twitter.png`} />
       <meta name="google" content="nositelinkssearchbox" />
-      <Cookies />
+      <Cookies siteId={isTestnet ? "176" : "174"} />
     </>
   );
 }
