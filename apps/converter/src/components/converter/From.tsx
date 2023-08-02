@@ -10,6 +10,8 @@ import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import BalanceLabel from "@components/converter/utils/BalanceLabel";
 import { MantleLogo } from "./utils/MantleLogo";
 
+const MAX_DISPLAY_DPX = 6;
+
 export default function TokenSelect() {
   // unpack the context
   const { balances, amount, isLoadingBalances, setAmount } =
@@ -116,12 +118,9 @@ export default function TokenSelect() {
 
                   // if the decimals exceed 18dps we need to lose any additional digits
                   const amounts = newAmount.split(".");
-                  if (amounts?.[1]?.length >= L1_BITDAO_TOKEN.decimals) {
+                  if (amounts?.[1]?.length >= MAX_DISPLAY_DPX) {
                     // lock to tokens decimals
-                    amounts[1] = amounts[1].substring(
-                      0,
-                      L1_BITDAO_TOKEN.decimals
-                    );
+                    amounts[1] = amounts[1].substring(0, MAX_DISPLAY_DPX);
                     newAmount = amounts.join(".");
                   }
 
@@ -131,15 +130,15 @@ export default function TokenSelect() {
                   // fix the number to no greater than constants.MaxUint256 (with tokens decimals parsed)
                   const bnAmount = parseUnits(
                     newAmount || "0",
-                    L1_BITDAO_TOKEN.decimals
-                  ).gt(parseUnits(max, L1_BITDAO_TOKEN.decimals))
-                    ? parseUnits(max, L1_BITDAO_TOKEN.decimals)
-                    : parseUnits(newAmount || "0", L1_BITDAO_TOKEN.decimals);
+                    MAX_DISPLAY_DPX
+                  ).gt(parseUnits(max, MAX_DISPLAY_DPX))
+                    ? parseUnits(max, MAX_DISPLAY_DPX)
+                    : parseUnits(newAmount || "0", MAX_DISPLAY_DPX);
 
                   // ensure the number is positive
                   newAmount = formatUnits(
                     bnAmount.lt(0) ? bnAmount.mul(-1) : bnAmount,
-                    L1_BITDAO_TOKEN.decimals
+                    MAX_DISPLAY_DPX
                   );
 
                   // correct the decimal component
@@ -150,7 +149,7 @@ export default function TokenSelect() {
                       ? newAmount.replace(/\.0$/, "")
                       : newAmount.split(".").length > 1
                       ? `${newAmount.split(".")[0]}.${
-                          amountExpo.length >= L1_BITDAO_TOKEN.decimals
+                          amountExpo.length >= MAX_DISPLAY_DPX
                             ? newAmount.split(".")[1]
                             : amountExpo ||
                               newAmount.split(".")[1].replace(/[^0-9.]/g, "")
