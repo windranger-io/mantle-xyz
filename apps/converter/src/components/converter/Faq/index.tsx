@@ -172,7 +172,7 @@ function Accordion({
 }
 
 export function Faq() {
-  const [expandedIdx, setExpandedIdx] = useState<number | null>(0);
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
 
   return (
     <ConvertCard className="rounded-xl w-full mt-5 overflow-x-auto">
