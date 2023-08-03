@@ -75,7 +75,7 @@ const Dialog = ({
           role="presentation"
         />
         {/* dialog content */}
-        <div className="pointer-events-auto bg-black data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[403px] translate-x-[-50%] translate-y-[-50%] rounded-[32px] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border border-white/20 px-12 py-14 z-[10]">
+        <div className="pointer-events-auto bg-black data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[490px] translate-x-[-50%] translate-y-[-50%] rounded-[32px] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border border-white/20 md:px-20 px-4 md:py-10 py-5 z-[10]">
           {children}
         </div>
       </div>
@@ -92,10 +92,10 @@ export const WalletModal = ({
   return (
     <Dialog open={open} setOpen={setOpen} trigger={children}>
       <div className="relative">
-        <p className="text-2xl pb-6 mb-6 border-b border-white/20">
+        <p className="text-2xl md:pb-10 pb-5 mb-10 border-b border-white/20">
           Connect your wallet
         </p>
-        <div className="absolute -right-8 -top-1">
+        <div className="absolute md:-right-14 -right-4 -top-1">
           <Button
             variant="ghost"
             onClick={() => {
@@ -123,7 +123,7 @@ export const WalletModal = ({
           variant="secondary"
           size="full"
           onClick={onMetamask}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full my-2"
+          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
         >
           <MetaMaskSvg className="h-6 w-6" />
           Metamask
@@ -135,13 +135,13 @@ export const WalletModal = ({
           variant="secondary"
           size="full"
           onClick={onWalletConnect}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full my-2"
+          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full"
         >
           <WalletConnectSvg className="h-6 w-6" />
           Wallet Connect
         </Button>
       )}
-      <p className="text-sm mt-6">
+      <p className="text-sm text-center md:mt-10 mt-5">
         By connecting your wallet, you hereby acknowledge that you have read and
         accept the{' '}
         <a
