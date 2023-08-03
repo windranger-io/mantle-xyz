@@ -141,7 +141,7 @@ export const WalletModal = ({
           Wallet Connect
         </Button>
       )}
-      <p className="text-sm text-center md:mt-10 mt-5">
+      <p className="text-sm text-center md:mt-10 mt-5 md:mb-0 mb-5">
         By connecting your wallet, you hereby acknowledge that you have read and
         accept the{' '}
         <a
