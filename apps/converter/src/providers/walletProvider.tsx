@@ -12,7 +12,11 @@ export default function WalletProvider() {
     useContext(StateContext);
 
   // control wagmi connector
-  const { connect, connectors } = useConnect();
+  const { connect, connectors } = useConnect({
+    onSuccess() {
+      setWalletModalOpen(false);
+    },
+  });
 
   return (
     <WalletModal
