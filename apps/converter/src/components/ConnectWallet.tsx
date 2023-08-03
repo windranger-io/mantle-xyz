@@ -178,6 +178,7 @@ function ConnectWallet() {
             size="regular"
             variant="walletLabel"
             className="flex items-center text-xs text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 justify-center w-full h-full"
+            onClick={() => setMobileMenuOpen(false)}
           >
             <Avatar walletAddress="address" />
             <div className="flex items-center justify-center gap-2">
@@ -213,6 +214,7 @@ function ConnectWallet() {
                   client.address = undefined;
                   // disconnect
                   disconnect();
+                  setMobileMenuOpen(false);
                 }}
               >
                 Disconnect
