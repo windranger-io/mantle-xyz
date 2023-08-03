@@ -1,9 +1,7 @@
 import "./styles/globals.css";
 
-import { useContext } from "react";
 // Dummy components
 import {
-  Header,
   SlimFooter,
   PageWrapper,
   PageBackroundImage,
@@ -11,10 +9,9 @@ import {
   GTWalsheim,
 } from "@mantle/ui";
 import LegalDisclaimer from "@components/LegalDisclaimer";
-import StateContext from "@providers/stateContext";
 import CONST from "@mantle/constants";
-import ConnectWallet from "@components/ConnectWallet";
-import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
+import { L1_CHAIN_ID } from "@config/constants";
+import Nav from "@components/Nav";
 import Head from "./head";
 import bridgeBG from "../../public/bridge-bg.png";
 import Providers from "./providers";
@@ -24,7 +21,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { mobileMenuOpen, setMobileMenuOpen } = useContext(StateContext);
   return (
     <html lang="en" className={`${GTWalsheim.className}`}>
       <Head />
@@ -38,16 +34,7 @@ export default function RootLayout({
                 altDesc="Bridge Background Image"
               />
             }
-            header={
-              <Header
-                navLite
-                walletConnect={<ConnectWallet />}
-                activeKey="bridge"
-                isTestnet={L1_CHAIN_ID === 5 || L2_CHAIN_ID === 5001}
-                mobileMenuOpen={mobileMenuOpen}
-                setMobileMenuOpen={setMobileMenuOpen}
-              />
-            }
+            header={<Nav />}
             className="min-h-screen justify-between"
           >
             <PageContainer className="gap-8 min-h-fit justify-between">
