@@ -15,11 +15,7 @@ import {
 
 import { formatEther, formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { BigNumber, constants } from "ethers";
-import {
-  localeZero,
-  formatBigNumberString,
-  formatTime,
-} from "@utils/formatStrings";
+import { formatBigNumberString, formatTime, localeZero } from "@mantle/utils";
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 import { useQuery } from "wagmi";
@@ -57,7 +53,10 @@ export default function TransactionPanel({
       },
     ],
     async () => {
-      return crossChainMessenger?.getChallengePeriodSeconds();
+      if (crossChainMessenger?.l1ChainId) {
+        return crossChainMessenger?.getChallengePeriodSeconds();
+      }
+      return false;
     }
   );
 
@@ -118,7 +117,7 @@ export default function TransactionPanel({
   const isMantleChainID = useIsChainID(L2_CHAIN_ID);
 
   // set address with useState to avoid hydration errors
-  const [address, setAddress] = useState<`0x${string}`>(client?.address!);
+  const [address, setAddress] = useState<string>(client?.address!);
 
   // check that the chainId is valid for the selected use-case
   const isChainID = useMemo(() => {

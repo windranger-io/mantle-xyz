@@ -16,9 +16,8 @@ import {
   L1_CHAIN_ID,
   L2_CHAIN_ID,
 } from "@config/constants";
-import { localeZero, formatBigNumberString } from "@utils/formatStrings";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
-
+import { formatBigNumberString, localeZero } from "@mantle/utils";
 import DirectionLabel from "@components/bridge/utils/DirectionLabel";
 import { MantleLogo } from "@components/bridge/utils/MantleLogo";
 import KindReminder from "@components/bridge/utils/KindReminder";

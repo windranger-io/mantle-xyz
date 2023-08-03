@@ -1,14 +1,16 @@
 import {
+  CHAINS_FORMATTED,
   L1_BITDAO_TOKEN,
   L1_BITDAO_TOKEN_ADDRESS,
+  L1_CHAIN_ID,
   L1_CONVERTER_CONTRACT_ABI,
   L1_CONVERTER_CONTRACT_ADDRESS,
 } from "@config/constants";
-import { BigNumber, Contract, constants } from "ethers";
+import { BigNumber, Contract, constants, providers } from "ethers";
 
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
-import { useProvider, useQuery } from "wagmi";
+import { useQuery } from "wagmi";
 
 function useGasEstimate(
   chainId: number,
@@ -17,9 +19,6 @@ function useGasEstimate(
   balances: Record<string, string>,
   allowance: string
 ) {
-  // fetch the gas estimate for the selected operation on in the selected direction
-  const provider = useProvider({ chainId });
-
   // fetch the gas estimate for the selected operation on in the selected direction
   const {
     data: actualGasFee,
@@ -33,10 +32,12 @@ function useGasEstimate(
         address: client?.address,
         balances,
         amount,
-        provider: provider.network.name,
       },
     ],
     async () => {
+      const provider = new providers.JsonRpcProvider(
+        CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
+      );
       // only run the call if we're connected to the correct network and user has appropriate balance
       if (
         client?.address &&

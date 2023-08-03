@@ -9,7 +9,7 @@ import BalanceLabel from "@components/converter/utils/BalanceLabel";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { useContext, useMemo } from "react";
 import StateContext from "@providers/stateContext";
-import { formatBigNumberString } from "@utils/formatStrings";
+import { formatBigNumberString } from "@mantle/utils";
 
 export default function Destination() {
   const { amount, balances } = useContext(StateContext);
@@ -36,7 +36,12 @@ export default function Destination() {
               className="max-w-[min(346px,100vw)] truncate"
               title={`${value} MNT`}
             >
-              {formatBigNumberString(value, L1_MANTLE_TOKEN.decimals, false)}
+              {formatBigNumberString(
+                value,
+                L1_MANTLE_TOKEN.decimals,
+                true,
+                false
+              )}
             </div>
             <span className="text-[#C4C4C4] font-bold">MNT</span>
           </div>
@@ -53,8 +58,12 @@ export default function Destination() {
                 parseFloat(balances?.[L1_MANTLE_TOKEN.address] || "")
               )
                 ? "0"
-                : formatBigNumberString(balances?.[L1_MANTLE_TOKEN.address]) ||
-                  "0"
+                : formatBigNumberString(
+                    balances?.[L1_MANTLE_TOKEN.address],
+                    L1_MANTLE_TOKEN.decimals,
+                    true,
+                    false
+                  ) || "0"
             }${" "}${L1_MANTLE_TOKEN.symbol}`}
           />
         </div>

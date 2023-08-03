@@ -78,16 +78,17 @@ export const TWITTER_DESC =
 
 // Get the current absolute path from the env
 export function getBaseUrl() {
-  const vercel =
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
-    process.env.NEXT_PUBLIC_VERCEL_URL;
   // return the fully resolved absolute url
-  return vercel
-    ? `https://${vercel}`
-    : // this should match the port used by the current app
-      "http://localhost:3004";
+  return (
+    process.env.NEXT_PUBLIC_VERCEL_URL ||
+    // eslint-disable-next-line no-nested-ternary
+    (process.env.NEXT_PUBLIC_SITE_URL
+      ? L1_CHAIN_ID === 1
+        ? `https://migratebit.mantle.xyz`
+        : process.env.NEXT_PUBLIC_SITE_URL
+      : // this should match the port used by the current app
+        "http://localhost:3004")
+  );
 }
 
 // export the absolute path
@@ -126,7 +127,7 @@ export const CHAINS: Record<
 > = {
   1: {
     chainId: "0x1",
-    chainName: "Mainnet",
+    chainName: "Ethereum Mainnet",
     nativeCurrency: {
       name: "ETH",
       symbol: "ETH",
@@ -134,7 +135,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `/rpc`,
+      `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth`,
     ],
@@ -151,7 +152,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       // infura backed redirect gateway
-      `/rpc`,
+      `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth_goerli`,
     ],
@@ -273,10 +274,45 @@ export const MULTICALL_CONTRACTS: Record<number, `0x${string}`> = {
 
 // ERC-20 abi for balanceOf && allowanceOf
 export const TOKEN_ABI = [
-  "function balanceOf(address account) external view returns (uint256)",
-  "function allowance(address owner, address spender) external view returns (uint256)",
-  "function approve(address spender, uint256 amount) returns (bool)",
-];
+  {
+    constant: true,
+    inputs: [
+      {
+        name: "_owner",
+        type: "address",
+      },
+    ],
+    name: "balanceOf",
+    outputs: [
+      {
+        name: "balance",
+        type: "uint256",
+      },
+    ],
+    payable: false,
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "owner", type: "address" },
+      { internalType: "address", name: "spender", type: "address" },
+    ],
+    name: "allowance",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "spender", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+    ],
+    name: "approve",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+] as const;
 
 export const MANTLE_BRIDGE_URL: Record<number, string> = {
   1: "https://bridge.mantle.xyz",

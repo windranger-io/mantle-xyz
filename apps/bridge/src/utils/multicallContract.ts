@@ -30,7 +30,7 @@ export const MULTICALL_ABI = [
  * @returns ethers.Contract multicall contract
  */
 export async function getMulticallContract(
-  address: `0x${string}`,
+  address: string,
   provider: Provider
 ) {
   const multicall = new Contract(address, MULTICALL_ABI, provider);

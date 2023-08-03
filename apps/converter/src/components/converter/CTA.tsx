@@ -1,4 +1,4 @@
-import { Button } from "@mantle/ui";
+import { Button, WalletModal } from "@mantle/ui";
 import { useContext, useState, useEffect, useMemo } from "react";
 
 import StateContext from "@providers/stateContext";
@@ -13,7 +13,6 @@ import {
 
 import { useConnect } from "wagmi";
 import { parseUnits } from "ethers/lib/utils.js";
-import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 // import { useCallApprove } from "@hooks/web3/bridge/write/useCallApprove";
@@ -34,21 +33,12 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
     balances,
     allowance,
     amount = "",
+    setClient,
     setCTAPage,
   } = useContext(StateContext);
 
   // control wagmi connector
   const { connect, connectors } = useConnect();
-
-  // Find the right connector by ID
-  const connector = useMemo(
-    // we can allow this connection.id to be set in connection modal phase
-    () =>
-      connectors.find((conn) => conn.id === "metamask") ||
-      // fallback to injected provider
-      new InjectedConnector(),
-    [connectors]
-  );
 
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
@@ -156,46 +146,72 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
 
   return (
     <div className="mt-4">
-      <Button
-        type="button"
-        size="full"
-        onClick={() => {
-          if (!client?.address) {
-            connect({
-              connector,
+      {!client?.address ? (
+        <WalletModal
+          onMetamask={() => {
+            setClient({
+              ...client,
+              connector: "metaMask",
             });
-          } else if (!isChainID) {
-            switchToNetwork(chainId);
-          } else if (
-            parseUnits(allowance || "-1", L1_BITDAO_TOKEN.decimals).lt(
-              parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals)
-            )
-          ) {
-            // allocate allowance
-            approve();
-          } else {
-            // always from the default page
-            setCTAPage(CTAPages.Default);
-            // complete the transaction inside the modal
-            setIsOpen(true);
+            connect({
+              connector: connectors.find((conn) => conn.id === "metaMask"),
+            });
+          }}
+          onWalletConnect={() => {
+            setClient({
+              ...client,
+              connector: "walletConnect",
+            });
+            connect({
+              chainId,
+              connector: connectors.find((conn) => conn.id === "walletConnect"),
+            });
+          }}
+        >
+          <div>
+            <Button type="button" size="full" className="h-14">
+              Please connect your wallet
+            </Button>
+          </div>
+        </WalletModal>
+      ) : (
+        <Button
+          type="button"
+          size="full"
+          onClick={() => {
+            if (!isChainID) {
+              switchToNetwork(chainId);
+            } else if (
+              parseUnits(allowance || "-1", L1_BITDAO_TOKEN.decimals).lt(
+                parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals)
+              )
+            ) {
+              // allocate allowance
+              approve();
+            } else {
+              // always from the default page
+              setCTAPage(CTAPages.Default);
+              // complete the transaction inside the modal
+              setIsOpen(true);
+            }
+          }}
+          disabled={
+            halted ||
+            (isChainID &&
+              !!client.address &&
+              (!!approvalStatus ||
+                !amount ||
+                !parseFloat(amount) ||
+                Number.isNaN(parseFloat(amount)) ||
+                parseUnits(
+                  spendDetails.balance || "-1",
+                  L1_BITDAO_TOKEN.decimals
+                ).lt(parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals))))
           }
-        }}
-        disabled={
-          halted ||
-          (isChainID &&
-            !!client.address &&
-            (!!approvalStatus ||
-              !amount ||
-              !parseFloat(amount) ||
-              Number.isNaN(parseFloat(amount)) ||
-              parseUnits(
-                spendDetails.balance || "-1",
-                L1_BITDAO_TOKEN.decimals
-              ).lt(parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals))))
-        }
-      >
-        {CTAButtonText}
-      </Button>
+        >
+          {CTAButtonText}
+        </Button>
+      )}
     </div>
   );
 }

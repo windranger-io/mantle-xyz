@@ -12,7 +12,7 @@ export type Withdrawal = {
 };
 
 function useHistoryWithdrawals(
-  client: { address?: `0x${string}` | undefined },
+  client: { address?: string | undefined },
   withdrawalsUrl: string,
   withdrawals: Withdrawal[] | undefined,
   setWithdrawals: (val: Withdrawal[]) => void

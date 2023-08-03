@@ -8,7 +8,7 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
   {
     q: "Why should I migrate my $BIT tokens?",
     a: (
-      <Typography className="text-type-secondary mx-4 mb-4">
+      <Typography variant="microBody14" className="mx-4 mb-4">
         As per{" "}
         <a
           href="https://snapshot.org/#/bitdao.eth/proposal/0xe81f852d90ba80929b1f19683da14b334d63b31cb94e53249b8caed715475693"
@@ -38,7 +38,7 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
   {
     q: "How do I migrate using multisig?",
     a: (
-      <Typography className="text-type-secondary mx-4 mb-4">
+      <Typography variant="microBody14" className="mx-4 mb-4">
         Please see the &quot;For Advanced Users&quot; section of the{" "}
         <a
           href="https://www.mantle.xyz/blog/announcements/bit-to-mnt-user-guide"
@@ -55,7 +55,7 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
   {
     q: "Will gas be refunded?",
     a: (
-      <Typography className="text-type-secondary mx-4 mb-4">
+      <Typography variant="microBody14" className="mx-4 mb-4">
         Yes, most users will be refunded their cost of migration in ETH. Users
         will not need to take any action and the ETH will be sent directly to
         the address used in the migration. The status of the rebate will be
@@ -78,23 +78,19 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
     q: "How do I add $MNT to my wallet?",
     a: (
       <div className="mx-4 mb-4">
-        <Typography className="text-type-secondary break-all">
+        <Typography variant="microBody14" className="break-all">
           Token address: 0x3c3a81e81dc49A522A592e7622A7E711c06bf354
         </Typography>
-        <Typography className="text-type-secondary">
-          Token symbol: MNT
-        </Typography>
-        <Typography className="text-type-secondary">
-          Token name: Mantle
-        </Typography>
-        <Typography className="text-type-secondary">Decimals: 18</Typography>
+        <Typography variant="microBody14">Token symbol: MNT</Typography>
+        <Typography variant="microBody14">Token name: Mantle</Typography>
+        <Typography variant="microBody14">Decimals: 18</Typography>
       </div>
     ),
   },
   {
     q: "How do I vote with $MNT after?",
     a: (
-      <Typography className="text-type-secondary mx-4 mb-4">
+      <Typography variant="microBody14" className="mx-4 mb-4">
         $BIT delegation and voting works independently of $MNT due to the new
         token functionality. Visit{" "}
         <a
@@ -112,7 +108,7 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
   {
     q: "Why will the Migrator contract be halted?",
     a: (
-      <Typography className="text-type-secondary mx-4 mb-4">
+      <Typography variant="microBody14" className="mx-4 mb-4">
         The contract is initially halted, then unhalted as the official
         migration period commences. The contract may be subsequenty halted in
         case there is a problem, or as instructed by Mantle Governance.
@@ -122,7 +118,7 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
   {
     q: "Why will the Migrator contract be out of funds?",
     a: (
-      <Typography className="text-type-secondary mx-4 mb-4">
+      <Typography variant="microBody14" className="mx-4 mb-4">
         For security purposes, the Migrator contract will hold a minimal amount
         of funds and will require top-up from the relevant Mantle Treasury.
         Excess tokens will be occasionally transferred to the relevant Mantle
@@ -149,7 +145,7 @@ function Accordion({
         className="flex flex-row justify-between items-center cursor-pointer p-4"
         onClick={togglePanel}
       >
-        <Typography className="text-type-primary text-left">
+        <Typography className="text-type-primary" variant="microBody14">
           {controlText}
         </Typography>
         {isExpanded ? (
@@ -165,7 +161,7 @@ function Accordion({
 
 export function Faq() {
   return (
-    <ConvertCard className="rounded-xl w-full mt-8 overflow-x-auto">
+    <ConvertCard className="rounded-xl w-full mt-5 overflow-x-auto">
       <div className="flex gap-3">
         <div className="flex flex-col w-full">
           {faqList.map((el, idx) => (

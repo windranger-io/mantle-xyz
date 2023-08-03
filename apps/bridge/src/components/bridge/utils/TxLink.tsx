@@ -1,5 +1,5 @@
 import { CHAINS } from "@config/constants";
-import { truncateAddress } from "@utils/formatStrings";
+import { truncateAddress } from "@mantle/utils";
 
 // a link to the networks block explorer
 export default function TxLink({
@@ -55,7 +55,7 @@ export default function TxLink({
 
         <span>
           {asHash
-            ? truncateAddress(txHash as `0x${string}`)
+            ? truncateAddress(txHash as string)
             : `${CHAINS[chainId].chainName} Explorer`}
         </span>
       </a>

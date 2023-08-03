@@ -1,6 +1,6 @@
 import "./styles/globals.css";
 
-import { GTWalsheimRegular, GTWalsheimMedium } from "@mantle/ui";
+import { GTWalsheim } from "@mantle/ui";
 import Providers from "./providers";
 
 export default async function RootLayout({
@@ -9,11 +9,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${GTWalsheimRegular.variable} ${GTWalsheimMedium.variable}`}
-    >
-      <body>
+    <html lang="en" className={`${GTWalsheim.className}`}>
+      <body className="antialiased">
         {/* @ts-expect-error Server Component */}
         <Providers>{children}</Providers>
       </body>

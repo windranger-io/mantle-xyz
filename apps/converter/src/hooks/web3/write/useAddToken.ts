@@ -2,12 +2,18 @@
 
 import { ABSOLUTE_PATH, Token } from "@config/constants";
 
+declare global {
+  interface Window {
+    ethereum: import("ethers").providers.ExternalProvider;
+  }
+}
+
 export function useAddToken() {
   // trigger change of network
   const addToken = async (token: Token) => {
     if (!window.ethereum) throw new Error("No crypto wallet found");
     // wasAdded is a boolean. Like any RPC method, an error may be thrown.
-    return window.ethereum.request({
+    return window.ethereum?.request?.({
       method: "wallet_watchAsset",
       params: {
         type: "ERC20", // Initially only supports ERC20, but eventually more!
@@ -20,7 +26,7 @@ export function useAddToken() {
               ? token.logoURI
               : ABSOLUTE_PATH + token.logoURI, // A string url of the token logo
         },
-      },
+      } as any,
     });
   };
 

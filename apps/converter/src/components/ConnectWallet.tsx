@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 "use client";
 
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -8,11 +10,12 @@ import StateContext from "@providers/stateContext";
 import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
-import { truncateAddress } from "@utils/formatStrings";
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
 import { ArrowDownIcon, Button, WalletModal } from "@mantle/ui";
+import { truncateAddress } from "@mantle/utils";
+
 import { BiError } from "react-icons/bi";
 
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
@@ -51,7 +54,7 @@ function ConnectWallet() {
   const { switchToNetwork } = useSwitchToNetwork();
 
   // control wagmi connector
-  const { connect, connectAsync, connectors } = useConnect();
+  const { connect, connectAsync, connectors, pendingConnector } = useConnect();
 
   // Find the right connector by ID
   const connector = useMemo(
@@ -82,51 +85,6 @@ function ConnectWallet() {
     },
   });
 
-  // record change of account
-  const changeAccount = async () => {
-    const accounts = await window.ethereum?.request({
-      method: "eth_requestAccounts",
-    });
-
-    if (accounts) {
-      setClient({
-        chainId: parseInt(
-          (await window.ethereum?.request({
-            method: "eth_chainId",
-          })) || "-1",
-          16
-        ),
-        isConnected: true,
-        address: accounts[0],
-      });
-    }
-  };
-
-  // trigger change of network
-  const changeNetwork = async () => {
-    if (!window.ethereum) throw new Error("No crypto wallet found");
-    // trigger a change of network
-    await switchToNetwork(chainId);
-  };
-
-  // check the connection is valid
-  const checkConnection = async () => {
-    const { ethereum } = window;
-    if (ethereum) {
-      const accounts = await ethereum.request({ method: "eth_accounts" });
-      if (accounts.length > 0) {
-        setClient({
-          isConnected: true,
-          address: accounts[0],
-        });
-      } else {
-        setClient({
-          isConnected: false,
-        });
-      }
-    }
-  };
-
   // pick up connection details from wagmi
   const { address: wagmiAddress } = useAccount({
     onConnect: async () => {
@@ -140,6 +98,38 @@ function ConnectWallet() {
       await changeAccount();
     },
   });
+
+  // record change of account
+  const changeAccount = async () => {
+    setClient({
+      chainId,
+      isConnected: true,
+      address: wagmiAddress,
+      connector: client?.connector || pendingConnector?.id,
+    });
+  };
+
+  // trigger change of network
+  const changeNetwork = async () => {
+    if (!window.ethereum) throw new Error("No crypto wallet found");
+    // trigger a change of network
+    await switchToNetwork(chainId);
+  };
+
+  // check the connection is valid
+  const checkConnection = async () => {
+    if (wagmiAddress) {
+      setClient({
+        isConnected: true,
+        address: wagmiAddress,
+        connector: client?.connector,
+      });
+    } else {
+      setClient({
+        isConnected: false,
+      });
+    }
+  };
 
   // set wagmi address to address for ssr
   useEffect(() => {
@@ -168,14 +158,14 @@ function ConnectWallet() {
 
   // return connect/disconnect component
   return (
-    <div className="flex flex-row gap-4">
+    <div className="flex flex-row gap-4 w-full">
       {isChainID && client.isConnected && client.address ? (
         <Link href="/account/migrate" scroll shallow>
           <Button
             type="button"
             size="regular"
             variant="walletLabel"
-            className="flex items-center text-xs text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-fit h-[36px]"
+            className="flex items-center text-xs text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 justify-center w-full h-full"
           >
             <Avatar walletAddress="address" />
             <div className="flex items-center justify-center gap-2">
@@ -195,14 +185,34 @@ function ConnectWallet() {
             {!client.address ? (
               <WalletModal
                 onMetamask={() => {
+                  setClient({
+                    ...client,
+                    connector: "metaMask",
+                  });
                   connect({
-                    connector,
+                    connector: connectors.find(
+                      (conn) => conn.id === "metaMask"
+                    ),
+                  });
+                }}
+                onWalletConnect={() => {
+                  setClient({
+                    ...client,
+                    connector: "walletConnect",
+                  });
+                  connect({
+                    chainId,
+                    connector: connectors.find(
+                      (conn) => conn.id === "walletConnect"
+                    ),
                   });
                 }}
               >
-                <Button variant="walletConnect" size="regular">
-                  {!client.address ? `Connect Wallet` : `Disconnect`}
-                </Button>
+                <div>
+                  <Button variant="walletConnect" size="regular">
+                    Connect Wallet
+                  </Button>
+                </div>
               </WalletModal>
             ) : (
               <Button
@@ -220,13 +230,19 @@ function ConnectWallet() {
             )}
           </>
         ) : !isChainID ? (
-          <div className="flex flex-row items-center gap-4 justify-end">
-            <div className="flex flex-row items-center gap-2 text-status-error h-fit rounded-lg text-xs backdrop-blur-[50px] bg-white/10 w-fit px-4 py-2 whitespace-nowrap">
+          <div className="grid grid-cols-2 items-center gap-4 w-full">
+            <div className="flex flex-row items-center gap-2 text-status-error h-full rounded-lg text-xs backdrop-blur-[50px] bg-white/10 justify-center px-4 py-2 whitespace-nowrap">
               <BiError className="text-sm" />
-              <p className="text-sm">Unsupported chain</p>
+              <p className="text-sm whitespace-normal text-center">
+                Unsupported chain
+              </p>
             </div>
-            <Button variant="walletConnect" onClick={() => changeNetwork()}>
-              Please switch to {CHAINS[chainId].chainName}
+            <Button
+              variant="walletConnect"
+              onClick={() => changeNetwork()}
+              className="xl:whitespace-nowrap h-full"
+            >
+              Switch to {CHAINS[chainId].chainName}
             </Button>
           </div>
         ) : (

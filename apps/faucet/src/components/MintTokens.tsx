@@ -1,8 +1,16 @@
+/* eslint-disable no-nested-ternary */
+
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
-import { useAccount, useBalance, useContractWrite } from "wagmi";
+import {
+  useAccount,
+  useBalance,
+  useBlockNumber,
+  useContractWrite,
+  useQuery,
+} from "wagmi";
 import useIsChainID from "@hooks/useIsChainID";
 import { useSession } from "next-auth/react";
 
@@ -10,86 +18,187 @@ import {
   formatEther,
   getAddress,
   parseEther,
-  isAddress,
+  // isAddress,
 } from "ethers/lib/utils.js";
-import { truncateAddress } from "@utils/truncateAddress";
 import { validate } from "@utils/validateMintData";
 
-import { ABI, NETWORKS, CHAIN_ID, MAX_BALANCE } from "@config/constants";
+import {
+  ABI,
+  NETWORKS,
+  L1_CHAIN_ID,
+  MAX_BALANCE,
+  MAX_MINT,
+} from "@config/constants";
+import { truncateAddress, formatBigNumberString } from "@mantle/utils";
+import { BigNumber, Contract } from "ethers";
+import StateContext from "@providers/stateContext";
+
 import { Button, SimpleCard, Typography } from "@mantle/ui";
+
 import { CardHeading } from "./CardHeadings";
 import ConnectWallet from "./ConnectWallet";
 
+// format according to the given locale
+const MAX_MINT_FORMATTED = formatBigNumberString(
+  `${MAX_MINT || 0}`,
+  18,
+  true,
+  false
+);
+
 function MintTokens() {
   // check that we're connected to the appropriate chain
-  const isChainID = useIsChainID(CHAIN_ID);
+  const isChainID = useIsChainID(L1_CHAIN_ID);
   // check that user is authenticated
   const { data: session } = useSession();
 
+  // import the provider
+  const { provider } = useContext(StateContext);
+
   const [error, setError] = useState<string | undefined>();
+  const [hasMintError, setHasMintError] = useState<boolean | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
-  const [amount, setAmount] = useState<number | undefined>(1);
+  const [amount, setAmount] = useState<string | undefined>("1");
   const [txs, setTxs] = useState<string[]>([]);
 
   // record connected wallets bit and eth balance
   const [myBalanceMNT, setmyBalanceMNT] = useState("0.0");
   const [, setmyBalanceETH] = useState("0.0");
 
+  // check if minting should be locked (set appropriate error when detected)
+  const [mintLock, setMintLock] = useState(false);
+
   // set address with useState to avoid hydration errors
   const [address, setAddress] = useState<string>();
   const [sendTo, setSendTo] = useState<string>();
+  const [blockNumber, setBlockNumber] = useState<string>();
   const { address: wagmiAddress } = useAccount();
 
   // use wagmi to get balances
   const { data: balanceETH } = useBalance({
     address: wagmiAddress,
     watch: true,
-    chainId: CHAIN_ID,
+    chainId: L1_CHAIN_ID,
   });
   const { data: balanceMNT } = useBalance({
     address: wagmiAddress,
     watch: true,
-    token: NETWORKS[CHAIN_ID],
-    chainId: CHAIN_ID,
+    token: NETWORKS[L1_CHAIN_ID],
+    chainId: L1_CHAIN_ID,
   });
+
+  // current blockNumber
+  useBlockNumber({
+    chainId: L1_CHAIN_ID,
+    watch: true,
+    onBlock: (data) => {
+      setBlockNumber(data?.toString());
+    },
+  });
+
+  // get the users mint record from the contract
+  const { data: mintRecord, refetch: refetchMintRecord } = useQuery(
+    [
+      "MINT_RECORD",
+      {
+        wagmiAddress,
+        client: sendTo,
+        provider: provider.network.chainId,
+      },
+    ],
+    async () => {
+      if (
+        sendTo &&
+        provider?.network?.chainId === L1_CHAIN_ID &&
+        NETWORKS[L1_CHAIN_ID]
+      ) {
+        const contract = new Contract(NETWORKS[L1_CHAIN_ID], ABI, provider);
+        const record = await contract.mintRecord(sendTo);
+
+        return BigNumber.from(record).toNumber();
+      }
+      return 0;
+    },
+    {
+      // refetch every 60s or when refetched
+      staleTime: 60000,
+      refetchInterval: 60000,
+      // background refetch stale data
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: true,
+      refetchIntervalInBackground: true,
+    }
+  );
 
   // use wagmi to call mint on selected contract
   const { writeAsync: mint, isLoading: minting } = useContractWrite({
-    mode: "recklesslyUnprepared",
-    address: NETWORKS[CHAIN_ID],
+    address: NETWORKS[L1_CHAIN_ID],
     abi: ABI,
     functionName: "mint",
+    // check for transaction success on settled
     async onSettled(data, err) {
       // check for error first...
       if (err) {
+        const stringErr = err.message.toLowerCase();
         setError(
-          err.toString().toLowerCase().indexOf("user rejected") !== -1
+          stringErr.indexOf("user rejected") !== -1
             ? "User rejected transaction"
-            : JSON.stringify(err).toString()
+            : stringErr.indexOf("intrinsic gas too low") !== -1
+            ? "Intrinsic gas too low"
+            : `${err.message}`
         );
         return false;
       }
 
-      // wait for full resolve
-      const receipt = await data?.wait();
+      // clear errors between calls
+      setError("");
+
+      // wait for one confirmation
+      const receipt = await provider
+        .waitForTransaction(data?.hash || "", 1)
+        .catch((e: any) => {
+          throw e;
+        });
+
+      // fetch the mint-record again to check for warning states
+      await refetchMintRecord();
 
       // check that the transaction actually succeeded
       if (parseInt(receipt?.status?.toString() || "0x0", 16) === 1) {
         setAmount(undefined);
         setSuccess(
-          `Success! We minted ${amount} MNT and sent ${
-            (amount || 0) === 1 ? "it" : "them"
-          } to ${truncateAddress(address as `0x${string}`)}`
+          `Success!\n We minted ${formatBigNumberString(
+            `${amount || 0}`,
+            18,
+            true,
+            false
+          )} MNT and sent ${
+            +(amount || 0) === 1 ? "it" : "them"
+          } to ${truncateAddress(address as `0x${string}`)}\n\n`
         );
+
         return true;
       }
+
+      // didnt succeed report failure
       setError("Transaction failed - did the transaction run out of gas?");
+
       return false;
+    },
+    async onError(err) {
+      // mark appropriate error
+      setError(
+        err.toString().toLowerCase().indexOf("user rejected") !== -1
+          ? "User rejected transaction"
+          : `1 - ${err.message}`
+      );
     },
   });
 
   // set wagmi data for ssr
   useEffect(() => {
+    setError("");
     setAddress(wagmiAddress);
     setSendTo(wagmiAddress);
   }, [wagmiAddress]);
@@ -99,12 +208,82 @@ function MintTokens() {
     setmyBalanceMNT(formatEther(balanceMNT?.value || "0"));
   }, [balanceETH, balanceMNT]);
 
+  useEffect(() => {
+    const hasError =
+      error === "" ||
+      error ===
+        `You can mint a maximum of ${MAX_MINT_FORMATTED} MNT per transaction` ||
+      error?.indexOf("Please wait 1,000 blocks starting from") === 0 ||
+      error?.indexOf("Warning: Balance will equal or exceed 1,000 MNT") === 0;
+
+    setHasMintError(hasError);
+  }, [error]);
+
+  useEffect(() => {
+    // clear the error on change if required
+    if (!hasMintError) {
+      // clear the error
+      setError("");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [amount]);
+
+  useEffect(() => {
+    // check if the error is to be set
+    if (blockNumber && typeof mintRecord !== "undefined" && hasMintError) {
+      // check mintable conditions
+      const validBlock =
+        mintRecord === 0 || +(blockNumber || 0) - (mintRecord || 0) > 1000;
+      const validBalance = balanceMNT && +`${myBalanceMNT || 0}` < MAX_BALANCE;
+      const validFutureBalance =
+        balanceMNT && +`${myBalanceMNT || 0}` + +`${amount || 0}` < MAX_BALANCE;
+
+      // mintable when both are valid
+      setMintLock(!(validBlock || validBalance));
+
+      // place appropriate error
+      if (+(amount || 0) > MAX_MINT) {
+        // wait the block time
+        setError(
+          `You can mint a maximum of ${MAX_MINT_FORMATTED} MNT per transaction`
+        );
+      } else if (!validBlock && !validBalance) {
+        // wait the block time
+        setError(
+          `Please wait 1,000 blocks starting from ${mintRecord} before attempting to mint more tokens (current block: ${blockNumber})`
+        );
+      } else if (!validFutureBalance) {
+        // balance is more than max allowed (in block time - but we're imposing this all the time)
+        setError(
+          `Warning: Balance will equal or exceed 1,000 MNT (current balance: ${myBalanceMNT} MNT)`
+        );
+      } else if (
+        error ===
+          `You can mint a maximum of ${MAX_MINT_FORMATTED} MNT per transaction` ||
+        error?.indexOf("Please wait 1,000 blocks starting from") === 0 ||
+        error?.indexOf("Warning: Balance will equal or exceed 1,000 MNT") === 0
+      ) {
+        // clear the error
+        setError("");
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    sendTo,
+    mintRecord,
+    blockNumber,
+    balanceMNT,
+    myBalanceMNT,
+    amount,
+    hasMintError,
+  ]);
+
   return (
     <SimpleCard className="max-w-lg grid gap-4">
-      <CardHeading numDisplay="2" header="Set your mint address" />
+      <CardHeading numDisplay="2" header="Set your mint amount" />
       <Typography variant="body" className="mb-4">
-        Each address can mint 1,000 tokens every 1,000 blocks (about 4 hours).
-        Additionally, an address can hold a maximum of 1,000 tokens at any time.
+        If your wallet holds 1,000 MNT or more you must wait 1,000 blocks (about
+        4 hours) before you can perform another mint operation.
       </Typography>
 
       {/* hide avatar and disconnect to avoid waiting for wallet connect to load */}
@@ -140,7 +319,7 @@ function MintTokens() {
           </div>
 
           <div
-            className={`text-center text-status-success mb-4 ${
+            className={`text-center whitespace-pre-wrap text-status-success mb-4 ${
               !success ? `hidden` : `block`
             }`}
           >
@@ -148,7 +327,7 @@ function MintTokens() {
           </div>
 
           <div className="grid gap-6">
-            <div className="grid gap-2">
+            {/* <div className="grid gap-2">
               <div className="flex flex-row gap-2">
                 <p className="text-sm">Mint address</p>
 
@@ -195,7 +374,7 @@ function MintTokens() {
                   Please enter valid address
                 </div>
               )}
-            </div>
+            </div> */}
             <div className="grid gap-2">
               <p className="text-sm">Mint token amount</p>
               <input
@@ -212,25 +391,40 @@ function MintTokens() {
                 // }
                 onChange={(e: {
                   target: { value: React.SetStateAction<string> };
-                }) => setAmount(parseFloat(`${e.target.value}`))}
+                }) => {
+                  // pass the targer amount
+                  setAmount(`${Math.abs(+(e.target.value || "")) || ""}`);
+                }}
               />
             </div>
             <p
-              className={`text-sm ${
+              className={`text-sm whitespace-pre-wrap ${
+                !session?.user?.access_token ||
                 sendTo !== address ||
+                +(amount || 0) > MAX_MINT ||
                 minting ||
-                // !hasTweeted ||
-                (balanceMNT &&
-                  parseFloat(myBalanceMNT) + parseFloat(`${amount}`) >
-                    MAX_BALANCE)
-                  ? ``
-                  : ""
+                mintLock
+                  ? // !hasTweeted ||
+                    // (balanceMNT && +myBalanceMNT + +`${amount}` > MAX_BALANCE)
+                    "hidden"
+                  : "block"
               }`}
             >
-              {balanceMNT &&
-              parseFloat(myBalanceMNT) + parseFloat(`${amount}`) > MAX_BALANCE
-                ? `Your MNT balance must not exceed 1000 MNT`
-                : `You will receive ${amount || 0} MNT`}
+              {+(amount || 0) > MAX_MINT
+                ? `You can mint a maximum of ${MAX_MINT_FORMATTED} MNT per transaction`
+                : balanceMNT && mintLock
+                ? `Your MNT balance exceeds 1,000 MNT and you have performed a mint action in the last 1,000 blocks...`
+                : balanceMNT && +myBalanceMNT + +`${amount}` > MAX_BALANCE
+                ? `You will receive ${formatBigNumberString(
+                    `${amount || 0}`,
+                    18,
+                    true,
+                    false
+                  )} MNT.\n\nAfter this transaction, your balance will equal or exceed 1,000 MNT and you will be locked out from performing any more mints for 1,000 blocks.`
+                : `You will receive ${
+                    formatBigNumberString(`${amount || 0}`, 18, true, false) ||
+                    0
+                  } MNT`}
             </p>
 
             <Button
@@ -241,25 +435,17 @@ function MintTokens() {
               disabled={
                 !session?.user?.access_token ||
                 sendTo !== address ||
+                +(amount || 0) > MAX_MINT ||
                 minting ||
-                (balanceMNT &&
-                  parseFloat(myBalanceMNT) + parseFloat(`${amount}`) >
-                    MAX_BALANCE)
+                mintLock
               }
               onClick={() => {
-                const { eAddress, eAmount } = validate(
-                  address,
-                  amount || 0,
-                  myBalanceMNT
-                );
-                setError(undefined);
+                const { eAddress, eAmount } = validate(address, amount || 0);
                 setSuccess(undefined);
                 if (!eAddress && !eAmount) {
                   // attempt to mint
                   mint({
-                    recklesslySetUnpreparedArgs: [
-                      parseEther(`${amount}`).toString(),
-                    ],
+                    args: [BigInt(parseEther(`${amount}`).toString())],
                   })
                     .then((tx: { hash: string }) => {
                       if (tx.hash) {
@@ -279,9 +465,7 @@ function MintTokens() {
                       }
                     });
                 } else {
-                  setError(
-                    "Problems with input or minted tokens exceeds 1000 MNT"
-                  );
+                  setError("Problems with input");
                 }
               }}
             >
@@ -290,34 +474,33 @@ function MintTokens() {
           </div>
           <div
             className={`bg-slate-900 p-4 mt-4 rounded-md ${
-              !error ? `hidden` : `block`
+              !error || !session?.user?.access_token ? `hidden` : `block`
             }`}
           >
-            <div className="text-status-error text-sm">
-              {
-                // eslint-disable-next-line no-nested-ternary
-                sendTo !== address
-                  ? `Please connect ${
-                      sendTo &&
-                      sendTo.length === 42 &&
-                      (() => {
-                        try {
-                          return getAddress(sendTo);
-                        } catch {
-                          return false;
-                        }
-                      })()
-                        ? `${truncateAddress(
-                            (sendTo as `0x${string}`) || "0x0"
-                          )}s`
-                        : ""
-                    } wallet to mint`
-                  : address &&
-                    balanceMNT &&
-                    parseFloat(myBalanceMNT) >= MAX_BALANCE
-                  ? `Unable to issue more until balance is spent`
-                  : error
-              }
+            <div
+              className={`${
+                error?.indexOf("Warning:") === 0
+                  ? "text-white"
+                  : "text-status-error"
+              } text-sm`}
+            >
+              {sendTo !== address
+                ? `Please connect ${
+                    sendTo &&
+                    sendTo.length === 42 &&
+                    (() => {
+                      try {
+                        return getAddress(sendTo);
+                      } catch {
+                        return false;
+                      }
+                    })()
+                      ? `${truncateAddress(
+                          (sendTo as `0x${string}`) || "0x0"
+                        )}s`
+                      : ""
+                  } wallet to mint`
+                : error}
             </div>
           </div>
         </div>

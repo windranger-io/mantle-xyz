@@ -80,6 +80,7 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
                 src={L1_MANTLE_TOKEN?.logoURI}
                 width={24}
                 height={24}
+                className="pb-px"
               />
             </div>
           }

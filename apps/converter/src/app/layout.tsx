@@ -2,8 +2,7 @@ import "./styles/globals.css";
 
 // Dummy components
 import {
-  GTWalsheimRegular,
-  GTWalsheimMedium,
+  GTWalsheim,
   PageWrapper,
   PageBackroundImage,
   PageContainer,
@@ -25,12 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${GTWalsheimRegular.variable} ${GTWalsheimMedium.variable}`}
-    >
+    <html lang="en" className={`${GTWalsheim.className}`}>
       <Head />
-      <body>
+      <body className="antialiased">
         {/* @ts-expect-error Server Component */}
         <Providers>
           <PageWrapper
@@ -41,10 +37,12 @@ export default function RootLayout({
                 className={isComingSoon ? "blur-md" : ""}
               />
             }
-            header={<Nav className="mb-0 m-0" hideConnectBtn={isComingSoon} />}
+            header={<Nav hideConnectBtn={isComingSoon} />}
             className="min-h-screen justify-between"
           >
-            <PageContainer className="grow">{children}</PageContainer>
+            <PageContainer className="grow items-center">
+              {children}
+            </PageContainer>
             {!isComingSoon && <SlimFooter url={CONST.WEBSITE} />}
           </PageWrapper>
         </Providers>

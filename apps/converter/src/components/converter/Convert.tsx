@@ -4,11 +4,9 @@ import {
   Views,
   L1_CONVERTER_CONTRACT_ABI,
   L1_CONVERTER_CONTRACT_ADDRESS,
-  L1_CHAIN_ID,
 } from "@config/constants";
 import StateContext from "@providers/stateContext";
 import { Suspense, useContext, useEffect, useState } from "react";
-import { useProvider } from "wagmi";
 import { Contract } from "ethers";
 
 // by order of use...
@@ -27,12 +25,8 @@ import { Faq } from "./Faq";
 
 export default function Convert() {
   // unpack the context
-  const { view, isCTAPageOpen, setIsCTAPageOpen } = useContext(StateContext);
-
-  // use provider for l1 chain
-  const provider = useProvider({
-    chainId: L1_CHAIN_ID,
-  });
+  const { provider, view, isCTAPageOpen, setIsCTAPageOpen } =
+    useContext(StateContext);
 
   const [halted, setHalted] = useState<boolean>(true);
 
@@ -59,19 +53,15 @@ export default function Convert() {
   }
 
   return (
-    <>
-      <Typography
-        variant="appPageHeading"
-        className="text-center mt-4 text-[42px]"
-      >
+    <div className="md:px-8 w-full">
+      <Typography variant="appPageHeading" className="text-center text-[42px]">
         Migrator
       </Typography>
       <Typography variant="body" className="text-center mt-6 mb-2">
         The migration is irreversible.
       </Typography>
-      <div className="w-full lg:grid lg:grid-cols-3 flex flex-col md:flex-row md:items-start gap-4 lg:mx-auto ">
-        <div className="hidden lg:block" />
-        <ConvertCard className="lg:min-w-[320px]">
+      <div className="lg:relative lg:w-[484px] flex flex-col md:flex-row md:justify-center md:items-start md:gap-5 gap-4 lg:mx-auto ">
+        <ConvertCard className="min-w-[320px]">
           <From />
           <Hr />
           <To />
@@ -81,13 +71,13 @@ export default function Convert() {
             <TX />
           </div>
         </ConvertCard>
-        <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] lg:max-w-[250px] xl:w-[320px] xl:max-w-[320px] ">
+        <div className="flex flex-col xl:w-[280px] lg:w-[240px] md:max-w-[328px] md:min-w-[250px] lg:absolute lg:top-0 lg:-right-[260px] xl:-right-[396px] w-auto">
           <Suspense fallback={<SCLoading />}>
             <SmartContractTracker halted={!!halted} />
           </Suspense>
           <Faq />
         </div>
       </div>
-    </>
+    </div>
   );
 }

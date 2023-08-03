@@ -2,13 +2,12 @@ import "./styles/globals.css";
 
 // Dummy components
 import {
-  GTWalsheimRegular,
-  GTWalsheimMedium,
   Header,
   SlimFooter,
   PageWrapper,
   PageBackroundImage,
   PageContainer,
+  GTWalsheim,
 } from "@mantle/ui";
 import LegalDisclaimer from "@components/LegalDisclaimer";
 
@@ -25,12 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${GTWalsheimRegular.variable} ${GTWalsheimMedium.variable}`}
-    >
+    <html lang="en" className={`${GTWalsheim.className}`}>
       <Head />
-      <body>
+      <body className="antialiased">
         {/* @ts-expect-error Server Component */}
         <Providers>
           <PageWrapper

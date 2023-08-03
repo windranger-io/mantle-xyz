@@ -10,14 +10,13 @@ import { useContractWrite } from "wagmi";
 
 export function useCallApprove() {
   // hydrate context into state
-  const { amount, resetAllowance } = useContext(StateContext);
+  const { provider, amount, resetAllowance } = useContext(StateContext);
 
   // if we're running an approve tx, we'll track the state on approvalStatus
   const [approvalStatus, setApprovalStatus] = useState<string | boolean>(false);
 
-  // setup a call to approve an allowance on the L1_BITDAO_TOKEN token
+  // setup a call to approve an allowance on the selected token
   const { writeAsync: writeApprove } = useContractWrite({
-    mode: "recklesslyUnprepared",
     address: L1_BITDAO_TOKEN.address,
     abi: TOKEN_ABI,
     functionName: "approve",
@@ -30,9 +29,9 @@ export function useCallApprove() {
       setApprovalStatus("Waiting for tx approval...");
       // perform the tx call
       const txRes = await writeApprove({
-        recklesslySetUnpreparedArgs: [
+        args: [
           L1_CONVERTER_CONTRACT_ADDRESS,
-          parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals),
+          parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals).toString(),
         ],
       }).catch((e) => {
         throw e;
@@ -40,9 +39,11 @@ export function useCallApprove() {
       // mark approval...
       setApprovalStatus("Tx approved, waiting for confirmation...");
       // wait for one confirmation
-      await txRes.wait(1).catch((e) => {
-        throw e;
-      });
+      await provider
+        .waitForTransaction(txRes?.hash || "", 1)
+        .catch((e: any) => {
+          throw e;
+        });
       // final update
       setApprovalStatus("Tx settled");
     } catch {
@@ -57,7 +58,7 @@ export function useCallApprove() {
 
     // token is now approved
     return true;
-  }, [amount, resetAllowance, writeApprove]);
+  }, [amount, provider, resetAllowance, writeApprove]);
 
   return {
     approvalStatus,
