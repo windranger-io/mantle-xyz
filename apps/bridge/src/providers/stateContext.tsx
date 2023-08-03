@@ -85,6 +85,8 @@ export type StateProps = {
   tx1HashRef: MutableRefObject<string | undefined>;
   tx2HashRef: MutableRefObject<string | undefined>;
   ctaErrorReset: MutableRefObject<(() => void | boolean) | undefined>;
+  walletModalOpen: boolean;
+  mobileMenuOpen: boolean;
 
   tokens: Token[];
   tokenList: TokenList;
@@ -138,6 +140,8 @@ export type StateProps = {
   setSelectedTokenAmount: (amount?: string) => void;
   setDestinationTokenAmount: (amount: string) => void;
   setHasClosedClaims: (closed: boolean) => void;
+  setWalletModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 // create a context to bind the provider to
@@ -202,6 +206,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [ctaStatus, setCTAStatus] = useState<string | boolean>(false);
   // setup modal controls - we will open and close the modal based on this state
   const [isCTAPageOpen, setIsCTAPageOpen] = useState(false);
+  // wallet modal controls
+  const [walletModalOpen, setWalletModalOpen] = useState<boolean>(false);
+  // mobile menu controls
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   // txHashes associated with the current action
   const [tx1Hash, setTx1Hash] = useState<string | boolean>(false);
   const [tx2Hash, setTx2Hash] = useState<string | boolean>(false);
@@ -604,6 +612,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       ctaChainId,
       isCTAPageOpen,
       isCTAPageOpenRef,
+      walletModalOpen,
+      mobileMenuOpen,
 
       hasClaims,
       hasPendings,
@@ -648,6 +658,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setCTAStatus,
       setIsCTAPageOpen,
       setHasClosedClaims,
+      setWalletModalOpen,
+      setMobileMenuOpen,
 
       setSelectedTokenAmount,
       setDestinationTokenAmount,
@@ -683,6 +695,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     ctaChainId,
     isCTAPageOpen,
     isCTAPageOpenRef,
+    walletModalOpen,
+    mobileMenuOpen,
 
     hasClaims,
     hasPendings,

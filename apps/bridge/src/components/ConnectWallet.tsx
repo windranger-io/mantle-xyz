@@ -1,6 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 import StateContext from "@providers/stateContext";
 
@@ -9,14 +10,14 @@ import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
 import { CHAINS, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
-import { ArrowDownIcon, Button, WalletModal } from "@mantle/ui";
+import { ArrowDownIcon, Button } from "@mantle/ui";
 import { truncateAddress } from "@mantle/utils";
 
 import { BiError } from "react-icons/bi";
 
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
-import Link from "next/link";
+
 import { getAddress } from "ethers/lib/utils";
 
 function ConnectWallet() {
@@ -24,7 +25,26 @@ function ConnectWallet() {
   const { chain: currentChain } = useNetwork();
 
   // unpack the context
-  const { chainId, client, safeChains, setClient } = useContext(StateContext);
+  const {
+    chainId,
+    client,
+    safeChains,
+    setClient,
+    setWalletModalOpen,
+    setMobileMenuOpen,
+  } = useContext(StateContext);
+
+  const router = useRouter();
+  const pathName = usePathname();
+
+  const handleAccountClicked = () => {
+    router.push(
+      pathName?.indexOf("/withdraw") !== -1
+        ? "/account/withdraw"
+        : "/account/deposit"
+    );
+    setMobileMenuOpen(false);
+  };
 
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
@@ -75,7 +95,7 @@ function ConnectWallet() {
   const { switchToNetwork } = useSwitchToNetwork();
 
   // control wagmi connector
-  const { connect, connectors, pendingConnector } = useConnect();
+  const { pendingConnector } = useConnect();
 
   const { disconnect, disconnectAsync } = useDisconnect({
     onMutate: () => {
@@ -152,24 +172,28 @@ function ConnectWallet() {
     [currentChain]
   );
 
+  const onConnect = () => {
+    setWalletModalOpen(true);
+    setMobileMenuOpen(false);
+  };
+
   // return connect/disconnect component
   return (
     <div className="flex flex-row gap-4 w-full">
       {isChainID && client.isConnected && client.address ? (
-        <Link href="/account/desposit" className="w-full" scroll shallow>
-          <Button
-            type="button"
-            variant="walletLabel"
-            size="regular"
-            className="flex flex-row items-center text-xs h-full text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 justify-center w-full"
-          >
-            <Avatar walletAddress="address" />
-            <div className="flex items-center justify-center gap-2">
-              {truncateAddress(getAddress(client.address))}
-              <ArrowDownIcon className="w-3.5 h-3.5" />
-            </div>
-          </Button>
-        </Link>
+        <Button
+          type="button"
+          variant="walletLabel"
+          size="regular"
+          onClick={handleAccountClicked}
+          className="flex flex-row items-center text-xs h-full text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 justify-center w-full"
+        >
+          <Avatar walletAddress="address" />
+          <div className="flex items-center justify-center gap-2">
+            {truncateAddress(getAddress(client.address))}
+            <ArrowDownIcon className="w-3.5 h-3.5" />
+          </div>
+        </Button>
       ) : (
         ``
       )}
@@ -179,37 +203,15 @@ function ConnectWallet() {
           // eslint-disable-next-line react/jsx-no-useless-fragment
           <>
             {!client.address ? (
-              <WalletModal
-                onMetamask={() => {
-                  setClient({
-                    ...client,
-                    connector: "metaMask",
-                  });
-                  connect({
-                    connector: connectors.find(
-                      (conn) => conn.id === "metaMask"
-                    ),
-                  });
-                }}
-                onWalletConnect={() => {
-                  setClient({
-                    ...client,
-                    connector: "walletConnect",
-                  });
-                  connect({
-                    chainId,
-                    connector: connectors.find(
-                      (conn) => conn.id === "walletConnect"
-                    ),
-                  });
-                }}
-              >
-                <div>
-                  <Button variant="walletConnect" size="regular">
-                    Connect Wallet
-                  </Button>
-                </div>
-              </WalletModal>
+              <div>
+                <Button
+                  variant="walletConnect"
+                  size="regular"
+                  onClick={onConnect}
+                >
+                  Connect Wallet
+                </Button>
+              </div>
             ) : (
               <Button
                 variant="walletConnect"
@@ -219,6 +221,7 @@ function ConnectWallet() {
                   client.address = undefined;
                   // disconnect
                   disconnect();
+                  setMobileMenuOpen(false);
                 }}
               >
                 Disconnect
