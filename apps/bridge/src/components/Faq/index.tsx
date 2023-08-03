@@ -1,15 +1,17 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { Typography } from "@mantle/ui";
+import { AccordionUi, Typography, AccordionItemType } from "@mantle/ui";
 import { ConvertCard } from "../ConvertCard";
 
-const faqList: Array<{ q: string; a: JSX.Element }> = [
+const faqList: Array<AccordionItemType> = [
   {
-    q: "How to qualify for the MNT bonus?",
-    a: (
-      <Typography className="text-type-secondary mx-4 mb-4">
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        How to qualify for the MNT bonus?
+      </Typography>
+    ),
+    content: (
+      <Typography className="text-type-secondary">
         Deposit any token from Ethereum Mainnet to Mantle Network to receive a
         dust bonus in MNT. Limited to once per wallet address.{" "}
         <a
@@ -22,11 +24,16 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         </a>
       </Typography>
     ),
+    value: "faq-1",
   },
   {
-    q: "Looking for a test drive?",
-    a: (
-      <Typography className="text-type-secondary mx-4 mb-4">
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        Looking for a test drive?
+      </Typography>
+    ),
+    content: (
+      <Typography className="text-type-secondary">
         You can experience the deposit and withdraw flow by using our simulated
         testnet. It provides a safe environment to try out the bridge
         functionality without any real token transactions.
@@ -40,11 +47,16 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         </a>
       </Typography>
     ),
+    value: "faq-2",
   },
   {
-    q: "What’s L1/L2 and the gas fees required for deposit/withdraw?",
-    a: (
-      <div className="text-type-secondary mx-4 mb-4">
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        What’s L1/L2 and the gas fees required for deposit/withdraw?
+      </Typography>
+    ),
+    content: (
+      <div className="text-type-secondary">
         <Typography className="mb-4">
           Mantle Network is a Layer-2 (L2) scalability solution built on
           Ethereum which is the Layer-1 (L1).
@@ -77,11 +89,16 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         </a>
       </div>
     ),
+    value: "faq-3",
   },
   {
-    q: "Where can I see the bridge token mapping?",
-    a: (
-      <div className="text-type-secondary mx-4 mb-4">
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        Where can I see the bridge token mapping?
+      </Typography>
+    ),
+    content: (
+      <div className="text-type-secondary">
         <Typography className="mb-4">
           You can view the bridge token mapping by visiting{" "}
           <a
@@ -97,11 +114,16 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         </Typography>
       </div>
     ),
+    value: "faq-4",
   },
   {
-    q: "How are withdrawal fees calculated?",
-    a: (
-      <div className="text-type-secondary mx-4 mb-4">
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        How are withdrawal fees calculated?
+      </Typography>
+    ),
+    content: (
+      <div className="text-type-secondary">
         <Typography className="mb-4">
           The cost to claim on the bridge is dependent on the gas costs,
           measured in Gwei, at the time of your transaction. The estimated
@@ -138,71 +160,15 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         </Typography>
       </div>
     ),
+    value: "faq-5",
   },
 ];
 
-function Accordion({
-  controlText,
-  panel,
-  expandedIdx,
-  setExpandedIdx,
-  index,
-}: {
-  controlText: string;
-  panel: JSX.Element;
-  expandedIdx: number | null;
-  setExpandedIdx: Dispatch<SetStateAction<number | null>>;
-  index: number;
-}) {
-  const isExpanded = expandedIdx === index;
-  const togglePanel = () => {
-    if (!isExpanded) {
-      setExpandedIdx(index);
-    } else if (isExpanded) {
-      setExpandedIdx(null);
-    }
-  };
-  return (
-    <div className="flex flex-col">
-      <button
-        type="button"
-        className="flex flex-row justify-between items-center cursor-pointer p-4"
-        onClick={togglePanel}
-      >
-        <Typography className="text-type-primary text-left">
-          {controlText}
-        </Typography>
-        {isExpanded ? (
-          <IoIosArrowUp className="text-md" />
-        ) : (
-          <IoIosArrowDown className="text-md" />
-        )}
-      </button>
-      {isExpanded && panel}
-    </div>
-  );
-}
-
 export function Faq() {
-  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
-
   return (
     <ConvertCard className="rounded-xl mt-8 md:mt-0">
       <div className="flex flex-col w-full">
-        {faqList.map((el, idx) => (
-          <div key={el.q}>
-            <Accordion
-              controlText={el.q}
-              panel={el.a}
-              expandedIdx={expandedIdx}
-              setExpandedIdx={setExpandedIdx}
-              index={idx}
-            />
-            {idx < faqList.length - 1 && (
-              <div className="border-t border-[#1C1E20]" />
-            )}
-          </div>
-        ))}
+        <AccordionUi list={faqList} className="flex flex-col w-full" />
       </div>
     </ConvertCard>
   );
