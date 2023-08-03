@@ -62,6 +62,8 @@ export type StateProps = {
   isCTAPageOpen: boolean;
   isCTAPageOpenRef: MutableRefObject<boolean>;
   ctaErrorReset: MutableRefObject<(() => void | boolean) | undefined>;
+  walletModalOpen: boolean;
+  mobileMenuOpen: boolean;
 
   amount: string | undefined;
   txHash: string | boolean;
@@ -90,6 +92,8 @@ export type StateProps = {
   setIsCTAPageOpen: (isCTAPageOpen: boolean) => void;
   setTxHash: (hash: string | boolean) => void;
   setAmount: (amount: string | boolean) => void;
+  setWalletModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 // create a context to bind the provider to
@@ -155,7 +159,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [ctaStatus, setCTAStatus] = useState<string | boolean>(false);
   // setup modal controls - we will open and close the modal based on this state
   const [isCTAPageOpen, setIsCTAPageOpen] = useState(false);
-
+  // wallet modal controls
+  const [walletModalOpen, setWalletModalOpen] = useState<boolean>(false);
+  // mobile menu controls
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   // a ref to the current page
   const ctaPageRef = useRef<CTAPages>(CTAPages.Default);
   // a ref to the ctaPage open state
@@ -281,6 +288,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       ctaChainId,
       isCTAPageOpen,
       isCTAPageOpenRef,
+      walletModalOpen,
+      mobileMenuOpen,
 
       amount,
       txHash,
@@ -304,6 +313,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setCTAChainId,
       setCTAStatus,
       setIsCTAPageOpen,
+      setWalletModalOpen,
+      setMobileMenuOpen,
 
       setAmount,
       setTxHash,
@@ -332,6 +343,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     ctaChainId,
     isCTAPageOpen,
     isCTAPageOpenRef,
+    walletModalOpen,
+    mobileMenuOpen,
 
     amount,
     txHash,

@@ -13,7 +13,7 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
-import { ArrowDownIcon, Button, WalletModal } from "@mantle/ui";
+import { ArrowDownIcon, Button } from "@mantle/ui";
 import { truncateAddress } from "@mantle/utils";
 
 import { BiError } from "react-icons/bi";
@@ -28,7 +28,14 @@ function ConnectWallet() {
   const { chain: currentChain } = useNetwork();
 
   // unpack the context
-  const { chainId, client, safeChains, setClient } = useContext(StateContext);
+  const {
+    chainId,
+    client,
+    safeChains,
+    setClient,
+    setWalletModalOpen,
+    setMobileMenuOpen,
+  } = useContext(StateContext);
 
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
@@ -54,7 +61,7 @@ function ConnectWallet() {
   const { switchToNetwork } = useSwitchToNetwork();
 
   // control wagmi connector
-  const { connect, connectAsync, connectors, pendingConnector } = useConnect();
+  const { connectAsync, connectors, pendingConnector } = useConnect();
 
   // Find the right connector by ID
   const connector = useMemo(
@@ -156,6 +163,11 @@ function ConnectWallet() {
     [currentChain]
   );
 
+  const onConnect = () => {
+    setWalletModalOpen(true);
+    setMobileMenuOpen(false);
+  };
+
   // return connect/disconnect component
   return (
     <div className="flex flex-row gap-4 w-full">
@@ -166,6 +178,7 @@ function ConnectWallet() {
             size="regular"
             variant="walletLabel"
             className="flex items-center text-xs text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 justify-center w-full h-full"
+            onClick={() => setMobileMenuOpen(false)}
           >
             <Avatar walletAddress="address" />
             <div className="flex items-center justify-center gap-2">
@@ -183,37 +196,15 @@ function ConnectWallet() {
           // eslint-disable-next-line react/jsx-no-useless-fragment
           <>
             {!client.address ? (
-              <WalletModal
-                onMetamask={() => {
-                  setClient({
-                    ...client,
-                    connector: "metaMask",
-                  });
-                  connect({
-                    connector: connectors.find(
-                      (conn) => conn.id === "metaMask"
-                    ),
-                  });
-                }}
-                onWalletConnect={() => {
-                  setClient({
-                    ...client,
-                    connector: "walletConnect",
-                  });
-                  connect({
-                    chainId,
-                    connector: connectors.find(
-                      (conn) => conn.id === "walletConnect"
-                    ),
-                  });
-                }}
-              >
-                <div>
-                  <Button variant="walletConnect" size="regular">
-                    Connect Wallet
-                  </Button>
-                </div>
-              </WalletModal>
+              <div>
+                <Button
+                  variant="walletConnect"
+                  size="regular"
+                  onClick={onConnect}
+                >
+                  Connect Wallet
+                </Button>
+              </div>
             ) : (
               <Button
                 variant="walletConnect"
@@ -223,6 +214,7 @@ function ConnectWallet() {
                   client.address = undefined;
                   // disconnect
                   disconnect();
+                  setMobileMenuOpen(false);
                 }}
               >
                 Disconnect

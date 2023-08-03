@@ -16,6 +16,8 @@ export const Header = ({
   navLite = false,
   activeKey,
   isTestnet,
+  mobileMenuOpen,
+  setMobileMenuOpen,
 }: {
   walletConnect: React.ReactNode
   className?: string
@@ -23,6 +25,8 @@ export const Header = ({
   navLite?: boolean
   activeKey: string
   isTestnet: boolean
+  mobileMenuOpen: boolean
+  setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => (
   <header
     className={
@@ -36,9 +40,15 @@ export const Header = ({
         walletConnect={walletConnect}
         activeKey={activeKey}
         isTestnet={isTestnet}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
       />
     ) : (
-      <NavigationFull walletConnect={walletConnect} />
+      <NavigationFull
+        walletConnect={walletConnect}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
+      />
     )}
 
     {/* Wallet connect and language switcher - to be added per project */}

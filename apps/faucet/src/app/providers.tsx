@@ -3,6 +3,7 @@ import { Session } from "next-auth";
 
 import { WagmiProvider } from "@providers/wagmiContext";
 import { StateProvider } from "@providers/stateContext";
+import WalletProvider from "@providers/walletProvider";
 import { ToastContainer } from "@components/Toast";
 
 import { getSession } from "./session";
@@ -20,6 +21,7 @@ export default async function Providers({
   return (
     <WagmiProvider>
       <StateProvider>
+        <WalletProvider />
         <AuthContext session={session || ({} as unknown as Session)}>
           <ToastContainer>{children}</ToastContainer>
         </AuthContext>

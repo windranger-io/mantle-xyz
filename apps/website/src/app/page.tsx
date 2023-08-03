@@ -1,11 +1,5 @@
-import {
-  Header,
-  Footer,
-  PageWrapper,
-  PageContainer,
-  Typography,
-  Button,
-} from '@mantle/ui'
+import { Footer, PageWrapper, PageContainer, Typography } from '@mantle/ui'
+import Nav from 'src/components/Nav'
 
 /**
  *
@@ -13,15 +7,7 @@ import {
  */
 export default function Page() {
   return (
-    <PageWrapper
-      header={
-        <Header
-          walletConnect={<Button>Wallet Connect???</Button>}
-          isTestnet
-          activeKey="website"
-        />
-      }
-    >
+    <PageWrapper header={<Nav />}>
       <PageContainer className="gap-8">
         <Typography variant="appPageHeading" className="text-center">
           Bridge

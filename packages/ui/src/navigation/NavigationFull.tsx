@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
@@ -84,11 +84,13 @@ const COMMUNITY_ITEMS = [
 
 export const NavigationFull = ({
   walletConnect,
+  mobileMenuOpen,
+  setMobileMenuOpen,
 }: {
   walletConnect: React.ReactNode
+  mobileMenuOpen: boolean
+  setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
   return (
     <div className="relative backdrop-blur-[50px] bg-black/30">
       <nav

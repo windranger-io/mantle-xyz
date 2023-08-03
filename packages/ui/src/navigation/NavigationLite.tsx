@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import CONST from '@mantle/constants'
-import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
@@ -65,12 +64,15 @@ export const NavigationLite = ({
   walletConnect,
   activeKey,
   isTestnet,
+  mobileMenuOpen,
+  setMobileMenuOpen,
 }: {
   walletConnect: React.ReactNode
   activeKey: string
   isTestnet: boolean
+  mobileMenuOpen: boolean
+  setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const navItems = isTestnet ? NAV_ITEMS_TESTNET : NAV_ITEMS
 
   return (

@@ -1,4 +1,4 @@
-import { Button, WalletModal } from "@mantle/ui";
+import { Button } from "@mantle/ui";
 import { useContext, useState, useEffect, useMemo } from "react";
 
 import StateContext from "@providers/stateContext";
@@ -11,7 +11,6 @@ import {
   L1_BITDAO_TOKEN,
 } from "@config/constants";
 
-import { useConnect } from "wagmi";
 import { parseUnits } from "ethers/lib/utils.js";
 
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
@@ -33,12 +32,9 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
     balances,
     allowance,
     amount = "",
-    setClient,
     setCTAPage,
+    setWalletModalOpen,
   } = useContext(StateContext);
-
-  // control wagmi connector
-  const { connect, connectors } = useConnect();
 
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
@@ -147,33 +143,16 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
   return (
     <div className="mt-4">
       {!client?.address ? (
-        <WalletModal
-          onMetamask={() => {
-            setClient({
-              ...client,
-              connector: "metaMask",
-            });
-            connect({
-              connector: connectors.find((conn) => conn.id === "metaMask"),
-            });
-          }}
-          onWalletConnect={() => {
-            setClient({
-              ...client,
-              connector: "walletConnect",
-            });
-            connect({
-              chainId,
-              connector: connectors.find((conn) => conn.id === "walletConnect"),
-            });
-          }}
-        >
-          <div>
-            <Button type="button" size="full" className="h-14">
-              Please connect your wallet
-            </Button>
-          </div>
-        </WalletModal>
+        <div>
+          <Button
+            type="button"
+            size="full"
+            className="h-14"
+            onClick={() => setWalletModalOpen(true)}
+          >
+            Please connect your wallet
+          </Button>
+        </div>
       ) : (
         <Button
           type="button"
