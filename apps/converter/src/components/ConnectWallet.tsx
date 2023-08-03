@@ -28,8 +28,14 @@ function ConnectWallet() {
   const { chain: currentChain } = useNetwork();
 
   // unpack the context
-  const { chainId, client, safeChains, setClient, setWalletModalOpen } =
-    useContext(StateContext);
+  const {
+    chainId,
+    client,
+    safeChains,
+    setClient,
+    setWalletModalOpen,
+    setMobileMenuOpen,
+  } = useContext(StateContext);
 
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
@@ -157,6 +163,11 @@ function ConnectWallet() {
     [currentChain]
   );
 
+  const onConnect = () => {
+    setWalletModalOpen(true);
+    setMobileMenuOpen(false);
+  };
+
   // return connect/disconnect component
   return (
     <div className="flex flex-row gap-4 w-full">
@@ -188,7 +199,7 @@ function ConnectWallet() {
                 <Button
                   variant="walletConnect"
                   size="regular"
-                  onClick={() => setWalletModalOpen(true)}
+                  onClick={onConnect}
                 >
                   Connect Wallet
                 </Button>
