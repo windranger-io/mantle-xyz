@@ -7,7 +7,7 @@ import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
-import { ArrowDownIcon, Button, WalletModal } from "@mantle/ui";
+import { ArrowDownIcon, Button } from "@mantle/ui";
 import { truncateAddress } from "@mantle/utils";
 
 import { BiError } from "react-icons/bi";
@@ -24,7 +24,8 @@ function ConnectWallet() {
   const { chain: currentChain } = useNetwork();
 
   // unpack the context
-  const { chainId, client, setClient } = useContext(StateContext);
+  const { chainId, client, setClient, setWalletModalOpen, setMobileMenuOpen } =
+    useContext(StateContext);
 
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
@@ -60,7 +61,7 @@ function ConnectWallet() {
   const { switchToNetwork } = useSwitchToNetwork();
 
   // control wagmi connector
-  const { connect, connectors, pendingConnector } = useConnect();
+  const { pendingConnector } = useConnect();
 
   const { disconnect, disconnectAsync } = useDisconnect({
     onMutate: () => {
@@ -138,12 +139,17 @@ function ConnectWallet() {
     [currentChain]
   );
 
+  const onConnect = () => {
+    setWalletModalOpen(true);
+    setMobileMenuOpen(false);
+  };
+
   // return connect/disconnect component
   return (
     <div className="flex flex-row gap-4 w-full">
       {isChainID && client.isConnected && client.address ? (
         <Link
-          href="https://bridge.testnet.mantle.xyz/account/desposit"
+          href="https://bridge.testnet.mantle.xyz/account/deposit"
           className="w-full"
           scroll
           shallow
@@ -153,6 +159,7 @@ function ConnectWallet() {
             variant="walletLabel"
             size="regular"
             className="flex flex-row items-center text-xs h-full text-white gap-2 backdrop-blur-[50px] bg-white/10 hover:bg-white/20 w-full justify-center"
+            onClick={() => setMobileMenuOpen(false)}
           >
             <Avatar walletAddress="address" />
             <div className="flex items-center justify-center gap-2">
@@ -170,35 +177,13 @@ function ConnectWallet() {
           // eslint-disable-next-line react/jsx-no-useless-fragment
           <>
             {!client.address ? (
-              <WalletModal
-                onMetamask={() => {
-                  setClient({
-                    ...client,
-                    connector: "metaMask",
-                  });
-                  connect({
-                    connector: connectors.find(
-                      (conn) => conn.id === "metaMask"
-                    ),
-                  });
-                }}
-                onWalletConnect={() => {
-                  setClient({
-                    ...client,
-                    connector: "walletConnect",
-                  });
-                  connect({
-                    chainId,
-                    connector: connectors.find(
-                      (conn) => conn.id === "walletConnect"
-                    ),
-                  });
-                }}
+              <Button
+                variant="walletConnect"
+                size="regular"
+                onClick={onConnect}
               >
-                <Button variant="walletConnect" size="regular">
-                  Connect Wallet
-                </Button>
-              </WalletModal>
+                Connect Wallet
+              </Button>
             ) : (
               <Button
                 variant="walletConnect"
@@ -208,6 +193,7 @@ function ConnectWallet() {
                   client.address = undefined;
                   // disconnect
                   disconnect();
+                  setMobileMenuOpen(false);
                 }}
               >
                 Disconnect

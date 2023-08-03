@@ -22,6 +22,10 @@ export type StateProps = {
     address?: `0x${string}`;
     connector?: string;
   }) => void;
+  walletModalOpen: boolean;
+  mobileMenuOpen: boolean;
+  setWalletModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 // create a context to bind the provider to
@@ -64,6 +68,11 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     isConnected: false,
   });
 
+  // wallet modal controls
+  const [walletModalOpen, setWalletModalOpen] = useState<boolean>(false);
+  // mobile menu controls
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+
   // combine everything into a context provider
   const context = useMemo(() => {
     return {
@@ -71,8 +80,12 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       chainId,
       provider,
       setClient,
+      walletModalOpen,
+      mobileMenuOpen,
+      setWalletModalOpen,
+      setMobileMenuOpen,
     } as StateProps;
-  }, [client, chainId, provider]);
+  }, [client, chainId, provider, walletModalOpen, mobileMenuOpen]);
 
   return (
     <StateContext.Provider value={context}>{children}</StateContext.Provider>

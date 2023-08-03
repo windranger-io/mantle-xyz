@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // Dummy components
 import {
-  Header,
   SlimFooter,
   PageWrapper,
   PageBackroundImage,
@@ -10,7 +9,6 @@ import {
 } from "@mantle/ui";
 // Page components
 import AuthTwitter from "@components/AuthTwtitter";
-import ConnectWallet from "@components/ConnectWallet";
 import MintTokens from "@components/MintTokens";
 
 // Server-side components
@@ -20,6 +18,7 @@ import MintTokens from "@components/MintTokens";
 // import { headers } from "next/headers";
 import { AdditionalLinks } from "@components/AdditionalLinks";
 import CONST from "@mantle/constants";
+import Nav from "@components/Nav";
 import faucetBG from "../../public/faucet-bg.png";
 // import { getSession } from "./session";
 
@@ -40,15 +39,7 @@ export default async function Page() {
           altDesc="Faucet Background Image"
         />
       }
-      header={
-        <Header
-          navLite
-          walletConnect={<ConnectWallet />}
-          activeKey="faucet"
-          // Faucet should only be on testnet
-          isTestnet
-        />
-      }
+      header={<Nav />}
       className="min-h-screen justify-between"
     >
       {/* @todo: UPDATE PAGEWRAPPER AND CONTAINER */}
