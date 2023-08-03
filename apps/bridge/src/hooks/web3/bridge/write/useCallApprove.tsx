@@ -1,6 +1,6 @@
-import { TOKEN_ABI, Token } from "@config/constants";
+import { TOKEN_ABI, USDT_APPROVE_ABI, Token } from "@config/constants";
 import StateContext from "@providers/stateContext";
-import { parseUnits } from "ethers/lib/utils.js";
+import { getAddress, parseUnits } from "ethers/lib/utils.js";
 import { useCallback, useContext, useState } from "react";
 import { useContractWrite } from "wagmi";
 
@@ -14,8 +14,11 @@ export function useCallApprove(selected: Token) {
 
   // setup a call to approve an allowance on the selected token
   const { writeAsync: writeApprove } = useContractWrite({
-    address: selected.address,
-    abi: TOKEN_ABI,
+    address:
+      selected.address && (getAddress(selected.address) as `0x${string}`),
+    abi: (selected.symbol === "USDT"
+      ? USDT_APPROVE_ABI
+      : TOKEN_ABI) as typeof TOKEN_ABI,
     functionName: "approve",
   });
 
@@ -27,11 +30,13 @@ export function useCallApprove(selected: Token) {
       // perform the tx call
       const txRes = await writeApprove?.({
         args: [
-          bridgeAddress,
-          parseUnits(
-            destinationTokenAmount || "1",
-            selected.decimals
-          ).toString(),
+          bridgeAddress as `0x${string}`,
+          BigInt(
+            parseUnits(
+              destinationTokenAmount || "1",
+              selected.decimals
+            ).toString()
+          ),
         ],
       }).catch((e) => {
         throw e;
@@ -62,8 +67,8 @@ export function useCallApprove(selected: Token) {
     bridgeAddress,
     destinationTokenAmount,
     provider,
-    resetAllowance,
     selected.decimals,
+    resetAllowance,
     writeApprove,
   ]);
 
