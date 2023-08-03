@@ -307,6 +307,22 @@ export const TOKEN_ABI = [
   },
 ] as const;
 
+// special case usdt
+export const USDT_APPROVE_ABI = [
+  {
+    constant: false,
+    inputs: [
+      { internalType: "address", name: "_spender", type: "address" },
+      { internalType: "address", name: "_value", type: "uint256" },
+    ],
+    name: "approve",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+] as const;
+
 export const MANTLE_MIGRATOR_URL = "https://migratebit.mantle.xyz";
 export const MANTLE_MIGRATOR_HISTORY_PATH = "/account/migrate";
 
