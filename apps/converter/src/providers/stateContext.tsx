@@ -62,6 +62,7 @@ export type StateProps = {
   isCTAPageOpen: boolean;
   isCTAPageOpenRef: MutableRefObject<boolean>;
   ctaErrorReset: MutableRefObject<(() => void | boolean) | undefined>;
+  walletModalOpen: boolean;
 
   amount: string | undefined;
   txHash: string | boolean;
@@ -90,6 +91,7 @@ export type StateProps = {
   setIsCTAPageOpen: (isCTAPageOpen: boolean) => void;
   setTxHash: (hash: string | boolean) => void;
   setAmount: (amount: string | boolean) => void;
+  setWalletModalOpen: (isOpen: boolean) => void;
 };
 
 // create a context to bind the provider to
@@ -155,6 +157,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [ctaStatus, setCTAStatus] = useState<string | boolean>(false);
   // setup modal controls - we will open and close the modal based on this state
   const [isCTAPageOpen, setIsCTAPageOpen] = useState(false);
+
+  const [walletModalOpen, setWalletModalOpen] = useState<boolean>(false);
 
   // a ref to the current page
   const ctaPageRef = useRef<CTAPages>(CTAPages.Default);
@@ -281,6 +285,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       ctaChainId,
       isCTAPageOpen,
       isCTAPageOpenRef,
+      walletModalOpen,
 
       amount,
       txHash,
@@ -304,6 +309,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setCTAChainId,
       setCTAStatus,
       setIsCTAPageOpen,
+      setWalletModalOpen,
 
       setAmount,
       setTxHash,
@@ -332,6 +338,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     ctaChainId,
     isCTAPageOpen,
     isCTAPageOpenRef,
+    walletModalOpen,
 
     amount,
     txHash,

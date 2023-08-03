@@ -13,7 +13,7 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
-import { ArrowDownIcon, Button, WalletModal } from "@mantle/ui";
+import { ArrowDownIcon, Button } from "@mantle/ui";
 import { truncateAddress } from "@mantle/utils";
 
 import { BiError } from "react-icons/bi";
@@ -28,7 +28,8 @@ function ConnectWallet() {
   const { chain: currentChain } = useNetwork();
 
   // unpack the context
-  const { chainId, client, safeChains, setClient } = useContext(StateContext);
+  const { chainId, client, safeChains, setClient, setWalletModalOpen } =
+    useContext(StateContext);
 
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
@@ -54,7 +55,7 @@ function ConnectWallet() {
   const { switchToNetwork } = useSwitchToNetwork();
 
   // control wagmi connector
-  const { connect, connectAsync, connectors, pendingConnector } = useConnect();
+  const { connectAsync, connectors, pendingConnector } = useConnect();
 
   // Find the right connector by ID
   const connector = useMemo(
@@ -183,37 +184,15 @@ function ConnectWallet() {
           // eslint-disable-next-line react/jsx-no-useless-fragment
           <>
             {!client.address ? (
-              <WalletModal
-                onMetamask={() => {
-                  setClient({
-                    ...client,
-                    connector: "metaMask",
-                  });
-                  connect({
-                    connector: connectors.find(
-                      (conn) => conn.id === "metaMask"
-                    ),
-                  });
-                }}
-                onWalletConnect={() => {
-                  setClient({
-                    ...client,
-                    connector: "walletConnect",
-                  });
-                  connect({
-                    chainId,
-                    connector: connectors.find(
-                      (conn) => conn.id === "walletConnect"
-                    ),
-                  });
-                }}
-              >
-                <div>
-                  <Button variant="walletConnect" size="regular">
-                    Connect Wallet
-                  </Button>
-                </div>
-              </WalletModal>
+              <div>
+                <Button
+                  variant="walletConnect"
+                  size="regular"
+                  onClick={() => setWalletModalOpen(true)}
+                >
+                  Connect Wallet
+                </Button>
+              </div>
             ) : (
               <Button
                 variant="walletConnect"

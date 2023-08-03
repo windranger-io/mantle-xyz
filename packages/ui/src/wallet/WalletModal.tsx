@@ -2,28 +2,27 @@
 
 /* eslint-disable react/jsx-no-target-blank, react/require-default-props */
 
-import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect } from 'react'
 // import * as Dialog from '@radix-ui/react-dialog'
 import { Button } from '../actions/Button'
 import { MetaMaskSvg } from './MetaMask'
 import { WalletConnectSvg } from './WalletConnect'
 
 type WalletModalProps = {
-  children: ReactNode
   onMetamask?: () => void
   onWalletConnect?: () => void
+  open: boolean
+  setOpen: (open: boolean) => void
 }
 
 // this is a simplified version of @radix-ui/react-dialog so that we don't have to fight with preventDefault to get walletConnect to work
 const Dialog = ({
   open,
   setOpen,
-  trigger,
   children,
 }: {
   open: boolean
   setOpen: (open: boolean) => void
-  trigger: ReactNode
   children: ReactNode
 }) => {
   // on escape close the dialog
@@ -47,16 +46,6 @@ const Dialog = ({
 
   return (
     <div className="w-full">
-      {/* dialog trigger */}
-      <div
-        className="w-full"
-        onClick={() => {
-          setOpen(true)
-        }}
-        role="presentation"
-      >
-        {trigger}
-      </div>
       <div
         className={open ? 'block' : 'hidden'}
         onKeyDown={event => {
@@ -84,13 +73,13 @@ const Dialog = ({
 }
 
 export const WalletModal = ({
-  children,
   onMetamask = undefined,
   onWalletConnect = undefined,
+  open = false,
+  setOpen = () => {},
 }: WalletModalProps) => {
-  const [open, setOpen] = useState(false)
   return (
-    <Dialog open={open} setOpen={setOpen} trigger={children}>
+    <Dialog open={open} setOpen={setOpen}>
       <div className="relative">
         <p className="text-2xl md:pb-10 pb-5 mb-10 border-b border-white/20">
           Connect your wallet
