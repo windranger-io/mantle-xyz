@@ -15,7 +15,7 @@ const AccordionTrigger = React.forwardRef<
   <Accordion.Header className="flex">
     <Accordion.Trigger
       className={classNames(
-        'flex items-center justify-between grow p-4',
+        'AccordionTrigger flex items-center justify-between grow p-4',
         className,
       )}
       {...props}
