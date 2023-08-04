@@ -5,17 +5,11 @@ import StateContext from "@providers/stateContext";
 
 import { Typography } from "@mantle/ui";
 
-import {
-  Direction,
-  HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS,
-  L1_CHAIN_ID,
-  L2_CHAIN_ID,
-  Token,
-} from "@config/constants";
+import { Direction, L1_CHAIN_ID, L2_CHAIN_ID, Token } from "@config/constants";
 
-import { formatEther, formatUnits, parseUnits } from "ethers/lib/utils.js";
-import { BigNumber, constants } from "ethers";
-import { formatBigNumberString, formatTime, localeZero } from "@mantle/utils";
+import { formatUnits, parseUnits } from "ethers/lib/utils.js";
+import { constants } from "ethers";
+import { formatBigNumberString, localeZero, formatTime } from "@mantle/utils";
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 import { useQuery } from "wagmi";
@@ -35,8 +29,6 @@ export default function TransactionPanel({
     client,
     balances,
     allowance,
-    l1FeeData,
-    actualGasFee,
     isLoadingFeeData,
     destinationTokenAmount,
   } = useContext(StateContext);
@@ -231,66 +223,68 @@ export default function TransactionPanel({
                 //     </>
                 //   </Typography>
                 // </div>,
-                <div
-                  className="flex justify-between"
-                  key="tx-panel-2"
-                  title={
-                    parseInt(actualGasFee || "0", 10) === 0
-                      ? "This transaction will fail, withdrawal amount must not exceed your balance"
-                      : `${
-                          parseInt(actualGasFee || "0", 10) === 0
-                            ? localeZero
-                            : `~${formatUnits(
-                                BigNumber.from(
-                                  (
-                                    l1FeeData.data?.maxFeePerGas ||
-                                    l1FeeData.data?.gasPrice ||
-                                    "0"
-                                  ).toString()
-                                ).mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) ||
-                                  "0",
-                                "gwei"
-                              )}`
-                        } GWEI`
-                  }
-                >
-                  <Typography variant="smallWidget">
-                    Gas fee to complete
-                  </Typography>
-                  <Typography variant="smallWidget" className="text-white">
-                    {parseInt(actualGasFee || "0", 10) === 0
-                      ? localeZero
-                      : `~${formatEther(
-                          BigNumber.from(
-                            l1FeeData.data?.maxFeePerGas ||
-                              l1FeeData.data?.gasPrice ||
-                              "0"
-                          ).mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) || "0"
-                        )}`}{" "}
-                    ETH
-                  </Typography>
-                </div>,
+                // <div
+                //   className="flex justify-between"
+                //   key="tx-panel-2"
+                //   title={
+                //     parseInt(actualGasFee || "0", 10) === 0
+                //       ? "This transaction will fail, withdrawal amount must not exceed your balance"
+                //       : `${
+                //           parseInt(actualGasFee || "0", 10) === 0
+                //             ? localeZero
+                //             : `~${formatUnits(
+                //                 BigNumber.from(
+                //                   (
+                //                     l1FeeData.data?.maxFeePerGas ||
+                //                     l1FeeData.data?.gasPrice ||
+                //                     "0"
+                //                   ).toString()
+                //                 ).mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) ||
+                //                   "0",
+                //                 "gwei"
+                //               )}`
+                //         } GWEI`
+                //   }
+                // >
+                //   <Typography variant="smallWidget">
+                //     Gas fee to complete
+                //   </Typography>
+                //   <Typography variant="smallWidget" className="text-white">
+                //     {parseInt(actualGasFee || "0", 10) === 0
+                //       ? localeZero
+                //       : `~${formatEther(
+                //           BigNumber.from(
+                //             l1FeeData.data?.maxFeePerGas ||
+                //               l1FeeData.data?.gasPrice ||
+                //               "0"
+                //           ).mul(HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS) || "0"
+                //         )}`}{" "}
+                //     ETH
+                //   </Typography>
+                // </div>,
               ]}
-          {client?.address && client?.address !== "0x" && (
-            <div className="flex justify-between" key="tx-panel-3">
-              <Typography variant="smallWidget" className="text-type-muted">
-                Current Balance
-              </Typography>
-              <Typography variant="smallWidget" className="text-type-muted">
-                {Number.isNaN(
-                  parseFloat(balances?.[selected?.address || ""] || "")
-                )
-                  ? localeZero
-                  : formatBigNumberString(
-                      balances?.[selected?.address || ""],
-                      3,
-                      true,
-                      false
-                    ) || localeZero}{" "}
-                {selected.symbol}
-              </Typography>
-            </div>
-          )}
+          {client?.address &&
+            client?.address !== "0x" &&
+            direction === Direction.Deposit && (
+              <div className="flex justify-between" key="tx-panel-3">
+                <Typography variant="smallWidget" className="text-type-muted">
+                  Current Balance
+                </Typography>
+                <Typography variant="smallWidget" className="text-type-muted">
+                  {Number.isNaN(
+                    parseFloat(balances?.[selected?.address || ""] || "")
+                  )
+                    ? localeZero
+                    : formatBigNumberString(
+                        balances?.[selected?.address || ""],
+                        3,
+                        true,
+                        false
+                      ) || localeZero}{" "}
+                  {selected.symbol}
+                </Typography>
+              </div>
+            )}
           {client?.address && client?.address !== "0x" && (
             <div className="flex justify-between" key="tx-panel-4">
               <Typography variant="smallWidget" className="text-type-muted">

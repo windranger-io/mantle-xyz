@@ -1,6 +1,5 @@
 import {
   Direction,
-  HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS,
   Token,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
@@ -11,8 +10,6 @@ import { useContext, useEffect, useState } from "react";
 import StateContext from "@providers/stateContext";
 
 import { useCallBridge } from "@hooks/web3/bridge/write/useCallBridge";
-
-import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
 import { Button, Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
@@ -34,7 +31,7 @@ export default function Default({
   ctaStatus: string | boolean;
   closeModal: () => void;
 }) {
-  const { destinationToken, destinationTokenAmount, l1FeeData, setCTAChainId } =
+  const { destinationToken, destinationTokenAmount, setCTAChainId } =
     useContext(StateContext);
 
   // @TODO: we should keep track of which relays we have running
@@ -139,7 +136,7 @@ export default function Default({
             border
           />
         )} */}
-        {direction === Direction.Withdraw && (
+        {/* {direction === Direction.Withdraw && (
           <Values
             label="Gas fee to complete"
             value={
@@ -159,7 +156,7 @@ export default function Default({
             }
             border={false}
           />
-        )}
+        )} */}
         {direction === Direction.Withdraw && (
           <div className="flex flex-row items-start gap-2 cursor-pointer my-4">
             <input

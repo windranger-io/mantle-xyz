@@ -1,14 +1,16 @@
-import { useState } from "react";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { ConvertCard } from "@components/ConvertCard";
-import { Typography } from "@mantle/ui";
+import { AccordionUi, Typography, AccordionItemType } from "@mantle/ui";
 import { DELEGATION_URL } from "@config/constants";
 
-const faqList: Array<{ q: string; a: JSX.Element }> = [
+const faqList: Array<AccordionItemType> = [
   {
-    q: "Why should I migrate my $BIT tokens?",
-    a: (
-      <Typography variant="microBody14" className="mx-4 mb-4">
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        Why should I migrate my $BIT tokens?
+      </Typography>
+    ),
+    content: (
+      <Typography variant="microBody14">
         As per{" "}
         <a
           href="https://snapshot.org/#/bitdao.eth/proposal/0xe81f852d90ba80929b1f19683da14b334d63b31cb94e53249b8caed715475693"
@@ -34,11 +36,16 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         to $MNT.
       </Typography>
     ),
+    value: "faq-1",
   },
   {
-    q: "How do I migrate using multisig?",
-    a: (
-      <Typography variant="microBody14" className="mx-4 mb-4">
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        How do I migrate using multisig?
+      </Typography>
+    ),
+    content: (
+      <Typography variant="microBody14">
         Please see the &quot;For Advanced Users&quot; section of the{" "}
         <a
           href="https://www.mantle.xyz/blog/announcements/bit-to-mnt-user-guide"
@@ -51,11 +58,16 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         .
       </Typography>
     ),
+    value: "faq-2",
   },
   {
-    q: "Will gas be refunded?",
-    a: (
-      <Typography variant="microBody14" className="mx-4 mb-4">
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        Will gas be refunded?
+      </Typography>
+    ),
+    content: (
+      <Typography variant="microBody14">
         Yes, most users will be refunded their cost of migration in ETH. Users
         will not need to take any action and the ETH will be sent directly to
         the address used in the migration. The status of the rebate will be
@@ -73,11 +85,16 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         .
       </Typography>
     ),
+    value: "faq-3",
   },
   {
-    q: "How do I add $MNT to my wallet?",
-    a: (
-      <div className="mx-4 mb-4">
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        How do I add $MNT to my wallet?
+      </Typography>
+    ),
+    content: (
+      <div>
         <Typography variant="microBody14" className="break-all">
           Token address: 0x3c3a81e81dc49A522A592e7622A7E711c06bf354
         </Typography>
@@ -86,11 +103,16 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         <Typography variant="microBody14">Decimals: 18</Typography>
       </div>
     ),
+    value: "faq-4",
   },
   {
-    q: "How do I vote with $MNT after?",
-    a: (
-      <Typography variant="microBody14" className="mx-4 mb-4">
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        How do I vote with $MNT after?
+      </Typography>
+    ),
+    content: (
+      <Typography variant="microBody14">
         $BIT delegation and voting works independently of $MNT due to the new
         token functionality. Visit{" "}
         <a
@@ -104,75 +126,46 @@ const faqList: Array<{ q: string; a: JSX.Element }> = [
         to delegate your $MNT again.
       </Typography>
     ),
+    value: "faq-5",
   },
   {
-    q: "Why will the Migrator contract be halted?",
-    a: (
-      <Typography variant="microBody14" className="mx-4 mb-4">
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        Why will the Migrator contract be halted?
+      </Typography>
+    ),
+    content: (
+      <Typography variant="microBody14">
         The contract is initially halted, then unhalted as the official
         migration period commences. The contract may be subsequenty halted in
         case there is a problem, or as instructed by Mantle Governance.
       </Typography>
     ),
+    value: "faq-6",
   },
   {
-    q: "Why will the Migrator contract be out of funds?",
-    a: (
-      <Typography variant="microBody14" className="mx-4 mb-4">
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        Why will the Migrator contract be out of funds?
+      </Typography>
+    ),
+    content: (
+      <Typography variant="microBody14">
         For security purposes, the Migrator contract will hold a minimal amount
         of funds and will require top-up from the relevant Mantle Treasury.
         Excess tokens will be occasionally transferred to the relevant Mantle
         Treasury via the &quot;defundContract&quot; mechanic.
       </Typography>
     ),
+    value: "faq-7",
   },
 ];
-
-function Accordion({
-  controlText,
-  panel,
-}: {
-  controlText: string;
-  panel: JSX.Element;
-}) {
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const togglePanel = () => setIsExpanded((curr) => !curr);
-
-  return (
-    <div className="flex flex-col">
-      <button
-        type="button"
-        className="flex flex-row justify-between items-center cursor-pointer p-4"
-        onClick={togglePanel}
-      >
-        <Typography className="text-type-primary" variant="microBody14">
-          {controlText}
-        </Typography>
-        {isExpanded ? (
-          <IoIosArrowUp className="text-md" />
-        ) : (
-          <IoIosArrowDown className="text-md" />
-        )}
-      </button>
-      {isExpanded && panel}
-    </div>
-  );
-}
 
 export function Faq() {
   return (
     <ConvertCard className="rounded-xl w-full mt-5 overflow-x-auto">
       <div className="flex gap-3">
-        <div className="flex flex-col w-full">
-          {faqList.map((el, idx) => (
-            <div key={el.q}>
-              <Accordion controlText={el.q} panel={el.a} />
-              {idx < faqList.length - 1 && (
-                <div className="border-t border-[#1C1E20]" />
-              )}
-            </div>
-          ))}
-        </div>
+        <AccordionUi list={faqList} className="flex flex-col w-full" />
       </div>
     </ConvertCard>
   );
