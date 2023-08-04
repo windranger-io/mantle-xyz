@@ -110,7 +110,7 @@ const config = {
       prevTotalElements: BigInt
       signature: String
       extraData: String
-      txBlock: String
+      txBlock: Int
       txHash: String
       txIndex: BigInt
     }

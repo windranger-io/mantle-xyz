@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-syntax, @typescript-eslint/no-use-before-define */
+/* eslint-disable no-restricted-syntax, @typescript-eslint/no-use-before-define, no-nested-ternary */
 
 // Import types from graphql
 import type {
@@ -214,21 +214,31 @@ function getArgs(
       };
     }
   ): { [x: string]: any } {
-    // console.log(arg.name.value, !arg.value.value && arg.value.fields);
+    // console.log(arg.name.value, arg.value.kind, arg.value.value);
     return {
       ...carr,
       [arg.name.value]:
-        // eslint-disable-next-line no-nested-ternary
+        // place variable (allowing for numerics to be parsed)
         (arg.value.kind === "Variable"
-          ? variables[arg.value.name.value]
-          : arg.value.kind === "IntValue"
+          ? Number.isNaN(variables[arg.value.name.value])
+            ? variables[arg.value.name.value]
+            : parseFloat(variables[arg.value.name.value] as string)
+          : // place string values allowing for numerics to be parsed
+          arg.value.kind === "StringValue"
+          ? Number.isNaN(arg.value.value)
+            ? arg.value.value
+            : parseFloat(arg.value.value as string)
+          : // always parse ints and place everything else as is
+          arg.value.kind === "IntValue"
           ? parseFloat(arg.value.value)
           : arg.value.value) ||
+        // for list values we need to map out the given vals
         (arg.value.kind === "ListValue" &&
           arg.value.values &&
           arg.value.values.map((val) => {
             return val.value;
           })) ||
+        // if there are multiple fields, we want to recurisively run through this process
         arg.value.fields?.reduce((nested, child) => {
           return doReduce(
             nested,
