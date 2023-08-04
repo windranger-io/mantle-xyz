@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
   // return the requested scores for the requested users
   return NextResponse.json(
     {
-      scores: finalVotes,
+      score: finalVotes,
     },
     {
       headers: {
