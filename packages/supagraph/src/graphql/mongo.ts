@@ -222,12 +222,16 @@ function getArgs(
         (arg.value.kind === "Variable"
           ? Number.isNaN(variables[arg.value.name.value])
             ? variables[arg.value.name.value]
-            : parseFloat(variables[arg.value.name.value] as string)
+            : [
+                { $toString: `$${(arg.name.value as string).split("_")[0]}` },
+                variables[arg.value.name.value],
+              ]
           : // place string values allowing for numerics to be parsed
           arg.value.kind === "StringValue"
-          ? Number.isNaN(arg.value.value)
-            ? arg.value.value
-            : parseFloat(arg.value.value as string)
+          ? [
+              { $toString: `$${(arg.name.value as string).split("_")[0]}` },
+              arg.value.value,
+            ]
           : // always parse ints and place everything else as is
           arg.value.kind === "IntValue"
           ? parseFloat(arg.value.value)
@@ -704,23 +708,29 @@ function createArgs(args: Record<string, any>) {
             const hasFilter =
               splitKey.length >= 2 &&
               graphqlToMongoOperatorMap[`_${splitKey[splitKey.length - 1]}`];
+            // construct the query from the mapped fields and filters
+            const query = hasFilter
+              ? generateMongoFilter({
+                  [`_${splitKey[splitKey.length - 1]}`]: where[key],
+                })
+              : where[key];
 
             // return all results
             return {
               // keep everything collected so far
               ...all,
               // spread all descendents into the same object
-              ...(typeof where[key] !== "object"
-                ? // check for a filter or a final match value
-                  {
-                    [`${useKey ? `${useKey}.` : ``}${
-                      hasFilter ? key.substring(0, key.lastIndexOf("_")) : key
-                    }`]: hasFilter
-                      ? generateMongoFilter({
-                          [`_${splitKey[splitKey.length - 1]}`]: where[key],
-                        })
-                      : where[key],
-                  }
+              ...(typeof where[key] !== "object" || Array.isArray(where[key])
+                ? Array.isArray(where[key])
+                  ? // if we're putting an array as the where key then we're pushing an expr
+                    {
+                      $expr: query,
+                    }
+                  : {
+                      [`${useKey ? `${useKey}.` : ``}${
+                        hasFilter ? key.substring(0, key.lastIndexOf("_")) : key
+                      }`]: query,
+                    }
                 : // check for nested filters defined in the query
                   {
                     // recurse through doReduce and hydrate everything in to the parent
