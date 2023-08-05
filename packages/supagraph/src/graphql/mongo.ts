@@ -721,7 +721,7 @@ function createArgs(args: Record<string, any>) {
               ...all,
               // spread all descendents into the same object
               ...(typeof where[key] !== "object" || Array.isArray(where[key])
-                ? Array.isArray(where[key])
+                ? Array.isArray(where[key]) && !Array.isArray(query)
                   ? // if we're putting an array as the where key then we're pushing an expr
                     {
                       $expr: query,
@@ -729,7 +729,7 @@ function createArgs(args: Record<string, any>) {
                   : {
                       [`${useKey ? `${useKey}.` : ``}${
                         hasFilter ? key.substring(0, key.lastIndexOf("_")) : key
-                      }`]: query,
+                      }`]: Array.isArray(query) ? query[1] : query,
                     }
                 : // check for nested filters defined in the query
                   {
