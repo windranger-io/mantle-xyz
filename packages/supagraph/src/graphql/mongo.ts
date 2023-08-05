@@ -1102,7 +1102,9 @@ export function createQuery(
               // sort after grouping (this is likely more expensive because we're sorting on a projection - hopefully the filter has limited the items enough)
               $sort: {
                 // use given sort and direction
-                [args?.orderBy || "id"]:
+                [(Array.isArray(args?.orderBy)
+                  ? args?.orderBy[1]
+                  : args?.orderBy) || "id"]:
                   args.orderDirection === "desc" ? -1 : 1,
               },
             },
@@ -1112,7 +1114,9 @@ export function createQuery(
               // sort the items before performing lookups/matches to make sure we're using the index
               $sort: {
                 // use given sort and direction or default to id (to keep it consistent)
-                [args?.orderBy || "id"]:
+                [(Array.isArray(args?.orderBy)
+                  ? args?.orderBy[1]
+                  : args?.orderBy) || "id"]:
                   args.orderDirection === "desc" ? -1 : 1,
               },
             },
@@ -1149,10 +1153,19 @@ export function createQuery(
         : false,
       // set the pagination offsets and limits
       {
-        $skip: parseInt(args?.skip || "0", 10),
+        $skip: parseInt(
+          (Array.isArray(args?.skip) ? args?.skip[1] : args?.skip) || "0",
+          10
+        ),
       },
       {
-        $limit: Math.min(500, parseInt(args?.first || "25", 10) || 25),
+        $limit: Math.min(
+          500,
+          parseInt(
+            (Array.isArray(args?.first) ? args?.first[1] : args?.first) || "25",
+            10
+          ) || 25
+        ),
       },
       // project all fields that are being requested in the output
       ...(!mutable
