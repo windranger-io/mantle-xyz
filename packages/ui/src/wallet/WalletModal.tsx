@@ -9,6 +9,8 @@ import { MetaMaskSvg } from './MetaMask'
 import { WalletConnectSvg } from './WalletConnect'
 
 type WalletModalProps = {
+  injectedName?: string
+  onInjected?: () => void
   onMetamask?: () => void
   onWalletConnect?: () => void
   open: boolean
@@ -73,6 +75,8 @@ const Dialog = ({
 }
 
 export const WalletModal = ({
+  injectedName = 'Injected',
+  onInjected = undefined,
   onMetamask = undefined,
   onWalletConnect = undefined,
   open = false,
@@ -124,10 +128,22 @@ export const WalletModal = ({
           variant="secondary"
           size="full"
           onClick={onWalletConnect}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full"
+          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
         >
           <WalletConnectSvg className="h-6 w-6" />
           Wallet Connect
+        </Button>
+      )}
+      {onInjected && (
+        <Button
+          type="button"
+          variant="secondary"
+          size="full"
+          onClick={onInjected}
+          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full"
+        >
+          {/* <MetaMaskSvg className="h-6 w-6" /> */}
+          Injected: {injectedName}
         </Button>
       )}
       <p className="text-sm text-center md:mt-10 mt-5 md:mb-0 mb-5">

@@ -18,10 +18,28 @@ export default function WalletProvider() {
     },
   });
 
+  // check for injected connector
+  const hasInjected = connectors.find((conn) => conn.id === "injected");
+
   return (
     <WalletModal
       open={walletModalOpen}
       setOpen={setWalletModalOpen}
+      injectedName={hasInjected?.name?.replace(/Injected\s\(([^)]+)\)/, "$1")}
+      onInjected={
+        hasInjected && hasInjected.name !== "Injected (MetaMask)"
+          ? () => {
+              setClient({
+                ...client,
+                connector: "injected",
+              });
+              connect({
+                chainId,
+                connector: hasInjected,
+              });
+            }
+          : undefined
+      }
       onMetamask={() => {
         setClient({
           ...client,
