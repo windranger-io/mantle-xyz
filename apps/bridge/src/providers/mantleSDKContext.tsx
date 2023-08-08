@@ -24,7 +24,7 @@ import { hashCrossDomainMessage } from "@mantleio/core-utils";
 
 import { CHAINS_FORMATTED, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 
-import { useNetwork, usePublicClient, useWalletClient } from "wagmi";
+import { useNetwork, useWalletClient } from "wagmi";
 import type {
   Provider,
   TransactionReceipt,
@@ -177,25 +177,12 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     return undefined;
   }, [mantleWalletClient]);
 
-  // get the provider for the chosen chain
-  const publicClient = usePublicClient({ chainId: L2_CHAIN_ID });
-
   // create an ethers provider from the publicClient
   const mantleProvider = useMemo(() => {
-    const { chain: mantleChain, transport } = publicClient;
-    const network = {
-      chainId: mantleChain.id,
-      name: mantleChain.name,
-      ensAddress: mantleChain.contracts?.ensRegistry?.address,
-    };
-    if (transport.type === "fallback")
-      return new providers.FallbackProvider(
-        (transport.transports as { value: { url: string } }[]).map(
-          ({ value }) => new providers.JsonRpcProvider(value?.url, network)
-        )
-      );
-    return new providers.JsonRpcProvider(transport.url, network);
-  }, [publicClient]);
+    return new providers.JsonRpcProvider(
+      CHAINS_FORMATTED[L2_CHAIN_ID].rpcUrls.public.http[0]
+    );
+  }, []);
 
   // construct a crossChainMessenger - this is responsible for nearly all of our web3 interactions
   const crossChainMessenger = React.useMemo(() => {
