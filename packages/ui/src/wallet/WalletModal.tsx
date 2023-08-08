@@ -75,7 +75,7 @@ const Dialog = ({
 }
 
 export const WalletModal = ({
-  injectedName = 'Injected',
+  injectedName = undefined,
   onInjected = undefined,
   onMetamask = undefined,
   onWalletConnect = undefined,
@@ -110,8 +110,9 @@ export const WalletModal = ({
           </Button>
         </div>
       </div>
-      {onMetamask && (
+      {onMetamask && injectedName === 'MetaMask' && (
         <Button
+          key="metaMask-button"
           type="button"
           variant="secondary"
           size="full"
@@ -124,6 +125,7 @@ export const WalletModal = ({
       )}
       {onWalletConnect && (
         <Button
+          key="walletConnect-button"
           type="button"
           variant="secondary"
           size="full"
@@ -134,8 +136,9 @@ export const WalletModal = ({
           Wallet Connect
         </Button>
       )}
-      {onInjected && (
+      {onInjected && injectedName !== 'Injected' && (
         <Button
+          key="injected-button"
           type="button"
           variant="secondary"
           size="full"
