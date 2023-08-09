@@ -6,6 +6,17 @@ import { useConnect } from "wagmi";
 import StateContext from "@providers/stateContext";
 import dynamic from "next/dynamic";
 
+// set the walletModal up as a dynamic container
+const DynamicWalletModal = dynamic(
+  async () => {
+    const { WalletModal } = await import("@mantle/ui");
+    return WalletModal;
+  },
+  {
+    ssr: false,
+  }
+);
+
 export default function WalletProvider() {
   // unpack the context
   const { chainId, client, setClient, walletModalOpen, setWalletModalOpen } =
@@ -20,17 +31,6 @@ export default function WalletProvider() {
 
   // check for injected connector
   const hasInjected = connectors.find((conn) => conn.id === "injected");
-
-  // set the walletModal up as a dynamic container
-  const DynamicWalletModal = dynamic(
-    async () => {
-      const { WalletModal } = await import("@mantle/ui");
-      return WalletModal;
-    },
-    {
-      ssr: false,
-    }
-  );
 
   return (
     <DynamicWalletModal
