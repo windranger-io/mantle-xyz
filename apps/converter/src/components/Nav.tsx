@@ -6,6 +6,7 @@ import ConnectWallet from "@components/ConnectWallet";
 import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 import StateContext from "@providers/stateContext";
 import { NavItem } from "@mantle/ui/src/navigation/NavigationLite";
+import { usePathname } from "next/navigation";
 
 type NavProps = {
   hideConnectBtn: boolean;
@@ -69,6 +70,9 @@ const NAV_ITEMS_TESTNET: NavItem[] = [
 
 function Nav({ hideConnectBtn, className = "" }: NavProps) {
   const { mobileMenuOpen, setMobileMenuOpen } = useContext(StateContext);
+  const pathName = usePathname();
+
+  const activeKey = pathName.includes("account") ? "account" : "migrate";
 
   const isTestnet = L1_CHAIN_ID === 5 || L2_CHAIN_ID === 5001;
   const navItems = isTestnet ? NAV_ITEMS_TESTNET : NAV_ITEMS;
@@ -78,7 +82,7 @@ function Nav({ hideConnectBtn, className = "" }: NavProps) {
       navLite
       walletConnect={hideConnectBtn ? null : <ConnectWallet />}
       className={className}
-      activeKey="migrate"
+      activeKey={activeKey}
       mobileMenuOpen={mobileMenuOpen}
       setMobileMenuOpen={setMobileMenuOpen}
       navItems={navItems}
