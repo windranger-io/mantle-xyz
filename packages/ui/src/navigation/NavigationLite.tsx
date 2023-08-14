@@ -11,82 +11,26 @@ import { MantleLogoIcon, MantleLogo } from '../base/Icons'
 import { mobileNavCat } from './styles'
 import { MantleLink } from '../links/MantleLinks'
 
-interface NavItems {
+export type NavItem = {
   name: string
   href: string
   internal: boolean
   key: string
 }
 
-const NAV_ITEMS: NavItems[] = [
-  {
-    name: 'Docs',
-    href: 'https://docs.mantle.xyz',
-    internal: true,
-    key: 'docs',
-  },
-  {
-    name: 'Migrate',
-    href: 'https://migratebit.mantle.xyz',
-    internal: true,
-    key: 'migrate',
-  },
-  {
-    name: 'Bridge',
-    href: 'https://bridge.mantle.xyz',
-    internal: true,
-    key: 'bridge',
-  },
-  {
-    name: 'Account History',
-    href: 'https://bridge.mantle.xyz/account/deposit',
-    internal: true,
-    key: 'account',
-  },
-]
-
-const NAV_ITEMS_TESTNET: NavItems[] = [
-  {
-    name: 'Docs',
-    href: 'https://docs.mantle.xyz',
-    internal: true,
-    key: 'docs',
-  },
-  {
-    name: 'Faucet',
-    href: 'https://faucet.testnet.mantle.xyz',
-    internal: true,
-    key: 'faucet',
-  },
-  {
-    name: 'Bridge',
-    href: 'https://bridge.testnet.mantle.xyz',
-    internal: true,
-    key: 'bridge',
-  },
-  {
-    name: 'Account History',
-    href: 'https://bridge.testnet.mantle.xyz/account/deposit',
-    internal: true,
-    key: 'account-history',
-  },
-]
-
 export const NavigationLite = ({
   walletConnect,
   activeKey,
-  isTestnet,
   mobileMenuOpen,
   setMobileMenuOpen,
+  navItems,
 }: {
   walletConnect: React.ReactNode
   activeKey: string
-  isTestnet: boolean
   mobileMenuOpen: boolean
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
+  navItems: NavItem[]
 }) => {
-  const navItems = isTestnet ? NAV_ITEMS_TESTNET : NAV_ITEMS
-
   return (
     <div className="relative">
       <nav
