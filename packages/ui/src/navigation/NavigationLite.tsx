@@ -37,6 +37,12 @@ const NAV_ITEMS: NavItems[] = [
     internal: true,
     key: 'bridge',
   },
+  {
+    name: 'Account History',
+    href: 'https://bridge.mantle.xyz/account/deposit',
+    internal: true,
+    key: 'account',
+  },
 ]
 
 const NAV_ITEMS_TESTNET: NavItems[] = [
@@ -57,6 +63,12 @@ const NAV_ITEMS_TESTNET: NavItems[] = [
     href: 'https://bridge.testnet.mantle.xyz',
     internal: true,
     key: 'bridge',
+  },
+  {
+    name: 'Account History',
+    href: 'https://bridge.testnet.mantle.xyz/account/deposit',
+    internal: true,
+    key: 'account-history',
   },
 ]
 
@@ -93,7 +105,7 @@ export const NavigationLite = ({
             <MantleLogo />
           </Link>
         </div>
-        <div className="hidden lg:flex justify-center gap-16">
+        <div className="hidden lg:flex justify-center gap-6 xl:gap-12">
           {navItems.map((item, index) => {
             const isActive = activeKey === item.key
             return (
@@ -105,7 +117,7 @@ export const NavigationLite = ({
                   rel="noreferrer noopener"
                   className={
                     isActive
-                      ? 'text-type-primary relative select-none pointer-events-none	'
+                      ? 'text-type-primary relative select-none pointer-events-none'
                       : ``
                   }
                 >
