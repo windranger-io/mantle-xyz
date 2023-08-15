@@ -6,6 +6,7 @@ import ConnectWallet from "@components/ConnectWallet";
 import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 import StateContext from "@providers/stateContext";
 import { NavItem } from "@mantle/ui/src/navigation/NavigationLite";
+
 import { usePathname } from "next/navigation";
 
 type NavProps = {
