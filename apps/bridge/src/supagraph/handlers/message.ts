@@ -47,7 +47,7 @@ export const getMessagesByTransaction = async (
   }
 ): Promise<CrossChainMessage[]> => {
   // Wait for the transaction receipt if the input is waitable.
-  await (transaction as TransactionResponse).wait?.();
+  await (transaction as TransactionResponse)?.wait?.();
 
   // Convert the input to a transaction hash.
   const txHash = toTransactionHash(transaction);
@@ -119,12 +119,12 @@ export const getMessagesByTransaction = async (
       // convert each SentMessage log into a message object
       const parsed = messenger.interface.parseLog(log);
       return {
+        value,
         direction: opts.direction,
         target: parsed.args.target,
         sender: parsed.args.sender,
         message: parsed.args.message,
         messageNonce: parsed.args.messageNonce,
-        value,
         minGasLimit: parsed.args.gasLimit,
         logIndex: log.logIndex,
         blockNumber: log.blockNumber,
