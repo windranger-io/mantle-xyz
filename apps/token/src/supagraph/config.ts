@@ -5,6 +5,10 @@ import { withDefault } from "supagraph";
 const config = {
   // set the local engine (true: db || false: mongo)
   dev: false,
+  // set the listening state of the sync
+  listen: false,
+  // should we cleanup the values we pull in the initial sync?
+  cleanup: true,
   // name your supagraph (this will inform mongo table name etc...)
   name: withDefault(
     process.env.SUPAGRAPH_NAME,
@@ -37,7 +41,7 @@ const config = {
   // configure available Contracts and their block details
   contracts: {
     mantle: {
-      // Establish all event signatures available on this contract (we could also accept a .sol or .json file here)
+      // establish all event signatures available on this contract (we could also accept a .sol or .json file here)
       events: "token",
       // use handlers registered against "token" named group in handlers/index.ts
       handlers: "token",
@@ -49,11 +53,9 @@ const config = {
       ),
       startBlock: withDefault(process.env.MANTLE_START_BLOCK, 9127688),
       endBlock: withDefault(process.env.MANTLE_END_BLOCK, "latest"),
-      // we don't receipts here
-      collectTxReceipts: false,
     },
     bitdao: {
-      // Establish all event signatures available on this contract (we could also accept a .sol or .json file here)
+      // establish all event signatures available on this contract (we could also accept a .sol or .json file here)
       events: "token",
       // use handlers registered against "token" named group in handlers/index.ts
       handlers: "token",
@@ -65,8 +67,6 @@ const config = {
       ),
       startBlock: withDefault(process.env.BITDAO_START_BLOCK, 7728490),
       endBlock: withDefault(process.env.BITDAO_END_BLOCK, "latest"),
-      // we don't receipts here
-      collectTxReceipts: false,
     },
   },
   // define supagraph schema

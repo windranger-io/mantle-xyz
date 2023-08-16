@@ -2,10 +2,15 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // Import the sync command and db drivers to setup engine
-import { DB, Mongo, Stage, Store, Handlers, addSync, sync } from "supagraph";
-
-// Each sync will be provided its own provider
-import { providers } from "ethers/lib/ethers";
+import {
+  DB,
+  Mongo,
+  Stage,
+  SyncConfig,
+  setEngine,
+  setSyncs,
+  sync,
+} from "supagraph";
 
 // Import mongodb client
 import { getMongodb } from "@providers/mongoClient";
@@ -19,63 +24,21 @@ import config from "@supagraph/config";
 // forces the route handler to be dynamic
 export const dynamic = "force-dynamic";
 
-// Object of providers by rpcUrl
-const providerCache: { [rpcUrl: string]: providers.JsonRpcProvider } = {};
-
-// Register each of the syncs from the mapping
-Object.keys(config.contracts).forEach((contract) => {
-  // extract this syncOp
-  const syncOp = config.contracts[contract as keyof typeof config.contracts];
-
-  // extract rpc url
-  const { rpcUrl } =
-    config.providers[syncOp.chainId as keyof typeof config.providers];
-
-  // pull the handlers for the registration
-  const mapping =
-    typeof syncOp.handlers === "string"
-      ? handlers?.[syncOp.handlers || ("" as keyof Handlers)] || {}
-      : syncOp.handlers;
-
-  // extract events
-  const events =
-    typeof syncOp.events === "string" &&
-    Object.hasOwnProperty.call(config, "events")
-      ? (config as unknown as { events: Record<string, string[]> })?.events[
-          syncOp.events
-        ]
-      : syncOp.events;
-
-  // configure JsonRpcProvider for contracts chainId
-  providerCache[rpcUrl] =
-    providerCache[rpcUrl] || new providers.JsonRpcProvider(rpcUrl);
-
-  // for each handler register a sync
-  Object.keys(mapping).forEach((eventName) => {
-    addSync({
-      eventName,
-      eventAbi: events,
-      address: syncOp.address,
-      startBlock: syncOp.startBlock,
-      provider: providerCache[rpcUrl],
-      opts: {
-        collectTxReceipts: syncOp.collectTxReceipts || false,
-      },
-      onEvent: mapping[eventName],
-    });
-  });
-});
-
 // Switch out the engine for development to avoid the mongo requirment locally
-Store.setEngine({
+setEngine({
   // name the connection
   name: config.name,
   // db is dependent on state
   db:
     // in production/production like environments we want to store mutations to mongo otherwise we can store them locally
-    process.env.NODE_ENV === "development" && config.dev
+    !process.env.MONGODB_URI ||
+    (process.env.NODE_ENV === "development" && config.dev)
       ? // connect store to in-memory/node-persist store
-        DB.create({ kv: {}, name: config.name })
+        DB.create({
+          kv: {},
+          name: config.name,
+          reset: (config as unknown as SyncConfig)?.reset,
+        })
       : // connect store to MongoDB
         Mongo.create({
           kv: {},
@@ -84,6 +47,9 @@ Store.setEngine({
           client: getMongodb(process.env.MONGODB_URI!),
         }),
 });
+
+// set the sync ops
+setSyncs(config as unknown as SyncConfig, handlers);
 
 // Expose the sync command on a route so that we can call it with a cron job
 export async function GET(request: NextRequest) {
@@ -96,13 +62,15 @@ export async function GET(request: NextRequest) {
 
   // all new events discovered from all sync operations detailed in a summary
   const summary = await sync({
+    // pass through config option
+    listen: (config as unknown as SyncConfig).listen || false,
+    cleanup: (config as unknown as SyncConfig).cleanup || true,
     // where should we start and stop this run? (allowing for staggered runs to build up the cache before executing the final step (process))
     start,
     stop,
     // skip extra steps to get block details for the logs
-    skipBlocks: true, // skip collecting blocks
-    skipTransactions: true, // skip collecting txs
-    skipOptionalArgs: true, // skip importing full version of { tx, block } to the handlers
+    collectBlocks: false, // skip collecting blocks
+    collectTxReceipts: false, // skip collecting txs
   });
 
   // we don't need to sync more often than once per block - and if we're using vercel.json crons we can only sync 1/min
