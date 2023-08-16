@@ -5,6 +5,10 @@ import { withDefault } from "supagraph";
 const config = {
   // set the local engine (true: db || false: mongo)
   dev: false,
+  // set the listening state of the sync
+  listen: false,
+  // should we cleanup the values we pull in the initial sync?
+  cleanup: true,
   // name your supagraph (this will inform mongo table name etc...)
   name: withDefault(
     process.env.SUPAGRAPH_NAME,
