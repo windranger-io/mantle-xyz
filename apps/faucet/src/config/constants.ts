@@ -25,7 +25,12 @@ export const TWITTER_DESC =
 export function getBaseUrl() {
   // return the fully resolved absolute url
   return (
-    process.env.NEXT_PUBLIC_VERCEL_URL ||
+    // eslint-disable-next-line no-nested-ternary
+    (process.env.NEXT_PUBLIC_VERCEL_URL
+      ? process.env.NEXT_PUBLIC_VERCEL_URL.indexOf("http") === 0
+        ? process.env.NEXT_PUBLIC_VERCEL_URL
+        : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : false) ||
     (process.env.NEXT_PUBLIC_SITE_URL
       ? `https://faucet.testnet.mantle.xyz`
       : // this should match the port used by the current app

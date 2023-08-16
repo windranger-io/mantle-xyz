@@ -41,7 +41,12 @@ export const TWITTER_DESC = `Bridge your ${
 export function getBaseUrl() {
   // return the fully resolved absolute url
   return (
-    process.env.NEXT_PUBLIC_VERCEL_URL ||
+    // eslint-disable-next-line no-nested-ternary
+    (process.env.NEXT_PUBLIC_VERCEL_URL
+      ? process.env.NEXT_PUBLIC_VERCEL_URL.indexOf("http") === 0
+        ? process.env.NEXT_PUBLIC_VERCEL_URL
+        : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : false) ||
     (process.env.NEXT_PUBLIC_SITE_URL
       ? `https://${
           L1_CHAIN_ID === 1 ? "bridge.mantle.xyz" : "bridge.testnet.mantle.xyz"
