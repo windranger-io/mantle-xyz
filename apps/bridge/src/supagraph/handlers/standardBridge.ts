@@ -2,11 +2,14 @@
 import { MessageDirection } from "@mantleio/sdk";
 
 // Supagraph specific constants detailing the contracts we'll sync against
-import { TransactionReceipt } from "@ethersproject/providers";
+import {
+  TransactionReceipt,
+  TransactionResponse,
+} from "@ethersproject/providers";
 import { hashCrossDomainMessage } from "@mantleio/core-utils";
 
 import { BigNumber } from "ethers";
-import { Store } from "supagraph";
+import { Store, enqueuePromise } from "supagraph";
 
 import {
   ERC20DepositInitiated,
@@ -26,7 +29,7 @@ enum MessageType {
 // - temporarily calling out to the Production-Faucet to allow for the claiming wallets gas-drops on deposit to L2
 const storeL1toL2Message = async (
   type: MessageType,
-  tx: TransactionReceipt,
+  tx: TransactionReceipt & TransactionResponse,
   args: {
     amount: BigNumber;
     l1Token?: string;
@@ -36,12 +39,15 @@ const storeL1toL2Message = async (
   // wrap incase of errors
   try {
     // retrieve the messages for this transaction (but reuse the tx we have)
-    const messages = await getMessagesByTransaction(tx.transactionHash, {
-      // passing the tx through so that we dont have to refetch it to build the messageHash
-      receipt: tx,
-      // always going in this direction for L1toL2Message
-      direction: MessageDirection.L1_TO_L2,
-    });
+    const messages = await getMessagesByTransaction(
+      tx.transactionHash || tx.hash,
+      {
+        // passing the tx through so that we dont have to refetch it to build the messageHash
+        receipt: tx,
+        // always going in this direction for L1toL2Message
+        direction: MessageDirection.L1_TO_L2,
+      }
+    );
 
     // only proceed if the message details were discovered (this should always be the case, but just make sure...)
     if (messages && messages[0]) {
@@ -87,18 +93,23 @@ const storeL1toL2Message = async (
       message.set("l1Tx", tx.transactionHash);
       message.set("l1BlockNumber", tx.blockNumber);
 
-      // add a gas-drop claim for this sender
-      await claim(tx.from)
-        .then((result: any) => {
-          if (!result?.error) {
-            // mark that we've sent the gas-drop
-            message.set("gasDropped", true);
-            // log in stdout
-            // console.log(`Gas-drop created for ${result?.data?.reservedFor}`);
-          }
-        })
-        // noop any errors
-        .catch(() => ({}));
+      // enqueue a promise to be processed in parallel later
+      enqueuePromise(async () => {
+        // add a gas-drop claim for this sender
+        await claim(tx.from)
+          .then(async (result: any) => {
+            if (!result?.error) {
+              // mark that we've sent the gas-drop
+              message.set("gasDropped", true);
+              // log in stdout
+              // console.log(`Gas-drop created for ${result?.data?.reservedFor}`);
+              // commit the save
+              await message.save(false); // leave last-save block number unchanged incase this is long-running
+            }
+          })
+          // noop any errors
+          .catch(() => ({}));
+      });
 
       // commit the save
       await message.save();
@@ -111,7 +122,7 @@ const storeL1toL2Message = async (
 // Sync ERC20Deposit events
 export const ERC20DepositInitiatedHandler = async (
   args: ERC20DepositInitiated,
-  { tx }: { tx: TransactionReceipt }
+  { tx }: { tx: TransactionReceipt & TransactionResponse }
 ) => {
   // we know that this is a valid bridge action (accepted by the bridge) - add it to the db and wait for it to succeed or fail
   // console.log("deposit-erc20:", args, "tx", tx.transactionHash);
@@ -127,7 +138,7 @@ export const ERC20DepositInitiatedHandler = async (
 // Sync ETHDeposit events
 export const ETHDepositInitiatedHandler = async (
   args: ETHDepositInitiated,
-  { tx }: { tx: TransactionReceipt }
+  { tx }: { tx: TransactionReceipt & TransactionResponse }
 ) => {
   // console.log("deposit-eth:", args, "tx", tx.transactionHash);
 
