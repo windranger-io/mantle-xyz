@@ -19,13 +19,17 @@ import Dialogue from "@components/bridge/dialogue";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Faq } from "@components/Faq";
+import { MultisigWarning } from "@components/MultisigWarning";
+import { useIsWalletMultisig } from "@hooks/useIsWalletMultisig";
 
 export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
   const { updateToast } = useToast();
   // unpack the context
   const {
+    client,
     view,
     chainId,
+    provider,
     selectedToken,
     destinationToken,
     isCTAPageOpen,
@@ -37,6 +41,8 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
     setIsCTAPageOpen,
     setHasClosedClaims,
   } = useContext(StateContext);
+
+  const isWalletMultisig = useIsWalletMultisig(provider, client.address);
 
   const router = useRouter();
   const pathName = usePathname();
@@ -301,6 +307,8 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
     }
   }, [hasClaims, hasClosedClaims, updateToast, setHasClosedClaims]);
 
+  const displayFAQ = L1_CHAIN_ID === 1;
+
   return (
     (view === Views.Default &&
       ((isCTAPageOpen && (
@@ -370,12 +378,11 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
               </Tab.Panels>
             </Tab.Group>
           </SimpleCard>
-          {L1_CHAIN_ID === 1 ? (
+          {(isWalletMultisig || displayFAQ) && (
             <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] lg:max-w-[250px] xl:w-[320px] xl:max-w-[320px] lg:absolute lg:top-0 lg:right-[-55%] xl:right-[-80%]">
-              <Faq />
+              {isWalletMultisig && <MultisigWarning />}
+              {displayFAQ && <Faq />}
             </div>
-          ) : (
-            <span />
           )}
         </div>
       ))) || <span />
