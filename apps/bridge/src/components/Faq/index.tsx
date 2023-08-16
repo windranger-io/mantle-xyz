@@ -162,6 +162,27 @@ const faqList: Array<AccordionItemType> = [
     ),
     value: "faq-5",
   },
+  {
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        How long do deposits and withdrawals take?
+      </Typography>
+    ),
+    content: (
+      <div className="text-type-secondary">
+        <Typography className="mb-4">
+          Initiating a deposit typically completes in around ~12 minutes.
+        </Typography>
+        <Typography className="mb-4">
+          Conversely, withdrawals, due to the intricacies of Optimistic Rollups,
+          have a challenge period to detect and address any discrepancies in the
+          Mantle Mainnet transaction. This ensures the highest security, but
+          means withdrawals to Ethereum Mainnet can take up to a week.
+        </Typography>
+      </div>
+    ),
+    value: "faq-6",
+  },
 ];
 
 export function Faq() {
