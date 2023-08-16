@@ -44,6 +44,7 @@ export default function Dialogue({
     setTx2Hash,
     setSafeChains,
     isCTAPageOpenRef: isOpenRef,
+    setSelectedTokenAmount,
   } = useContext(StateContext);
 
   const reset = () => {
@@ -56,6 +57,10 @@ export default function Dialogue({
     setCTAPage(CTAPages.Default);
     // restore safeChains to selected chain
     setSafeChains([chainId]);
+    // reset selected token amount
+    if (ctaPage !== CTAPages.Default) {
+      setSelectedTokenAmount("");
+    }
   };
 
   const closeModalAndReset = () => {
