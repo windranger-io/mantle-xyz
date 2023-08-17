@@ -18,6 +18,7 @@ import {
 } from "@config/constants";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { formatBigNumberString, localeZero } from "@mantle/utils";
+import { Button } from "@mantle/ui";
 import DirectionLabel from "@components/bridge/utils/DirectionLabel";
 import { MantleLogo } from "@components/bridge/utils/MantleLogo";
 import KindReminder from "@components/bridge/utils/KindReminder";
@@ -42,6 +43,7 @@ export default function TokenSelect({
     setSelectedToken,
     setSelectedTokenAmount,
     setDestinationTokenAmount,
+    client,
   } = useContext(StateContext);
 
   const hasBalance = useMemo(() => {
@@ -191,6 +193,28 @@ export default function TokenSelect({
                 placeholder="0"
                 className="grow border-0 focus:outline-none rounded-tl-lg rounded-bl-lg bg-black py-1.5 px-3 focus:ring-0 focus:ring-white/70 appearance-none"
               />
+              <div className="bg-black flex items-center">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className={`border ${
+                    client?.isConnected
+                      ? "border-stroke-ghost"
+                      : "border-stroke-disabled"
+                  }`}
+                  disabled={!client?.isConnected}
+                  onClick={() => {
+                    setSelectedTokenAmount(
+                      balances?.[selected?.address || ""] || "0"
+                    );
+                    setDestinationTokenAmount(
+                      balances?.[selected?.address || ""] || "0"
+                    );
+                  }}
+                >
+                  Max
+                </Button>
+              </div>
               <Listbox.Button className="h-12 relative cursor-default rounded-br-lg rounded-tr-lg bg-black py-1.5 pl-5 pr-10 text-left text-white shadow-sm focus:outline-none focus:ring-0 focus:ring-white/70">
                 <span className="flex items-center">
                   {selected?.logoURI && (
@@ -297,20 +321,6 @@ export default function TokenSelect({
             </svg>
           </span>
           <span className="text-[#E22F3D]">Insufficient balance.</span>
-          <button
-            type="button"
-            className="text-[#0A8FF6]"
-            onClick={() => {
-              setSelectedTokenAmount(
-                balances?.[selected?.address || ""] || "0"
-              );
-              setDestinationTokenAmount(
-                balances?.[selected?.address || ""] || "0"
-              );
-            }}
-          >
-            Max
-          </button>
         </div>
       ) : (
         <DirectionLabel
@@ -318,20 +328,22 @@ export default function TokenSelect({
           direction={(selected?.address && "Your balance") || ""}
           logo={<span />}
           chain={
-            (selected?.address &&
-              `${
-                Number.isNaN(
-                  parseFloat(balances?.[selected?.address || ""] || "")
-                )
-                  ? localeZero
-                  : formatBigNumberString(
-                      balances?.[selected?.address || ""] || "",
-                      3,
-                      true,
-                      false
-                    ) || localeZero
-              }${" "}${selected?.symbol}`) ||
-            ""
+            !client?.isConnected
+              ? "Unknown. Connect Wallet."
+              : (selected?.address &&
+                  `${
+                    Number.isNaN(
+                      parseFloat(balances?.[selected?.address || ""] || "")
+                    )
+                      ? localeZero
+                      : formatBigNumberString(
+                          balances?.[selected?.address || ""] || "",
+                          3,
+                          true,
+                          false
+                        ) || localeZero
+                  }${" "}${selected?.symbol}`) ||
+                ""
           }
         />
       )}
