@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
 import * as React from 'react'
 import { cn } from '../utils'
-import { NavigationLite } from './NavigationLite'
+import { NavItem, NavigationLite } from './NavigationLite'
 import { NavigationFull } from './NavigationFull'
 
 /**
@@ -15,18 +15,18 @@ export const Header = ({
   sticky,
   navLite = false,
   activeKey,
-  isTestnet,
   mobileMenuOpen,
   setMobileMenuOpen,
+  navItems,
 }: {
   walletConnect: React.ReactNode
   className?: string
   sticky?: boolean
   navLite?: boolean
   activeKey: string
-  isTestnet: boolean
   mobileMenuOpen: boolean
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
+  navItems: NavItem[]
 }) => (
   <header
     className={
@@ -39,9 +39,9 @@ export const Header = ({
       <NavigationLite
         walletConnect={walletConnect}
         activeKey={activeKey}
-        isTestnet={isTestnet}
         mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
+        navItems={navItems}
       />
     ) : (
       <NavigationFull

@@ -13,7 +13,7 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
 import Avatar from "@mantle/ui/src/presentational/Avatar";
-import { ArrowDownIcon, Button } from "@mantle/ui";
+import { Button } from "@mantle/ui";
 import { truncateAddress } from "@mantle/utils";
 
 import { BiError } from "react-icons/bi";
@@ -183,7 +183,6 @@ function ConnectWallet() {
             <Avatar walletAddress="address" />
             <div className="flex items-center justify-center gap-2">
               {truncateAddress(getAddress(client.address) as `0x${string}`)}
-              <ArrowDownIcon className="w-3.5 h-3.5" />
             </div>
           </Button>
         </Link>
