@@ -328,8 +328,11 @@ export const DELEGATION_URL: string = "https://delegatevote.mantle.xyz/";
 
 export enum ErrorMessages {
   INSUFFICIENT_GAS = "You do not have enough gas to cover the transaction cost.",
-  HALTED = "Migration halted. Please check again later.",
+  HALTED = "Migration halted. See forum post ",
 }
 
 export const isComingSoon =
   process.env.NEXT_PUBLIC_IS_COMING_SOON === "true" || false;
+
+export const migrationPolicyUrl =
+  "https://forum.mantle.xyz/t/clarification-of-bit-to-mnt-migration-policy-and-service/7877";
