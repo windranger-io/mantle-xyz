@@ -326,7 +326,7 @@ export default function TokenSelect({
         <DirectionLabel
           className="pt-4"
           direction={(selected?.address && "Your balance") || ""}
-          logo={<span />}
+          logo={null}
           chain={
             !client?.isConnected
               ? "Unknown. Connect Wallet."

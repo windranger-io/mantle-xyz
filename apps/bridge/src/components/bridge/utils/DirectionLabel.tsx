@@ -14,15 +14,13 @@ export default function DirectionLabel({
 }) {
   return (
     <div
-      className={`flex space-x-2.5 pb-4 items-center${
-        className ? ` ${className}` : ""
-      }`}
+      className={`flex pb-4 items-center${className ? ` ${className}` : ""}`}
     >
       <Typography variant="body">
         {direction}
         {direction && ":"}
       </Typography>
-      <div className="flex space-x-2 items-center">
+      <div className="flex ml-1 space-x-2 items-center">
         {logo}
         <Typography variant="body"> {chain}</Typography>
       </div>
