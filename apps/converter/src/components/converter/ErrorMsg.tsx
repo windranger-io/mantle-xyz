@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { Typography } from "@mantle/ui";
 
 import StateContext from "@providers/stateContext";
-import { ErrorMessages } from "@config/constants";
+import { ErrorMessages, migrationPolicyUrl } from "@config/constants";
 
 export default function ErrorMsg({ halted }: { halted: boolean }) {
   const { errorMsg, setErrorMsg } = useContext(StateContext);
@@ -21,6 +21,19 @@ export default function ErrorMsg({ halted }: { halted: boolean }) {
     return (
       <Typography variant="smallWidget" className="mt-4 mb-2 text-[#E22F3D]">
         {errorMsg}
+        {errorMsg === ErrorMessages.HALTED && (
+          <>
+            <a
+              href={migrationPolicyUrl}
+              target="__blank"
+              rel="noreferrer"
+              className="underline text-md"
+            >
+              here
+            </a>
+            .
+          </>
+        )}
       </Typography>
     );
   }
