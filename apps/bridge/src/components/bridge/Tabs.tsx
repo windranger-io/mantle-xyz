@@ -42,8 +42,6 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
     setHasClosedClaims,
   } = useContext(StateContext);
 
-  const isWalletMultisig = useIsWalletMultisig(provider, client.address);
-
   const router = useRouter();
   const pathName = usePathname();
 
@@ -52,6 +50,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
       ? Direction.Withdraw
       : Direction.Deposit
   );
+  const isWalletMultisig = useIsWalletMultisig(provider, tab, client.address);
 
   // on first load
   useEffect(
