@@ -100,7 +100,7 @@ export function Toast({
       borderLeft={borderLeft}
       onClick={(e) => handleClose(e)}
     >
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-start justify-center">
         {title && <span>{title}</span>}
         <span className="truncate">{content}</span>
       </div>
