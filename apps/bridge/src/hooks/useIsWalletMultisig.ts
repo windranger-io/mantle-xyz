@@ -1,9 +1,11 @@
 import { BaseProvider } from "@ethersproject/providers";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
+import { Direction } from "@config/constants";
 
 export function useIsWalletMultisig(
   provider: BaseProvider,
+  tab: Direction,
   walletAddress?: string
 ): boolean {
   const [isMultisig, setIsMultisig] = useState<boolean>(false);
@@ -22,7 +24,7 @@ export function useIsWalletMultisig(
     if (walletAddress) {
       checkMultisig(walletAddress);
     }
-  }, [walletAddress, provider]);
+  }, [walletAddress, provider, tab]);
 
   return isMultisig;
 }
