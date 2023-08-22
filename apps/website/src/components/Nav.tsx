@@ -13,7 +13,7 @@ function Nav({ className = '' }: NavProps) {
     <Header
       walletConnect={<Button>Wallet Connect???</Button>}
       className={className}
-      isTestnet
+      navItems={[]}
       activeKey="website"
       mobileMenuOpen={false}
       setMobileMenuOpen={() => {}}
