@@ -70,8 +70,8 @@ export function useSwitchToNetwork() {
       if (displayError) {
         updateToast({
           id: "switch-error",
-          content:
-            "Error: Disconnect to switch chains. Please ensure the network is supported by your wallet.",
+          title: "Error: Disconnect to switch chains.",
+          content: "Please ensure the network is supported by your wallet.",
           type: "error",
           borderLeft: "red-600",
           buttonText: "Close",
