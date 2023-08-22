@@ -1,12 +1,11 @@
 /* eslint-disable react/require-default-props */
-import { Fragment, useContext, useEffect, useMemo, useState } from "react";
-import { Listbox, Transition } from "@headlessui/react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { HiChevronDown } from "react-icons/hi";
 import { SiEthereum } from "react-icons/si";
+import { Dialog } from "@headlessui/react";
 
 import StateContext from "@providers/stateContext";
 
-import clsx from "clsx";
 import Image from "next/image";
 
 import {
@@ -18,7 +17,7 @@ import {
 } from "@config/constants";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { formatBigNumberString, localeZero } from "@mantle/utils";
-import { Button } from "@mantle/ui";
+import { Button, Typography } from "@mantle/ui";
 import DirectionLabel from "@components/bridge/utils/DirectionLabel";
 import { MantleLogo } from "@components/bridge/utils/MantleLogo";
 import KindReminder from "@components/bridge/utils/KindReminder";
@@ -35,12 +34,12 @@ export default function TokenSelect({
 
   // unpack the context
   const {
-    tokens,
+    // tokens,
     balances,
     selectedTokenAmount,
     isLoadingBalances,
 
-    setSelectedToken,
+    // setSelectedToken,
     setSelectedTokenAmount,
     setDestinationTokenAmount,
     client,
@@ -59,6 +58,12 @@ export default function TokenSelect({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setSelected(givenSelected), [givenSelected]);
 
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const selectBtnClicked = () => {
+    setIsOpen(true);
+  };
+
   return (
     <div className="py-6">
       <DirectionLabel
@@ -70,175 +75,234 @@ export default function TokenSelect({
             : CHAINS[L2_CHAIN_ID].chainName
         }
       />
-      <Listbox
+      {/* TODO: move listbox to modal */}
+      {/* <Listbox
         value={selected}
         onChange={(selection) => {
           setSelectedToken(direction, selection.name);
         }}
+      > */}
+      {/* {({ open }) => ( */}
+      <div
+        className={`h-12 relative rounded-lg ring-1 ${
+          hasBalance || isLoadingBalances
+            ? `ring-stroke-inputs focus-within:ring-1 focus-within:ring-white/70`
+            : `ring-[#E22F3D]`
+        }`}
       >
-        {({ open }) => (
-          <div
-            className={`h-12 relative rounded-lg ring-1 ${
-              hasBalance || isLoadingBalances
-                ? `ring-stroke-inputs focus-within:ring-1 focus-within:ring-white/70`
-                : `ring-[#E22F3D]`
-            }`}
-          >
-            <div className="flex text-lg ">
-              <input
-                key={`${direction}-amount`}
-                value={selectedTokenAmount}
-                // when we change the value, make sure it conforms to rules can't overflow
-                onChange={(e) => {
-                  let amount = e.currentTarget.value;
-                  const amountExpo = e.currentTarget.value
-                    .replace(/[^0-9.]/g, "")
-                    .replace(/(?<=(.*\..*))\./gm, "")
-                    .split(".")[1];
+        <div className="flex text-lg ">
+          <input
+            key={`${direction}-amount`}
+            value={selectedTokenAmount}
+            // when we change the value, make sure it conforms to rules can't overflow
+            onChange={(e) => {
+              let amount = e.currentTarget.value;
+              const amountExpo = e.currentTarget.value
+                .replace(/[^0-9.]/g, "")
+                .replace(/(?<=(.*\..*))\./gm, "")
+                .split(".")[1];
 
-                  try {
-                    if (amount) {
-                      // clean the amount string of non nums
-                      amount = amount
-                        .replace(/[^0-9.]/g, "")
-                        .replace(/(?<=(.*\..*))\./gm, "");
-
-                      // if the decimals exceed 18dps we need to lose any additional digits
-                      const amounts = amount.split(".");
-                      if (
-                        (amounts?.[1] || "")?.length >=
-                        (selected?.decimals || 18)
-                      ) {
-                        // lock to tokens decimals
-                        amounts[1] = amounts[1].substring(
-                          0,
-                          selected?.decimals || 18
-                        );
-                        amount = amounts.join(".");
-                      }
-
-                      // set max at a visibly acceptable level
-                      const max = "9999999999999999999999999999999999999999999"; // constants.MaxUint256
-
-                      // fix the number to no greater than constants.MaxUint256 (with tokens decimals parsed)
-                      const bnAmount = parseUnits(
-                        amount || "0",
-                        selected?.decimals || 18
-                      ).gt(parseUnits(max, selected?.decimals || 18))
-                        ? parseUnits(max, selected?.decimals || 18)
-                        : parseUnits(amount || "0", selected?.decimals || 18);
-
-                      // ensure the number is positive
-                      amount = formatUnits(
-                        bnAmount.lt(0) ? bnAmount.mul(-1) : bnAmount,
-                        selected?.decimals || 18
-                      );
-
-                      // correct the decimal component
-                      amount =
-                        /* eslint-disable-next-line no-nested-ternary */
-                        amount.match(/\.0$/) !== null &&
-                        e.currentTarget.value.match(/\.0/) === null
-                          ? amount.replace(/\.0$/, "")
-                          : amount.split(".").length > 1
-                          ? `${amount.split(".")[0]}.${
-                              amountExpo.length >= (selected?.decimals || 18)
-                                ? amount.split(".")[1]
-                                : amountExpo ||
-                                  amount.split(".")[1].replace(/[^0-9.]/g, "")
-                            }`
-                          : amount;
-
-                      // retain decimal while it's being added
-                      amount =
-                        amount.indexOf(".") === -1 &&
-                        e.currentTarget.value.match(/\.$/) !== null
-                          ? `${amount}.`
-                          : amount;
-                    }
-                  } catch (err) {
-                    // eslint-disable-next-line no-console
-                    console.log(err);
-                  }
-                  setSelectedTokenAmount(amount);
-                  setDestinationTokenAmount(amount);
-                }}
-                // disable key inputs which dont make sense
-                onKeyDown={(e) => {
-                  if (e.key === "-" || e.key === "+" || e.key === "e") {
-                    e.preventDefault();
-                  }
-                }}
-                onPaste={(e) => {
-                  // clean the pasted text
-                  let clean = e.clipboardData
-                    .getData("text")
+              try {
+                if (amount) {
+                  // clean the amount string of non nums
+                  amount = amount
                     .replace(/[^0-9.]/g, "")
                     .replace(/(?<=(.*\..*))\./gm, "");
 
-                  // get rid of the surplus decimal if theres already one in the value
-                  if (e.currentTarget.value.indexOf(".") !== -1) {
-                    clean = clean.replace(".", "");
-                  } else if (clean === "." || parseInt(clean, 10) === 0) {
-                    clean = "";
+                  // if the decimals exceed 18dps we need to lose any additional digits
+                  const amounts = amount.split(".");
+                  if (
+                    (amounts?.[1] || "")?.length >= (selected?.decimals || 18)
+                  ) {
+                    // lock to tokens decimals
+                    amounts[1] = amounts[1].substring(
+                      0,
+                      selected?.decimals || 18
+                    );
+                    amount = amounts.join(".");
                   }
 
-                  // abort if empty
-                  if (!clean) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }
-                }}
-                type="number"
-                placeholder="0"
-                className="grow border-0 focus:outline-none rounded-tl-lg rounded-bl-lg bg-black py-1.5 px-3 focus:ring-0 focus:ring-white/70 appearance-none"
+                  // set max at a visibly acceptable level
+                  const max = "9999999999999999999999999999999999999999999"; // constants.MaxUint256
+
+                  // fix the number to no greater than constants.MaxUint256 (with tokens decimals parsed)
+                  const bnAmount = parseUnits(
+                    amount || "0",
+                    selected?.decimals || 18
+                  ).gt(parseUnits(max, selected?.decimals || 18))
+                    ? parseUnits(max, selected?.decimals || 18)
+                    : parseUnits(amount || "0", selected?.decimals || 18);
+
+                  // ensure the number is positive
+                  amount = formatUnits(
+                    bnAmount.lt(0) ? bnAmount.mul(-1) : bnAmount,
+                    selected?.decimals || 18
+                  );
+
+                  // correct the decimal component
+                  amount =
+                    /* eslint-disable-next-line no-nested-ternary */
+                    amount.match(/\.0$/) !== null &&
+                    e.currentTarget.value.match(/\.0/) === null
+                      ? amount.replace(/\.0$/, "")
+                      : amount.split(".").length > 1
+                      ? `${amount.split(".")[0]}.${
+                          amountExpo.length >= (selected?.decimals || 18)
+                            ? amount.split(".")[1]
+                            : amountExpo ||
+                              amount.split(".")[1].replace(/[^0-9.]/g, "")
+                        }`
+                      : amount;
+
+                  // retain decimal while it's being added
+                  amount =
+                    amount.indexOf(".") === -1 &&
+                    e.currentTarget.value.match(/\.$/) !== null
+                      ? `${amount}.`
+                      : amount;
+                }
+              } catch (err) {
+                // eslint-disable-next-line no-console
+                console.log(err);
+              }
+              setSelectedTokenAmount(amount);
+              setDestinationTokenAmount(amount);
+            }}
+            // disable key inputs which dont make sense
+            onKeyDown={(e) => {
+              if (e.key === "-" || e.key === "+" || e.key === "e") {
+                e.preventDefault();
+              }
+            }}
+            onPaste={(e) => {
+              // clean the pasted text
+              let clean = e.clipboardData
+                .getData("text")
+                .replace(/[^0-9.]/g, "")
+                .replace(/(?<=(.*\..*))\./gm, "");
+
+              // get rid of the surplus decimal if theres already one in the value
+              if (e.currentTarget.value.indexOf(".") !== -1) {
+                clean = clean.replace(".", "");
+              } else if (clean === "." || parseInt(clean, 10) === 0) {
+                clean = "";
+              }
+
+              // abort if empty
+              if (!clean) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }}
+            type="number"
+            placeholder="0"
+            className="grow border-0 focus:outline-none rounded-tl-lg rounded-bl-lg bg-black py-1.5 px-3 focus:ring-0 focus:ring-white/70 appearance-none"
+          />
+          <div className="bg-black flex items-center">
+            <Button
+              type="button"
+              variant="ghost"
+              className={`border ${
+                client?.isConnected
+                  ? "border-stroke-ghost"
+                  : "border-stroke-disabled"
+              }`}
+              disabled={!client?.isConnected}
+              onClick={() => {
+                setSelectedTokenAmount(
+                  balances?.[selected?.address || ""] || "0"
+                );
+                setDestinationTokenAmount(
+                  balances?.[selected?.address || ""] || "0"
+                );
+              }}
+            >
+              Max
+            </Button>
+          </div>
+          <button
+            type="button"
+            onClick={selectBtnClicked}
+            className="h-12 relative cursor-default rounded-br-lg rounded-tr-lg bg-black py-1.5 pl-5 pr-10 text-left text-white shadow-sm focus:outline-none focus:ring-0 focus:ring-white/70"
+          >
+            <span className="flex items-center h-full">
+              {selected?.logoURI && (
+                <Image
+                  alt={`Logo for ${selected?.name}`}
+                  src={selected?.logoURI}
+                  width={24}
+                  height={24}
+                />
+              )}
+              <span className="ml-2 truncate hidden md:block">
+                {selected?.symbol}
+              </span>
+            </span>
+            <span className="pointer-events-none absolute inset-y-0 right-0 ml-1 flex items-center pr-2">
+              <HiChevronDown
+                className="h-5 w-5 text-white"
+                aria-hidden="true"
               />
-              <div className="bg-black flex items-center">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className={`border ${
-                    client?.isConnected
-                      ? "border-stroke-ghost"
-                      : "border-stroke-disabled"
-                  }`}
-                  disabled={!client?.isConnected}
-                  onClick={() => {
-                    setSelectedTokenAmount(
-                      balances?.[selected?.address || ""] || "0"
-                    );
-                    setDestinationTokenAmount(
-                      balances?.[selected?.address || ""] || "0"
-                    );
-                  }}
-                >
-                  Max
-                </Button>
-              </div>
-              <Listbox.Button className="h-12 relative cursor-default rounded-br-lg rounded-tr-lg bg-black py-1.5 pl-5 pr-10 text-left text-white shadow-sm focus:outline-none focus:ring-0 focus:ring-white/70">
-                <span className="flex items-center">
-                  {selected?.logoURI && (
-                    <Image
-                      alt={`Logo for ${selected?.name}`}
-                      src={selected?.logoURI}
-                      width={24}
-                      height={24}
-                    />
-                  )}
-                  <span className="ml-2 truncate hidden md:block">
-                    {selected?.symbol}
-                  </span>
-                </span>
-                <span className="pointer-events-none absolute inset-y-0 right-0 ml-1 flex items-center pr-2">
-                  <HiChevronDown
-                    className="h-5 w-5 text-white"
-                    aria-hidden="true"
-                  />
-                </span>
-              </Listbox.Button>
-            </div>
+            </span>
+          </button>
+        </div>
 
-            <Transition
+        {/* TODO: search with token symbol OR token name */}
+        <Dialog
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          className="relative z-50"
+        >
+          {/* The backdrop, rendered as a fixed sibling to the panel container */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-[52px]"
+            aria-hidden="true"
+          />
+          {/* Full-screen scrollable container */}
+          <div className="fixed inset-0 overflow-y-auto">
+            {/* Container to center the panel */}
+            <div className="flex min-h-full items-center justify-center p-4">
+              {/* The actual dialog panel  */}
+              {/* TODO: ui here */}
+              <Dialog.Panel className="relative flex flex-col items-start lg:min-w-[484px] mx-auto rounded-[14px] bg-black py-7 px-5">
+                <div className="mt-2.5 w-full">
+                  <button
+                    type="button"
+                    className="absolute right-5 top-5"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <span className="sr-only">Close menu</span>
+                    <svg
+                      width="25"
+                      height="25"
+                      viewBox="0 0 25 25"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12.5 14.1L1.9 24.75C1.66667 24.95 1.4 25.05 1.1 25.05C0.8 25.05 0.533334 24.95 0.3 24.75C0.1 24.5167 0 24.25 0 23.95C0 23.65 0.1 23.3833 0.3 23.15L10.95 12.5L0.35 1.9C0.116667 1.7 0 1.45 0 1.15C0 0.850001 0.1 0.583334 0.3 0.35C0.533334 0.116667 0.8 0 1.1 0C1.4 0 1.66667 0.116667 1.9 0.35L12.5 11L23.1 0.35C23.3333 0.15 23.6 0.0500002 23.9 0.0500002C24.2 0.0500002 24.4667 0.15 24.7 0.35C24.9 0.583334 25 0.850001 25 1.15C25 1.45 24.9 1.71667 24.7 1.95L14.05 12.55L24.7 23.2C24.9 23.4 25 23.65 25 23.95C25 24.25 24.9 24.5 24.7 24.7C24.4667 24.9333 24.2083 25.05 23.925 25.05C23.6417 25.05 23.3833 24.9333 23.15 24.7L12.5 14.1Z"
+                        fill="white"
+                      />
+                    </svg>
+                  </button>
+                  <Typography
+                    variant="smallTitle18"
+                    className="text-type-secondary my-2.5"
+                  >
+                    Select a token
+                  </Typography>
+                  <input
+                    type="text"
+                    placeholder="Enter name or symbol"
+                    className="rounded-[10px] w-full focus:outline-none rounded-tl-lg rounded-bl-lg bg-black py-1.5 px-3 focus:ring-0 focus:ring-white/70 appearance-none"
+                  />
+                </div>
+              </Dialog.Panel>
+            </div>
+          </div>
+        </Dialog>
+
+        {/* <Transition
               show={open}
               as={Fragment}
               leave="transition ease-in duration-100"
@@ -288,10 +352,10 @@ export default function TokenSelect({
                   </Listbox.Option>
                 ))}
               </Listbox.Options>
-            </Transition>
-          </div>
-        )}
-      </Listbox>
+            </Transition> */}
+      </div>
+      {/* )} */}
+      {/* </Listbox> */}
       {!hasBalance && !isLoadingBalances ? (
         <div className="flex flex-row items-center py-4 gap-2">
           <span>
