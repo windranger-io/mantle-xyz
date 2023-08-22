@@ -4,7 +4,7 @@ export const Cookies = ({ siteId }: { siteId: string }) => {
   return (
     <Script strategy="afterInteractive" id="cookie3-script">
       {`
-        var cookie3Options = {"siteId":${siteId},"additionalTracking":true,"cookielessEnabled":true}
+        var cookie3Options = {"siteId":${siteId},"additionalTracking":false,"cookielessEnabled":false}
         window._paq = window._paq || [];
         (function () {
             var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
