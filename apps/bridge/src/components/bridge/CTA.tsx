@@ -32,7 +32,6 @@ export default function CTA({
   // unpack the context
   const {
     chainId,
-    provider,
     client,
     balances,
     allowance,
@@ -45,11 +44,7 @@ export default function CTA({
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
   const isMantleChainID = useIsChainID(L2_CHAIN_ID);
-  const isWalletMultisig = useIsWalletMultisig(
-    provider,
-    chainId,
-    client.address
-  );
+  const isWalletMultisig = useIsWalletMultisig(client.chainId, client.address);
 
   // set address with useState to avoid hydration errors
   const [address, setAddress] = useState<string>(client?.address!);

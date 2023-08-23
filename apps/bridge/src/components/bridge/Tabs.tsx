@@ -29,7 +29,6 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
     client,
     view,
     chainId,
-    provider,
     selectedToken,
     destinationToken,
     isCTAPageOpen,
@@ -50,11 +49,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
       ? Direction.Withdraw
       : Direction.Deposit
   );
-  const isWalletMultisig = useIsWalletMultisig(
-    provider,
-    chainId,
-    client.address
-  );
+  const isWalletMultisig = useIsWalletMultisig(client.chainId, client.address);
 
   // on first load
   useEffect(
