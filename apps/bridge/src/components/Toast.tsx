@@ -68,7 +68,7 @@ export function ToastBody({
           borderLeft ? `${`bg-${borderLeft.replace("bg-", "")}`}` : ""
         }`}
       />
-      <div className="flex justify-between w-full items-center py-2 gap-2 flex-col md:flex-row text-center md:text-left">
+      <div className="flex justify-between w-full items-between pl-2 md:pl-0 md:items-center py-2 gap-2 flex-col md:flex-row text-center md:text-left">
         {children}
       </div>
     </div>
