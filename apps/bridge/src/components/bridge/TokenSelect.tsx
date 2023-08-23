@@ -3,7 +3,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { HiChevronDown } from "react-icons/hi";
 import { SiEthereum } from "react-icons/si";
 import { Dialog } from "@headlessui/react";
-
+import debounce from "lodash.debounce";
 import StateContext from "@providers/stateContext";
 
 import Image from "next/image";
@@ -17,10 +17,12 @@ import {
 } from "@config/constants";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { formatBigNumberString, localeZero } from "@mantle/utils";
-import { Button, Typography } from "@mantle/ui";
+import { Button, Typography, DividerCaret } from "@mantle/ui";
 import DirectionLabel from "@components/bridge/utils/DirectionLabel";
 import { MantleLogo } from "@components/bridge/utils/MantleLogo";
 import KindReminder from "@components/bridge/utils/KindReminder";
+
+const POPULAR_TOKEN_SYMBOLS = ["ETH", "MNT", "USDT"];
 
 export default function TokenSelect({
   direction: givenDirection,
@@ -34,12 +36,12 @@ export default function TokenSelect({
 
   // unpack the context
   const {
-    // tokens,
+    tokens,
     balances,
     selectedTokenAmount,
     isLoadingBalances,
 
-    // setSelectedToken,
+    setSelectedToken,
     setSelectedTokenAmount,
     setDestinationTokenAmount,
     client,
@@ -60,9 +62,32 @@ export default function TokenSelect({
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const selectBtnClicked = () => {
-    setIsOpen(true);
-  };
+  const selectBtnClicked = () => setIsOpen(true);
+
+  const handleSearch = debounce((e: { target: { value: any } }) => {
+    // TODO: lowercase the input
+    // TODO: debounce & search by token name / token symbol
+    // eslint-disable-next-line no-console
+    console.log("searching", e.target.value.toLowerCase());
+  }, 300);
+
+  // get popular token info from token list
+  const [popularTokenMap, setPopularTokenMap] = useState<{
+    [key in string]: Token;
+  }>({});
+  useEffect(() => {
+    if (Object.values(popularTokenMap).length < 1) {
+      const mapping: { [key in string]: Token } = {};
+      const popularTokens = tokens.filter((t) =>
+        POPULAR_TOKEN_SYMBOLS.includes(t.symbol)
+      );
+      popularTokens.forEach((t) => {
+        mapping[t.symbol] = t;
+      });
+      setPopularTokenMap(mapping);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokens]);
 
   return (
     <div className="py-6">
@@ -75,14 +100,6 @@ export default function TokenSelect({
             : CHAINS[L2_CHAIN_ID].chainName
         }
       />
-      {/* TODO: move listbox to modal */}
-      {/* <Listbox
-        value={selected}
-        onChange={(selection) => {
-          setSelectedToken(direction, selection.name);
-        }}
-      > */}
-      {/* {({ open }) => ( */}
       <div
         className={`h-12 relative rounded-lg ring-1 ${
           hasBalance || isLoadingBalances
@@ -247,7 +264,6 @@ export default function TokenSelect({
           </button>
         </div>
 
-        {/* TODO: search with token symbol OR token name */}
         <Dialog
           open={isOpen}
           onClose={() => setIsOpen(false)}
@@ -263,7 +279,6 @@ export default function TokenSelect({
             {/* Container to center the panel */}
             <div className="flex min-h-full items-center justify-center p-4">
               {/* The actual dialog panel  */}
-              {/* TODO: ui here */}
               <Dialog.Panel className="relative flex flex-col items-start lg:min-w-[484px] mx-auto rounded-[14px] bg-black py-7 px-5">
                 <div className="mt-2.5 w-full">
                   <button
@@ -291,71 +306,68 @@ export default function TokenSelect({
                   >
                     Select a token
                   </Typography>
-                  <input
-                    type="text"
-                    placeholder="Enter name or symbol"
-                    className="rounded-[10px] w-full focus:outline-none rounded-tl-lg rounded-bl-lg bg-black py-1.5 px-3 focus:ring-0 focus:ring-white/70 appearance-none"
-                  />
+                  <div className="relative flex">
+                    <input
+                      type="text"
+                      placeholder="Enter name or symbol"
+                      className="grow rounded-[10px] bg-black border border-stroke-inputs py-[10.5px] pl-[47px] pr-4 placeholder:text-lg placeholder:text-type-secondary focus:outline-none focus:ring-0 focus:ring-white/70 appearance-none focus:border-white/70"
+                      onChange={handleSearch}
+                    />
+                    <div className="absolute left-4 top-4">
+                      {/* Search icon */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="15"
+                        height="16"
+                        viewBox="0 0 15 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M12.959 14.833L8.25 10.145C7.792 10.5064 7.29567 10.7737 6.761 10.947C6.22633 11.1204 5.688 11.207 5.146 11.207C3.71533 11.207 2.5 10.714 1.5 9.72803C0.5 8.74203 0 7.5337 0 6.10303C0 4.68636 0.5 3.4747 1.5 2.46803C2.5 1.4607 3.71533 0.957031 5.146 0.957031C6.56267 0.957031 7.764 1.45703 8.75 2.45703C9.736 3.45703 10.229 4.67236 10.229 6.10303C10.229 6.67236 10.1457 7.2247 9.979 7.76003C9.81233 8.2947 9.54867 8.77703 9.188 9.20703L13.896 13.937C14.0213 14.0617 14.0803 14.211 14.073 14.385C14.0663 14.5584 14.0003 14.7077 13.875 14.833C13.7363 14.9717 13.5803 15.041 13.407 15.041C13.233 15.041 13.0837 14.9717 12.959 14.833ZM5.146 9.87403C6.188 9.87403 7.07333 9.50603 7.802 8.77003C8.53133 8.03403 8.896 7.14503 8.896 6.10303C8.896 5.0477 8.535 4.14836 7.813 3.40503C7.09033 2.66236 6.20133 2.29103 5.146 2.29103C4.07667 2.29103 3.174 2.66236 2.438 3.40503C1.702 4.14836 1.334 5.0477 1.334 6.10303C1.334 7.15903 1.702 8.05136 2.438 8.78003C3.174 9.50936 4.07667 9.87403 5.146 9.87403Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
+                <div className="mt-2.5 w-full flex justify-between items-center">
+                  <Typography variant="microBody14">Popular tokens</Typography>
+                  <div className="flex items-center gap-5">
+                    {POPULAR_TOKEN_SYMBOLS.map((symbol) =>
+                      popularTokenMap[symbol] ? (
+                        <button
+                          type="button"
+                          key={symbol}
+                          onClick={() => {
+                            setSelectedToken(
+                              direction,
+                              popularTokenMap[symbol]?.name
+                            );
+                            setIsOpen(false);
+                          }}
+                          className="flex items-center gap-2 py-2.5 px-2 rounded-lg	border border-stroke-primary hover:border-white/70"
+                        >
+                          <Image
+                            alt={`Logo for ${popularTokenMap[symbol]?.name}`}
+                            src={popularTokenMap[symbol]?.logoURI}
+                            width={24}
+                            height={24}
+                          />
+
+                          {popularTokenMap[symbol]?.symbol}
+                        </button>
+                      ) : null
+                    )}
+                  </div>
+                </div>
+                <DividerCaret className="-mx-5 mt-4" stroke="#1C1E20" />
+                {/* TODO: display searched results / default list while empty / empty list when no result */}
               </Dialog.Panel>
             </div>
           </div>
         </Dialog>
-
-        {/* <Transition
-              show={open}
-              as={Fragment}
-              leave="transition ease-in duration-100"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Listbox.Options className="absolute z-10 mt-2.5 max-h-56 w-full overflow-auto rounded-lg bg-black py-0 text-lg shadow-lg ring-1 ring-white/70 focus:outline-none ">
-                {tokens.map((token) => (
-                  <Listbox.Option
-                    key={token.name}
-                    className={({ active }) =>
-                      clsx(
-                        active
-                          ? "bg-white/[0.12] text-white transition-all"
-                          : "text-type-secondary",
-                        "relative cursor-default select-none py-4 pl-3 pr-9"
-                      )
-                    }
-                    value={token}
-                  >
-                    {() => {
-                      return (
-                        <div className="flex justify-between">
-                          <div className="flex items-center  ">
-                            <Image
-                              alt={`Logo for ${token.name}`}
-                              src={token.logoURI}
-                              width={32}
-                              height={32}
-                            />
-
-                            <span className={clsx("ml-3 block truncate ")}>
-                              {token.symbol}
-                            </span>
-                          </div>
-                          <div className="text-type-muted">
-                            {formatBigNumberString(
-                              `${balances?.[token.address] || 0}`,
-                              3,
-                              true,
-                              false
-                            )}
-                          </div>
-                        </div>
-                      );
-                    }}
-                  </Listbox.Option>
-                ))}
-              </Listbox.Options>
-            </Transition> */}
       </div>
-      {/* )} */}
-      {/* </Listbox> */}
+
       {!hasBalance && !isLoadingBalances ? (
         <div className="flex flex-row items-center py-4 gap-2">
           <span>
