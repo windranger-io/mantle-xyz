@@ -17,6 +17,7 @@ import { parseUnits } from "ethers/lib/utils.js";
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useCallApprove } from "@hooks/web3/bridge/write/useCallApprove";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
+import { useIsWalletMultisig } from "@hooks/useIsWalletMultisig";
 
 // Contains a button & a modal to control allowance and deposits/withdrawals
 export default function CTA({
@@ -31,6 +32,7 @@ export default function CTA({
   // unpack the context
   const {
     chainId,
+    provider,
     client,
     balances,
     allowance,
@@ -43,6 +45,11 @@ export default function CTA({
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
   const isMantleChainID = useIsChainID(L2_CHAIN_ID);
+  const isWalletMultisig = useIsWalletMultisig(
+    provider,
+    chainId,
+    client.address
+  );
 
   // set address with useState to avoid hydration errors
   const [address, setAddress] = useState<string>(client?.address!);
@@ -203,17 +210,18 @@ export default function CTA({
             }
           }}
           disabled={
-            isChainID &&
-            !!client.address &&
-            (!!approvalStatus ||
-              !destinationTokenAmount ||
-              !selectedTokenAmount ||
-              !parseFloat(destinationTokenAmount) ||
-              Number.isNaN(parseFloat(destinationTokenAmount)) ||
-              Number.isNaN(parseFloat(selectedTokenAmount)) ||
-              fixDecimals(spendDetails.balance || "-1").lt(
-                fixDecimals(destinationTokenAmount || "0")
-              ))
+            (isChainID &&
+              !!client.address &&
+              (!!approvalStatus ||
+                !destinationTokenAmount ||
+                !selectedTokenAmount ||
+                !parseFloat(destinationTokenAmount) ||
+                Number.isNaN(parseFloat(destinationTokenAmount)) ||
+                Number.isNaN(parseFloat(selectedTokenAmount)) ||
+                fixDecimals(spendDetails.balance || "-1").lt(
+                  fixDecimals(destinationTokenAmount || "0")
+                ))) ||
+            isWalletMultisig
           }
         >
           {CTAButtonText}
