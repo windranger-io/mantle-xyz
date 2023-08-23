@@ -83,6 +83,7 @@ export function Toast({
   type,
   onClose,
   id,
+  title,
 }: ToastProps) {
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
@@ -99,7 +100,10 @@ export function Toast({
       borderLeft={borderLeft}
       onClick={(e) => handleClose(e)}
     >
-      <span className="truncate">{content}</span>
+      <div className="flex flex-col items-start justify-center">
+        {title && <span>{title}</span>}
+        <span className="truncate">{content}</span>
+      </div>
       {typeof ButtonText === "function" ? (
         <ButtonText />
       ) : (

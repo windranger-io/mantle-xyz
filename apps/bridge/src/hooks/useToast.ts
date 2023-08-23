@@ -7,6 +7,7 @@ type Toast = Omit<ToastProps, "onClose">;
 
 export type ToastProps = {
   id: string;
+  title?: string;
   content: ReactNode;
   onClose: (id: string) => void;
   type?: "success" | "error" | "onGoing";
