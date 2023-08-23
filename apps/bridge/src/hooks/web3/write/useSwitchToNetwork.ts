@@ -49,7 +49,8 @@ export function useSwitchToNetwork() {
       } else if (switchError.code !== -32000) {
         updateToast({
           id: "switch-error",
-          content: "Error: Unable to switch chains",
+          title: "Error: Disconnect to switch chains.",
+          content: "Please ensure the network is supported by your wallet.",
           type: "error",
           borderLeft: "red-600",
         });
@@ -69,7 +70,8 @@ export function useSwitchToNetwork() {
       if (displayError) {
         updateToast({
           id: "switch-error",
-          content: "Error: Unable to switch chains",
+          title: "Error: Disconnect to switch chains.",
+          content: "Please ensure the network is supported by your wallet.",
           type: "error",
           borderLeft: "red-600",
           buttonText: "Close",
