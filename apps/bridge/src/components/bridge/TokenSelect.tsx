@@ -21,9 +21,11 @@ import { Button, Typography, DividerCaret } from "@mantle/ui";
 import DirectionLabel from "@components/bridge/utils/DirectionLabel";
 import { MantleLogo } from "@components/bridge/utils/MantleLogo";
 import KindReminder from "@components/bridge/utils/KindReminder";
+import { searchTokensByNameAndSymbol } from "@utils/searchTokens";
 
 const POPULAR_TOKEN_SYMBOLS = ["ETH", "MNT", "USDT"];
-
+// TODO: mobile view
+// TODO: refactor - extract some code to another file
 export default function TokenSelect({
   direction: givenDirection,
   selected: givenSelected,
@@ -60,21 +62,14 @@ export default function TokenSelect({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setSelected(givenSelected), [givenSelected]);
 
+  // control if token selection dialog opens
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const selectBtnClicked = () => setIsOpen(true);
-
-  const handleSearch = debounce((e: { target: { value: any } }) => {
-    // TODO: lowercase the input
-    // TODO: debounce & search by token name / token symbol
-    // eslint-disable-next-line no-console
-    console.log("searching", e.target.value.toLowerCase());
-  }, 300);
 
   // get popular token info from token list
   const [popularTokenMap, setPopularTokenMap] = useState<{
     [key in string]: Token;
   }>({});
+
   useEffect(() => {
     if (Object.values(popularTokenMap).length < 1) {
       const mapping: { [key in string]: Token } = {};
@@ -88,6 +83,29 @@ export default function TokenSelect({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokens]);
+
+  const [searchResult, setSearchResult] = useState<Token[]>([]);
+
+  const selectBtnClicked = () => {
+    setIsOpen(true);
+    // move selected token to the front of the token list
+    const selectedIndex = tokens.findIndex((t) => t.symbol === selected.symbol);
+    if (selectedIndex !== -1) {
+      const reorderedTokens = [
+        tokens[selectedIndex],
+        ...tokens.slice(0, selectedIndex),
+        ...tokens.slice(selectedIndex + 1),
+      ];
+      setSearchResult(reorderedTokens);
+    } else {
+      setSearchResult(tokens);
+    }
+  };
+
+  const handleSearch = debounce((e: { target: { value: any } }) => {
+    const searched = searchTokensByNameAndSymbol(tokens, e.target.value);
+    setSearchResult(searched);
+  }, 300);
 
   return (
     <div className="py-6">
@@ -345,7 +363,7 @@ export default function TokenSelect({
                             );
                             setIsOpen(false);
                           }}
-                          className="flex items-center gap-2 py-2.5 px-2 rounded-lg	border border-stroke-primary hover:border-white/70"
+                          className="flex items-center gap-2 py-2.5 px-2 rounded-lg	border border-stroke-primary hover:border-stroke-ghostHover hover:text-stroke-ghostHover"
                         >
                           <Image
                             alt={`Logo for ${popularTokenMap[symbol]?.name}`}
@@ -361,7 +379,20 @@ export default function TokenSelect({
                   </div>
                 </div>
                 <DividerCaret className="-mx-5 mt-4" stroke="#1C1E20" />
-                {/* TODO: display searched results / default list while empty / empty list when no result */}
+                <div className="my-3">
+                  {/* TODO: show only top 5 and scrollable */}
+                  {/* TODO: show selected as different style */}
+                  {searchResult.length > 0 ? (
+                    searchResult.map((t) => (
+                      <div key={t.symbol}>{t.symbol}</div>
+                    ))
+                  ) : (
+                    <Typography variant="microBody14">
+                      Sorry, we couldn&apos;t find anything. Try a different
+                      token.
+                    </Typography>
+                  )}
+                </div>
               </Dialog.Panel>
             </div>
           </div>
