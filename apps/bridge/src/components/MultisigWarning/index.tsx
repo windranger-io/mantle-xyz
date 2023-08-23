@@ -23,9 +23,9 @@ export function MultisigWarning() {
           </svg>
         </div>
         <Typography>
-          Multisig addresses might differ between L1 and L2. Avoid using Gnosis
-          Safe multisig wallets to bridge tokens. If you do, please double-check
-          the address on the receiving chain.
+          Using the bridge with multisig wallets is disabled. Multisig addresses
+          might differ between L1 and L2, as they are non-deterministic and can
+          differ on different chains.
         </Typography>
       </div>
     </ConvertCard>
