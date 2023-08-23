@@ -19,6 +19,8 @@ import Dialogue from "@components/bridge/dialogue";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Faq } from "@components/Faq";
+import { useIsWalletMultisig } from "@hooks/useIsMultisigWallet";
+import { MultisigWarning } from "@components/MultisigWarning";
 
 export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
   const { updateToast } = useToast();
@@ -36,6 +38,8 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
     setSafeChains,
     setIsCTAPageOpen,
     setHasClosedClaims,
+    provider,
+    client,
   } = useContext(StateContext);
 
   const router = useRouter();
@@ -45,6 +49,12 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
     pathName?.indexOf("/withdraw") !== -1
       ? Direction.Withdraw
       : Direction.Deposit
+  );
+
+  const isWalletMultisig = useIsWalletMultisig(
+    provider,
+    chainId,
+    client.address
   );
 
   // on first load
@@ -301,6 +311,8 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
     }
   }, [hasClaims, hasClosedClaims, updateToast, setHasClosedClaims]);
 
+  const displayFAQ = L1_CHAIN_ID === 1;
+
   return (
     (view === Views.Default &&
       ((isCTAPageOpen && (
@@ -370,12 +382,11 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
               </Tab.Panels>
             </Tab.Group>
           </SimpleCard>
-          {L1_CHAIN_ID === 1 ? (
+          {(isWalletMultisig || displayFAQ) && (
             <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] lg:max-w-[250px] xl:w-[320px] xl:max-w-[320px] lg:absolute lg:top-0 lg:right-[-55%] xl:right-[-80%]">
-              <Faq />
+              {isWalletMultisig && <MultisigWarning />}
+              {displayFAQ && <Faq />}
             </div>
-          ) : (
-            <span />
           )}
         </div>
       ))) || <span />
