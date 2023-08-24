@@ -57,27 +57,22 @@ const syncLogic = async () => {
       typeof (config as unknown as SyncConfig).silent !== "undefined"
         ? (config as unknown as SyncConfig).silent
         : false,
+    // construct error handler to exit the process on error
+    onError: async (close) => {
+      // log end of stream
+      console.error("\n\n[LISTENER ERROR]: Listener has thrown - restart");
+      // close the stream
+      await close();
+      // exit after we've finished here
+      process.exit(1);
+    },
   });
 
   // if an error is thrown (db locked) we can signal a halt to restart the server
   if (summary.error) throw summary.error;
 
-  // print initial summary (this was the catchup sync)
+  // print initial summary (this was the catchup sync - ongoing listen action will happen after this return)
   console.log(summary);
-
-  // if we receive a close signal we could wait until after the current block saves to exit
-  // process.on('SIGINT', () => {
-  //   console.log('\n*** Signal received ****\n*** Supagraph will exit after this block ****');
-  //   setTimeout(async () => {
-  //     // await the current sync then exit...
-  //     if (summary.close) await summary.close();
-  //     // throw to close the server
-  //     console.error("\n\n[LISTENER CLOSED]: Listener is closed - restart");
-  //     // exit after we've finished here
-  //     process.exit(0);
-  //   }, 1000);
-  // });
-  return summary;
 };
 
 // export init method to catch, report and exit
