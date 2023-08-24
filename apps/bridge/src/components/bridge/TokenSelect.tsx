@@ -7,7 +7,6 @@ import debounce from "lodash.debounce";
 import StateContext from "@providers/stateContext";
 
 import Image from "next/image";
-
 import {
   Token,
   Direction,
@@ -24,8 +23,7 @@ import KindReminder from "@components/bridge/utils/KindReminder";
 import { searchTokensByNameAndSymbol } from "@utils/searchTokens";
 
 const POPULAR_TOKEN_SYMBOLS = ["ETH", "MNT", "USDT"];
-// TODO: mobile view
-// TODO: refactor - extract some code to another file
+
 export default function TokenSelect({
   direction: givenDirection,
   selected: givenSelected,
@@ -297,8 +295,8 @@ export default function TokenSelect({
             {/* Container to center the panel */}
             <div className="flex min-h-full items-center justify-center p-4">
               {/* The actual dialog panel  */}
-              <Dialog.Panel className="relative flex flex-col items-start lg:min-w-[484px] mx-auto rounded-[14px] bg-black py-7 px-5">
-                <div className="mt-2.5 w-full">
+              <Dialog.Panel className="relative flex flex-col items-start lg:min-w-[484px] mx-auto rounded-[14px] bg-black py-7">
+                <div className="mt-2.5 w-full px-5">
                   <button
                     type="button"
                     className="absolute right-5 top-5"
@@ -348,8 +346,10 @@ export default function TokenSelect({
                     </div>
                   </div>
                 </div>
-                <div className="mt-2.5 w-full flex justify-between items-center">
-                  <Typography variant="microBody14">Popular tokens</Typography>
+                <div className="mt-2.5 w-full flex justify-between items-center px-5">
+                  <Typography variant="microBody14" className="hidden lg:block">
+                    Popular tokens
+                  </Typography>
                   <div className="flex items-center gap-5">
                     {POPULAR_TOKEN_SYMBOLS.map((symbol) =>
                       popularTokenMap[symbol] ? (
@@ -378,13 +378,47 @@ export default function TokenSelect({
                     )}
                   </div>
                 </div>
-                <DividerCaret className="-mx-5 mt-4" stroke="#1C1E20" />
-                <div className="my-3">
-                  {/* TODO: show only top 5 and scrollable */}
-                  {/* TODO: show selected as different style */}
+                <DividerCaret className="mt-4" stroke="#1C1E20" />
+                <div className="flex flex-col w-full px-5 max-h-96 overflow-y-scroll">
                   {searchResult.length > 0 ? (
                     searchResult.map((t) => (
-                      <div key={t.symbol}>{t.symbol}</div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedToken(direction, t.name);
+                          setIsOpen(false);
+                        }}
+                        key={t.symbol}
+                        className="flex justify-between items-center gap-4 cursor-pointer"
+                      >
+                        <Image
+                          alt={`Logo for ${t.name}`}
+                          src={t.logoURI}
+                          width={32}
+                          height={32}
+                        />
+                        <div className="grow my-1.5">
+                          <Typography
+                            variant="body18"
+                            className={
+                              selected.symbol === t.symbol
+                                ? "text-[#65B3AE]"
+                                : ""
+                            }
+                          >
+                            {t.symbol}
+                          </Typography>
+                          <Typography variant="textBtn12">{t.name}</Typography>
+                        </div>
+                        <div className="text-type-muted">
+                          {formatBigNumberString(
+                            `${balances?.[t.address] || 0}`,
+                            3,
+                            true,
+                            false
+                          )}
+                        </div>
+                      </button>
                     ))
                   ) : (
                     <Typography variant="microBody14">
