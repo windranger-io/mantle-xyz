@@ -6,6 +6,9 @@ import { start } from "./sync";
 import { graphql } from "./graphql";
 import { snapshot } from "./snapshot";
 
+// type and cast default values
+import { withDefault } from "supagraph";
+
 // create a new app to respond to reqs
 const app: Express = express();
 
@@ -18,10 +21,15 @@ app.use("/graphql", graphql);
 // attach snapshot strategy
 app.post("/snapshot", snapshot);
 
-// listen for connections on 3008
-app.listen(3008, async () => {
+// listen for connections (default to 8000)
+app.listen(withDefault(process.env.port, 8000), async () => {
   // start the sync operation (no need to await - it will run forever)
   start();
   // server started - lets go...
-  console.log(`⚡️[server]: Server is running at http://localhost:${3008}`);
+  console.log(
+    `⚡️[server]: Server is running at http://localhost:${withDefault(
+      process.env.port,
+      8000
+    )}`
+  );
 });
