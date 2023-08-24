@@ -12,5 +12,5 @@
       "@*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "../../packages/supagraph"]
+  "include": ["src/**/*"]
 }

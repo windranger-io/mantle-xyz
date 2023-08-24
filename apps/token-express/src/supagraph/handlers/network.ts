@@ -69,7 +69,7 @@ const updateVoter = async (
       let balanceBefore = entity[balanceProp] || "0";
 
       // if we havent recorded the balance already, then we need to run this through the DelegateChangedHandler first
-      if (balanceBefore) {
+      if ((balanceBefore && direction === 0) || direction === 1) {
         // get the current balance for this user as starting point (they should have one because they've made this tx)
         if (!entity[balanceProp]) {
           // get the balance for this user in this block (we don't need to sub anything if we get the fresh balance)
