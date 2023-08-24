@@ -17,7 +17,6 @@
     "@ethersproject/providers": "^5.7.2",
     "@headlessui/react": "^1.7.13",
     "@mantle/constants": "workspace:*",
-    "@mantle/supagraph": "workspace:*",
     "@mantle/ui": "workspace:*",
     "@mantle/utils": "workspace:*",
     "@tanstack/react-query": "^4.14.5",
@@ -28,6 +27,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
+    "supagraph": "0.0.1-rc.1",
     "wagmi": "^1.3.9",
     "zustand": "^4.0.0-rc.1"
   },

@@ -1,5 +1,5 @@
 // Type the exported handlers map
-import { Handlers } from "@mantle/supagraph";
+import { Handlers } from "supagraph";
 
 // Import the handlers
 import {

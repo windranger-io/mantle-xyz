@@ -2,15 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // Import the sync command and db drivers to setup engine
-import {
-  DB,
-  Mongo,
-  Stage,
-  Store,
-  Handlers,
-  addSync,
-  sync,
-} from "@mantle/supagraph";
+import { DB, Mongo, Stage, Store, Handlers, addSync, sync } from "supagraph";
 
 // Each sync will be provided its own provider
 import { providers } from "ethers/lib/ethers";
