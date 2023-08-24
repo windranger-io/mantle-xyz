@@ -6,7 +6,7 @@ import { TransactionReceipt } from "@ethersproject/providers";
 import { hashCrossDomainMessage } from "@mantleio/core-utils";
 
 import { BigNumber } from "ethers";
-import { Store } from "@mantle/supagraph";
+import { Store } from "supagraph";
 
 import {
   ERC20DepositInitiated,

@@ -1,5 +1,5 @@
 // Use Store to interact with entity storage
-import { Store } from "@mantle/supagraph";
+import { Store } from "supagraph";
 
 // Supagraph specific constants detailing the contracts we'll sync against
 import { TransactionReceipt } from "@ethersproject/providers";

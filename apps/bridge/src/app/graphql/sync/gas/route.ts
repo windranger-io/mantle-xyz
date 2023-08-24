@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 
 // Import mongodb client
-import { DB, Mongo, Store, getEngine } from "@mantle/supagraph";
+import { DB, Mongo, Store, getEngine } from "supagraph";
 import { getMongodb } from "@providers/mongoClient";
 import { MongoClient } from "mongodb";
 
