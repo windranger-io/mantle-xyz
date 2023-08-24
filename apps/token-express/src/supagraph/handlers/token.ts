@@ -13,8 +13,8 @@ import { JsonRpcProvider, TransactionReceipt } from "@ethersproject/providers";
 
 // - These types will be generated based on the event signatures exported by the defined contracts in config (coming soon TM);
 import type {
-  DelegateChangedEvent,
   DelegateEntity,
+  DelegateChangedEvent,
   DelegateVotesChangedEvent,
 } from "../types";
 
@@ -185,7 +185,7 @@ export const DelegateChangedHandler = async (
         );
 
         // save the changes to old delegate
-        oldDelegate = await oldDelegate.save();
+        oldDelegate = await updatePointers(oldDelegate, tx);
 
         // align delegates
         if (args.fromDelegate === args.delegator) {
@@ -208,7 +208,7 @@ export const DelegateChangedHandler = async (
         );
 
         // save the changes to new delegate
-        newDelegate = await newDelegate.save();
+        newDelegate = await updatePointers(newDelegate, tx);
 
         // align delegates
         if (args.toDelegate === args.delegator) {
@@ -223,7 +223,7 @@ export const DelegateChangedHandler = async (
       entity.set("l2MntBalance", newBalance);
 
       // save the changes
-      entity = await entity.save();
+      entity = await updatePointers(entity, tx);
     }
 
     // set the to according to the delegation
