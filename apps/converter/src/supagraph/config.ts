@@ -1,5 +1,5 @@
 // Assign default value to provided env
-import { withDefault } from "@mantle/supagraph";
+import { withDefault } from "supagraph";
 
 // Export the complete supagraph configuration (sync & graph) - we can add everything from Mappings to this config
 const config = {

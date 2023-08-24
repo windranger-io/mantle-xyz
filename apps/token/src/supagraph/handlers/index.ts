@@ -1,5 +1,5 @@
 // type the handlers
-import { Handlers } from "@mantle/supagraph";
+import { Handlers } from "supagraph";
 
 // Import the handlers
 import {

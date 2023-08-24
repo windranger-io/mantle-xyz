@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { TransactionReceipt } from "@ethersproject/providers";
-import { Store } from "@mantle/supagraph";
+import { Store } from "supagraph";
 import {
   FailedRelayedMessage,
   L1ToL2MessageEntity,

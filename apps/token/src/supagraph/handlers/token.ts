@@ -3,7 +3,7 @@ import { BigNumber } from "ethers";
 import { getAddress } from "ethers/lib/utils";
 
 // Use Store to interact with entity storage
-import { Store } from "@mantle/supagraph";
+import { Store } from "supagraph";
 
 // Each event is supplied the block and tx along with the typed args
 import { TransactionReceipt } from "@ethersproject/providers";

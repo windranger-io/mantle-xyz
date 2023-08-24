@@ -3,11 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 // Construct subgraph flavoured graphql server
-import {
-  createSupagraph,
-  memoryResolver,
-  mongoResolver,
-} from "@mantle/supagraph";
+import { createSupagraph, memoryResolver, mongoResolver } from "supagraph";
 
 // Import connection config from local dir
 import { getMongodb } from "@providers/mongoClient";
