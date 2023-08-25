@@ -151,8 +151,8 @@ importers:
         specifier: ^4.8.0
         version: 4.8.0(react@18.2.0)
       supagraph:
-        specifier: 0.0.1-rc.11
-        version: registry.npmjs.org/supagraph@0.0.1-rc.11
+        specifier: 0.0.1-rc.12
+        version: registry.npmjs.org/supagraph@0.0.1-rc.12
       wagmi:
         specifier: ^1.3.9
         version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
@@ -260,8 +260,8 @@ importers:
         specifier: ^4.8.0
         version: 4.8.0(react@18.2.0)
       supagraph:
-        specifier: 0.0.1-rc.11
-        version: registry.npmjs.org/supagraph@0.0.1-rc.11
+        specifier: 0.0.1-rc.12
+        version: registry.npmjs.org/supagraph@0.0.1-rc.12
       wagmi:
         specifier: ^1.3.9
         version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
@@ -549,8 +549,8 @@ importers:
         specifier: 18.2.0
         version: 18.2.0
       supagraph:
-        specifier: 0.0.1-rc.11
-        version: registry.npmjs.org/supagraph@0.0.1-rc.11
+        specifier: 0.0.1-rc.12
+        version: registry.npmjs.org/supagraph@0.0.1-rc.12
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -616,8 +616,8 @@ importers:
         specifier: 18.2.0
         version: registry.npmjs.org/react@18.2.0
       supagraph:
-        specifier: 0.0.1-rc.11
-        version: registry.npmjs.org/supagraph@0.0.1-rc.11
+        specifier: 0.0.1-rc.12
+        version: registry.npmjs.org/supagraph@0.0.1-rc.12
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -680,8 +680,8 @@ importers:
         specifier: ^5.6.0
         version: registry.npmjs.org/mongodb@5.6.0
       supagraph:
-        specifier: 0.0.1-rc.11
-        version: registry.npmjs.org/supagraph@0.0.1-rc.11
+        specifier: 0.0.1-rc.12
+        version: registry.npmjs.org/supagraph@0.0.1-rc.12
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -8472,7 +8472,7 @@ packages:
       eslint: '>=5'
     dependencies:
       eslint: 7.32.0
-      eslint-visitor-keys: registry.npmjs.org/eslint-visitor-keys@2.1.0
+      eslint-visitor-keys: 2.1.0
     dev: false
 
   /eslint-utils@3.0.0(eslint@8.30.0):
@@ -20662,7 +20662,7 @@ packages:
       react: ^18.2.0
     dependencies:
       loose-envify: registry.npmjs.org/loose-envify@1.4.0
-      react: registry.npmjs.org/react@18.2.0
+      react: 18.2.0
       scheduler: registry.npmjs.org/scheduler@0.23.0
     dev: false
 
@@ -21070,10 +21070,10 @@ packages:
       react: registry.npmjs.org/react@18.2.0
     dev: false
 
-  registry.npmjs.org/supagraph@0.0.1-rc.11:
-    resolution: {integrity: sha512-10+hb9VMNNzZ388j0tslKbi5t9BGyvpVcfp2qkmfoN1q2cMINv29ZbNYmTVLgqfmjHIV+q0Nswt28mMC3MVkAw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.11.tgz}
+  registry.npmjs.org/supagraph@0.0.1-rc.12:
+    resolution: {integrity: sha512-Dgx6d7VHM8glojM/+wZ474t6ipS/oCSYeEoKumKGAgBLO3pXRQRfDkmSL8Yp1C7Nh9JbARdmnMiMzApY8h21TQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.12.tgz}
     name: supagraph
-    version: 0.0.1-rc.11
+    version: 0.0.1-rc.12
     dependencies:
       '@graphql-yoga/render-graphiql': registry.npmjs.org/@graphql-yoga/render-graphiql@3.8.0(graphql-yoga@3.8.0)
       csv-parser: registry.npmjs.org/csv-parser@3.0.0
