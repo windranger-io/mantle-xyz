@@ -15,8 +15,8 @@ const app: Express = express();
 // use json reqs/resps
 app.use(express.json());
 
-// attach public api access to the supagraph content
-if (withDefault(process.env.PUBLIC, false)) {
+// attach public api access to the supagraph content by default
+if (withDefault(process.env.PUBLIC, true)) {
   // attach supagraphs graphql endpoint
   app.use("/graphql", graphql);
 
