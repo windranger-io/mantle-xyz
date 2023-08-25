@@ -23,8 +23,6 @@ app.post("/snapshot", snapshot);
 
 // listen for connections (default to 8000)
 app.listen(withDefault(process.env.port, 8000), async () => {
-  // start the sync operation (no need to await - it will run forever)
-  start();
   // server started - lets go...
   console.log(
     `⚡️[server]: Server is running at http://localhost:${withDefault(
@@ -32,4 +30,11 @@ app.listen(withDefault(process.env.port, 8000), async () => {
       8000
     )}`
   );
+  // catch any unprocessed errors and kill the service
+  process.on("uncaughtException", function (err) {
+    console.error("[SERVER ERROR - STOP]:", err);
+    process.exit(1);
+  });
+  // start the sync operation (no need to await - it will run forever)
+  start();
 });
