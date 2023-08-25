@@ -102,8 +102,8 @@ const config = {
         process.env.L2_MANTLE_ADDRESS,
         "0xaB49915165a24Af4F47feA092ec5f34C8C77FEC9"
       ),
-      startBlock: withDefault(process.env.L2_MANTLE_ADDRESS, 18377551),
-      endBlock: withDefault(process.env.L2_MANTLE_ADDRESS, "latest"),
+      startBlock: withDefault(process.env.L2_MANTLE_START_BLOCK, 18377551),
+      endBlock: withDefault(process.env.L2_MANTLE_END_BLOCK, "latest"),
     },
   },
   // define supagraph schema
