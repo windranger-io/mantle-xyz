@@ -18,7 +18,7 @@
     "mongodb": "^5.6.0",
     "next": "13.3.0",
     "react": "18.2.0",
-    "supagraph": "0.0.1-rc.8"
+    "supagraph": "0.0.1-rc.9"
   },
   "devDependencies": {
     "@mantle/eslint-config-next": "workspace:*",
