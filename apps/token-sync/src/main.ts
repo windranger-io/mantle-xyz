@@ -15,11 +15,14 @@ const app: Express = express();
 // use json reqs/resps
 app.use(express.json());
 
-// attach supagraphs graphql endpoint
-app.use("/graphql", graphql);
+// attach public api access to the supagraph content
+if (withDefault(process.env.PUBLIC, false)) {
+  // attach supagraphs graphql endpoint
+  app.use("/graphql", graphql);
 
-// attach snapshot strategy
-app.post("/snapshot", snapshot);
+  // attach snapshot strategy
+  app.post("/snapshot", snapshot);
+}
 
 // listen for connections (default to 8000)
 app.listen(withDefault(process.env.port, 8000), async () => {
