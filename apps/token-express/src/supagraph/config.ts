@@ -138,8 +138,9 @@ const config = {
         where: {votes_gt: "0"}
       ) {
         id
-        mntTo
         bitTo
+        mntTo
+        l2MntTo
         votes
         bitVotes
         mntVotes
