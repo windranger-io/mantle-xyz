@@ -4,5 +4,5 @@ export default function Head() {
       <title>BitDAO OS App Template</title>
       <link rel="icon" href="/favicon.ico" />
     </>
-  )
+  );
 }

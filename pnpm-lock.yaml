@@ -600,6 +600,9 @@ importers:
       '@mantle/constants':
         specifier: workspace:*
         version: link:../../packages/constants
+      '@mantle/ui':
+        specifier: workspace:^0.0.0
+        version: link:../../packages/ui
       ethers:
         specifier: ^5.7.2
         version: registry.npmjs.org/ethers@5.7.2
@@ -19449,6 +19452,7 @@ packages:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.10.tgz}
     name: graceful-fs
     version: 4.2.10
+    requiresBuild: true
 
   registry.npmjs.org/grapheme-splitter@1.0.4:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz}
