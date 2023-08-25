@@ -29,7 +29,7 @@ jobs:
         env:
           I18NEXUS_API_KEY: ${{ secrets.I18NEXUS_API_KEY }}
       - name: Build
-        run: pnpm run build
+        run: pnpm --filter=mantle-converter --filter=mantle-bridge --filter=mantle-faucet --filter=mantle-token-graph --filter=mantle-token-sync build
       - name: Install Playwright
         run: pnpx playwright@1.29.2 install chromium --with-deps
       - name: Run Playwright tests
