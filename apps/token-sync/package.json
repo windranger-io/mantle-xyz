@@ -1,5 +1,5 @@
 {
-  "name": "mantle-token-express",
+  "name": "mantle-token-sync",
   "version": "0.0.0",
   "private": true,
   "scripts": {
