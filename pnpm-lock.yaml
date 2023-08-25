@@ -151,8 +151,8 @@ importers:
         specifier: ^4.8.0
         version: 4.8.0(react@18.2.0)
       supagraph:
-        specifier: 0.0.1-rc.15
-        version: registry.npmjs.org/supagraph@0.0.1-rc.15
+        specifier: 0.0.1-rc.16
+        version: registry.npmjs.org/supagraph@0.0.1-rc.16
       wagmi:
         specifier: ^1.3.9
         version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
@@ -260,8 +260,8 @@ importers:
         specifier: ^4.8.0
         version: 4.8.0(react@18.2.0)
       supagraph:
-        specifier: 0.0.1-rc.15
-        version: registry.npmjs.org/supagraph@0.0.1-rc.15
+        specifier: 0.0.1-rc.16
+        version: registry.npmjs.org/supagraph@0.0.1-rc.16
       wagmi:
         specifier: ^1.3.9
         version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
@@ -549,8 +549,8 @@ importers:
         specifier: 18.2.0
         version: 18.2.0
       supagraph:
-        specifier: 0.0.1-rc.15
-        version: registry.npmjs.org/supagraph@0.0.1-rc.15
+        specifier: 0.0.1-rc.16
+        version: registry.npmjs.org/supagraph@0.0.1-rc.16
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -616,8 +616,8 @@ importers:
         specifier: 18.2.0
         version: registry.npmjs.org/react@18.2.0
       supagraph:
-        specifier: 0.0.1-rc.15
-        version: registry.npmjs.org/supagraph@0.0.1-rc.15
+        specifier: 0.0.1-rc.16
+        version: registry.npmjs.org/supagraph@0.0.1-rc.16
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -680,8 +680,8 @@ importers:
         specifier: ^5.6.0
         version: registry.npmjs.org/mongodb@5.6.0
       supagraph:
-        specifier: 0.0.1-rc.15
-        version: registry.npmjs.org/supagraph@0.0.1-rc.15
+        specifier: 0.0.1-rc.16
+        version: registry.npmjs.org/supagraph@0.0.1-rc.16
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -6192,14 +6192,6 @@ packages:
       - supports-color
     dev: false
 
-  /argparse@1.0.10:
-    resolution: {integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==}
-    dependencies:
-      sprintf-js: 1.0.3
-
-  /argparse@2.0.1:
-    resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
-
   /args@5.0.3:
     resolution: {integrity: sha512-h6k/zfFgusnv3i5TU08KQkVKuCPBtL/PWQbWkHUxvJrZ2nAyeaUupneemcrgn1xmqxPQsPIzwkUhOpoqPDRZuA==}
     engines: {node: '>= 6.0.0'}
@@ -10270,14 +10262,14 @@ packages:
     resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
     hasBin: true
     dependencies:
-      argparse: 1.0.10
+      argparse: registry.npmjs.org/argparse@1.0.10
       esprima: 4.0.1
 
   /js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
     hasBin: true
     dependencies:
-      argparse: 2.0.1
+      argparse: registry.npmjs.org/argparse@2.0.1
 
   /js2xmlparser@5.0.0:
     resolution: {integrity: sha512-ckXs0Fzd6icWurbeAXuqo+3Mhq2m8pOPygsQjTPh8K5UWgKaUgDSHrdDxAfexmT11xvBKOQ6sgYwPkYc5RW/bg==}
@@ -13572,7 +13564,7 @@ packages:
   /rxjs@7.8.0:
     resolution: {integrity: sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==}
     dependencies:
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
 
   /rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
@@ -13923,9 +13915,6 @@ packages:
     dependencies:
       through: 2.3.8
     dev: false
-
-  /sprintf-js@1.0.3:
-    resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
 
   /sprintf-js@1.1.2:
     resolution: {integrity: sha512-VE0SOVEHCk7Qc8ulkWw3ntAzXuqf7S2lvwQaDLRnUeIEaKNQJzV6BwmLKhOqT61aGhfUMrXeaBk+oDGCzvhcug==}
@@ -15125,7 +15114,7 @@ packages:
       axios: 0.25.0(debug@4.3.4)
       joi: 17.9.2
       lodash: 4.17.21
-      minimist: 1.2.7
+      minimist: registry.npmjs.org/minimist@1.2.7
       rxjs: 7.8.0
     transitivePeerDependencies:
       - debug
@@ -18009,13 +17998,11 @@ packages:
     version: 1.0.10
     dependencies:
       sprintf-js: registry.npmjs.org/sprintf-js@1.0.3
-    dev: false
 
   registry.npmjs.org/argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/argparse/-/argparse-2.0.1.tgz}
     name: argparse
     version: 2.0.1
-    dev: true
 
   registry.npmjs.org/array-flatten@1.1.1:
     resolution: {integrity: sha512-PCVAQswWemu6UdxsDFFX/+gVeYqKAod3D3UVm91jHwynguOwAvYPhx8nNlM++NqRcK6CxxpUafjmhIdKiHibqg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/array-flatten/-/array-flatten-1.1.1.tgz}
@@ -20966,7 +20953,6 @@ packages:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz}
     name: sprintf-js
     version: 1.0.3
-    dev: false
 
   registry.npmjs.org/sqlite3@5.1.6:
     resolution: {integrity: sha512-olYkWoKFVNSSSQNvxVUfjiVbz3YtBwTJj+mfV5zpHmqW3sELx2Cf4QCdirMelhM5Zh+KDVaKgQHqCxrqiWHybw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/sqlite3/-/sqlite3-5.1.6.tgz}
@@ -21070,10 +21056,10 @@ packages:
       react: registry.npmjs.org/react@18.2.0
     dev: false
 
-  registry.npmjs.org/supagraph@0.0.1-rc.15:
-    resolution: {integrity: sha512-SC1zRivwfMjQVHTUewn4wshWxh9kc2Li2IqGEkEtLdwn8vI+kVMKuTqVAb/766P3WlyHl10fDnhKfts+34EuYQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.15.tgz}
+  registry.npmjs.org/supagraph@0.0.1-rc.16:
+    resolution: {integrity: sha512-BIj1aDJqARR/pUmd7x2jzKSlYg7+xLnS9Z/RpVwgwXhg9dr0XpcgVyEAN0urQH9YlDvbDFCamIT49meEBhxh8A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.16.tgz}
     name: supagraph
-    version: 0.0.1-rc.15
+    version: 0.0.1-rc.16
     dependencies:
       '@graphql-yoga/render-graphiql': registry.npmjs.org/@graphql-yoga/render-graphiql@3.8.0(graphql-yoga@3.8.0)
       csv-parser: registry.npmjs.org/csv-parser@3.0.0
