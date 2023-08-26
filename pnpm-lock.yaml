@@ -151,8 +151,8 @@ importers:
         specifier: ^4.8.0
         version: 4.8.0(react@18.2.0)
       supagraph:
-        specifier: 0.0.1-rc.16
-        version: registry.npmjs.org/supagraph@0.0.1-rc.16
+        specifier: 0.0.1-rc.17
+        version: registry.npmjs.org/supagraph@0.0.1-rc.17
       wagmi:
         specifier: ^1.3.9
         version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
@@ -260,8 +260,8 @@ importers:
         specifier: ^4.8.0
         version: 4.8.0(react@18.2.0)
       supagraph:
-        specifier: 0.0.1-rc.16
-        version: registry.npmjs.org/supagraph@0.0.1-rc.16
+        specifier: 0.0.1-rc.17
+        version: registry.npmjs.org/supagraph@0.0.1-rc.17
       wagmi:
         specifier: ^1.3.9
         version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
@@ -549,8 +549,8 @@ importers:
         specifier: 18.2.0
         version: 18.2.0
       supagraph:
-        specifier: 0.0.1-rc.16
-        version: registry.npmjs.org/supagraph@0.0.1-rc.16
+        specifier: 0.0.1-rc.17
+        version: registry.npmjs.org/supagraph@0.0.1-rc.17
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -616,8 +616,8 @@ importers:
         specifier: 18.2.0
         version: registry.npmjs.org/react@18.2.0
       supagraph:
-        specifier: 0.0.1-rc.16
-        version: registry.npmjs.org/supagraph@0.0.1-rc.16
+        specifier: 0.0.1-rc.17
+        version: registry.npmjs.org/supagraph@0.0.1-rc.17
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -680,8 +680,8 @@ importers:
         specifier: ^5.6.0
         version: registry.npmjs.org/mongodb@5.6.0
       supagraph:
-        specifier: 0.0.1-rc.16
-        version: registry.npmjs.org/supagraph@0.0.1-rc.16
+        specifier: 0.0.1-rc.17
+        version: registry.npmjs.org/supagraph@0.0.1-rc.17
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -21056,10 +21056,10 @@ packages:
       react: registry.npmjs.org/react@18.2.0
     dev: false
 
-  registry.npmjs.org/supagraph@0.0.1-rc.16:
-    resolution: {integrity: sha512-BIj1aDJqARR/pUmd7x2jzKSlYg7+xLnS9Z/RpVwgwXhg9dr0XpcgVyEAN0urQH9YlDvbDFCamIT49meEBhxh8A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.16.tgz}
+  registry.npmjs.org/supagraph@0.0.1-rc.17:
+    resolution: {integrity: sha512-5rQX5W/Pc/AoLzD/VXBqXUtDTBbEKvhu1F+UvL3whwCeBrqorN6bq9abBPf5rSLNRT4G8rfKYXm919Rai4NSuA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.17.tgz}
     name: supagraph
-    version: 0.0.1-rc.16
+    version: 0.0.1-rc.17
     dependencies:
       '@graphql-yoga/render-graphiql': registry.npmjs.org/@graphql-yoga/render-graphiql@3.8.0(graphql-yoga@3.8.0)
       csv-parser: registry.npmjs.org/csv-parser@3.0.0
