@@ -212,7 +212,8 @@ export const DividerCaret = (props: IconProps) => (
   >
     <path
       d="M0 1H158.631C159.566 1 160.447 1.43589 161.015 2.17886L168.425 11.8792C169.626 13.451 171.992 13.451 173.193 11.8792L180.603 2.17885C181.171 1.43589 182.052 1 182.987 1H342"
-      stroke="#2E524E"
+      // eslint-disable-next-line react/destructuring-assignment
+      stroke={props?.stroke ? props.stroke : '#2E524E'}
     />
   </svg>
 )

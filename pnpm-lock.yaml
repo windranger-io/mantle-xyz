@@ -132,6 +132,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      lodash.debounce:
+        specifier: ^4.0.8
+        version: 4.0.8
       mongodb:
         specifier: ^5.6.0
         version: 5.6.0
@@ -175,6 +178,9 @@ importers:
       '@types/lodash':
         specifier: ^4.14.194
         version: 4.14.195
+      '@types/lodash.debounce':
+        specifier: ^4.0.7
+        version: 4.0.7
       '@types/node':
         specifier: 18.11.3
         version: 18.11.3
@@ -4923,6 +4929,12 @@ packages:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
       '@types/node': registry.npmjs.org/@types/node@20.5.4
+    dev: true
+
+  /@types/lodash.debounce@4.0.7:
+    resolution: {integrity: sha512-X1T4wMZ+gT000M2/91SYj0d/7JfeNZ9PeeOldSNoE/lunLeQXKvkmIumI29IaKMotU/ln/McOIvgzZcQ/3TrSA==}
+    dependencies:
+      '@types/lodash': 4.14.195
     dev: true
 
   /@types/lodash@4.14.195:
@@ -10648,6 +10660,10 @@ packages:
   /lodash.camelcase@4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
     dev: true
+
+  /lodash.debounce@4.0.8:
+    resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
+    dev: false
 
   /lodash.defaults@4.2.0:
     resolution: {integrity: sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ==}
