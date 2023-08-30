@@ -27,8 +27,8 @@ import { usePathname } from "next/navigation";
 import { useAccountBalances, useL1FeeData, FeeData } from "@hooks/web3/read";
 
 import { getMulticallContract } from "@utils/multicallContract";
-import useAllowanceCheck from "@hooks/web3/converter/read/useAllowanceCheck";
-import useGasEstimate from "@hooks/web3/converter/read/useGasEstimate";
+// import useAllowanceCheck from "@hooks/web3/converter/read/useAllowanceCheck";
+// import useGasEstimate from "@hooks/web3/converter/read/useGasEstimate";
 
 export type StateProps = {
   view: Views;
@@ -198,11 +198,11 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     useAccountBalances(chainId, client, tokens, setIsLoadingBalances);
 
   // fetch the allowance for the selected token on the selected chain
-  const { allowance, resetAllowance } = useAllowanceCheck(chainId, client);
+  // const { allowance, resetAllowance } = useAllowanceCheck(chainId, client);
 
   // fetch the gas estimate for the selected operation on in the selected direction
-  const { actualGasFee, isLoadingGasEstimate, resetGasEstimate } =
-    useGasEstimate(chainId, client, amount || "0", balances, allowance);
+  // const { actualGasFee, isLoadingGasEstimate, resetGasEstimate } =
+  //   useGasEstimate(chainId, client, amount || "0", balances, allowance);
 
   // corrent view on page turn
   useEffect(
@@ -275,11 +275,11 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
       feeData,
       l1FeeData,
-      actualGasFee,
+      // actualGasFee,
       isLoadingFeeData,
       isLoadingBalances:
         isLoadingBalances && isFetchingBalances && isRefetchingBalances,
-      isLoadingGasEstimate,
+      // isLoadingGasEstimate,
 
       ctaPage,
       ctaPageRef,
@@ -297,7 +297,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
       tokens,
       balances,
-      allowance,
+      // allowance,
       ctaErrorReset,
 
       setView,
@@ -305,8 +305,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setChainId,
       setSafeChains,
       resetBalances,
-      resetAllowance,
-      resetGasEstimate,
+      // resetAllowance,
+      // resetGasEstimate,
 
       setCTAPage,
       setErrorMsg,
@@ -329,10 +329,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
     feeData,
     l1FeeData,
-    actualGasFee,
+    // actualGasFee,
     isLoadingFeeData,
     isLoadingBalances,
-    isLoadingGasEstimate,
+    // isLoadingGasEstimate,
     isFetchingBalances,
     isRefetchingBalances,
 
@@ -352,12 +352,12 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
     tokens,
     balances,
-    allowance,
+    // allowance,
     ctaErrorReset,
 
     resetBalances,
-    resetAllowance,
-    resetGasEstimate,
+    // resetAllowance,
+    // resetGasEstimate,
   ]);
 
   return (
