@@ -15,6 +15,7 @@
     "dev:faucet": "turbo run dev:faucet",
     "dev:bridge": "turbo run dev:bridge",
     "dev:converter": "turbo run dev:converter",
+    "dev:charity": "turbo run dev:charity",
     "dev:cms": "turbo run dev:cms",
     "dev:events": "turbo run dev:events",
     "dev:template": "turbo run dev:template",
@@ -23,6 +24,7 @@
     "lint:faucet": "turbo run lint:faucet",
     "lint:bridge": "turbo run lint:bridge",
     "lint:converter": "turbo run lint:converter",
+    "lint:charity": "turbo run lint:charity",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky install"
   },
