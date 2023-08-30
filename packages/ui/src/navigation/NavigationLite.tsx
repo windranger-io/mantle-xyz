@@ -34,7 +34,7 @@ export const NavigationLite = ({
   return (
     <div className="relative">
       <nav
-        className="mx-auto  max-w-7xl  p-4 lg:px-8 items-center grid grid-cols-2 lg:grid-cols-3"
+        className="mx-auto  max-w-7xl  p-4 lg:px-8 items-center grid grid-cols-2 lg:flex"
         aria-label="Global"
       >
         <div className="flex">
@@ -49,7 +49,7 @@ export const NavigationLite = ({
             <MantleLogo />
           </Link>
         </div>
-        <div className="hidden lg:flex justify-center gap-6 xl:gap-12">
+        <div className="hidden lg:flex justify-center gap-6 xl:gap-12 lg:grow">
           {navItems.map((item, index) => {
             const isActive = activeKey === item.key
             return (
