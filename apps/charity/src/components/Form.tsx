@@ -1,11 +1,15 @@
 "use client";
 
+import { useContext, useEffect, useState } from "react";
+
+import { Button, Typography } from "@mantle/ui";
 import { maxNFTSupply, L1_NFT_ADDRESS } from "@config/constants";
 import { useTotalMinted } from "@hooks/web3/read";
-import { Typography } from "@mantle/ui";
-import { useEffect, useState } from "react";
+import StateContext from "@providers/stateContext";
 
 export default function Form() {
+  const { client, setWalletModalOpen } = useContext(StateContext);
+
   const { isFetchingTotalMinted, totalMinted } = useTotalMinted(L1_NFT_ADDRESS);
   const [remainingNFT, setRemainingNFT] = useState<number | null>(null);
 
@@ -38,7 +42,18 @@ export default function Form() {
             </Typography>
           </div>
         </div>
-        <div>connect button</div>
+        {!client.isConnected && (
+          <div>
+            <Button
+              type="button"
+              size="full"
+              variant="secondary"
+              onClick={() => setWalletModalOpen(true)}
+            >
+              Connect Wallet
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
