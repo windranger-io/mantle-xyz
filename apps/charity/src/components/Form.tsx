@@ -18,14 +18,37 @@ export default function Form() {
       setRemainingNFT(maxNFTSupply - Number(totalMinted));
     }
   }, [isFetchingTotalMinted, totalMinted]);
+
+  let remainingCopy;
+  if (remainingNFT === null) {
+    remainingCopy = "Loading...";
+  } else if (remainingNFT <= 0) {
+    remainingCopy = "Fully Minted";
+  } else {
+    remainingCopy = remainingNFT;
+  }
+
   return (
     <div className="grow sm:my-16 my-10">
       <div className="sm:w-[444px] w-[320px] flex flex-col items-center gap-4 pt-10 pb-5 sm:px-[62px] px-3 rounded-[40px] border border-boxes-containerStroke bg-boxes-containerBg">
         <Typography variant="microBody14">Available NFTs to Mint</Typography>
-        <Typography variant="h4PageInfo">
-          {remainingNFT === null ? "Loading..." : remainingNFT}
+        {/* desktop title */}
+        <Typography
+          variant="h4PageInfo"
+          className="hidden sm:block text-center"
+        >
+          {remainingCopy}
         </Typography>
-        {remainingNFT === null || (remainingNFT > 0 && <div>input</div>)}
+        {/* mobile title */}
+        <Typography variant="h5Title" className="sm:hidden block text-center">
+          {remainingCopy}
+        </Typography>
+        {/* TODO: input */}
+        {remainingNFT === null || remainingNFT > 0 ? (
+          <div>input</div>
+        ) : (
+          <div className="h-12" /> // empty space when not showing input
+        )}
         <div className="w-full">
           <div className="flex justify-between items-center gap-2">
             <Typography variant="smallWidget16">Price per NFT</Typography>
@@ -42,8 +65,9 @@ export default function Form() {
             </Typography>
           </div>
         </div>
+        {/* Connect Wallet Button */}
         {!client.isConnected && (
-          <div>
+          <div className="mb-6 w-full">
             <Button
               type="button"
               size="full"
@@ -54,6 +78,29 @@ export default function Form() {
             </Button>
           </div>
         )}
+        {/* Mint NFT Button */}
+        {client.isConnected && remainingNFT !== null && remainingNFT > 0 ? (
+          <div className="mb-6 w-full">
+            <Button
+              type="button"
+              size="full"
+              variant="secondary"
+              // disabled={} // TODO: disable when input is invalid
+              // onClick={() => console.log("TODO")}
+            >
+              Mint NFT
+            </Button>
+          </div>
+        ) : null}
+
+        {/* Fully Minted Button */}
+        {client.isConnected && remainingNFT === 0 ? (
+          <div className="mb-6 w-full">
+            <Button type="button" size="full" variant="secondary" disabled>
+              NFT Collection Fully Minted
+            </Button>
+          </div>
+        ) : null}
       </div>
     </div>
   );
