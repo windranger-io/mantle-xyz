@@ -1,4 +1,5 @@
 import { Typography } from "@mantle/ui";
+import Form from "@components/Form";
 
 // Page components
 export default async function Page() {
@@ -12,7 +13,7 @@ export default async function Page() {
       <Typography variant="h5Title" className="sm:hidden block text-center">
         Chivalries of Mantle
       </Typography>
-      <div className="grow my-16">form</div>
+      <Form />
       <div>
         <Typography variant="h6TitleMini" className="text-center">
           Mint one of the{" "}

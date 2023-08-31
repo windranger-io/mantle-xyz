@@ -9,6 +9,13 @@ export const L2_CHAIN_ID = +(process.env["NEXT_PUBLIC_L2_CHAIN_ID"] || "5000");
 // export the conversion rate
 export const CONVERSION_RATE = 1;
 
+export const L1_NFT_ADDRESSES: Record<number, `0x${string}`> = {
+  1: "0xsomething", // TODO: add NFT mainnet contract address here
+  5: "0xa44Cc80a8CDaa7e7cDD8007f758CCFD1B61cA0c7",
+};
+
+export const L1_NFT_ADDRESS = L1_NFT_ADDRESSES[L1_CHAIN_ID];
+
 export const L1_BITDAO_TOKEN_ADDRESSES: Record<number, `0x${string}`> = {
   1: "0x1A4b46696b2bB4794Eb3D4c26f1c55F9170fa4C5",
   5: "0x5a94Dc6cc85fdA49d8E9A8b85DDE8629025C42be",
@@ -320,3 +327,5 @@ export enum ErrorMessages {
 
 export const migrationPolicyUrl =
   "https://forum.mantle.xyz/t/clarification-of-bit-to-mnt-migration-policy-and-service/7877";
+
+export const maxNFTSupply = 100;
