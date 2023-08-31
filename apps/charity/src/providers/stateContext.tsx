@@ -1,13 +1,11 @@
 "use client";
 
 import {
-  CTAPages,
   L1_BITDAO_TOKEN,
   L1_CHAIN_ID,
   L1_MANTLE_TOKEN,
   MULTICALL_CONTRACTS,
   Token,
-  Views,
 } from "@config/constants";
 
 import { Contract, providers } from "ethers";
@@ -23,23 +21,22 @@ import {
   useState,
 } from "react";
 import { usePublicClient } from "wagmi";
-import { usePathname } from "next/navigation";
 import { useAccountBalances, useL1FeeData, FeeData } from "@hooks/web3/read";
 
 import { getMulticallContract } from "@utils/multicallContract";
 // import useAllowanceCheck from "@hooks/web3/converter/read/useAllowanceCheck";
 // import useGasEstimate from "@hooks/web3/converter/read/useGasEstimate";
 
+// TODO: remove unused state
 export type StateProps = {
-  view: Views;
   client: {
     isConnected: boolean;
     chainId?: number;
     address?: `0x${string}`;
     connector?: string;
-  };
-  safeChains: number[];
-  chainId: number;
+  }; // yes
+  safeChains: number[]; // yes
+  chainId: number; // yes
   provider: providers.JsonRpcProvider | providers.FallbackProvider;
   multicall: MutableRefObject<{
     network: Network;
@@ -54,16 +51,14 @@ export type StateProps = {
   isLoadingBalances: boolean;
   isLoadingGasEstimate: boolean;
 
-  ctaPage: CTAPages;
-  ctaPageRef: MutableRefObject<CTAPages>;
   errorMsg: string;
   ctaChainId: number;
   ctaStatus: string | boolean;
   isCTAPageOpen: boolean;
   isCTAPageOpenRef: MutableRefObject<boolean>;
   ctaErrorReset: MutableRefObject<(() => void | boolean) | undefined>;
-  walletModalOpen: boolean;
-  mobileMenuOpen: boolean;
+  walletModalOpen: boolean; // yes
+  mobileMenuOpen: boolean; // yes
 
   amount: string | undefined;
   txHash: string | boolean;
@@ -73,27 +68,25 @@ export type StateProps = {
   balances: Record<string, string>;
   allowance: string;
 
-  setView: (v: Views) => void;
   setChainId: (v: number) => void;
   setClient: (client: {
     isConnected: boolean;
     chainId?: number;
     address?: `0x${string}`;
     connector?: string;
-  }) => void;
+  }) => void; // yes
   setSafeChains: (chains: number[]) => void;
   resetBalances: () => void;
   resetAllowance: () => void;
   resetGasEstimate: () => void;
-  setCTAPage: (ctaPage: CTAPages) => void;
   setErrorMsg: (errMsg: string) => void;
   setCTAChainId: (v: number) => void;
   setCTAStatus: (status: string | boolean) => void;
   setIsCTAPageOpen: (isCTAPageOpen: boolean) => void;
   setTxHash: (hash: string | boolean) => void;
   setAmount: (amount: string | boolean) => void;
-  setWalletModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setWalletModalOpen: React.Dispatch<React.SetStateAction<boolean>>; // yes
+  setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>; // yes
 };
 
 // create a context to bind the provider to
@@ -103,13 +96,6 @@ const StateContext: Context<StateProps> = createContext<StateProps>(
 
 // create a provider to contain all state
 export function StateProvider({ children }: { children: React.ReactNode }) {
-  const pathName = usePathname();
-
-  // page toggled chainId (set according to Deposit/Withdraw)
-  const [view, setView] = useState(
-    pathName?.indexOf("/account") === -1 ? Views.Default : Views.Account
-  );
-
   // page toggled chainId (set according to Deposit/Withdraw)
   const [chainId, setChainId] = useState(L1_CHAIN_ID);
 
@@ -149,8 +135,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // page toggled chainId (set according to Deposit/Withdraw)
   const multicall = useRef<{ network: Network; multicallContract: Contract }>();
 
-  // the selected page within CTAPage to open
-  const [ctaPage, setCTAPage] = useState<CTAPages>(CTAPages.Default);
   // the error msg under CTA button
   const [errorMsg, setErrorMsg] = useState<string>("");
   // seperate the ctaChainId from the chainId to dissassociate the tabs from the cta
@@ -164,7 +148,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // mobile menu controls
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   // a ref to the current page
-  const ctaPageRef = useRef<CTAPages>(CTAPages.Default);
+  // const ctaPageRef = useRef<CTAPages>(CTAPages.Default);
   // a ref to the ctaPage open state
   const isCTAPageOpenRef = useRef(false);
   // allow resets to start waiting for the bridge tx after network failure by setting a "ctaErrorReset" override
@@ -204,17 +188,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // const { actualGasFee, isLoadingGasEstimate, resetGasEstimate } =
   //   useGasEstimate(chainId, client, amount || "0", balances, allowance);
 
-  // corrent view on page turn
-  useEffect(
-    () => {
-      if (pathName?.indexOf("/account") === -1 && view === Views.Account) {
-        setView(Views.Default);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pathName]
-  );
-
   // keep updated
   useEffect(() => {
     isCTAPageOpenRef.current = isCTAPageOpen;
@@ -240,11 +213,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     setIsLoadingFeeData(true);
   }, [chainId]);
 
-  // tied to the current page being viewed
-  useEffect(() => {
-    ctaPageRef.current = ctaPage;
-  }, [ctaPage]);
-
   // reset the allowances and balances once we gather enough intel to make the calls
   useEffect(
     () => {
@@ -266,7 +234,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // combine everything into a context provider
   const context = useMemo(() => {
     return {
-      view,
       client,
       chainId,
       safeChains,
@@ -281,8 +248,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
         isLoadingBalances && isFetchingBalances && isRefetchingBalances,
       // isLoadingGasEstimate,
 
-      ctaPage,
-      ctaPageRef,
       errorMsg,
       ctaStatus,
       ctaChainId,
@@ -300,7 +265,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       // allowance,
       ctaErrorReset,
 
-      setView,
       setClient,
       setChainId,
       setSafeChains,
@@ -308,7 +272,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       // resetAllowance,
       // resetGasEstimate,
 
-      setCTAPage,
       setErrorMsg,
       setCTAChainId,
       setCTAStatus,
@@ -320,7 +283,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setTxHash,
     } as StateProps;
   }, [
-    view,
     client,
     chainId,
     safeChains,
@@ -336,8 +298,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     isFetchingBalances,
     isRefetchingBalances,
 
-    ctaPage,
-    ctaPageRef,
     errorMsg,
     ctaStatus,
     ctaChainId,

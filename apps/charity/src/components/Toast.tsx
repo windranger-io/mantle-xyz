@@ -1,15 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import React, { ReactNode, useCallback, useContext, useEffect } from "react";
-
-import StateContext from "@providers/stateContext";
+import React, { ReactNode, useCallback, useEffect } from "react";
 
 import { useToast, ToastProps } from "@hooks/useToast";
 import { Button } from "@mantle/ui";
-import { usePathname } from "next/navigation";
-
-import { Views } from "@config/constants";
 
 const fromTop = true;
 
@@ -125,11 +120,7 @@ export function Toast({
 
 // toast container is the provider
 export function ToastContainer({ children }: { children: ReactNode }) {
-  const pathName = usePathname();
-
   const { toasts, deleteToast } = useToast();
-
-  const { view } = useContext(StateContext);
 
   const escFunction = useCallback(
     (event: KeyboardEvent) => {
@@ -150,9 +141,7 @@ export function ToastContainer({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <FixedToastContainer
-        hidden={pathName?.indexOf("/account") !== -1 || view === Views.Account}
-      >
+      <FixedToastContainer hidden={false}>
         <AnimatePresence>
           {toasts.map((toast) => (
             <motion.div

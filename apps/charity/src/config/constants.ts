@@ -102,22 +102,6 @@ export function getBaseUrl() {
 // export the absolute path
 export const ABSOLUTE_PATH = getBaseUrl();
 
-// Available views - were serving this as a spa atm
-export enum Views {
-  "Default" = 1,
-  "Account",
-}
-
-// Available Page states for the CTA Modal
-export enum CTAPages {
-  "Terms" = 1,
-  "Default",
-  "Loading",
-  "Converted",
-  "WhatsNext",
-  "Error",
-}
-
 // set the available chains configuration to allow network to be added
 export const CHAINS: Record<
   number,
