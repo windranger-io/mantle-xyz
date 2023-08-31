@@ -7,6 +7,9 @@ import { withDefault } from "supagraph";
 // Import client generator
 import { getMongodb } from "@providers/mongoClient";
 
+// Only check values against checksummed addresses
+import { getAddress } from "ethers/lib/utils";
+
 // Generate client
 const client = getMongodb(process.env.MONGODB_URI);
 
@@ -24,6 +27,9 @@ export const snapshot = async (req: Request, res: Response) => {
     snapshot: string;
   };
 
+  // checksum addresses
+  const checksummed = addresses.map((address) => getAddress(address));
+
   // query directly from mongo to save cycles (this doesnt need to be a graphql query)
   const result = collection.aggregate(
     [
@@ -38,7 +44,7 @@ export const snapshot = async (req: Request, res: Response) => {
           _chain_id: withDefault(config.contracts.l2mantle.chainId, 5001),
           // this should be provided as a max of 500 addresses
           id: {
-            $in: addresses,
+            $in: checksummed,
           },
         },
       },
@@ -87,7 +93,7 @@ export const snapshot = async (req: Request, res: Response) => {
 
   // default to no score if we can't find it in the db
   const finalVotes: { address: string; score: string }[] = await Promise.all(
-    addresses.map(async (address) => {
+    checksummed.map(async (address) => {
       return {
         address,
         score: scoreResults[address] || "0",
