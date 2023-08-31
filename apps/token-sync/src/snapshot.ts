@@ -28,7 +28,9 @@ export const snapshot = async (req: Request, res: Response) => {
   };
 
   // checksum addresses
-  const checksummed = addresses.map((address) => getAddress(address));
+  const checksummed = addresses.map((address) =>
+    getAddress(address.toLowerCase())
+  );
 
   // query directly from mongo to save cycles (this doesnt need to be a graphql query)
   const result = collection.aggregate(
@@ -93,10 +95,10 @@ export const snapshot = async (req: Request, res: Response) => {
 
   // default to no score if we can't find it in the db
   const finalVotes: { address: string; score: string }[] = await Promise.all(
-    checksummed.map(async (address) => {
+    addresses.map(async (address) => {
       return {
         address,
-        score: scoreResults[address] || "0",
+        score: scoreResults[getAddress(address.toLowerCase())] || "0",
       };
     })
   );
