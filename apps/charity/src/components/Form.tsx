@@ -28,7 +28,7 @@ export default function Form() {
     remainingCopy = remainingNFT;
   }
 
-  const [numOfToken, setNumOfToken] = useState<number>(1);
+  const [numOfToken, setNumOfToken] = useState<number | string>(1);
 
   return (
     <div className="grow sm:my-16 my-10">
@@ -50,10 +50,12 @@ export default function Form() {
           <div className="flex justify-between items-center p-2 rounded-[40px] border border-stroke-inputs bg-boxes-containerBg w-full">
             <button
               type="button"
-              disabled={numOfToken <= 1}
-              onClick={() => setNumOfToken((prev) => prev - 1)}
+              disabled={Number(numOfToken) <= 1}
+              onClick={() => setNumOfToken((prev) => Number(prev) - 1)}
               className={`${
-                numOfToken <= 1 ? "cursor-not-allowed" : "cursor-pointer"
+                Number(numOfToken) <= 1
+                  ? "cursor-not-allowed"
+                  : "cursor-pointer"
               } h-8 w-8`}
             >
               {/* minus icon */}
@@ -68,42 +70,35 @@ export default function Form() {
                   cx="16"
                   cy="16"
                   r="15.5"
-                  stroke={numOfToken <= 1 ? "#696969" : "white"}
+                  stroke={Number(numOfToken) <= 1 ? "#696969" : "white"}
                 />
                 <path
                   d="M9.5 16.7499V15.25H22.5V16.7499H9.5Z"
-                  fill={numOfToken <= 1 ? "#696969" : "white"}
+                  fill={Number(numOfToken) <= 1 ? "#696969" : "white"}
                 />
               </svg>
             </button>
-            {/* <input
+            <input
               type="number"
               required
               id="numOfToken"
               value={numOfToken}
               min={1}
               max={remainingNFT !== null && remainingNFT < 5 ? remainingNFT : 5}
-              // className="bg-black w-full rounded-input"
-              // disabled={
-              //   minting ||
-              //   !hasTweeted ||
-              //   (balanceMNT && parseFloat(myBalanceMNT) >= MAX_BALANCE)
-              // }
-              // onChange={(e: {
-              //   target: { value: React.SetStateAction<number> };
-              // }) => {
-              //   setNumOfToken(value);
-              // }}
-            /> */}
+              className="grow text-center bg-black focus:ring-0 focus:ring-white/70 focus:outline-none border-0 appearance-none"
+              onChange={(e) => {
+                setNumOfToken(`${Math.abs(+(e.target.value || "")) || ""}`);
+              }}
+            />
             <button
               type="button"
               disabled={
-                numOfToken >=
+                Number(numOfToken) >=
                 (remainingNFT !== null && remainingNFT < 5 ? remainingNFT : 5)
               }
-              onClick={() => setNumOfToken((prev) => prev + 1)}
+              onClick={() => setNumOfToken((prev) => Number(prev) + 1)}
               className={`${
-                numOfToken >=
+                Number(numOfToken) >=
                 (remainingNFT !== null && remainingNFT < 5 ? remainingNFT : 5)
                   ? "cursor-not-allowed"
                   : "cursor-pointer"
@@ -122,7 +117,7 @@ export default function Form() {
                   cy="16"
                   r="15.5"
                   stroke={
-                    numOfToken >=
+                    Number(numOfToken) >=
                     (remainingNFT !== null && remainingNFT < 5
                       ? remainingNFT
                       : 5)
@@ -133,7 +128,7 @@ export default function Form() {
                 <path
                   d="M15.25 16.75H9.5V15.25H15.25V9.5H16.7499V15.25H22.5V16.75H16.7499V22.5H15.25V16.75Z"
                   fill={
-                    numOfToken >=
+                    Number(numOfToken) >=
                     (remainingNFT !== null && remainingNFT < 5
                       ? remainingNFT
                       : 5)
@@ -164,7 +159,7 @@ export default function Form() {
           </div>
         </div>
         {/* Connect Wallet Button */}
-        {!client.isConnected && (
+        {!client.isConnected && remainingNFT !== 0 && (
           <div className="mb-6 w-full">
             <Button
               type="button"
@@ -183,16 +178,26 @@ export default function Form() {
               type="button"
               size="full"
               variant="secondary"
-              // disabled={} // TODO: disable when input is invalid
+              disabled={
+                Number(numOfToken) >
+                  (remainingNFT !== null && remainingNFT < 5
+                    ? remainingNFT
+                    : 5) || Number(numOfToken) < 1
+              }
               // onClick={() => console.log("TODO")}
             >
-              Mint NFT
+              {Number(numOfToken) >
+                (remainingNFT !== null && remainingNFT < 5
+                  ? remainingNFT
+                  : 5) || Number(numOfToken) < 1
+                ? "Invalid mint amount"
+                : "Mint NFT"}
             </Button>
           </div>
         ) : null}
 
         {/* Fully Minted Button */}
-        {client.isConnected && remainingNFT === 0 ? (
+        {remainingNFT === 0 ? (
           <div className="mb-6 w-full">
             <Button type="button" size="full" variant="secondary" disabled>
               NFT Collection Fully Minted
