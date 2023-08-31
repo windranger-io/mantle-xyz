@@ -112,14 +112,14 @@ importers:
         specifier: workspace:*
         version: link:../../packages/utils
       '@mantleio/contracts':
-        specifier: ^0.2.0
+        specifier: 0.2.0
         version: 0.2.0(ethers@5.7.2)
       '@mantleio/core-utils':
         specifier: ^0.1.0
         version: 0.1.0
       '@mantleio/sdk':
-        specifier: ^0.2.1
-        version: 0.2.1(ethers@5.7.2)
+        specifier: 0.2.0
+        version: 0.2.0(ethers@5.7.2)
       '@tanstack/react-query':
         specifier: ^4.14.5
         version: 4.24.10(react-dom@18.2.0)(react@18.2.0)
@@ -960,7 +960,7 @@ importers:
         version: 8.5.0(eslint@7.32.0)
       eslint-config-turbo:
         specifier: latest
-        version: 1.10.13(eslint@7.32.0)
+        version: 1.10.6(eslint@7.32.0)
       eslint-import-resolver-typescript:
         specifier: ^3.5.2
         version: 3.5.2(eslint-plugin-import@2.26.0)(eslint@7.32.0)
@@ -4181,20 +4181,6 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@mantleio/contracts@0.2.1(ethers@5.7.2):
-    resolution: {integrity: sha512-NqWUO8Vhu2OVA+pH+k761uWwssQmKsSBRA1vO9wrKUvlHsWN50DL/wrIDHZBksDwcjqOFGeIxWmt9QLwndhAjw==}
-    peerDependencies:
-      ethers: ^5
-    dependencies:
-      '@ethersproject/abstract-provider': 5.7.0
-      '@ethersproject/abstract-signer': 5.7.0
-      '@mantleio/core-utils': 0.1.0
-      ethers: 5.7.2
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
   /@mantleio/core-utils@0.1.0:
     resolution: {integrity: sha512-6v/CuKe8W3UVYVn6RUR6pbrMbKDcdrUoj24wCuwM4JFbPHzpTqUSnSXDHrDs3LJpWLxsptynNdIGw90wzCKpdg==}
     dependencies:
@@ -4211,12 +4197,12 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@mantleio/sdk@0.2.1(ethers@5.7.2):
-    resolution: {integrity: sha512-bPC3eHEsRHSPAVv4EGC6lY43btiMaEK0e39yArz9LBtub8EkxyokDnD+XLdaeQrL8flucTH5DRcZAanqn9bq4g==}
+  /@mantleio/sdk@0.2.0(ethers@5.7.2):
+    resolution: {integrity: sha512-iEenSuak6eANxrCZ7/7tHse1FvsvwpOSwQO9Esv55SgpWhBRNN9zZc06Pg4/CpHxhr7pq6xXAE83mFKwsEJ4xg==}
     peerDependencies:
       ethers: ^5
     dependencies:
-      '@mantleio/contracts': 0.2.1(ethers@5.7.2)
+      '@mantleio/contracts': 0.2.0(ethers@5.7.2)
       '@mantleio/core-utils': 0.1.0
       ethers: 5.7.2
       lodash: 4.17.21
@@ -9711,13 +9697,13 @@ packages:
       eslint: 7.32.0
     dev: false
 
-  /eslint-config-turbo@1.10.13(eslint@7.32.0):
-    resolution: {integrity: sha512-Ffa0SxkRCPMtfUX/HDanEqsWoLwZTQTAXO9W4IsOtycb2MzJDrVcLmoFW5sMwCrg7gjqbrC4ZJoD+1SPPzIVqg==}
+  /eslint-config-turbo@1.10.6(eslint@7.32.0):
+    resolution: {integrity: sha512-iZ63etePRUdEIDY5MxdUhU2ekV9TDbVdHg0BK00QqVFgQTXUYuJ7rsQj/wUKTsw3jwhbLfaY6H5sknAgYyWZ2g==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
       eslint: 7.32.0
-      eslint-plugin-turbo: 1.10.13(eslint@7.32.0)
+      eslint-plugin-turbo: 1.10.6(eslint@7.32.0)
     dev: false
 
   /eslint-import-resolver-node@0.3.6:
@@ -9960,8 +9946,8 @@ packages:
       string.prototype.matchall: 4.0.8
     dev: false
 
-  /eslint-plugin-turbo@1.10.13(eslint@7.32.0):
-    resolution: {integrity: sha512-el4AAmn0zXmvHEyp1h0IQMfse10Vy8g5Vbg4IU3+vD9CSj5sDbX07iFVt8sCKg7og9Q5FAa9mXzlCf7t4vYgzg==}
+  /eslint-plugin-turbo@1.10.6(eslint@7.32.0):
+    resolution: {integrity: sha512-jlzfxYaK8hcz1DTk8Glxxi1r0kgdy85191a4CbFOTiiBulmKHMLJgzhsyE9Ong796MA62n91KFpc20BiKjlHwg==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
