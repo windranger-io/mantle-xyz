@@ -8,7 +8,7 @@ const config = {
   // name your supagraph (this will inform mongo table name etc...)
   name: withDefault(
     process.env.SUPAGRAPH_NAME,
-    "supagraph--token-express--testnet--0-0-1"
+    "supagraph--token-express--testnet--0-1-1"
   ),
   // flag immutable to groupBy queries before filtering for matches
   mutable: false,

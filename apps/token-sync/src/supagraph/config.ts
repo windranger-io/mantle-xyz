@@ -10,7 +10,7 @@ const config = {
   // name your supagraph (this will inform mongo table name etc...)
   name: withDefault(
     process.env.SUPAGRAPH_NAME,
-    "supagraph--token-express--testnet--0-0-1"
+    "supagraph--token-express--testnet--0-1-1"
   ),
   // set the local engine (true: db || false: mongo)
   dev: false,
@@ -58,7 +58,7 @@ const config = {
     // setup network listeners
     [withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001)]: {
       // establish the point we want to start and stop syncing from
-      startBlock: withDefault(process.env.L2_MANTLE_START_BLOCK, 18377551),
+      startBlock: withDefault(process.env.L2_MANTLE_START_BLOCK, 18889522),
       endBlock: withDefault(process.env.L2_MANTLE_END_BLOCK, "latest"),
       // collect receipts to gather gas usage
       collectTxReceipts: true,
@@ -100,9 +100,9 @@ const config = {
       chainId: withDefault(process.env.L2_MANTLE_CHAIN_ID, 5),
       address: withDefault(
         process.env.L2_MANTLE_ADDRESS,
-        "0xaB49915165a24Af4F47feA092ec5f34C8C77FEC9"
+        "0xEd459209796D741F5B609131aBd927586fcCACC5"
       ),
-      startBlock: withDefault(process.env.L2_MANTLE_START_BLOCK, 18377551),
+      startBlock: withDefault(process.env.L2_MANTLE_START_BLOCK, 18889522),
       endBlock: withDefault(process.env.L2_MANTLE_END_BLOCK, "latest"),
     },
   },
