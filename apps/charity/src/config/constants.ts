@@ -2,6 +2,8 @@
 import { BigNumberish } from "ethers";
 import { Address, Chain } from "wagmi";
 
+// TODO: refactor this file
+
 // these control which chains we treat as l1/l2 - the rest of the this constants doc will need to be altered for mainnet (we can $ENV most of this)
 export const L1_CHAIN_ID = +(process.env["NEXT_PUBLIC_L1_CHAIN_ID"] || "1");
 export const L2_CHAIN_ID = +(process.env["NEXT_PUBLIC_L2_CHAIN_ID"] || "5000");
