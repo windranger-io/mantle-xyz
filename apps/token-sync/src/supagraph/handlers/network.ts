@@ -30,6 +30,9 @@ const provider = new JsonRpcProvider(
 // Connect contract to fetch delegations
 const delegatesInterface = new ethers.utils.Interface(config.events.tokenl2);
 
+// get the l2 contract address once
+const l2ContractAddress = getAddress(config.contracts.l2mantle.address);
+
 // update the voter with changed state
 const updateVoter = async (
   from: string,
@@ -49,7 +52,9 @@ const updateVoter = async (
   if (
     entity.l2MntTo &&
     !(
-      tx.to === getAddress(config.contracts.l2mantle.address) &&
+      ((tx.contractAddress &&
+        getAddress(tx.contractAddress) === l2ContractAddress) ||
+        (tx.to && getAddress(tx.to) === l2ContractAddress)) &&
       isTopicInBloom(tx.logsBloom, topic)
     )
   ) {
@@ -105,8 +110,8 @@ const updateVoter = async (
         // );
 
         // update pointers for lastUpdate
-        entity.set("blockNumber", tx.blockNumber);
-        entity.set("transactionHash", tx.transactionHash);
+        entity.set("blockNumber", +tx.blockNumber);
+        entity.set("transactionHash", tx.hash || tx.transactionHash);
 
         // save the changes
         entity = await entity.save();
@@ -129,7 +134,9 @@ const updateVoter = async (
           "votes",
           newL2Votes.add(
             otherVotesProps.reduce((sum, otherVotesProp) => {
-              return sum.add(BigNumber.from(entity[otherVotesProp] || "0"));
+              return sum.add(
+                BigNumber.from(voteRecipient[otherVotesProp] || "0")
+              );
             }, BigNumber.from("0"))
           )
         );
