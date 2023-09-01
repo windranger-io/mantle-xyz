@@ -17,12 +17,14 @@ export default async function Page() {
       <div>
         <Typography variant="h6TitleMini" className="text-center">
           Mint one of the{" "}
-          <span className="text-[#F26A1D]">100 limited-edition</span> Mantle
-          Journey NFTs and support a social impact initiative dedicated to
-          fostering growth among web3 developers.
+          <span className="text-[#F26A1D]">100 limited-edition</span>{" "}
+          &quot;Chivalries of Mantle&quot; on Ethereum and support a social
+          impact initiative dedicated to fostering growth among web3 developers.
+          All sales proceeds go to charity, and NFT holders have priority access
+          to invite-only Mantle Events.
         </Typography>
         <Typography variant="body24" className="text-center mt-8">
-          Together, we&apos;re creating pathways to opportunity and innovation.
+          Together, we&apos;re forging pathways to opportunity and innovation.
         </Typography>
       </div>
     </div>
