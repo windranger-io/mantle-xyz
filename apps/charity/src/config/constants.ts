@@ -12,7 +12,7 @@ export const L2_CHAIN_ID = +(process.env["NEXT_PUBLIC_L2_CHAIN_ID"] || "5000");
 export const CONVERSION_RATE = 1;
 
 export const L1_NFT_ADDRESSES: Record<number, `0x${string}`> = {
-  1: "0xsomething", // TODO: add NFT mainnet contract address here
+  1: "0x5280F0Ec2fDbf7c043A63215f1394D97DA3DF5E0",
   5: "0x1CeDe61B20A9cA71c3CC44137e3323298557ba9A",
 };
 
