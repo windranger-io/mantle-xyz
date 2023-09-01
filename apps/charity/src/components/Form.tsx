@@ -64,10 +64,8 @@ export default function Form() {
     currentCondition as any
   )?.quantityLimitPerWallet.toNumber();
 
-  const userMaxMintableAmount =
-    remainingNFT !== null && remainingNFT < maxPerWallet
-      ? remainingNFT - Number(userClaimedAmount)
-      : maxPerWallet - Number(userClaimedAmount); // fallback to 5 when not yet loaded the data
+  const personalQuota = maxPerWallet - Number(userClaimedAmount);
+  const userMaxMintableAmount = Math.min(personalQuota, Number(remainingNFT));
 
   const maxMintableAmount = Number.isNaN(userMaxMintableAmount)
     ? 5
