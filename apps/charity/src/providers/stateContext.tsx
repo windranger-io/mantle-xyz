@@ -45,6 +45,7 @@ export type StateProps = {
   l1FeeData: FeeData;
   l2FeeData: FeeData;
   actualGasFee: string;
+  isLoadingBalances: boolean;
 
   walletModalOpen: boolean; // yes
   mobileMenuOpen: boolean; // yes
@@ -137,6 +138,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     return [L1_BITDAO_TOKEN, L1_MANTLE_TOKEN];
   }, []);
 
+  // when we're loading the balance data we don't want to show error states
+  const [isLoadingBalances, setIsLoadingBalances] = useState(false);
+
   // get current gas fees for L1
   const { l1FeeData, refetchL1FeeData } = useL1FeeData();
 
@@ -183,6 +187,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
       feeData,
       l1FeeData,
+      isLoadingBalances:
+        isLoadingBalances && isFetchingBalances && isRefetchingBalances,
       walletModalOpen,
       mobileMenuOpen,
 
@@ -212,6 +218,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
     feeData,
     l1FeeData,
+    isLoadingBalances,
     isFetchingBalances,
     isRefetchingBalances,
 
