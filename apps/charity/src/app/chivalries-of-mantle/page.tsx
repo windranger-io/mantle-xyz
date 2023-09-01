@@ -20,6 +20,8 @@ export default async function Page() {
           <span className="text-[#F26A1D]">100 limited-edition</span>{" "}
           &quot;Chivalries of Mantle&quot; on Ethereum and support a social
           impact initiative dedicated to fostering growth among web3 developers.
+        </Typography>
+        <Typography variant="body24" className="text-center mt-8">
           All sales proceeds go to charity, and NFT holders have priority access
           to invite-only Mantle Events.
         </Typography>
