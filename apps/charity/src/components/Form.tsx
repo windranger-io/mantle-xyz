@@ -79,6 +79,16 @@ export default function Form() {
         setErrorMsg(
           "You have already minted the max. amount of NFTs allowed per wallet address"
         );
+      } else if (
+        error
+          .toString()
+          .includes(
+            "The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account."
+          )
+      ) {
+        setErrorMsg(
+          "Insufficient gas fee for the mint, please top up with ETH and try again"
+        );
       } else {
         setErrorMsg(
           "Something went wrong, please refresh the page and try again."
