@@ -394,4 +394,9 @@ export enum ErrorMessages {
 export const migrationPolicyUrl =
   "https://forum.mantle.xyz/t/clarification-of-bit-to-mnt-migration-policy-and-service/7877";
 
-export const maxCharityNFTSupply = 100;
+export const maxCharityNFTSupplies: Record<number, number> = {
+  1: 100,
+  5: 30,
+};
+
+export const maxCharityNFTSupply = maxCharityNFTSupplies[L1_CHAIN_ID];
