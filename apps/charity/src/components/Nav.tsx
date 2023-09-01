@@ -24,12 +24,12 @@ const NAV_ITEMS: NavItem[] = [
     internal: false,
     key: "journey",
   },
-  {
-    name: "About Web3Bridge",
-    href: "https://www.web3bridge.com",
-    internal: false,
-    key: "web3bridge",
-  },
+  // {
+  //   name: "About Web3Bridge",
+  //   href: "https://www.web3bridge.com",
+  //   internal: false,
+  //   key: "web3bridge",
+  // },
 ];
 
 function Nav({ className = "" }: NavProps) {

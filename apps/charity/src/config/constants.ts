@@ -2,12 +2,21 @@
 import { BigNumberish } from "ethers";
 import { Address, Chain } from "wagmi";
 
+// TODO: refactor this file
+
 // these control which chains we treat as l1/l2 - the rest of the this constants doc will need to be altered for mainnet (we can $ENV most of this)
 export const L1_CHAIN_ID = +(process.env["NEXT_PUBLIC_L1_CHAIN_ID"] || "1");
 export const L2_CHAIN_ID = +(process.env["NEXT_PUBLIC_L2_CHAIN_ID"] || "5000");
 
 // export the conversion rate
 export const CONVERSION_RATE = 1;
+
+export const L1_NFT_ADDRESSES: Record<number, `0x${string}`> = {
+  1: "0x5280F0Ec2fDbf7c043A63215f1394D97DA3DF5E0",
+  5: "0xf8D44712A9521625c5E5590E69aD9FE1d075b080",
+};
+
+export const L1_NFT_ADDRESS = L1_NFT_ADDRESSES[L1_CHAIN_ID];
 
 export const L1_BITDAO_TOKEN_ADDRESSES: Record<number, `0x${string}`> = {
   1: "0x1A4b46696b2bB4794Eb3D4c26f1c55F9170fa4C5",
@@ -35,6 +44,70 @@ export const L1_CONVERTER_CONTRACT_ABI = [
   "function migrateBIT(uint256 _amount)",
   "function migrateAllBIT()",
   "function halted() view returns (bool)",
+];
+
+// Use L1 NFT contract
+export const L1_NFT_CONTRACT_ABI = [
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_receiver",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_quantity",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "_currency",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_pricePerToken",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "bytes32[]",
+            name: "proof",
+            type: "bytes32[]",
+          },
+          {
+            internalType: "uint256",
+            name: "quantityLimitPerWallet",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "pricePerToken",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "currency",
+            type: "address",
+          },
+        ],
+        internalType: "struct IDrop.AllowlistProof",
+        name: "_allowlistProof",
+        type: "tuple",
+      },
+      {
+        internalType: "bytes",
+        name: "_data",
+        type: "bytes",
+      },
+    ],
+    name: "claim",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
 ];
 
 // Token constructs for dummy contracts on goerli
@@ -101,22 +174,6 @@ export function getBaseUrl() {
 
 // export the absolute path
 export const ABSOLUTE_PATH = getBaseUrl();
-
-// Available views - were serving this as a spa atm
-export enum Views {
-  "Default" = 1,
-  "Account",
-}
-
-// Available Page states for the CTA Modal
-export enum CTAPages {
-  "Terms" = 1,
-  "Default",
-  "Loading",
-  "Converted",
-  "WhatsNext",
-  "Error",
-}
 
 // set the available chains configuration to allow network to be added
 export const CHAINS: Record<
@@ -336,3 +393,10 @@ export enum ErrorMessages {
 
 export const migrationPolicyUrl =
   "https://forum.mantle.xyz/t/clarification-of-bit-to-mnt-migration-policy-and-service/7877";
+
+export const maxCharityNFTSupplies: Record<number, number> = {
+  1: 100,
+  5: 30,
+};
+
+export const maxCharityNFTSupply = maxCharityNFTSupplies[L1_CHAIN_ID];
