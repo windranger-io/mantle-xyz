@@ -13,7 +13,7 @@ export const CONVERSION_RATE = 1;
 
 export const L1_NFT_ADDRESSES: Record<number, `0x${string}`> = {
   1: "0xsomething", // TODO: add NFT mainnet contract address here
-  5: "0x56c62Ffcb03858bD2d34CB8091B02CE31001bBc9",
+  5: "0x1CeDe61B20A9cA71c3CC44137e3323298557ba9A",
 };
 
 export const L1_NFT_ADDRESS = L1_NFT_ADDRESSES[L1_CHAIN_ID];
