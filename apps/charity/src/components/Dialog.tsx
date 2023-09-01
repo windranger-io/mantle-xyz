@@ -15,11 +15,13 @@ export default function TxDialog({
   isOpen,
   setIsOpen,
   numOfToken,
+  resetUserClaimedAmount,
 }: {
   txHash: `0x${string}`;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   numOfToken: number;
+  resetUserClaimedAmount: () => void;
 }) {
   const { resetTotalMinted } = useTotalMinted(L1_NFT_ADDRESS);
 
@@ -27,6 +29,7 @@ export default function TxDialog({
     hash: txHash,
     onSuccess() {
       resetTotalMinted();
+      resetUserClaimedAmount();
     },
   });
 

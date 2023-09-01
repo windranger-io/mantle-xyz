@@ -10,7 +10,7 @@ import {
   L1_NFT_ADDRESS,
   L1_NFT_CONTRACT_ABI,
 } from "@config/constants";
-import { useTotalMinted } from "@hooks/web3/read";
+import { useTotalMinted, useUserClaimedSupply } from "@hooks/web3/read";
 import StateContext from "@providers/stateContext";
 import useCurrentClaimPhase from "@hooks/web3/read/useCurrentClaimPhase";
 import TxDialog from "./Dialog";
@@ -52,6 +52,26 @@ export default function Form() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [txHash, setTxHash] = useState<`0x${string}` | null>(null);
+
+  // get user claimed supply
+  const { userClaimedAmount, resetUserClaimedAmount } = useUserClaimedSupply(
+    L1_NFT_ADDRESS,
+    activeClaimConditionId,
+    client?.address
+  );
+
+  const maxPerWallet = (
+    currentCondition as any
+  )?.quantityLimitPerWallet.toNumber();
+
+  const userMaxMintableAmount =
+    remainingNFT !== null && remainingNFT < maxPerWallet
+      ? remainingNFT - Number(userClaimedAmount)
+      : maxPerWallet - Number(userClaimedAmount); // fallback to 5 when not yet loaded the data
+
+  const maxMintableAmount = Number.isNaN(userMaxMintableAmount)
+    ? 5
+    : userMaxMintableAmount;
 
   // claim NFT
   const { isLoading: isClaimLoading, write: claim } = useContractWrite({
@@ -151,7 +171,7 @@ export default function Form() {
               id="numOfToken"
               value={numOfToken}
               min={1}
-              max={remainingNFT !== null && remainingNFT < 5 ? remainingNFT : 5}
+              max={maxMintableAmount}
               className="grow text-center bg-black focus:ring-0 focus:ring-white/70 focus:outline-none border-0 appearance-none"
               onChange={(e) => {
                 setNumOfToken(`${Math.abs(+(e.target.value || "")) || ""}`);
@@ -159,14 +179,10 @@ export default function Form() {
             />
             <button
               type="button"
-              disabled={
-                Number(numOfToken) >=
-                (remainingNFT !== null && remainingNFT < 5 ? remainingNFT : 5)
-              }
+              disabled={Number(numOfToken) >= maxMintableAmount}
               onClick={() => setNumOfToken((prev) => Number(prev) + 1)}
               className={`${
-                Number(numOfToken) >=
-                (remainingNFT !== null && remainingNFT < 5 ? remainingNFT : 5)
+                Number(numOfToken) >= maxMintableAmount
                   ? "cursor-not-allowed"
                   : "cursor-pointer"
               } h-8 w-8`}
@@ -184,10 +200,7 @@ export default function Form() {
                   cy="16"
                   r="15.5"
                   stroke={
-                    Number(numOfToken) >=
-                    (remainingNFT !== null && remainingNFT < 5
-                      ? remainingNFT
-                      : 5)
+                    Number(numOfToken) >= maxMintableAmount
                       ? "#696969"
                       : "white"
                   }
@@ -195,10 +208,7 @@ export default function Form() {
                 <path
                   d="M15.25 16.75H9.5V15.25H15.25V9.5H16.7499V15.25H22.5V16.75H16.7499V22.5H15.25V16.75Z"
                   fill={
-                    Number(numOfToken) >=
-                    (remainingNFT !== null && remainingNFT < 5
-                      ? remainingNFT
-                      : 5)
+                    Number(numOfToken) >= maxMintableAmount
                       ? "#696969"
                       : "white"
                   }
@@ -239,21 +249,20 @@ export default function Form() {
             </Button>
           </div>
         )}
+
         {/* Mint NFT Button */}
         {client?.address &&
         currentCondition &&
         remainingNFT !== null &&
-        remainingNFT > 0 ? (
+        remainingNFT > 0 &&
+        maxMintableAmount > 0 ? (
           <div className="w-full">
             <Button
               type="button"
               size="full"
               variant="secondary"
               disabled={
-                Number(numOfToken) >
-                  (remainingNFT !== null && remainingNFT < 5
-                    ? remainingNFT
-                    : 5) ||
+                Number(numOfToken) > maxMintableAmount ||
                 Number(numOfToken) < 1 ||
                 !hasActivePhase
               }
@@ -284,10 +293,8 @@ export default function Form() {
                   {/* eslint-disable-next-line no-nested-ternary */}
                   {!hasActivePhase
                     ? "No active claim phase"
-                    : Number(numOfToken) >
-                        (remainingNFT !== null && remainingNFT < 5
-                          ? remainingNFT
-                          : 5) || Number(numOfToken) < 1
+                    : Number(numOfToken) > maxMintableAmount ||
+                      Number(numOfToken) < 1
                     ? "Invalid mint amount"
                     : "Mint NFT"}
                 </span>
@@ -319,11 +326,20 @@ export default function Form() {
           </div>
         ) : null}
 
-        {/* Fully Minted Button */}
+        {/* Fully Minted Button or minted max limit */}
+        {/* eslint-disable-next-line no-nested-ternary */}
         {remainingNFT === 0 ? (
           <div className="w-full">
             <Button type="button" size="full" variant="secondary" disabled>
               NFT Collection Fully Minted
+            </Button>
+          </div>
+        ) : maxMintableAmount <= 0 ? (
+          <div className="w-full">
+            <Button type="button" size="full" variant="secondary" disabled>
+              <div className="flex flex-row gap-4 items-center mx-auto w-fit">
+                <span>Minted max. limit</span>
+              </div>
             </Button>
           </div>
         ) : null}
@@ -342,6 +358,7 @@ export default function Form() {
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           numOfToken={Number(numOfToken)}
+          resetUserClaimedAmount={resetUserClaimedAmount}
         />
       )}
     </div>
