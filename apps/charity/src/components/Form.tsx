@@ -1,11 +1,18 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
+import { useContractWrite } from "wagmi";
 
 import { Button, Typography } from "@mantle/ui";
-import { maxNFTSupply, L1_NFT_ADDRESS } from "@config/constants";
+import {
+  maxCharityNFTSupply,
+  L1_NFT_ADDRESS,
+  L1_NFT_CONTRACT_ABI,
+} from "@config/constants";
 import { useTotalMinted } from "@hooks/web3/read";
 import StateContext from "@providers/stateContext";
+import useCurrentClaimPhase from "@hooks/web3/read/useCurrentClaimPhase";
+import { BigNumber } from "ethers";
 
 export default function Form() {
   const { client, setWalletModalOpen } = useContext(StateContext);
@@ -15,7 +22,7 @@ export default function Form() {
 
   useEffect(() => {
     if (!isFetchingTotalMinted) {
-      setRemainingNFT(maxNFTSupply - Number(totalMinted));
+      setRemainingNFT(maxCharityNFTSupply - Number(totalMinted));
     }
   }, [isFetchingTotalMinted, totalMinted]);
 
@@ -25,10 +32,37 @@ export default function Form() {
   } else if (remainingNFT <= 0) {
     remainingCopy = "Fully Minted";
   } else {
-    remainingCopy = remainingNFT;
+    remainingCopy = `${remainingNFT} of ${maxCharityNFTSupply}`;
   }
 
   const [numOfToken, setNumOfToken] = useState<number | string>(1);
+
+  // get current claim condition
+  const {
+    currentCondition,
+    activeClaimConditionId,
+    isFetchingActiveClaimConditionId,
+  } = useCurrentClaimPhase(L1_NFT_ADDRESS);
+
+  const hasActivePhase =
+    !isFetchingActiveClaimConditionId && activeClaimConditionId !== undefined;
+
+  // claim NFT
+  const {
+    // isLoading: isClaimLoading,
+    // isSuccess: isClaimSuccess,
+    write: claim,
+  } = useContractWrite({
+    address: L1_NFT_ADDRESS,
+    abi: L1_NFT_CONTRACT_ABI,
+    functionName: "claim",
+    // onSuccess(data) {
+    // console.log("Claim Success", data);
+    // },
+    // onError(error) {
+    // console.log("Claim Error", error);
+    // },
+  });
 
   return (
     <div className="grow sm:my-16 my-10">
@@ -171,8 +205,11 @@ export default function Form() {
             </Button>
           </div>
         )}
-        {/* TODO: Mint NFT Button */}
-        {client.isConnected && remainingNFT !== null && remainingNFT > 0 ? (
+        {/* Mint NFT Button */}
+        {client?.address &&
+        currentCondition &&
+        remainingNFT !== null &&
+        remainingNFT > 0 ? (
           <div className="mb-6 w-full">
             <Button
               type="button"
@@ -182,14 +219,39 @@ export default function Form() {
                 Number(numOfToken) >
                   (remainingNFT !== null && remainingNFT < 5
                     ? remainingNFT
-                    : 5) || Number(numOfToken) < 1
+                    : 5) ||
+                Number(numOfToken) < 1 ||
+                !hasActivePhase
               }
-              // onClick={() => console.log("TODO")}
+              onClick={() => {
+                claim({
+                  args: [
+                    client.address, // _receiver
+                    BigNumber.from(numOfToken), // _quantity
+                    (currentCondition as any)?.currency, // _currency
+                    (currentCondition as any)?.pricePerToken, // _pricePerToken
+                    {
+                      proof: [(currentCondition as any)?.merkleRoot],
+                      quantityLimitPerWallet: (currentCondition as any)
+                        ?.quantityLimitPerWallet,
+                      pricePerToken: (currentCondition as any)?.pricePerToken,
+                      currency: (currentCondition as any)?.currency,
+                    }, // _allowlistProof
+                    "0x", // _data
+                  ],
+                  value: (currentCondition as any)?.pricePerToken.mul(
+                    numOfToken
+                  ),
+                });
+              }}
             >
-              {Number(numOfToken) >
-                (remainingNFT !== null && remainingNFT < 5
-                  ? remainingNFT
-                  : 5) || Number(numOfToken) < 1
+              {/* eslint-disable-next-line no-nested-ternary */}
+              {!hasActivePhase
+                ? "No active claim phase"
+                : Number(numOfToken) >
+                    (remainingNFT !== null && remainingNFT < 5
+                      ? remainingNFT
+                      : 5) || Number(numOfToken) < 1
                 ? "Invalid mint amount"
                 : "Mint NFT"}
             </Button>

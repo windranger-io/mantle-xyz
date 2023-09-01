@@ -11,7 +11,7 @@ export const CONVERSION_RATE = 1;
 
 export const L1_NFT_ADDRESSES: Record<number, `0x${string}`> = {
   1: "0xsomething", // TODO: add NFT mainnet contract address here
-  5: "0xa44Cc80a8CDaa7e7cDD8007f758CCFD1B61cA0c7",
+  5: "0x56c62Ffcb03858bD2d34CB8091B02CE31001bBc9",
 };
 
 export const L1_NFT_ADDRESS = L1_NFT_ADDRESSES[L1_CHAIN_ID];
@@ -42,6 +42,70 @@ export const L1_CONVERTER_CONTRACT_ABI = [
   "function migrateBIT(uint256 _amount)",
   "function migrateAllBIT()",
   "function halted() view returns (bool)",
+];
+
+// Use L1 NFT contract
+export const L1_NFT_CONTRACT_ABI = [
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_receiver",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_quantity",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "_currency",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_pricePerToken",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "bytes32[]",
+            name: "proof",
+            type: "bytes32[]",
+          },
+          {
+            internalType: "uint256",
+            name: "quantityLimitPerWallet",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "pricePerToken",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "currency",
+            type: "address",
+          },
+        ],
+        internalType: "struct IDrop.AllowlistProof",
+        name: "_allowlistProof",
+        type: "tuple",
+      },
+      {
+        internalType: "bytes",
+        name: "_data",
+        type: "bytes",
+      },
+    ],
+    name: "claim",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
 ];
 
 // Token constructs for dummy contracts on goerli
@@ -328,4 +392,4 @@ export enum ErrorMessages {
 export const migrationPolicyUrl =
   "https://forum.mantle.xyz/t/clarification-of-bit-to-mnt-migration-policy-and-service/7877";
 
-export const maxNFTSupply = 100;
+export const maxCharityNFTSupply = 100;
