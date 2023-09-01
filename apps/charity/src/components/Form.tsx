@@ -3,21 +3,17 @@
 import { useContext, useEffect, useState } from "react";
 import { useContractWrite } from "wagmi";
 import { BigNumber } from "ethers";
-import Image from "next/image";
-import { Dialog } from "@headlessui/react";
-import { MdClear } from "react-icons/md";
 
 import { Button, Typography } from "@mantle/ui";
 import {
   maxCharityNFTSupply,
   L1_NFT_ADDRESS,
   L1_NFT_CONTRACT_ABI,
-  L1_CHAIN_ID,
 } from "@config/constants";
 import { useTotalMinted } from "@hooks/web3/read";
 import StateContext from "@providers/stateContext";
 import useCurrentClaimPhase from "@hooks/web3/read/useCurrentClaimPhase";
-import TxLink from "@components/TxLink";
+import TxDialog from "./Dialog";
 
 export default function Form() {
   const { client, setWalletModalOpen } = useContext(StateContext);
@@ -55,7 +51,7 @@ export default function Form() {
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [txHash, setTxHash] = useState<string>("");
+  const [txHash, setTxHash] = useState<`0x${string}` | null>(null);
 
   // claim NFT
   const { isLoading: isClaimLoading, write: claim } = useContractWrite({
@@ -63,9 +59,11 @@ export default function Form() {
     abi: L1_NFT_CONTRACT_ABI,
     functionName: "claim",
     onSuccess(data) {
+      // set tx hash
       if (data.hash) {
         setTxHash(data.hash);
       }
+      // open pending dialog
       setIsOpen(true);
     },
     onError(error) {
@@ -75,7 +73,12 @@ export default function Form() {
         );
         resetTotalMinted();
       } else if (error.toString().includes("User rejected the request.")) {
-        setErrorMsg(""); // don't show error msg since this is user decision
+        // don't show error msg since this is user decision
+        setErrorMsg("");
+      } else if (error.toString().includes("!Qty")) {
+        setErrorMsg(
+          "You have already minted the max. amount of NFTs allowed per wallet address"
+        );
       } else {
         setErrorMsg(
           "Something went wrong, please refresh the page and try again."
@@ -196,6 +199,7 @@ export default function Form() {
         ) : (
           <div className="h-12" /> // empty space when not showing input
         )}
+        {/* Static info of NFT collection */}
         <div className="w-full">
           <div className="flex justify-between items-center gap-2">
             <Typography variant="smallWidget16">Price per NFT</Typography>
@@ -314,6 +318,7 @@ export default function Form() {
           </div>
         ) : null}
 
+        {/* Error message */}
         {errorMsg && (
           <Typography variant="smallWidget16" className="text-type-error">
             {errorMsg}
@@ -321,53 +326,14 @@ export default function Form() {
         )}
       </div>
 
-      <Dialog
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        className="relative z-50"
-      >
-        {/* The backdrop, rendered as a fixed sibling to the panel container */}
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-lg"
-          aria-hidden="true"
+      {txHash && (
+        <TxDialog
+          txHash={txHash}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          numOfToken={Number(numOfToken)}
         />
-        {/* Full-screen scrollable container */}
-        <div className="fixed inset-0 overflow-y-auto">
-          {/* Container to center the panel */}
-          <div className="flex min-h-full items-center justify-center">
-            {/* The actual dialog panel  */}
-            <Dialog.Panel className="flex flex-col items-start lg:min-w-[484px] mx-auto rounded-[14px] bg-black px-4 py-8">
-              <div className="mt-2.5 w-full px-5">
-                <div className="flex justify-between align-middle">
-                  <Typography
-                    variant="h6TitleMini"
-                    className="text-center my-2.5 grow"
-                  >
-                    Minting request pending
-                  </Typography>
-                  <MdClear
-                    onClick={() => setIsOpen(false)}
-                    className="cursor-pointer h-11 w-11"
-                  />
-                </div>
-
-                <div className="flex items-center justify-center py-12">
-                  <Image
-                    src="/preloader_animation_160.gif"
-                    width="80"
-                    height="80"
-                    alt="Mantle loading wheel"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-4">
-                  <TxLink chainId={L1_CHAIN_ID} txHash={txHash} />
-                </div>
-              </div>
-            </Dialog.Panel>
-          </div>
-        </div>
-      </Dialog>
+      )}
     </div>
   );
 }
