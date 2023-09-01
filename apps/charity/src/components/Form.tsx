@@ -3,16 +3,21 @@
 import { useContext, useEffect, useState } from "react";
 import { useContractWrite } from "wagmi";
 import { BigNumber } from "ethers";
+import Image from "next/image";
+import { Dialog } from "@headlessui/react";
+import { MdClear } from "react-icons/md";
 
 import { Button, Typography } from "@mantle/ui";
 import {
   maxCharityNFTSupply,
   L1_NFT_ADDRESS,
   L1_NFT_CONTRACT_ABI,
+  L1_CHAIN_ID,
 } from "@config/constants";
 import { useTotalMinted } from "@hooks/web3/read";
 import StateContext from "@providers/stateContext";
 import useCurrentClaimPhase from "@hooks/web3/read/useCurrentClaimPhase";
+import TxLink from "@components/TxLink";
 
 export default function Form() {
   const { client, setWalletModalOpen } = useContext(StateContext);
@@ -49,20 +54,20 @@ export default function Form() {
     !isFetchingActiveClaimConditionId && activeClaimConditionId !== undefined;
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [txHash, setTxHash] = useState<string>("");
+
   // claim NFT
-  const {
-    isLoading: isClaimLoading,
-    // isSuccess: isClaimSuccess,
-    write: claim,
-  } = useContractWrite({
+  const { isLoading: isClaimLoading, write: claim } = useContractWrite({
     address: L1_NFT_ADDRESS,
     abi: L1_NFT_CONTRACT_ABI,
     functionName: "claim",
-    // onSuccess(data) {
-    // console.log("Claim Success", data);
-    // TODO: pending page
-    // TODO: wait till confirmation - success
-    // },
+    onSuccess(data) {
+      if (data.hash) {
+        setTxHash(data.hash);
+      }
+      setIsOpen(true);
+    },
     onError(error) {
       if (error.toString().includes("!Tokens")) {
         setErrorMsg(
@@ -315,6 +320,54 @@ export default function Form() {
           </Typography>
         )}
       </div>
+
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        className="relative z-50"
+      >
+        {/* The backdrop, rendered as a fixed sibling to the panel container */}
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-lg"
+          aria-hidden="true"
+        />
+        {/* Full-screen scrollable container */}
+        <div className="fixed inset-0 overflow-y-auto">
+          {/* Container to center the panel */}
+          <div className="flex min-h-full items-center justify-center">
+            {/* The actual dialog panel  */}
+            <Dialog.Panel className="flex flex-col items-start lg:min-w-[484px] mx-auto rounded-[14px] bg-black px-4 py-8">
+              <div className="mt-2.5 w-full px-5">
+                <div className="flex justify-between align-middle">
+                  <Typography
+                    variant="h6TitleMini"
+                    className="text-center my-2.5 grow"
+                  >
+                    Minting request pending
+                  </Typography>
+                  <MdClear
+                    onClick={() => setIsOpen(false)}
+                    className="cursor-pointer h-11 w-11"
+                  />
+                </div>
+
+                <div className="flex items-center justify-center py-12">
+                  <Image
+                    src="/preloader_animation_160.gif"
+                    width="80"
+                    height="80"
+                    alt="Mantle loading wheel"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <TxLink chainId={L1_CHAIN_ID} txHash={txHash} />
+                </div>
+              </div>
+            </Dialog.Panel>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }
