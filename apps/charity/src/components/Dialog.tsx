@@ -6,8 +6,9 @@ import Image from "next/image";
 import { Dialog } from "@headlessui/react";
 
 import { Typography } from "@mantle/ui";
-import { L1_CHAIN_ID } from "@config/constants";
+import { L1_CHAIN_ID, L1_NFT_ADDRESS } from "@config/constants";
 import TxLink from "@components/TxLink";
+import { useTotalMinted } from "@hooks/web3/read";
 
 export default function TxDialog({
   txHash,
@@ -20,8 +21,13 @@ export default function TxDialog({
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   numOfToken: number;
 }) {
+  const { resetTotalMinted } = useTotalMinted(L1_NFT_ADDRESS);
+
   const { isLoading: isTxLoading } = useWaitForTransaction({
     hash: txHash,
+    onSuccess() {
+      resetTotalMinted();
+    },
   });
 
   return (
