@@ -1,22 +1,22 @@
 import { Button } from "@mantle/ui";
-import { useContext, useState, useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import StateContext from "@providers/stateContext";
 
 import {
   CHAINS,
   CTAPages,
-  L1_CHAIN_ID,
-  L1_BITDAO_TOKEN_ADDRESS,
   L1_BITDAO_TOKEN,
+  L1_BITDAO_TOKEN_ADDRESS,
+  L1_CHAIN_ID,
 } from "@config/constants";
 
 import { parseUnits } from "ethers/lib/utils.js";
 
 import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 // import { useCallApprove } from "@hooks/web3/bridge/write/useCallApprove";
-import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 import { useCallApprove } from "@hooks/web3/converter/write/useCallApprove";
+import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 
 type CTAProps = {
   setIsOpen: (val: boolean) => void;

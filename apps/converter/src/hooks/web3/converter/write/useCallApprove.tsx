@@ -1,7 +1,7 @@
 import {
-  TOKEN_ABI,
   L1_BITDAO_TOKEN,
-  L1_CONVERTER_CONTRACT_ADDRESS,
+  L1_CONVERTER_V2_CONTRACT_ADDRESS,
+  TOKEN_ABI,
 } from "@config/constants";
 import StateContext from "@providers/stateContext";
 import { parseUnits } from "ethers/lib/utils.js";
@@ -30,7 +30,7 @@ export function useCallApprove() {
       // perform the tx call
       const txRes = await writeApprove({
         args: [
-          L1_CONVERTER_CONTRACT_ADDRESS,
+          L1_CONVERTER_V2_CONTRACT_ADDRESS,
           parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals).toString(),
         ],
       }).catch((e) => {

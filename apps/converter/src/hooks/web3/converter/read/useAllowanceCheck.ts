@@ -2,12 +2,12 @@ import {
   CHAINS_FORMATTED,
   L1_BITDAO_TOKEN,
   L1_BITDAO_TOKEN_ADDRESS,
-  L1_CONVERTER_CONTRACT_ADDRESS,
+  L1_CONVERTER_V2_CONTRACT_ADDRESS,
   TOKEN_ABI,
 } from "@config/constants";
-import { Contract, BigNumberish, providers } from "ethers";
+import { BigNumberish, Contract, providers } from "ethers";
 
-import { parseUnits, formatUnits } from "ethers/lib/utils.js";
+import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
 import { useQuery } from "wagmi";
 
@@ -39,7 +39,7 @@ function useAllowanceCheck(
           );
           // check the allowance the user has allocated to the bridge
           return contract
-            ?.allowance(client.address, L1_CONVERTER_CONTRACT_ADDRESS)
+            ?.allowance(client.address, L1_CONVERTER_V2_CONTRACT_ADDRESS)
             .catch(() => {
               // eslint-disable-next-line no-console
               // console.log("Allowance call error:", e);
