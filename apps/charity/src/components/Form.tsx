@@ -3,7 +3,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useContractWrite } from "wagmi";
 import { BigNumber } from "ethers";
-import debounce from "lodash.debounce";
 
 import { Button, Typography } from "@mantle/ui";
 import {
@@ -125,7 +124,7 @@ export default function Form() {
     },
   });
 
-  const handleClaim = debounce(() => {
+  const handleClaim = () => {
     claim({
       args: [
         client.address, // _receiver
@@ -143,7 +142,7 @@ export default function Form() {
       ],
       value: (currentCondition as any)?.pricePerToken.mul(numOfToken),
     });
-  }, 300);
+  };
 
   return (
     <div className="grow sm:my-16 my-10">
@@ -293,7 +292,8 @@ export default function Form() {
               disabled={
                 Number(numOfToken) > maxMintableAmount ||
                 Number(numOfToken) < 1 ||
-                !hasActivePhase
+                !hasActivePhase ||
+                isClaimLoading
               }
               onClick={handleClaim}
             >
