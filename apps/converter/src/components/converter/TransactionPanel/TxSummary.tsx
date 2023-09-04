@@ -1,7 +1,8 @@
-import { useMemo } from "react";
 import { Typography } from "@mantle/ui";
-import { formatEther, parseUnits } from "ethers/lib/utils.js";
+import StateContext from "@providers/stateContext";
 import { constants } from "ethers";
+import { formatEther, parseUnits } from "ethers/lib/utils.js";
+import { useContext, useMemo } from "react";
 
 type Props = {
   actualGasFee: string;
@@ -16,9 +17,16 @@ export function TransactionSummary({ actualGasFee }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [actualGasFee]
   );
+  const { allowance } = useContext(StateContext);
 
   return (
     <div className="space-y-3 pt-6" key="tx-panel-0">
+      <div className="flex justify-between">
+        <Typography variant="smallWidget">Current approval</Typography>
+        <Typography variant="smallWidget" className="text-white">
+          {parseFloat(allowance || "0")}
+        </Typography>
+      </div>
       <div className="flex justify-between">
         <Typography variant="smallWidget">Migration rate</Typography>
         <Typography variant="smallWidget" className="text-white">
