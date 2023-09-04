@@ -9,13 +9,22 @@ import {
   maxCharityNFTSupply,
   L1_NFT_ADDRESS,
   L1_NFT_CONTRACT_ABI,
+  L1_CHAIN_ID,
+  CHAINS,
 } from "@config/constants";
 import { useTotalMinted, useUserClaimedSupply } from "@hooks/web3/read";
 import StateContext from "@providers/stateContext";
 import useCurrentClaimPhase from "@hooks/web3/read/useCurrentClaimPhase";
+import useIsChainID from "@hooks/web3/read/useIsChainID";
+import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 import TxDialog from "./Dialog";
 
 export default function Form() {
+  // check that we're connected to the appropriate chain
+  const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
+  // switch to the correct network if missing
+  const { switchToNetwork } = useSwitchToNetwork();
+
   const { client, setWalletModalOpen } = useContext(StateContext);
 
   const { isFetchingTotalMinted, totalMinted, resetTotalMinted } =
@@ -249,7 +258,8 @@ export default function Form() {
         )}
 
         {/* Mint NFT Button */}
-        {client?.address &&
+        {isLayer1ChainID &&
+        client?.address &&
         currentCondition &&
         remainingNFT !== null &&
         remainingNFT > 0 &&
@@ -341,6 +351,21 @@ export default function Form() {
             </Button>
           </div>
         ) : null}
+
+        {client.isConnected && !isLayer1ChainID && remainingNFT !== 0 && (
+          <div className="w-full">
+            <Button
+              type="button"
+              size="full"
+              variant="secondary"
+              onClick={() => switchToNetwork(L1_CHAIN_ID)}
+            >
+              <div className="flex flex-row gap-4 items-center mx-auto w-fit">
+                <span>Switch to ${CHAINS[L1_CHAIN_ID].chainName}</span>
+              </div>
+            </Button>
+          </div>
+        )}
 
         {/* Error message */}
         {errorMsg && (
