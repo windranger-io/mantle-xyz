@@ -361,7 +361,7 @@ export default function Form() {
               onClick={() => switchToNetwork(L1_CHAIN_ID)}
             >
               <div className="flex flex-row gap-4 items-center mx-auto w-fit">
-                <span>Switch to ${CHAINS[L1_CHAIN_ID].chainName}</span>
+                <span>Switch to {CHAINS[L1_CHAIN_ID].chainName}</span>
               </div>
             </Button>
           </div>
