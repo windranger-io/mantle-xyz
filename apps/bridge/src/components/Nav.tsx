@@ -13,60 +13,6 @@ type NavProps = {
   className?: string | undefined;
 };
 
-const NAV_ITEMS: NavItem[] = [
-  {
-    name: "Docs",
-    href: "https://docs.mantle.xyz",
-    internal: true,
-    key: "docs",
-  },
-  {
-    name: "Migrate",
-    href: "https://migratebit.mantle.xyz",
-    internal: true,
-    key: "migrate",
-  },
-  {
-    name: "Bridge",
-    href: "https://bridge.mantle.xyz",
-    internal: true,
-    key: "bridge",
-  },
-  {
-    name: "Account",
-    href: "/account/withdraw",
-    internal: true,
-    key: "account",
-  },
-];
-
-const NAV_ITEMS_TESTNET: NavItem[] = [
-  {
-    name: "Docs",
-    href: "https://docs.mantle.xyz",
-    internal: true,
-    key: "docs",
-  },
-  {
-    name: "Faucet",
-    href: "https://faucet.testnet.mantle.xyz",
-    internal: true,
-    key: "faucet",
-  },
-  {
-    name: "Bridge",
-    href: "https://bridge.testnet.mantle.xyz",
-    internal: true,
-    key: "bridge",
-  },
-  {
-    name: "Account",
-    href: "/account/withdraw",
-    internal: true,
-    key: "account",
-  },
-];
-
 function Nav({ className = "" }: NavProps) {
   const { mobileMenuOpen, setMobileMenuOpen } = useContext(StateContext);
   const pathName = usePathname();
@@ -74,6 +20,65 @@ function Nav({ className = "" }: NavProps) {
   const activeKey = pathName.includes("account") ? "account" : "bridge";
 
   const isTestnet = L1_CHAIN_ID === 5 || L2_CHAIN_ID === 5001;
+
+  const NAV_ITEMS: NavItem[] = [
+    {
+      name: "Docs",
+      href: "https://docs.mantle.xyz",
+      internal: true,
+      key: "docs",
+    },
+    {
+      name: "Migrate",
+      href: "https://migratebit.mantle.xyz",
+      internal: true,
+      key: "migrate",
+    },
+    {
+      name: "Bridge",
+      href: "https://bridge.mantle.xyz",
+      internal: true,
+      key: "bridge",
+    },
+    {
+      name: "Account",
+      href: pathName.includes("withdraw")
+        ? "/account/withdraw"
+        : "/account/deposit",
+      internal: true,
+      key: "account",
+    },
+  ];
+
+  const NAV_ITEMS_TESTNET: NavItem[] = [
+    {
+      name: "Docs",
+      href: "https://docs.mantle.xyz",
+      internal: true,
+      key: "docs",
+    },
+    {
+      name: "Faucet",
+      href: "https://faucet.testnet.mantle.xyz",
+      internal: true,
+      key: "faucet",
+    },
+    {
+      name: "Bridge",
+      href: "https://bridge.testnet.mantle.xyz",
+      internal: true,
+      key: "bridge",
+    },
+    {
+      name: "Account",
+      href: pathName.includes("withdraw")
+        ? "/account/withdraw"
+        : "/account/deposit",
+      internal: true,
+      key: "account",
+    },
+  ];
+
   const navItems = isTestnet ? NAV_ITEMS_TESTNET : NAV_ITEMS;
 
   return (
