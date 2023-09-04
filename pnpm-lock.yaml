@@ -235,6 +235,9 @@ importers:
       framer-motion:
         specifier: ^10.12.10
         version: 10.12.16(react-dom@18.2.0)(react@18.2.0)
+      lodash.debounce:
+        specifier: ^4.0.8
+        version: 4.0.8
       next:
         specifier: 13.3.0
         version: 13.3.0(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
@@ -263,6 +266,9 @@ importers:
       '@mantle/tsconfig':
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      '@types/lodash.debounce':
+        specifier: ^4.0.7
+        version: 4.0.7
       '@types/node':
         specifier: 18.11.3
         version: 18.11.3

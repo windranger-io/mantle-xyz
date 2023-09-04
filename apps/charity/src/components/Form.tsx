@@ -3,6 +3,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useContractWrite } from "wagmi";
 import { BigNumber } from "ethers";
+import debounce from "lodash.debounce";
 
 import { Button, Typography } from "@mantle/ui";
 import {
@@ -123,6 +124,26 @@ export default function Form() {
       }
     },
   });
+
+  const handleClaim = debounce(() => {
+    claim({
+      args: [
+        client.address, // _receiver
+        BigNumber.from(numOfToken), // _quantity
+        (currentCondition as any)?.currency, // _currency
+        (currentCondition as any)?.pricePerToken, // _pricePerToken
+        {
+          proof: [(currentCondition as any)?.merkleRoot],
+          quantityLimitPerWallet: (currentCondition as any)
+            ?.quantityLimitPerWallet,
+          pricePerToken: (currentCondition as any)?.pricePerToken,
+          currency: (currentCondition as any)?.currency,
+        }, // _allowlistProof
+        "0x", // _data
+      ],
+      value: (currentCondition as any)?.pricePerToken.mul(numOfToken),
+    });
+  }, 300);
 
   return (
     <div className="grow sm:my-16 my-10">
@@ -274,27 +295,7 @@ export default function Form() {
                 Number(numOfToken) < 1 ||
                 !hasActivePhase
               }
-              onClick={() => {
-                claim({
-                  args: [
-                    client.address, // _receiver
-                    BigNumber.from(numOfToken), // _quantity
-                    (currentCondition as any)?.currency, // _currency
-                    (currentCondition as any)?.pricePerToken, // _pricePerToken
-                    {
-                      proof: [(currentCondition as any)?.merkleRoot],
-                      quantityLimitPerWallet: (currentCondition as any)
-                        ?.quantityLimitPerWallet,
-                      pricePerToken: (currentCondition as any)?.pricePerToken,
-                      currency: (currentCondition as any)?.currency,
-                    }, // _allowlistProof
-                    "0x", // _data
-                  ],
-                  value: (currentCondition as any)?.pricePerToken.mul(
-                    numOfToken
-                  ),
-                });
-              }}
+              onClick={handleClaim}
             >
               <div className="flex flex-row gap-4 items-center mx-auto w-fit">
                 <span>
