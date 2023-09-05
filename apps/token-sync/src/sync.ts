@@ -1,13 +1,5 @@
 // import supagraph tooling
-import {
-  DB,
-  Mongo,
-  withDefault,
-  SyncConfig,
-  setEngine,
-  setSyncs,
-  sync,
-} from "supagraph";
+import { DB, Mongo, SyncConfig, setEngine, setSyncs, sync } from "supagraph";
 
 // import mongo client factory
 import { getMongodb } from "@providers/mongoClient";

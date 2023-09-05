@@ -9,6 +9,10 @@ import { snapshot } from "./snapshot";
 // type and cast default values
 import { withDefault } from "supagraph";
 
+// import env file and load contents
+import dotenv from "dotenv";
+dotenv.config();
+
 // create a new app to respond to reqs
 const app: Express = express();
 
@@ -25,7 +29,7 @@ if (withDefault(process.env.PUBLIC, true)) {
 }
 
 // listen for connections (default to 8000)
-app.listen(withDefault(process.env.port, 8000), async () => {
+app.listen(withDefault(process.env.PORT, 8000), async () => {
   // server started - lets go...
   console.log(
     `⚡️[server]: Server is running at http://localhost:${withDefault(

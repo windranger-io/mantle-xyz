@@ -9,7 +9,11 @@ import config from "@supagraph/config";
 import { Entity, Store, withDefault } from "supagraph";
 
 // Each event is supplied the block and tx along with the typed args
-import { JsonRpcProvider, TransactionReceipt } from "@ethersproject/providers";
+import {
+  JsonRpcProvider,
+  TransactionReceipt,
+  TransactionResponse,
+} from "@ethersproject/providers";
 
 // - These types will be generated based on the event signatures exported by the defined contracts in config (coming soon TM);
 import type {
@@ -37,11 +41,11 @@ const L2Provider = new JsonRpcProvider(
 // update sync pointers and save
 const updatePointers = async (
   entity: Entity<DelegateEntity> & DelegateEntity,
-  tx: TransactionReceipt
+  tx: TransactionReceipt & TransactionResponse
 ) => {
   // update pointers for lastUpdate
-  entity.set("blockNumber", tx.blockNumber);
-  entity.set("transactionHash", tx.transactionHash);
+  entity.set("blockNumber", +tx.blockNumber);
+  entity.set("transactionHash", tx.transactionHash || tx.hash);
 
   // save the changes
   return await entity.save();
@@ -50,7 +54,7 @@ const updatePointers = async (
 // Handler to consume DelegateChanged events from known contracts
 export const DelegateChangedHandler = async (
   args: DelegateChangedEvent,
-  { tx }: { tx: TransactionReceipt }
+  { tx }: { tx: TransactionReceipt & TransactionResponse }
 ) => {
   // console.log("delegate: from", args.fromDelegate, "to", args.toDelegate);
 
@@ -237,7 +241,7 @@ export const DelegateChangedHandler = async (
 // Handler to consume DelegateVotesChanged events from known contracts
 export const DelegateVotesChangedHandler = async (
   args: DelegateVotesChangedEvent,
-  { tx }: { tx: TransactionReceipt }
+  { tx }: { tx: TransactionReceipt & TransactionResponse }
 ) => {
   // console.log("votes changed:", args.delegate, "from", args.previousBalance.toString(), "to", args.newBalance.toString());
 
