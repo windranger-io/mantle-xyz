@@ -7,7 +7,7 @@ const faqList: Array<AccordionItemType> = [
   {
     trigger: (
       <Typography className="text-type-primary" variant="microBody14">
-        How to qualify for the MNT bonus?
+        How can I qualify for the MNT bonus?
       </Typography>
     ),
     content: (
@@ -29,7 +29,7 @@ const faqList: Array<AccordionItemType> = [
   {
     trigger: (
       <Typography className="text-type-primary" variant="microBody14">
-        Looking for a test drive?
+        Is there an option for a test drive?
       </Typography>
     ),
     content: (
@@ -52,7 +52,8 @@ const faqList: Array<AccordionItemType> = [
   {
     trigger: (
       <Typography className="text-type-primary" variant="microBody14">
-        What’s L1/L2 and the gas fees required for deposit/withdraw?
+        What is L1/L2, and what are the required gas fees for deposit and
+        withdrawal?
       </Typography>
     ),
     content: (
@@ -94,23 +95,49 @@ const faqList: Array<AccordionItemType> = [
   {
     trigger: (
       <Typography className="text-type-primary" variant="microBody14">
-        Where can I see the bridge token mapping?
+        How can I view my bridged token balances on Mantle Network in my wallet?
       </Typography>
     ),
     content: (
       <div className="text-type-secondary">
         <Typography className="mb-4">
-          You can view the bridge token mapping by visiting{" "}
+          If the auto-detection of your bridged balances doesn&apos;t work, you
+          can manually import the tokens to your wallet using the following
+          contract addresses:
+        </Typography>
+        <ul>
+          <li className="flex">
+            <span className="mr-4">•</span>
+            <Typography className="text-type-secondary break-all">
+              ETH: 0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111
+            </Typography>
+          </li>
+          <li className="flex">
+            <span className="mr-4">•</span>
+            <Typography className="text-type-secondary break-all">
+              USDT: 0x201EBa5CC46D216Ce6DC03F6a759e8E766e956aE
+            </Typography>
+          </li>
+          <li className="flex">
+            <span className="mr-4">•</span>
+            <Typography className="text-type-secondary break-all">
+              USDC: 0x09Bc4E0D864854c6aFB6eB9A9cdF58aC190D0dF9
+            </Typography>
+          </li>
+        </ul>
+
+        <Typography className="mb-4">
+          For other token contract addresses, you can access the bridge token
+          mapping by visiting the following{" "}
           <a
             href="https://docs.mantle.xyz/network/for-devs/resources-and-tooling/mantle-bridge-api#the-token-list"
             target="__blank"
             rel="noreferrer"
             className="underline text-md"
           >
-            this link
+            link
           </a>{" "}
-          which directs to the Mantle documentation. It provides comprehensive
-          details on the token list and other related information.
+          , which directs you to the Mantle documentation.
         </Typography>
       </div>
     ),
@@ -119,7 +146,28 @@ const faqList: Array<AccordionItemType> = [
   {
     trigger: (
       <Typography className="text-type-primary" variant="microBody14">
-        How are withdrawal fees calculated?
+        What is the typical duration for deposit and withdrawal?
+      </Typography>
+    ),
+    content: (
+      <div className="text-type-secondary">
+        <Typography className="mb-4">
+          Initiating a deposit typically completes in around ~12 minutes.
+        </Typography>
+        <Typography className="mb-4">
+          Conversely, withdrawals, due to the intricacies of Optimistic Rollups,
+          have a challenge period to detect and address any discrepancies in the
+          Mantle Mainnet transaction. This ensures the highest security, but
+          means withdrawals to Ethereum Mainnet can take up to a week.
+        </Typography>
+      </div>
+    ),
+    value: "faq-5",
+  },
+  {
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        How are withdrawal fees determined?
       </Typography>
     ),
     content: (
@@ -160,28 +208,32 @@ const faqList: Array<AccordionItemType> = [
         </Typography>
       </div>
     ),
-    value: "faq-5",
+    value: "faq-6",
   },
   {
     trigger: (
       <Typography className="text-type-primary" variant="microBody14">
-        How long do deposits and withdrawals take?
+        Where can I find the bridge token mapping?
       </Typography>
     ),
     content: (
       <div className="text-type-secondary">
         <Typography className="mb-4">
-          Initiating a deposit typically completes in around ~12 minutes.
-        </Typography>
-        <Typography className="mb-4">
-          Conversely, withdrawals, due to the intricacies of Optimistic Rollups,
-          have a challenge period to detect and address any discrepancies in the
-          Mantle Mainnet transaction. This ensures the highest security, but
-          means withdrawals to Ethereum Mainnet can take up to a week.
+          You can view the bridge token mapping by visiting{" "}
+          <a
+            href="https://docs.mantle.xyz/network/for-devs/resources-and-tooling/mantle-bridge-api#the-token-list"
+            target="__blank"
+            rel="noreferrer"
+            className="underline text-md"
+          >
+            this link
+          </a>{" "}
+          which directs to the Mantle documentation. It provides comprehensive
+          details on the token list and other related information.
         </Typography>
       </div>
     ),
-    value: "faq-6",
+    value: "faq-7",
   },
 ];
 
