@@ -19,7 +19,6 @@ import { formatBigNumberString, localeZero } from "@mantle/utils";
 import { Button, Typography, DividerCaret } from "@mantle/ui";
 import DirectionLabel from "@components/bridge/utils/DirectionLabel";
 import { MantleLogo } from "@components/bridge/utils/MantleLogo";
-import KindReminder from "@components/bridge/utils/KindReminder";
 import { searchTokensByNameAndSymbol } from "@utils/searchTokens";
 
 const POPULAR_TOKEN_SYMBOLS = ["ETH", "MNT", "USDT"];
@@ -488,7 +487,6 @@ export default function TokenSelect({
           }
         />
       )}
-      <KindReminder direction={direction} />
     </div>
   );
 }

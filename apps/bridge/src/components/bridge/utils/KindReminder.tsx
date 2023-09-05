@@ -37,7 +37,7 @@ export default function KindReminder({ direction }: { direction: Direction }) {
   }
 
   return (
-    <div className="bg-white/[.08] rounded-card p-4 mx-auto flex content-start gap-x-2">
+    <div className="bg-white/[.08] rounded-card p-4 mx-auto flex content-start gap-x-2 w-full lg:w-[484px] max-w-lg">
       <Typography variant="modalHeadingSm" className="text-[#C4C4C4]">
         <MdInfoOutline />
       </Typography>
