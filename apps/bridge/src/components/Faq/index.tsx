@@ -6,12 +6,15 @@ import { ConvertCard } from "../ConvertCard";
 const faqList: Array<AccordionItemType> = [
   {
     trigger: (
-      <Typography className="text-type-primary" variant="microBody14">
+      <Typography
+        className="text-type-primary max-w-[90%]"
+        variant="microBody14"
+      >
         How can I qualify for the MNT bonus?
       </Typography>
     ),
     content: (
-      <Typography className="text-type-secondary">
+      <Typography className="text-type-secondary max-w-[90%]">
         Deposit any token from Ethereum Mainnet to Mantle Network to receive a
         dust bonus in MNT. Limited to once per wallet address.{" "}
         <a
@@ -28,12 +31,15 @@ const faqList: Array<AccordionItemType> = [
   },
   {
     trigger: (
-      <Typography className="text-type-primary" variant="microBody14">
+      <Typography
+        className="text-type-primary max-w-[90%]"
+        variant="microBody14"
+      >
         Is there an option for a test drive?
       </Typography>
     ),
     content: (
-      <Typography className="text-type-secondary">
+      <Typography className="text-type-secondary max-w-[90%]">
         You can experience the deposit and withdraw flow by using our simulated
         testnet. It provides a safe environment to try out the bridge
         functionality without any real token transactions.
@@ -51,13 +57,16 @@ const faqList: Array<AccordionItemType> = [
   },
   {
     trigger: (
-      <Typography className="text-type-primary" variant="microBody14">
+      <Typography
+        className="text-type-primary max-w-[90%]"
+        variant="microBody14"
+      >
         What is L1/L2, and what are the required gas fees for deposit and
         withdrawal?
       </Typography>
     ),
     content: (
-      <div className="text-type-secondary">
+      <div className="text-type-secondary max-w-[90%]">
         <Typography className="mb-4">
           Mantle Network is a Layer-2 (L2) scalability solution built on
           Ethereum which is the Layer-1 (L1).
@@ -94,12 +103,15 @@ const faqList: Array<AccordionItemType> = [
   },
   {
     trigger: (
-      <Typography className="text-type-primary" variant="microBody14">
+      <Typography
+        className="text-type-primary max-w-[90%]"
+        variant="microBody14"
+      >
         How can I view my bridged token balances on Mantle Network in my wallet?
       </Typography>
     ),
     content: (
-      <div className="text-type-secondary">
+      <div className="text-type-secondary max-w-[90%]">
         <Typography className="mb-4">
           If the auto-detection of your bridged balances doesn&apos;t work, you
           can manually import the tokens to your wallet using the following
@@ -126,7 +138,7 @@ const faqList: Array<AccordionItemType> = [
           </li>
         </ul>
 
-        <Typography className="mb-4">
+        <Typography className="my-4">
           For other token contract addresses, you can access the bridge token
           mapping by visiting the following{" "}
           <a
@@ -136,7 +148,7 @@ const faqList: Array<AccordionItemType> = [
             className="underline text-md"
           >
             link
-          </a>{" "}
+          </a>
           , which directs you to the Mantle documentation.
         </Typography>
       </div>
@@ -145,12 +157,15 @@ const faqList: Array<AccordionItemType> = [
   },
   {
     trigger: (
-      <Typography className="text-type-primary" variant="microBody14">
+      <Typography
+        className="text-type-primary max-w-[90%]"
+        variant="microBody14"
+      >
         What is the typical duration for deposit and withdrawal?
       </Typography>
     ),
     content: (
-      <div className="text-type-secondary">
+      <div className="text-type-secondary max-w-[90%]">
         <Typography className="mb-4">
           Initiating a deposit typically completes in around ~12 minutes.
         </Typography>
@@ -166,12 +181,15 @@ const faqList: Array<AccordionItemType> = [
   },
   {
     trigger: (
-      <Typography className="text-type-primary" variant="microBody14">
+      <Typography
+        className="text-type-primary max-w-[90%]"
+        variant="microBody14"
+      >
         How are withdrawal fees determined?
       </Typography>
     ),
     content: (
-      <div className="text-type-secondary">
+      <div className="text-type-secondary max-w-[90%]">
         <Typography className="mb-4">
           The cost to claim on the bridge is dependent on the gas costs,
           measured in Gwei, at the time of your transaction. The estimated
@@ -212,12 +230,15 @@ const faqList: Array<AccordionItemType> = [
   },
   {
     trigger: (
-      <Typography className="text-type-primary" variant="microBody14">
+      <Typography
+        className="text-type-primary max-w-[90%]"
+        variant="microBody14"
+      >
         Where can I find the bridge token mapping?
       </Typography>
     ),
     content: (
-      <div className="text-type-secondary">
+      <div className="text-type-secondary max-w-[90%]">
         <Typography className="mb-4">
           You can view the bridge token mapping by visiting{" "}
           <a
