@@ -704,8 +704,8 @@ importers:
         specifier: 18.2.0
         version: 18.2.0
       supagraph:
-        specifier: 0.0.1-rc.19
-        version: registry.npmjs.org/supagraph@0.0.1-rc.19
+        specifier: 0.0.1-rc.20
+        version: registry.npmjs.org/supagraph@0.0.1-rc.20
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -3176,7 +3176,7 @@ packages:
   /@envelop/types@3.0.2:
     resolution: {integrity: sha512-pOFea9ha0EkURWxJ/35axoH9fDGP5S2cUu/5Mmo9pb8zUf+TaEot8vB670XXihFEn/92759BMjLJNWBKmNhyng==}
     dependencies:
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@envelop/validation-cache@5.1.3(@envelop/core@3.0.6)(graphql@16.6.0):
@@ -3546,7 +3546,7 @@ packages:
     resolution: {integrity: sha512-EBikYFp2JCdIfGEb5G9dyCkTGDmC57KSHhRQOC3aYxoPWVZvfWCDjZwkGYHN7Lis/fmuWl906bnNTJifDQ3sXw==}
     dependencies:
       '@formatjs/intl-localematcher': 0.2.25
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
 
   /@formatjs/ecma402-abstract@1.17.0:
     resolution: {integrity: sha512-6ueQTeJZtwKjmh23bdkq/DMqH4l4bmfvtQH98blOSbiXv/OUiyijSW6jU22IT8BNM1ujCaEvJfTtyCYVH38EMQ==}
@@ -3557,14 +3557,14 @@ packages:
   /@formatjs/fast-memoize@1.2.1:
     resolution: {integrity: sha512-Rg0e76nomkz3vF9IPlKeV+Qynok0r7YZjL6syLz4/urSg0IbjPZCB/iYUMNsYA643gh4mgrX3T7KEIFIxJBQeg==}
     dependencies:
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
 
   /@formatjs/icu-messageformat-parser@2.1.0:
     resolution: {integrity: sha512-Qxv/lmCN6hKpBSss2uQ8IROVnta2r9jd3ymUEIjm2UyIkUCHVcbUVRGL/KS/wv7876edvsPe+hjHVJ4z8YuVaw==}
     dependencies:
       '@formatjs/ecma402-abstract': 1.11.4
       '@formatjs/icu-skeleton-parser': 1.3.6
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
 
   /@formatjs/icu-skeleton-parser@1.3.6:
     resolution: {integrity: sha512-I96mOxvml/YLrwU2Txnd4klA7V8fRhb6JG/4hm3VMNmeJo1F03IpV2L3wWt7EweqNLES59SZ4d6hVOPCSf80Bg==}
@@ -3585,7 +3585,7 @@ packages:
   /@formatjs/intl-localematcher@0.4.0:
     resolution: {integrity: sha512-bRTd+rKomvfdS4QDlVJ6TA/Jx1F2h/TBVO5LjvhQ7QPPHp19oPNMIum7W2CMEReq/zPxpmCeB31F9+5gl/qtvw==}
     dependencies:
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
 
   /@gar/promisify@1.1.3:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -4189,7 +4189,7 @@ packages:
       open: 8.4.0
       picocolors: 1.0.0
       tiny-glob: 0.2.9
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@playwright/test@1.29.2:
@@ -11063,7 +11063,7 @@ packages:
     resolution: {integrity: sha512-aKS4WQjPenRxiQsC93MNfjx+nbF4PAdYzmd/1JIj8HYzqfbu86beTuNgXDzPknWk0n0uARlyewZo4s++ES36Ow==}
     hasBin: true
     dependencies:
-      minimist: 1.2.7
+      minimist: registry.npmjs.org/minimist@1.2.7
     dev: false
 
   /json5@2.2.3:
@@ -12022,18 +12022,6 @@ packages:
       minimist: 1.2.7
       split2: 2.2.0
       through2: 2.0.5
-    dev: false
-
-  /ndjson@2.0.0:
-    resolution: {integrity: sha512-nGl7LRGrzugTtaFcJMhLbpzJM6XdivmbkdlaGcrk/LXg2KL/YBC6z1g70xh0/al+oFuVFP8N8kiWRucmeEH/qQ==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dependencies:
-      json-stringify-safe: 5.0.1
-      minimist: registry.npmjs.org/minimist@1.2.7
-      readable-stream: 3.6.0
-      split2: 3.2.2
-      through2: 4.0.2
     dev: false
 
   /negotiator@0.6.3:
@@ -13105,7 +13093,7 @@ packages:
     dependencies:
       args: 5.0.3
       colorette: 2.0.19
-      ndjson: 2.0.0
+      ndjson: registry.npmjs.org/ndjson@2.0.0
       pino-abstract-transport: 0.4.0
       pino-pretty: 7.6.1
       pretty-ms: 7.0.1
@@ -14039,7 +14027,7 @@ packages:
       '@types/react': 18.0.26
       react: 18.2.0
       react-style-singleton: 2.2.1(@types/react@18.0.26)(react@18.2.0)
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /react-remove-scroll@2.5.5(@types/react@18.0.26)(react@18.2.0):
@@ -14075,7 +14063,7 @@ packages:
       get-nonce: 1.0.1
       invariant: 2.2.4
       react: 18.2.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /react-wrap-balancer@0.4.0(react@18.2.0):
@@ -15856,7 +15844,7 @@ packages:
     dependencies:
       '@types/react': 18.0.26
       react: 18.2.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /use-intl@2.12.0-alpha.1(react@18.2.0):
@@ -15894,7 +15882,7 @@ packages:
       '@types/react': 18.0.26
       detect-node-es: 1.1.0
       react: 18.2.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /use-sync-external-store@1.2.0(react@18.2.0):
@@ -20213,6 +20201,20 @@ packages:
       through2: registry.npmjs.org/through2@2.0.5
     dev: false
 
+  registry.npmjs.org/ndjson@2.0.0:
+    resolution: {integrity: sha512-nGl7LRGrzugTtaFcJMhLbpzJM6XdivmbkdlaGcrk/LXg2KL/YBC6z1g70xh0/al+oFuVFP8N8kiWRucmeEH/qQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ndjson/-/ndjson-2.0.0.tgz}
+    name: ndjson
+    version: 2.0.0
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      json-stringify-safe: 5.0.1
+      minimist: registry.npmjs.org/minimist@1.2.7
+      readable-stream: 3.6.0
+      split2: 3.2.2
+      through2: 4.0.2
+    dev: false
+
   registry.npmjs.org/node-gyp@8.4.1:
     resolution: {integrity: sha512-olTJRgUtAb/hOXG0E93wZDs5YiJlgbXxTwQAFHyNlRsXQnYzUaF2aGgujZbw+hR8aF4ZG/rST57bWMWD16jr9w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/node-gyp/-/node-gyp-8.4.1.tgz}
     name: node-gyp
@@ -20844,10 +20846,10 @@ packages:
       - utf-8-validate
     dev: false
 
-  registry.npmjs.org/supagraph@0.0.1-rc.19:
-    resolution: {integrity: sha512-JULz1HcWC9INowMz91+rZ72VY/9Mk9uNoSa6dHa/HME4B+u1mGnUhaecG2R0xBHC86tsbDikXePTtYXjjhnxug==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.19.tgz}
+  registry.npmjs.org/supagraph@0.0.1-rc.20:
+    resolution: {integrity: sha512-4Y0Eesu/MdPVR4bgj4cb38lDzzzHqGehnBNmUO2gvF9O/HYkwTW5GunSdL+GzS+aXl23e5IKSCeLinsn+jdDNA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.20.tgz}
     name: supagraph
-    version: 0.0.1-rc.19
+    version: 0.0.1-rc.20
     dependencies:
       '@graphql-yoga/render-graphiql': registry.npmjs.org/@graphql-yoga/render-graphiql@3.8.0(graphql-yoga@3.8.0)
       csv-parser: registry.npmjs.org/csv-parser@3.0.0
