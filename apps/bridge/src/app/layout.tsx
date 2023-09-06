@@ -37,7 +37,7 @@ export default function RootLayout({
             header={<Nav />}
             className="min-h-screen justify-between"
           >
-            <PageContainer className="gap-8 min-h-fit justify-between">
+            <PageContainer className="min-h-fit justify-between">
               {children}
             </PageContainer>
             <SlimFooter url={CONST.WEBSITE} />

@@ -11,7 +11,7 @@ export function AdditionalLinks() {
   const { chainId } = useContext(StateContext);
 
   return (
-    <div className="flex flex-col items-center gap-4 pb-10 ">
+    <div className="flex flex-col items-center gap-4 pb-10 mt-8">
       <Typography>
         Don’t have enough gas to bridge tokens? Get some{" "}
         {chainId === L1_CHAIN_ID

@@ -9,7 +9,7 @@ import KindReminder from "@components/bridge/utils/KindReminder";
 export default async function Page() {
   return (
     <>
-      <Typography variant="appPageHeading" className="text-center">
+      <Typography variant="appPageHeading" className="text-center mb-8">
         {L1_CHAIN_ID === 1 ? "Mainnet" : "Testnet"} Bridge
       </Typography>
       <Tabs selectedTab={Direction.Deposit} />
