@@ -314,7 +314,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
           setIsOpen={setIsCTAPageOpen}
         />
       )) || (
-        <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row lg:block gap-4 lg:mx-auto ">
+        <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row lg:block lg:mx-auto ">
           <SimpleCard className="max-w-lg w-full grid gap-4 relative">
             <Tab.Group
               selectedIndex={tab === Direction.Deposit ? 0 : 1}
