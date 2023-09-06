@@ -98,6 +98,14 @@
     "dev:events": {
       "cache": false
     },
+    "dev:lsp": {
+      "env": [
+        "NEXT_PUBLIC_INFURA_API_KEY",
+        "NEXT_PUBLIC_SITE_URL",
+        "NEXT_PUBLIC_VERCEL_URL"
+      ],
+      "cache": false
+    },
     "dev:template": {
       "cache": false
     },

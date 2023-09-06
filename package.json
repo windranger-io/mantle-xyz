@@ -18,6 +18,7 @@
     "dev:charity": "turbo run dev:charity",
     "dev:cms": "turbo run dev:cms",
     "dev:events": "turbo run dev:events",
+    "dev:lsp": "turbo run dev:lsp",
     "dev:template": "turbo run dev:template",
     "test": "turbo run test",
     "lint": "turbo run lint",
@@ -25,6 +26,7 @@
     "lint:bridge": "turbo run lint:bridge",
     "lint:converter": "turbo run lint:converter",
     "lint:charity": "turbo run lint:charity",
+    "lint:lsp": "turbo run lint:lsp",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky install"
   },
