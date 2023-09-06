@@ -95,7 +95,10 @@ export default function WhatsNext({ closeModal }: { closeModal: () => void }) {
         </svg>
       </button>
       <span className="flex justify-between align-middle mb-8">
-        <Typography variant="modalHeading" className="text-center w-full">
+        <Typography
+          variant="modalHeading"
+          className="text-center md:w-full w-[80%]"
+        >
           What to do next?
         </Typography>
       </span>
