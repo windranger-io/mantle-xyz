@@ -1,14 +1,14 @@
-import { cn } from "@mantle/ui/src/utils";
-import { Typography } from "@mantle/ui";
-import { useEffect, useMemo, useState } from "react";
-import { formatUnits } from "ethers/lib/utils.js";
 import { ConvertCard } from "@components/ConvertCard";
 import {
-  L1_CONVERTER_CONTRACT_ADDRESS,
+  L1_CONVERTER_V2_CONTRACT_ADDRESS,
   L1_MANTLE_TOKEN,
   L1_MANTLE_TOKEN_ADDRESS,
 } from "@config/constants";
 import useAccountBalance from "@hooks/web3/read/useAccountBalance";
+import { Typography } from "@mantle/ui";
+import { cn } from "@mantle/ui/src/utils";
+import { formatUnits } from "ethers/lib/utils.js";
+import { useEffect, useMemo, useState } from "react";
 
 type SCTrackerProps = {
   halted: boolean;
@@ -16,7 +16,7 @@ type SCTrackerProps = {
 
 export function SmartContractTracker({ halted }: SCTrackerProps) {
   const { balance } = useAccountBalance(
-    L1_CONVERTER_CONTRACT_ADDRESS,
+    L1_CONVERTER_V2_CONTRACT_ADDRESS,
     L1_MANTLE_TOKEN_ADDRESS
   );
 

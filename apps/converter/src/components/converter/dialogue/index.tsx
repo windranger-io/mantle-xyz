@@ -1,5 +1,5 @@
-import { useContext, useMemo } from "react";
 import StateContext from "@providers/stateContext";
+import { useContext, useMemo } from "react";
 
 import {
   CONVERSION_RATE,
@@ -8,14 +8,15 @@ import {
   L1_MANTLE_TOKEN,
 } from "@config/constants";
 
+import Allow from "@components/converter/dialogue/Allow";
 import Default from "@components/converter/dialogue/Default";
 
-import Loading from "@components/converter/dialogue/Loading";
 import Error from "@components/converter/dialogue/Error";
+import Loading from "@components/converter/dialogue/Loading";
 
+import { ConvertCard } from "@components/ConvertCard";
 import Converted from "@components/converter/dialogue/Completed";
 import WhatsNext from "@components/converter/dialogue/WhatsNext";
-import { ConvertCard } from "@components/ConvertCard";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
 export default function Dialogue() {
@@ -78,6 +79,9 @@ export default function Dialogue() {
     (isCTAPageOpen && (
       <ConvertCard className="mt-16">
         <div className="w-full md:max-w-lg transform text-left align-middle transition-all space-y-10 px-4 py-6">
+          {ctaPage === CTAPages.Allow && (
+            <Allow closeModal={closeModalAndReset} />
+          )}
           {ctaPage === CTAPages.Default && (
             <Default closeModal={closeModalAndReset} />
           )}

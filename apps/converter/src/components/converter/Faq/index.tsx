@@ -1,6 +1,6 @@
 import { ConvertCard } from "@components/ConvertCard";
-import { AccordionUi, Typography, AccordionItemType } from "@mantle/ui";
 import { DELEGATION_URL } from "@config/constants";
+import { AccordionItemType, AccordionUi, Typography } from "@mantle/ui";
 
 const faqList: Array<AccordionItemType> = [
   {
@@ -158,6 +158,22 @@ const faqList: Array<AccordionItemType> = [
       </Typography>
     ),
     value: "faq-7",
+  },
+  {
+    trigger: (
+      <Typography className="text-type-primary" variant="microBody14">
+        How do I cancel my request?
+      </Typography>
+    ),
+    content: (
+      <Typography variant="microBody14">
+        If the migration wasn&apos;t excecuted yet, you can modify the request
+        amount by submitting a new value. If the value is &quot;0&quot;, no
+        funds will be migrated from your wallet. Verify always the &quot;Pending
+        amount approved&quot; which is the amount that will be migrated.
+      </Typography>
+    ),
+    value: "faq-8",
   },
 ];
 
