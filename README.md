@@ -13,6 +13,8 @@ This monorepo uses [turborepo](https://turbo.build) for the monorepo build and [
 - `mantle-website`: The main [Mantle.xyz](https://www.mantle.xyz/) marketing website and pages
 - `mantle-bridge`: The mantle bridge application
 - `mantle-faucet`: The mantle faucet application
+- `mantle-converter`: The mantle converter application
+- `mantle-lsd`: The mantle liquid staking derivatives (LSD) application
 - `mantle-cms`: The mantle cms application
 - `mantle-template`: A template for other apps
 
@@ -21,6 +23,7 @@ This monorepo uses [turborepo](https://turbo.build) for the monorepo build and [
 - `@mantle/eslint-config-next`: `eslint` configurations for nextjs apps
 - `@mantle/tsconfig`: `tsconfig.json`s used throughout the monorepo
 - `@mantle/ui`: A shared design system component library
+- `@mantle/utils`: A shared utility functions library
 - `@mantle/web-tests`: e2e tests configurable for all projects
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
@@ -29,6 +32,8 @@ Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
 The following tools are being used:
 
+- [Supagraph](https://github.com/supagraph/supagraph) for creating indexes from onchain events
+- [MongoDB](https://www.mongodb.com/) for storing indexes from onchain events
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
 - [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
@@ -81,6 +86,12 @@ Mantle Bridge
 
 ```
 pnpm run dev:bridge
+```
+
+Mantle Converter
+
+```
+pnpm run dev:converter
 ```
 
 Mantle CMS
