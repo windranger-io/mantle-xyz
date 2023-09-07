@@ -51,7 +51,7 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
   }, [address, chainId, isLayer1ChainID]);
 
   // create an allowance approval request on the selected token
-  const { approve, approvalStatus } = useCallApprove();
+  const { approvalStatus } = useCallApprove();
 
   // get the balance/allowanace details
   const spendDetails = useMemo(() => {
@@ -81,16 +81,12 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
       ).lt(parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals))
     ) {
       text = "Insufficient balance";
-    } else if (
-      parseUnits(allowance || "-1", L1_BITDAO_TOKEN.decimals).lt(
-        parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals)
-      )
-    ) {
+    } else if (parseFloat(amount) === parseFloat(allowance)) {
+      text = "Amount already approved";
+    } else {
       text = (
         <div className="flex flex-row gap-4 items-center mx-auto w-fit">
-          <span>
-            {approvalStatus || `Allocate allowance before migrating $BIT`}
-          </span>
+          <span>{approvalStatus || `Approve for migrating $BIT`}</span>
           {approvalStatus ? (
             <div role="status">
               <svg
@@ -116,8 +112,6 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
           )}
         </div>
       );
-    } else {
-      text = "Migrate $BIT to $MNT";
     }
 
     return text;
@@ -160,17 +154,11 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
           onClick={() => {
             if (!isChainID) {
               switchToNetwork(chainId);
-            } else if (
-              parseUnits(allowance || "-1", L1_BITDAO_TOKEN.decimals).lt(
-                parseUnits(amount || "0", L1_BITDAO_TOKEN.decimals)
-              )
-            ) {
-              // allocate allowance
-              approve();
             } else {
-              // always from the default page
-              setCTAPage(CTAPages.Default);
-              // complete the transaction inside the modal
+              // allocate allowance
+              // approve();
+              setCTAPage(CTAPages.Allow);
+
               setIsOpen(true);
             }
           }}
@@ -180,7 +168,7 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
               !!client.address &&
               (!!approvalStatus ||
                 !amount ||
-                !parseFloat(amount) ||
+                parseFloat(amount) === parseFloat(allowance) ||
                 Number.isNaN(parseFloat(amount)) ||
                 parseUnits(
                   spendDetails.balance || "-1",

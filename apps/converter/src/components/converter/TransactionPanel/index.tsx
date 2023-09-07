@@ -6,17 +6,9 @@ import { Loading } from "./Loading";
 import { TransactionSummary } from "./TxSummary";
 
 export default function TransactionPanel() {
-  const {
-    client,
-    actualGasFee: actualGasFeeState,
-    isLoadingGasEstimate,
-  } = useContext(StateContext);
+  const { client, isLoadingGasEstimate } = useContext(StateContext);
 
-  const [actualGasFee, setActualGasFee] = useState<string>("");
   // to avoid hydration mismatch - initialize the actual gas fee to empty string
-  useEffect(() => {
-    setActualGasFee(actualGasFeeState);
-  }, [actualGasFeeState]);
 
   // set address with useState to avoid hydration errors
   const [address, setAddress] = useState<`0x${string}`>(client?.address!);
@@ -33,5 +25,5 @@ export default function TransactionPanel() {
     return <Loading />;
   }
 
-  return <TransactionSummary actualGasFee={actualGasFee} />;
+  return <TransactionSummary />;
 }

@@ -10,25 +10,25 @@ import {
   Views,
 } from "@config/constants";
 
-import { Contract, providers } from "ethers";
 import { Network } from "@ethersproject/providers";
+import { Contract, providers } from "ethers";
 
+import { FeeData, useAccountBalances, useL1FeeData } from "@hooks/web3/read";
+import { usePathname } from "next/navigation";
 import {
   Context,
-  createContext,
   MutableRefObject,
+  createContext,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
 import { usePublicClient } from "wagmi";
-import { usePathname } from "next/navigation";
-import { useAccountBalances, useL1FeeData, FeeData } from "@hooks/web3/read";
 
-import { getMulticallContract } from "@utils/multicallContract";
 import useAllowanceCheck from "@hooks/web3/converter/read/useAllowanceCheck";
 import useGasEstimate from "@hooks/web3/converter/read/useGasEstimate";
+import { getMulticallContract } from "@utils/multicallContract";
 
 export type StateProps = {
   view: Views;

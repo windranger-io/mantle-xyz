@@ -3,8 +3,8 @@ import Image from "next/image";
 import { MdClear } from "react-icons/md";
 // import { useRouter } from "next/navigation";
 
-import { Typography } from "@mantle/ui";
 import { L1_CHAIN_ID } from "@config/constants";
+import { Typography } from "@mantle/ui";
 // import { useToast } from "@hooks/useToast";
 import TxLink from "@components/converter/utils/TxLink";
 
@@ -46,7 +46,7 @@ export default function Loading({
     <>
       <span className="flex justify-between align-middle">
         <Typography variant="modalHeadingSm" className="text-center w-full">
-          Pending migration
+          Pending migration request
         </Typography>
         <Typography variant="modalHeading" className="text-white w-auto pt-1">
           <MdClear onClick={closeModal} className="cursor-pointer" />
@@ -62,7 +62,7 @@ export default function Loading({
       </div>
       <div className="text-center">
         <div>
-          You are migrating {from} $BIT to {to} $MNT.
+          You are requesting migrate {from} $BIT to {to} $MNT.
         </div>
         <div>Go grab some coffee, I promise it&apos;ll be done by then!</div>
       </div>

@@ -1,23 +1,24 @@
 import {
   CHAINS,
+  DELEGATION_URL,
   L1_BITDAO_TOKEN,
   L1_BITDAO_TOKEN_ADDRESS,
+  L1_CHAIN_ID,
   L1_MANTLE_TOKEN,
   MANTLE_BRIDGE_URL,
-  DELEGATION_URL,
-  L1_CHAIN_ID,
 } from "@config/constants";
 
-import { Button, Typography } from "@mantle/ui";
-import CONST from "@mantle/constants";
-import { useAddToken } from "@hooks/web3/write/useAddToken";
-import Link from "next/link";
-import Image from "next/image";
 import { useToast } from "@hooks/useToast";
-import { useContext, useEffect, useMemo } from "react";
+import { useAddToken } from "@hooks/web3/write/useAddToken";
+import CONST from "@mantle/constants";
+import { Button, Typography } from "@mantle/ui";
 import StateContext from "@providers/stateContext";
 import { parseUnits } from "ethers/lib/utils.js";
+import Image from "next/image";
+import Link from "next/link";
 import MetamaskSvg from "public/converted/metamask.svg";
+import { useContext, useEffect, useMemo } from "react";
+import { MdClear } from "react-icons/md";
 
 function WhatNextLink({
   href,
@@ -156,6 +157,9 @@ export default function WhatsNext({
         <Typography variant="modalHeading" className="text-center w-full mt-4">
           What to do next with MNT?
         </Typography>
+        <Typography variant="modalHeading" className="text-white pt-1">
+          <MdClear onClick={closeModal} className="cursor-pointer" />
+        </Typography>
       </span>
       <div className="pr-2">
         <WhatNextLink
@@ -190,7 +194,7 @@ export default function WhatsNext({
         </Button>
       </div>
       <Typography className="text-center">
-        If you don&apos;t see MNT tokens in your wallet click this button
+        Add MNT to your wallet to see the balance when migration happens
       </Typography>
     </>
   );

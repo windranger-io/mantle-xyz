@@ -1,4 +1,5 @@
 import {
+  CTAPages,
   L1_BITDAO_TOKEN,
   L1_CONVERTER_V2_CONTRACT_ADDRESS,
   TOKEN_ABI,
@@ -10,7 +11,8 @@ import { useContractWrite } from "wagmi";
 
 export function useCallApprove() {
   // hydrate context into state
-  const { provider, amount, resetAllowance } = useContext(StateContext);
+  const { provider, amount, resetAllowance, setCTAPage, setTxHash } =
+    useContext(StateContext);
 
   // if we're running an approve tx, we'll track the state on approvalStatus
   const [approvalStatus, setApprovalStatus] = useState<string | boolean>(false);
@@ -38,6 +40,10 @@ export function useCallApprove() {
       });
       // mark approval...
       setApprovalStatus("Tx approved, waiting for confirmation...");
+
+      // set loading when wallet approves
+      setCTAPage(CTAPages.Loading);
+
       // wait for one confirmation
       await provider
         .waitForTransaction(txRes?.hash || "", 1)
@@ -46,6 +52,7 @@ export function useCallApprove() {
         });
       // final update
       setApprovalStatus("Tx settled");
+      setTxHash(txRes?.hash);
     } catch {
       // log the approval was cancelled
       setApprovalStatus("Approval cancelled");
@@ -54,6 +61,7 @@ export function useCallApprove() {
       resetAllowance();
       // stop awaiting
       setApprovalStatus(false);
+      setCTAPage(CTAPages.Converted);
     }
 
     // token is now approved

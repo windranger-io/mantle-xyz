@@ -1,27 +1,27 @@
 "use client";
 
 import {
+  L1_CONVERTER_V2_CONTRACT_ABI,
+  L1_CONVERTER_V2_CONTRACT_ADDRESS,
   Views,
-  L1_CONVERTER_CONTRACT_ABI,
-  L1_CONVERTER_CONTRACT_ADDRESS,
 } from "@config/constants";
 import StateContext from "@providers/stateContext";
-import { Suspense, useContext, useEffect, useState } from "react";
 import { Contract } from "ethers";
+import { Suspense, useContext, useEffect, useState } from "react";
 
 // by order of use...
-import Dialogue from "@components/converter/dialogue";
-import From from "@components/converter/From";
-import Hr from "@components/converter/Divider";
-import To from "@components/converter/To";
-import CTA from "@components/converter/CTA";
-import ErrorMsg from "@components/converter/ErrorMsg";
-import TX from "@components/converter/TransactionPanel";
-import { Typography } from "@mantle/ui";
 import { ConvertCard } from "@components/ConvertCard";
+import CTA from "@components/converter/CTA";
+import Hr from "@components/converter/Divider";
+import ErrorMsg from "@components/converter/ErrorMsg";
+import From from "@components/converter/From";
+import To from "@components/converter/To";
+import TX from "@components/converter/TransactionPanel";
+import Dialogue from "@components/converter/dialogue";
+import { Typography } from "@mantle/ui";
+import { Faq } from "./Faq";
 import { SmartContractTracker } from "./SmartContractTracker";
 import { Loading as SCLoading } from "./SmartContractTracker/Loading";
-import { Faq } from "./Faq";
 
 export default function Convert() {
   // unpack the context
@@ -34,8 +34,8 @@ export default function Convert() {
     // read halted from contract
     const getHaltedStatus = async () => {
       const contract = new Contract(
-        L1_CONVERTER_CONTRACT_ADDRESS,
-        L1_CONVERTER_CONTRACT_ABI,
+        L1_CONVERTER_V2_CONTRACT_ADDRESS,
+        L1_CONVERTER_V2_CONTRACT_ABI,
         provider
       );
       const status = await contract.halted();
@@ -58,7 +58,7 @@ export default function Convert() {
         Migrator
       </Typography>
       <Typography variant="body" className="text-center mt-6 mb-2">
-        The migration is irreversible.
+        Approve the amount of BIT you want to migrate
       </Typography>
       <div className="lg:relative lg:w-[484px] flex flex-col md:flex-row md:justify-center md:items-start md:gap-5 gap-4 lg:mx-auto ">
         <ConvertCard className="min-w-[320px]">

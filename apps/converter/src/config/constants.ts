@@ -17,7 +17,8 @@ export const L1_BITDAO_TOKEN_ADDRESSES: Record<number, `0x${string}`> = {
 
 export const L1_MANTLE_TOKEN_ADDRESSES: Record<number, `0x${string}`> = {
   1: "0x3c3a81e81dc49a522a592e7622a7e711c06bf354",
-  5: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
+  // 5: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
+  5: "0xec8e2670e1de83dd4db1e043a6417b628211affa",
 };
 
 export const L1_CONVERTER_CONTRACT_ADDRESSES: Record<number, `0x${string}`> = {
@@ -43,6 +44,14 @@ export const L1_CONVERTER_CONTRACT_ABI = [
   "function migrateBIT(uint256 _amount)",
   "function migrateAllBIT()",
   "function halted() view returns (bool)",
+];
+export const L1_CONVERTER_V2_CONTRACT_ABI = [
+  "function halted() view returns (bool)",
+  "function BIT_TOKEN_ADDRESS() view returns (address)",
+  "function MNT_TOKEN_ADDRESS() view returns (address)",
+  "function owner() view returns (address)",
+  "function treasury() view returns (address)",
+  "function blacklistedAddresses(address) view returns (bool)",
 ];
 
 // Token constructs for dummy contracts on goerli
@@ -116,6 +125,7 @@ export enum Views {
 // Available Page states for the CTA Modal
 export enum CTAPages {
   "Terms" = 1,
+  "Allow",
   "Default",
   "Loading",
   "Converted",
