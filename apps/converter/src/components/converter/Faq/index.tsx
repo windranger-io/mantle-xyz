@@ -41,12 +41,13 @@ const faqList: Array<AccordionItemType> = [
   {
     trigger: (
       <Typography className="text-type-primary" variant="microBody14">
-        How do I migrate using multisig?
+        Why is there a Migrator v2?
       </Typography>
     ),
     content: (
       <Typography variant="microBody14">
-        Please see the &quot;For Advanced Users&quot; section of the{" "}
+        Migrator v2 has been deployed to give effect to the MIP-27 Proposal. See
+        more details in the{" "}
         <a
           href="https://www.mantle.xyz/blog/announcements/bit-to-mnt-user-guide"
           target="__blank"
@@ -63,24 +64,20 @@ const faqList: Array<AccordionItemType> = [
   {
     trigger: (
       <Typography className="text-type-primary" variant="microBody14">
-        Will gas be refunded?
+        How do I migrate using multisig?
       </Typography>
     ),
     content: (
       <Typography variant="microBody14">
-        Yes, most users will be refunded their cost of migration in ETH. Users
-        will not need to take any action and the ETH will be sent directly to
-        the address used in the migration. The status of the rebate will be
-        available in a future dashboard. There will be policies in place to
-        reduce risk of rebate exploitation and griefing as mentioned in the
-        following{" "}
+        Please see the &quot;Steps for using Etherscan (advanced users)&quot;
+        section of the{" "}
         <a
-          href="https://forum.mantle.xyz/t/passed-mip-22-mantle-token-design-conversion-parameters-and-asset-handling/6352/2#re-conversion-costs-3"
+          href="https://www.mantle.xyz/blog/announcements/bit-to-mnt-user-guide"
           target="__blank"
           rel="noreferrer"
           className="underline"
         >
-          link
+          blog post
         </a>
         .
       </Typography>
@@ -146,34 +143,18 @@ const faqList: Array<AccordionItemType> = [
   {
     trigger: (
       <Typography className="text-type-primary" variant="microBody14">
-        Why will the Migrator contract be out of funds?
+        How do I cancel or modify my request?
       </Typography>
     ),
     content: (
       <Typography variant="microBody14">
-        For security purposes, the Migrator contract will hold a minimal amount
-        of funds and will require top-up from the relevant Mantle Treasury.
-        Excess tokens will be occasionally transferred to the relevant Mantle
-        Treasury via the &quot;defundContract&quot; mechanic.
+        While the migration request is pending, you can modify the request
+        amount by submitting a new value. If the value is &quot;0&quot; this is
+        equivalent to cancelling your request. Please verify the &quot;Pending
+        amount approved&quot;, which is the exact amount that will be migrated.
       </Typography>
     ),
     value: "faq-7",
-  },
-  {
-    trigger: (
-      <Typography className="text-type-primary" variant="microBody14">
-        How do I cancel my request?
-      </Typography>
-    ),
-    content: (
-      <Typography variant="microBody14">
-        If the migration wasn&apos;t excecuted yet, you can modify the request
-        amount by submitting a new value. If the value is &quot;0&quot;, no
-        funds will be migrated from your wallet. Verify always the &quot;Pending
-        amount approved&quot; which is the amount that will be migrated.
-      </Typography>
-    ),
-    value: "faq-8",
   },
 ];
 

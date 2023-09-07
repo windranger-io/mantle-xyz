@@ -119,7 +119,8 @@ export default function Deposited({
         variant="modalHeadingSm"
         className="text-center w-full mt-4 px-4"
       >
-        Your will receive Mantle tokens requested in up to 24hs
+        For qualified requests as per MIP-27, it may take up to 24 hours to
+        receive $MNT
       </Typography>
       <div className="flex flex-col gap-4">
         <TxLink chainId={L1_CHAIN_ID} txHash={txHash} />
