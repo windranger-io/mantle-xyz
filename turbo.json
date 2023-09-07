@@ -101,6 +101,9 @@
     "dev:template": {
       "cache": false
     },
+    "dev:lsp": {
+      "cache": false
+    },
     "e2e:test:template": {
       "cache": false
     }
