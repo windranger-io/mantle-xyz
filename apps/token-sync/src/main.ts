@@ -33,7 +33,7 @@ app.listen(withDefault(process.env.PORT, 8000), async () => {
   // server started - lets go...
   console.log(
     `⚡️[server]: Server is running at http://localhost:${withDefault(
-      process.env.port,
+      process.env.PORT,
       8000
     )}`
   );
