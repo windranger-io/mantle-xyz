@@ -73,9 +73,10 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
           border
         />
         {/* <Values label="Time to migrate" value="~5 minutes" border /> */}
-        <Typography variant="smallWidget" className="mb-4">
-          Approve the spender with the exact amount of $BIT you want to convert.
-          The conversion could take up to 24hs.
+        <Typography variant="smallWidget" className="mb-6">
+          Approve the Spender (Migrator v2) with the exact amount of $BIT you
+          request to migrate. It may take up to 24 hours to complete qualified
+          migrations as per terms of MIP-27.
         </Typography>
         <Button
           size="full"

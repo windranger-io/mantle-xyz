@@ -55,10 +55,19 @@ export default function Convert() {
   return (
     <div className="md:px-8 w-full">
       <Typography variant="appPageHeading" className="text-center text-[42px]">
-        Migrator
+        Migrator v2
       </Typography>
       <Typography variant="body" className="text-center mt-6 mb-2">
-        Approve the amount of BIT you want to migrate
+        Request $BIT migration to $MNT, see{" "}
+        <a
+          href="https://www.mantle.xyz/blog"
+          target="__blank"
+          rel="noreferrer"
+          className="underline"
+        >
+          blogpost
+        </a>{" "}
+        for how it works
       </Typography>
       <div className="lg:relative lg:w-[484px] flex flex-col md:flex-row md:justify-center md:items-start md:gap-5 gap-4 lg:mx-auto ">
         <ConvertCard className="min-w-[320px]">

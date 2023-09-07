@@ -82,11 +82,11 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
     ) {
       text = "Insufficient balance";
     } else if (parseFloat(amount) === parseFloat(allowance)) {
-      text = "Amount already approved";
+      text = "Amount already requested";
     } else {
       text = (
         <div className="flex flex-row gap-4 items-center mx-auto w-fit">
-          <span>{approvalStatus || `Approve for migrating $BIT`}</span>
+          <span>{approvalStatus || `Request $BIT Migration`}</span>
           {approvalStatus ? (
             <div role="status">
               <svg

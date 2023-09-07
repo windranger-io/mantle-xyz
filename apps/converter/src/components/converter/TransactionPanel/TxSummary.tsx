@@ -8,7 +8,7 @@ export function TransactionSummary() {
   return (
     <div className="space-y-3 pt-6" key="tx-panel-0">
       <div className="flex justify-between">
-        <Typography variant="smallWidget">Pending amount approved</Typography>
+        <Typography variant="smallWidget">Pending amount requested</Typography>
         <Typography variant="smallWidget" className="text-white">
           {parseFloat(allowance || "0")} BIT
         </Typography>
