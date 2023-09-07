@@ -70,6 +70,7 @@ export default function List() {
       {approvals?.map((approval) => (
         <div key={approval.transactionHash} className="border-b">
           <div>
+            Tx Hash:
             <TxLink
               chainId={L1_CHAIN_ID}
               txHash={approval.transactionHash}
@@ -77,12 +78,12 @@ export default function List() {
               asHash
             />
           </div>
-          <div>{approval.blockNumber}</div>
+          <div>Block: {approval.blockNumber}</div>
           {/* <div>{approval.getBlock()}</div> */}
           {/* <div>time {blockToTime(approval.blockNumber)}</div> */}
           <div>Wallet: {approval.args?.length && approval?.args[0]}</div>
           <div>
-            amount:{" "}
+            Amount:{" "}
             {approval.args?.length && formatEther(approval.args[2] || "0")}
           </div>
         </div>
