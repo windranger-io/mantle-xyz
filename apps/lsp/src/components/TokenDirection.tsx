@@ -4,7 +4,7 @@ import MEthToken from "./Tokens/Meth";
 
 export default function TokenDirection({ mode }: { mode: Mode }) {
   return (
-    <div className="flex flex-row w-full justify-between items-center py-4 px-5">
+    <div className="flex flex-row w-full justify-between items-center pb-4 px-5">
       <div className="flex flex-row items-center gap-3">
         {mode === Mode.STAKE ? <EthToken /> : <MEthToken />}
         <div className="flex flex-col">

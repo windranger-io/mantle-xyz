@@ -53,7 +53,7 @@ export default function RootLayout({
                   </div>
                 </div>
               </div>
-              <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row lg:block lg:mx-auto ">
+              <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row lg:block lg:mx-auto mt-20">
                 <p className="text-type-secondary text-center mt-8 md:mt-0">
                   By connecting your wallet to the Mantle Liquid Staking
                   Platform, you agree to our{" "}

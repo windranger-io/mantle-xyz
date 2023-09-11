@@ -30,6 +30,8 @@ export const TWITTER_TITLE = "MantleETH | Mantle Network";
 // Configure Twitter Desc
 export const TWITTER_DESC = "Stake ETH for mETH";
 
+export const AMOUNT_MAX_DISPLAY_DIGITS = 10;
+
 // Get the current absolute path from the env
 export function getBaseUrl() {
   // return the fully resolved absolute url
@@ -92,8 +94,9 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
+      "https://eth-goerli.g.alchemy.com/v2/KiclVHArnqzL30SUwRe2KA8AcxzG_TsB",
       // infura backed redirect gateway
-      `${ABSOLUTE_PATH}/rpc`,
+      // `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth_goerli`,
     ],
