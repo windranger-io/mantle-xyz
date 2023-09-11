@@ -1,5 +1,6 @@
 "use client";
 
+import AdjustmentRate from "@components/Convert/AdjustmentRate";
 import ExchangeRate from "@components/Convert/ExchangeRate";
 import ConvertInput from "@components/Convert/Input";
 import ConvertOutput from "@components/Convert/Output";
@@ -68,11 +69,14 @@ export default function Staking() {
           amount={formattedOutput}
         />
       </div>
-      <div className="flex flex-col p-5">
+      <div className="p-5">
         <Button size="full" className="mb-4">
           Stake
         </Button>
-        <ExchangeRate />
+        <div className="flex flex-col space-y-2 w-full">
+          <ExchangeRate />
+          <AdjustmentRate />
+        </div>
       </div>
     </div>
   );
