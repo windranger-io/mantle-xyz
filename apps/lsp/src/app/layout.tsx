@@ -43,8 +43,8 @@ export default function RootLayout({
                 Liquid Staking
               </h1>
               <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row lg:block lg:mx-auto ">
-                <div className="min-h-[500px]">{children}</div>
-                <div className="flex flex-col xl:w-[280px] lg:w-[240px] md:max-w-[328px] md:min-w-[250px] lg:absolute lg:top-0 lg:-right-[260px] xl:-right-[396px] w-auto space-y-8">
+                {children}
+                <div className="flex flex-col mt-4 sm:mt-0 xl:w-[280px] lg:w-[240px] md:max-w-[328px] md:min-w-[250px] lg:absolute lg:top-0 lg:-right-[260px] xl:-right-[396px] w-auto space-y-8">
                   <div className="max-w-[484px] relative border border-[#1C1E20] mx-auto rounded-xl w-full overflow-x-auto">
                     <p className="bg-black p-6">Stat panel here</p>
                   </div>
@@ -53,7 +53,7 @@ export default function RootLayout({
                   </div>
                 </div>
               </div>
-              <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row lg:block lg:mx-auto mt-20">
+              <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row lg:block lg:mx-auto mt-20 items-center justify-center">
                 <p className="text-type-secondary text-center mt-8 md:mt-0">
                   By connecting your wallet to the Mantle Liquid Staking
                   Platform, you agree to our{" "}

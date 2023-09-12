@@ -8,7 +8,7 @@ import StakeToggle, { Mode } from "@components/StakeToggle";
 import TokenDirection from "@components/TokenDirection";
 import { AMOUNT_MAX_DISPLAY_DIGITS, CHAIN_ID } from "@config/constants";
 import { ContractName, contracts } from "@config/contracts";
-import { Button, Typography } from "@mantle/ui";
+import { Button, T } from "@mantle/ui";
 import { BigNumber } from "ethers";
 import { formatEther, parseEther } from "ethers/lib/utils";
 import { useState } from "react";
@@ -53,10 +53,10 @@ export default function Staking() {
           <div className="flex flex-col w-full justify-end text-right">
             <div className="flex justify-end">
               <div className="flex space-x-1 items-center">
-                <Typography variant="body">
+                <T variant="body">
                   Available:{" "}
                   {balance.data.formatted.slice(0, AMOUNT_MAX_DISPLAY_DIGITS)}
-                </Typography>
+                </T>
               </div>
             </div>
           </div>
@@ -70,7 +70,7 @@ export default function Staking() {
         />
       </div>
       <div className="p-5">
-        <Button size="full" className="mb-4">
+        <Button size="full" className="mb-4" disabled={outputAmount.isLoading}>
           Stake
         </Button>
         <div className="flex flex-col space-y-2 w-full">
