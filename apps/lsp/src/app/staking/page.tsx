@@ -14,12 +14,14 @@ import { formatEther, parseEther } from "ethers/lib/utils";
 import { useState } from "react";
 import { useAccount, useBalance, useContractRead } from "wagmi";
 import StakeConfirmDialogue from "./dialogue/StakeConfirmDialogue";
+import StakeSuccessDialogue from "./dialogue/StakeSuccessDialogue";
 
 export default function Staking() {
   const { address } = useAccount();
   const balance = useBalance({ address, watch: true });
   const [ethAmount, setEthAmount] = useState<BigNumber>(BigNumber.from(0));
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [stakeTxHash, setStakeTxHash] = useState("");
 
   const balanceString =
     balance.data?.formatted.slice(0, AMOUNT_MAX_DISPLAY_DIGITS) || "";
@@ -37,6 +39,17 @@ export default function Staking() {
     ? formatEther(outputAmount.data)
     : "0";
 
+  if (stakeTxHash) {
+    return (
+      <StakeSuccessDialogue
+        hash={stakeTxHash}
+        onClose={() => {
+          setStakeTxHash("");
+        }}
+      />
+    );
+  }
+
   if (confirmDialogOpen) {
     return (
       <StakeConfirmDialogue
@@ -44,6 +57,12 @@ export default function Staking() {
           setConfirmDialogOpen(false);
         }}
         stakeAmount={ethAmount.toBigInt()}
+        receiveAmount={outputAmount.data || BigInt(0)}
+        onStakeSuccess={(hash: string) => {
+          console.log("Stake success", hash);
+          setConfirmDialogOpen(false);
+          setStakeTxHash(hash);
+        }}
       />
     );
   }
