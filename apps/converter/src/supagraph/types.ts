@@ -29,4 +29,6 @@ export type MigationEntity = {
   blockTimestamp: BigNumberish;
   blockNumber: BigNumberish;
   transactionHash: string;
+  refunded: boolean;
+  refundTx: string;
 };
