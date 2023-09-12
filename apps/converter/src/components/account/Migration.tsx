@@ -147,7 +147,7 @@ export default function Migration() {
                         cx="5.5"
                         cy="5.50098"
                         r="5.5"
-                        fill={transaction.refunded ? "#54cf24" : "#F26A1D"}
+                        fill={transaction.refunded ? "#62b471" : "#F26A1D"}
                       />
                     </svg>
 
