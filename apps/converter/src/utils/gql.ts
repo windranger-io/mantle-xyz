@@ -12,11 +12,13 @@ export const GetMigrationHistoryQuery = gql`
         orderBy: blockTimestamp
         orderDirection: desc
       ) {
+        id
         amountSwapped
         blockTimestamp
-        gasCost
         transactionHash
-        id
+        gasCost
+        refunded
+        refundTx
       }
     }
   }

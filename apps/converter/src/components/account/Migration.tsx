@@ -143,9 +143,26 @@ export default function Migration() {
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <circle cx="5.5" cy="5.50098" r="5.5" fill="#F26A1D" />
+                      <circle
+                        cx="5.5"
+                        cy="5.50098"
+                        r="5.5"
+                        fill={transaction.refunded ? "#54cf24" : "#F26A1D"}
+                      />
                     </svg>
-                    <span>No</span>
+
+                    {transaction.refunded ? (
+                      <a
+                        className="link hover:text-[#0A8FF6] flex flex-row space-x-2"
+                        href={`${CHAINS[L1_CHAIN_ID].blockExplorerUrls}tx/${transaction.refundTx}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Yes
+                      </a>
+                    ) : (
+                      <span>No</span>
+                    )}
                   </div>
                 </div>
               </td>

@@ -74,6 +74,8 @@ const config = {
       account: Account!
       amountSwapped: BigInt!
       gasCost: BigInt!
+      refunded: Boolean!
+      refundTx: String!
       blockTimestamp: Int!
       blockNumber: Int!
       transactionHash: String! 
@@ -94,6 +96,7 @@ const config = {
         migrations(first: 10, orderBy: blockTimestamp, orderDirection: desc) {
           amountSwapped
           gasCost
+          refunded
           blockTimestamp
         }
       }
