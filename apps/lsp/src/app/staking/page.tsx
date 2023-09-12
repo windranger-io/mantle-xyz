@@ -13,11 +13,13 @@ import { BigNumber } from "ethers";
 import { formatEther, parseEther } from "ethers/lib/utils";
 import { useState } from "react";
 import { useAccount, useBalance, useContractRead } from "wagmi";
+import StakeConfirmDialogue from "./dialogue/StakeConfirmDialogue";
 
 export default function Staking() {
   const { address } = useAccount();
   const balance = useBalance({ address, watch: true });
   const [ethAmount, setEthAmount] = useState<BigNumber>(BigNumber.from(0));
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
   const balanceString =
     balance.data?.formatted.slice(0, AMOUNT_MAX_DISPLAY_DIGITS) || "";
@@ -35,6 +37,17 @@ export default function Staking() {
     ? formatEther(outputAmount.data)
     : "0";
 
+  if (confirmDialogOpen) {
+    return (
+      <StakeConfirmDialogue
+        onClose={() => {
+          setConfirmDialogOpen(false);
+        }}
+        stakeAmount={ethAmount.toBigInt()}
+      />
+    );
+  }
+
   return (
     <div className="max-w-[484px] w-full grid relative bg-white/5 overflow-y-auto overflow-x-clip md:overflow-hidden border border-[#1C1E20] rounded-t-[30px] rounded-b-[20px] mx-auto">
       <div className="p-5">
@@ -45,6 +58,10 @@ export default function Staking() {
         <ConvertInput
           symbol="ETH"
           balance={balanceString}
+          defaultAmount={
+            // Ensures that a value exists when we render the dialogue and close it again.
+            ethAmount && ethAmount.gt(0) ? formatEther(ethAmount) : ""
+          }
           onChange={(val: string) => {
             setEthAmount(parseEther(val));
           }}
@@ -70,7 +87,14 @@ export default function Staking() {
         />
       </div>
       <div className="p-5">
-        <Button size="full" className="mb-4" disabled={outputAmount.isLoading}>
+        <Button
+          size="full"
+          className="mb-4"
+          disabled={outputAmount.isLoading}
+          onClick={() => {
+            setConfirmDialogOpen(true);
+          }}
+        >
           Stake
         </Button>
         <div className="flex flex-col space-y-2 w-full">

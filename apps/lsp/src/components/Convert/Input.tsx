@@ -9,15 +9,17 @@ const WIDTH_BUFFER = 14;
 type InputProps = {
   symbol: string;
   balance: string;
+  defaultAmount?: string;
   onChange: (_: string) => void;
 };
 
 export default function ConvertInput({
   symbol,
   balance,
+  defaultAmount,
   onChange,
 }: InputProps) {
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState(defaultAmount);
 
   const [width, setWidth] = useState(0);
   const span = useRef<HTMLSpanElement | null>(null);
@@ -114,3 +116,7 @@ export default function ConvertInput({
     </div>
   );
 }
+
+ConvertInput.defaultProps = {
+  defaultAmount: "",
+};

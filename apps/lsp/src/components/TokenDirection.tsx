@@ -1,6 +1,6 @@
 import { Mode } from "./StakeToggle";
-import EthToken from "./Tokens/Eth";
-import MEthToken from "./Tokens/Meth";
+import EthToken from "./Icons/Eth";
+import MEthToken from "./Icons/Meth";
 
 export default function TokenDirection({ mode }: { mode: Mode }) {
   return (
@@ -12,7 +12,7 @@ export default function TokenDirection({ mode }: { mode: Mode }) {
           <div>{mode === Mode.STAKE ? "ETH" : "mETH"}</div>
         </div>
       </div>
-      <div className="">
+      <div>
         <svg
           width="14"
           height="14"
