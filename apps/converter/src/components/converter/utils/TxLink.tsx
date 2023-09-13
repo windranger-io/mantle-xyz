@@ -19,7 +19,7 @@ export default function TxLink({
     (txHash && (
       <a
         className={`link text-[#0A8FF6] flex flex-row space-x-2 ${className} items-center`}
-        href={`${CHAINS[chainId].blockExplorerUrls}tx/${txHash}`}
+        href={`${CHAINS[chainId].blockExplorerUrls[0]}tx/${txHash}`}
         target="_blank"
         rel="noreferrer"
       >
