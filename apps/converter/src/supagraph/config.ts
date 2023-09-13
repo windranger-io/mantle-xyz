@@ -32,6 +32,28 @@ const config = {
   },
   // configure available Contracts and their block details
   contracts: {
+    bitdao: {
+      // use handlers registered against "token" named group in handlers/index.ts
+      handlers: "token",
+      // establish all event signatures available on this contract (we could also accept a .sol or .json file here)
+      events: [
+        "event Approval(address indexed owner, address indexed spender, uint256 value)",
+      ],
+      // set config from env
+      chainId: withDefault(process.env.NEXT_PUBLIC_L1_CHAIN_ID, 5),
+      address: withDefault(
+        process.env.L1_BITDAO_CONTRACT_ADDRESS,
+        "0x66245cB1236102bd5a59C0140cf80789B43d148F"
+      ),
+      // start watching for approvals following deployment of migratorV2
+      startBlock: withDefault(
+        process.env.L1_BITDAO_CONTRACT_START_BLOCK,
+        9615905
+      ),
+      endBlock: withDefault(process.env.L1_BITDAO_CONTRACT_END_BLOCK, "latest"),
+      // We will always collect receipts here to construct gas-cost of call Migration for refund
+      collectTxReceipts: true,
+    },
     migrator: {
       // set the handlers
       handlers: "migrator",
@@ -58,12 +80,39 @@ const config = {
       // We will always collect receipts here to construct gas-cost of call Migration for refund
       collectTxReceipts: true,
     },
+    migratorV2: {
+      // set the handlers
+      handlers: "migratorV2",
+      // Establish all event signatures available on this contract (we could also accept a .sol or .json file here)
+      events: [
+        "event TokensMigrated(address indexed to, uint256 amountSwapped)",
+        "event TokenMigrationApproved(address indexed approver, address indexed user, uint256 amount)",
+      ],
+      // set config from env
+      chainId: withDefault(process.env.NEXT_PUBLIC_L1_CHAIN_ID, 5),
+      address: withDefault(
+        process.env.L1_CONVERTER_V2_CONTRACT_ADDRESS,
+        "0x1142141e5bdf32fbf9129cc8c03932014e23164c"
+      ),
+      startBlock: withDefault(
+        process.env.L1_CONVERTER_V2_CONTRACT_START_BLOCK,
+        9615905
+      ),
+      endBlock: withDefault(
+        process.env.L1_CONVERTER_V2_CONTRACT_END_BLOCK,
+        "latest"
+      ),
+      // We will always collect receipts here to construct gas-cost of call Migration for refund
+      collectTxReceipts: true,
+    },
   },
   // define supagraph schema
   schema: `
     type Account @entity {
       id: ID!
       migrations: [Migration!]! @derivedFrom(field: "account")
+      migrationsV2: [MigrationV2!]! @derivedFrom(field: "account")
+      pendingMigrationsV2: [PendingMigrationV2!]! @derivedFrom(field: "account")
       migratedMnt: BigInt!
       migrationCount: Int!
       blockNumber: BigInt!
@@ -78,7 +127,37 @@ const config = {
       refundTx: String!
       blockTimestamp: Int!
       blockNumber: Int!
-      transactionHash: String! 
+      transactionHash: String!
+    }
+    type MigrationV2 @entity {
+      id: ID!
+      account: Account!
+      amountApproved: BigInt!
+      amountSwapped: BigInt!
+      gasCost: BigInt!
+      refunded: Boolean!
+      refundTx: String!
+      blockTimestamp: Int!
+      blockNumber: Int!
+      approvedBy: String!
+      approvalTx: String!
+      transactionHash: String!
+      status: String!
+    }
+    type PendingMigrationV2 @entity {
+      id: ID!
+      account: Account!
+      amountApproved: BigInt!
+      amountSwapped: BigInt!
+      gasCost: BigInt!
+      refunded: Boolean!
+      refundTx: String!
+      blockTimestamp: Int!
+      blockNumber: Int!
+      transactionHash: String!
+      approvedBy: String!
+      approvalTx: String!
+      status: String!
     }
   `,
   // define supagraph default query
@@ -97,10 +176,35 @@ const config = {
           amountSwapped
           gasCost
           refunded
+          refundTx
           blockTimestamp
+          transactionHash
+        }
+        migrationsV2(first: 10, orderBy: blockTimestamp, orderDirection: desc) {
+          amountSwapped
+          gasCost
+          refunded
+          refundTx
+          blockTimestamp
+          transactionHash
+          approvedBy
+          approvalTx
+        }
+        pendingMigrationsV2(
+          where: {status_not: "COMPLETE"}
+          first: 10
+          orderBy: blockTimestamp
+          orderDirection: desc
+        ) {
+          amountSwapped
+          gasCost
+          refunded
+          refundTx
+          blockTimestamp
+          transactionHash
         }
       }
-    }
+    } 
   `,
 };
 

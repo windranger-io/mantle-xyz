@@ -63,8 +63,8 @@ export async function GET(request: NextRequest) {
   // all new events discovered from all sync operations detailed in a summary
   const summary = await sync({
     // pass through config options
-    listen: (config as unknown as SyncConfig).listen || false,
-    cleanup: (config as unknown as SyncConfig).cleanup || true,
+    listen: (config as unknown as SyncConfig).listen ?? false,
+    cleanup: (config as unknown as SyncConfig).cleanup ?? true,
     // where should we start and stop this run? (allowing for staggered runs to build up the cache before executing the final step (process))
     start,
     stop,
