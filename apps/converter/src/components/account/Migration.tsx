@@ -154,7 +154,7 @@ export default function Migration() {
                     {transaction.refunded ? (
                       <a
                         className="link hover:text-[#0A8FF6] flex flex-row space-x-2 items-center gap-1"
-                        href={`${CHAINS[L1_CHAIN_ID].blockExplorerUrls}tx/${transaction.refundTx}`}
+                        href={`${CHAINS[L1_CHAIN_ID].blockExplorerUrls[0]}tx/${transaction.refundTx}`}
                         target="_blank"
                         rel="noreferrer"
                       >

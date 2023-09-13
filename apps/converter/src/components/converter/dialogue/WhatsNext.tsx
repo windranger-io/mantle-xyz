@@ -99,7 +99,7 @@ export default function WhatsNext({
         buttonText: "Etherscan",
         onButtonClick: () => {
           window.open(
-            `${CHAINS[chainId].blockExplorerUrls}tx/${txHash}`,
+            `${CHAINS[chainId].blockExplorerUrls[0]}tx/${txHash}`,
             "_blank"
           );
 
