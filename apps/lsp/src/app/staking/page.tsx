@@ -13,6 +13,7 @@ import { BigNumber } from "ethers";
 import { formatEther, parseEther } from "ethers/lib/utils";
 import { useState } from "react";
 import { useAccount, useBalance, useContractRead } from "wagmi";
+import Divider from "@components/Convert/Divider";
 import StakeConfirmDialogue from "./dialogue/StakeConfirmDialogue";
 import StakeSuccessDialogue from "./dialogue/StakeSuccessDialogue";
 import StakeFailureDialogue from "./dialogue/StakeFailureDialogue";
@@ -113,6 +114,7 @@ export default function Staking() {
           </div>
         )}
       </div>
+      <Divider />
       <div className="py-5 px-5">
         <ConvertOutput
           symbol="mETH"

@@ -4,7 +4,7 @@ export default function Divider() {
       style={{
         filter: "drop-shadow(0px 8px 8px #000)",
       }}
-      className="border-t-[16px] border-r-[32px] border-l-[32px] w-[32px] border-l-transparent border-r-transparent border-t-[#0D0D0D] -mt-5"
+      className="ml-4 border-t-[12px] border-r-[18px] border-l-[18px] w-[18px] border-l-transparent border-r-transparent border-t-white/5"
     />
   );
 }
