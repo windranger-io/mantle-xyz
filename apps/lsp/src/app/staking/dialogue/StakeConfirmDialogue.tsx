@@ -14,13 +14,13 @@ import {
   usePublicClient,
   useWaitForTransaction,
 } from "wagmi";
-// import { Button, Typography } from "@mantle/ui";
 
 type Props = {
   stakeAmount: bigint;
   receiveAmount: bigint;
   onClose: () => void;
   onStakeSuccess: (hash: string) => void;
+  onStakeFailure: () => void;
 };
 
 export default function StakeConfirmDialogue({
@@ -28,6 +28,7 @@ export default function StakeConfirmDialogue({
   receiveAmount,
   onClose,
   onStakeSuccess,
+  onStakeFailure,
 }: Props) {
   const { address } = useAccount();
   const publicClient = usePublicClient();
@@ -68,20 +69,19 @@ export default function StakeConfirmDialogue({
   });
 
   const { data, writeAsync: doStake } = useContractWrite(stakePrep.config);
-  const { isLoading, isError, error, isSuccess } = useWaitForTransaction({
+  const { isLoading, isError, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
   });
 
   useEffect(() => {
     if (isError) {
-      // TODO
-      console.log(error);
+      onStakeFailure();
       return;
     }
     if (isSuccess && data) {
       onStakeSuccess(data.hash);
     }
-  }, [isSuccess, isError, data, error, onStakeSuccess]);
+  }, [isSuccess, isError, data, onStakeSuccess, onStakeFailure]);
 
   const feeEstimate = feeData?.lastBaseFeePerGas
     ? feeData.lastBaseFeePerGas * stakeGas

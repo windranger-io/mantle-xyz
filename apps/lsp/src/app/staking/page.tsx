@@ -15,12 +15,14 @@ import { useState } from "react";
 import { useAccount, useBalance, useContractRead } from "wagmi";
 import StakeConfirmDialogue from "./dialogue/StakeConfirmDialogue";
 import StakeSuccessDialogue from "./dialogue/StakeSuccessDialogue";
+import StakeFailureDialogue from "./dialogue/StakeFailureDialogue";
 
 export default function Staking() {
   const { address } = useAccount();
   const balance = useBalance({ address, watch: true });
   const [ethAmount, setEthAmount] = useState<BigNumber>(BigNumber.from(0));
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [failureDialogOpen, setFailureDialogOpen] = useState(false);
   const [stakeTxHash, setStakeTxHash] = useState("");
 
   const balanceString =
@@ -50,6 +52,16 @@ export default function Staking() {
     );
   }
 
+  if (failureDialogOpen) {
+    return (
+      <StakeFailureDialogue
+        onClose={() => {
+          setFailureDialogOpen(false);
+        }}
+      />
+    );
+  }
+
   if (confirmDialogOpen) {
     return (
       <StakeConfirmDialogue
@@ -59,9 +71,12 @@ export default function Staking() {
         stakeAmount={ethAmount.toBigInt()}
         receiveAmount={outputAmount.data || BigInt(0)}
         onStakeSuccess={(hash: string) => {
-          console.log("Stake success", hash);
           setConfirmDialogOpen(false);
           setStakeTxHash(hash);
+        }}
+        onStakeFailure={() => {
+          setConfirmDialogOpen(false);
+          setFailureDialogOpen(true);
         }}
       />
     );

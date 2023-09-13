@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import { BigNumberish } from "ethers";
 import { Address, Chain } from "wagmi";
+import { ContractName, contracts } from "./contracts";
 
 // TODO: Add contract addresses in this pattern.
 // export const L1_BITDAO_TOKEN_ADDRESSES: Record<number, `0x${string}`> = {
@@ -155,6 +156,25 @@ export interface Token {
   balance?: BigNumberish;
   allowance?: BigNumberish;
 }
+
+export const METH_TOKEN: Record<number, Token> = {
+  [ChainID.Goerli]: {
+    chainId: ChainID.Goerli,
+    address: contracts[ChainID.Goerli][ContractName.METH].address,
+    decimals: 18,
+    logoURI: "/images/meth.png",
+    name: "MantleETH",
+    symbol: "mETH",
+  },
+  [ChainID.Ethereum]: {
+    chainId: ChainID.Ethereum,
+    address: contracts[ChainID.Ethereum][ContractName.METH].address,
+    decimals: 18,
+    logoURI: "/images/meth.png",
+    name: "MantleETH",
+    symbol: "mETH",
+  },
+};
 
 // ERC-20 abi for balanceOf && allowanceOf
 export const TOKEN_ABI = [
