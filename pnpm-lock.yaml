@@ -348,8 +348,8 @@ importers:
         specifier: ^4.8.0
         version: 4.8.0(react@18.2.0)
       supagraph:
-        specifier: 0.0.1-rc.24
-        version: registry.npmjs.org/supagraph@0.0.1-rc.24
+        specifier: 0.0.1-rc.25
+        version: registry.npmjs.org/supagraph@0.0.1-rc.25
       wagmi:
         specifier: ^1.3.9
         version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
@@ -1384,7 +1384,7 @@ packages:
       '@aws-sdk/util-utf8': 3.310.0
       '@aws-sdk/util-waiter': 3.329.0
       fast-xml-parser: 4.1.2
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     transitivePeerDependencies:
       - aws-crt
     dev: false
@@ -2929,7 +2929,7 @@ packages:
       date-fns: 2.30.0
       deep-diff: 1.0.2
       destroy: 1.2.0
-      dotenv: 16.0.3
+      dotenv: registry.npmjs.org/dotenv@16.0.3
       encodeurl: 1.0.2
       eventemitter2: 6.4.9
       execa: 7.1.1
@@ -3266,13 +3266,13 @@ packages:
     resolution: {integrity: sha512-06t1xCPXq6QFN7W1JUEf68aCwYN0OUDNAIoJe7bAqhaoa2vn7NCcuX1VHkJ/OWpmElUgCsRO6RiBbIru1in0Ig==}
     dependencies:
       '@envelop/types': 3.0.2
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@envelop/types@3.0.2:
     resolution: {integrity: sha512-pOFea9ha0EkURWxJ/35axoH9fDGP5S2cUu/5Mmo9pb8zUf+TaEot8vB670XXihFEn/92759BMjLJNWBKmNhyng==}
     dependencies:
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@envelop/validation-cache@5.1.3(@envelop/core@3.0.6)(graphql@16.6.0):
@@ -3285,7 +3285,7 @@ packages:
       graphql: 16.6.0
       hash-it: 6.0.0
       lru-cache: 6.0.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@esbuild-kit/cjs-loader@2.4.2:
@@ -3642,7 +3642,7 @@ packages:
     resolution: {integrity: sha512-EBikYFp2JCdIfGEb5G9dyCkTGDmC57KSHhRQOC3aYxoPWVZvfWCDjZwkGYHN7Lis/fmuWl906bnNTJifDQ3sXw==}
     dependencies:
       '@formatjs/intl-localematcher': 0.2.25
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
 
   /@formatjs/ecma402-abstract@1.17.0:
     resolution: {integrity: sha512-6ueQTeJZtwKjmh23bdkq/DMqH4l4bmfvtQH98blOSbiXv/OUiyijSW6jU22IT8BNM1ujCaEvJfTtyCYVH38EMQ==}
@@ -3653,25 +3653,25 @@ packages:
   /@formatjs/fast-memoize@1.2.1:
     resolution: {integrity: sha512-Rg0e76nomkz3vF9IPlKeV+Qynok0r7YZjL6syLz4/urSg0IbjPZCB/iYUMNsYA643gh4mgrX3T7KEIFIxJBQeg==}
     dependencies:
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
 
   /@formatjs/icu-messageformat-parser@2.1.0:
     resolution: {integrity: sha512-Qxv/lmCN6hKpBSss2uQ8IROVnta2r9jd3ymUEIjm2UyIkUCHVcbUVRGL/KS/wv7876edvsPe+hjHVJ4z8YuVaw==}
     dependencies:
       '@formatjs/ecma402-abstract': 1.11.4
       '@formatjs/icu-skeleton-parser': 1.3.6
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
 
   /@formatjs/icu-skeleton-parser@1.3.6:
     resolution: {integrity: sha512-I96mOxvml/YLrwU2Txnd4klA7V8fRhb6JG/4hm3VMNmeJo1F03IpV2L3wWt7EweqNLES59SZ4d6hVOPCSf80Bg==}
     dependencies:
       '@formatjs/ecma402-abstract': 1.11.4
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
 
   /@formatjs/intl-localematcher@0.2.25:
     resolution: {integrity: sha512-YmLcX70BxoSopLFdLr1Ds99NdlTI2oWoLbaUW2M406lxOIPzE1KQhRz2fPUkq34xVZQaihCoU29h0KK7An3bhA==}
     dependencies:
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
 
   /@formatjs/intl-localematcher@0.2.32:
     resolution: {integrity: sha512-k/MEBstff4sttohyEpXxCmC3MqbUn9VvHGlZ8fauLzkbwXmVrEeyzS+4uhrvAk9DWU9/7otYWxyDox4nT/KVLQ==}
@@ -3681,7 +3681,7 @@ packages:
   /@formatjs/intl-localematcher@0.4.0:
     resolution: {integrity: sha512-bRTd+rKomvfdS4QDlVJ6TA/Jx1F2h/TBVO5LjvhQ7QPPHp19oPNMIum7W2CMEReq/zPxpmCeB31F9+5gl/qtvw==}
     dependencies:
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
 
   /@gar/promisify@1.1.3:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -3746,7 +3746,7 @@ packages:
       '@graphql-typed-document-node/core': 3.1.2(graphql@16.6.0)
       '@repeaterjs/repeater': 3.0.4
       graphql: 16.6.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
       value-or-promise: 1.0.12
     dev: false
 
@@ -3755,9 +3755,9 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@graphql-tools/utils': 9.2.1(graphql@16.6.0)
+      '@graphql-tools/utils': registry.npmjs.org/@graphql-tools/utils@9.2.1(graphql@16.6.0)
       graphql: 16.6.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@graphql-tools/schema@9.0.19(graphql@16.6.0):
@@ -3768,7 +3768,7 @@ packages:
       '@graphql-tools/merge': 8.4.2(graphql@16.6.0)
       '@graphql-tools/utils': 9.2.1(graphql@16.6.0)
       graphql: 16.6.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
       value-or-promise: 1.0.12
     dev: false
 
@@ -3779,7 +3779,7 @@ packages:
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.6.0)
       graphql: 16.6.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@graphql-typed-document-node/core@3.1.2(graphql@16.6.0):
@@ -3801,7 +3801,7 @@ packages:
   /@graphql-yoga/logger@0.0.1:
     resolution: {integrity: sha512-6npFz7eZz33mXgSm1waBLMjUNG0D5hTc/p5Hcs1mojkT3KsLpCOFokzTEKboNsBhKevYcaVa/xeA7WBj4UYMLg==}
     dependencies:
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@graphql-yoga/render-graphiql@3.8.0(graphql-yoga@3.8.0):
@@ -3818,14 +3818,14 @@ packages:
       '@graphql-yoga/typed-event-target': 1.0.0
       '@repeaterjs/repeater': 3.0.4
       '@whatwg-node/events': 0.0.2
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@graphql-yoga/typed-event-target@1.0.0:
     resolution: {integrity: sha512-Mqni6AEvl3VbpMtKw+TIjc9qS9a8hKhiAjFtqX488yq5oJtj9TkNlFTIacAVS3vnPiswNsmDiQqvwUOcJgi1DA==}
     dependencies:
       '@repeaterjs/repeater': 3.0.4
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@hapi/hoek@9.3.0:
@@ -4268,7 +4268,7 @@ packages:
       '@peculiar/asn1-schema': 2.3.6
       '@peculiar/json-schema': 1.1.12
       pvtsutils: 1.3.2
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
       webcrypto-core: 1.7.7
     dev: false
 
@@ -4286,7 +4286,7 @@ packages:
       open: 8.4.0
       picocolors: 1.0.0
       tiny-glob: 0.2.9
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@playwright/test@1.29.2:
@@ -4938,7 +4938,7 @@ packages:
       '@solana/buffer-layout': 4.0.1
       agentkeepalive: 4.2.1
       bigint-buffer: 1.1.5
-      bn.js: 5.2.1
+      bn.js: registry.npmjs.org/bn.js@5.2.1
       borsh: 0.7.0
       bs58: 4.0.1
       buffer: 6.0.1
@@ -6382,14 +6382,14 @@ packages:
       busboy: 1.6.0
       fast-querystring: 1.1.2
       fast-url-parser: 1.1.3
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@whatwg-node/server@0.7.7:
     resolution: {integrity: sha512-aHURgNDFm/48WVV3vhTMfnEKCYwYgdaRdRhZsQZx4UVFjGGkGay7Ys0+AYu9QT/jpoImv2oONkstoTMUprDofg==}
     dependencies:
       '@whatwg-node/fetch': 0.8.8
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@wry/context@0.7.3:
@@ -6410,7 +6410,7 @@ packages:
     resolution: {integrity: sha512-yRTyhWSls2OY/pYLfwff867r8ekooZ4UI+/gxot5Wj8EFwSf2rG+n+Mo/6LoLQm1TKA4GRj2+LCpbfS937dClQ==}
     engines: {node: '>=8'}
     dependencies:
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /@wry/trie@0.4.3:
@@ -6980,9 +6980,6 @@ packages:
   /bluebird@3.7.2:
     resolution: {integrity: sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==}
 
-  /bn.js@4.11.6:
-    resolution: {integrity: sha512-XWwnNNFCuuSQ0m3r3C4LE3EiORltHd9M05pq6FOlVeiophzRbMo50Sbz1ehl8K3Z+jw9+vmgnXefY1hz8X+2wA==}
-
   /bn.js@4.12.0:
     resolution: {integrity: sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA==}
 
@@ -7019,7 +7016,7 @@ packages:
   /borsh@0.7.0:
     resolution: {integrity: sha512-CLCsZGIBCFnPtkNnieW/a8wmreDmfUtjU2m9yHrzPXIlNbqVs0AQrSatSG6vdNYUqdc83tkQi2eHfF98ubzQLA==}
     dependencies:
-      bn.js: 5.2.1
+      bn.js: registry.npmjs.org/bn.js@5.2.1
       bs58: 4.0.1
       text-encoding-utf-8: 1.0.2
     dev: false
@@ -7070,8 +7067,8 @@ packages:
       cipher-base: 1.0.4
       create-hash: 1.2.0
       evp_bytestokey: 1.0.3
-      inherits: 2.0.4
-      safe-buffer: 5.2.1
+      inherits: registry.npmjs.org/inherits@2.0.4
+      safe-buffer: registry.npmjs.org/safe-buffer@5.2.1
 
   /browserslist@4.21.5:
     resolution: {integrity: sha512-tUkiguQGW7S3IhB7N+c2MV/HZPSCPAAiYBZXLsBhFB/PCy6ZKKsZrmBayHV9fdGV/ARIfJ14NkxKzRDjvp7L6w==}
@@ -7093,7 +7090,7 @@ packages:
     dependencies:
       bs58: 4.0.1
       create-hash: 1.2.0
-      safe-buffer: 5.2.1
+      safe-buffer: registry.npmjs.org/safe-buffer@5.2.1
 
   /bson@5.3.0:
     resolution: {integrity: sha512-ukmCZMneMlaC5ebPHXIkP8YJzNl5DC41N5MAIvKDqLggdao342t4McltoJBQfQya/nHBWAcSsYRqlXPoQkTJag==}
@@ -7370,7 +7367,7 @@ packages:
   /cipher-base@1.0.4:
     resolution: {integrity: sha512-Kkht5ye6ZGmwv40uUDZztayT2ThLQGfnj/T71N/XzeZeo3nf8foyW7zGTsPYkEya3m5f3cAypH+qe7YOrM1U2Q==}
     dependencies:
-      inherits: 2.0.4
+      inherits: registry.npmjs.org/inherits@2.0.4
       safe-buffer: 5.2.1
 
   /class-is@1.1.0:
@@ -7914,7 +7911,7 @@ packages:
     resolution: {integrity: sha512-z00bCGNHDG8mHAkP7CtT1qVu+bFQUPjYq/4Iv3C3kWjTFV10zIjfSoeqXo9Asws8gwSHDGj/hl2u4OGIjapeCg==}
     dependencies:
       cipher-base: 1.0.4
-      inherits: 2.0.4
+      inherits: registry.npmjs.org/inherits@2.0.4
       md5.js: 1.3.5
       ripemd160: 2.0.2
       sha.js: 2.4.11
@@ -7924,9 +7921,9 @@ packages:
     dependencies:
       cipher-base: 1.0.4
       create-hash: 1.2.0
-      inherits: 2.0.4
+      inherits: registry.npmjs.org/inherits@2.0.4
       ripemd160: 2.0.2
-      safe-buffer: 5.2.1
+      safe-buffer: registry.npmjs.org/safe-buffer@5.2.1
       sha.js: 2.4.11
 
   /create-require@1.1.1:
@@ -8466,11 +8463,6 @@ packages:
     dependencies:
       is-obj: 2.0.0
     dev: true
-
-  /dotenv@16.0.3:
-    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
-    engines: {node: '>=12'}
-    dev: false
 
   /dotenv@16.1.4:
     resolution: {integrity: sha512-m55RtE8AsPeJBpOIFKihEmqUcoVncQIwo7x9U8ZwLEZw9ZpXboz2c+rvog+jUaJvVrZ5kBOeYQBX5+8Aa/OZQw==}
@@ -9355,7 +9347,7 @@ packages:
   /eth-lib@0.1.29:
     resolution: {integrity: sha512-bfttrr3/7gG4E02HoWTDUcDDslN003OlOoBxk9virpAZQ1ja/jDgwkWB8QfJF7ojuEowrqy+lzp9VcJG7/k5bQ==}
     dependencies:
-      bn.js: 4.12.0
+      bn.js: registry.npmjs.org/bn.js@4.12.0
       elliptic: 6.5.4
       nano-json-stream-parser: 0.1.2
       servify: 0.1.12
@@ -9370,7 +9362,7 @@ packages:
   /eth-lib@0.2.8:
     resolution: {integrity: sha512-ArJ7x1WcWOlSpzdoTBX8vkwlkSQ85CjjifSZtV4co64vWxSV8geWfPI9x4SVYu3DSxnX4yWFVTtGL+j9DUFLNw==}
     dependencies:
-      bn.js: 4.12.0
+      bn.js: registry.npmjs.org/bn.js@4.12.0
       elliptic: 6.5.4
       xhr-request-promise: 0.1.3
     dev: true
@@ -9392,6 +9384,7 @@ packages:
     resolution: {integrity: sha512-rxJ5OFN3RwjQxDcFP2Z5+Q9ho4eIdEmSc2ht0fCu8Se9nbXjZ7/031uXoUYJ87KHCOdVeiUuwSnoS7hmYAGVHA==}
     dependencies:
       js-sha3: 0.8.0
+    dev: false
 
   /ethereum-cryptography@0.1.3:
     resolution: {integrity: sha512-w8/4x1SGGzc+tO97TASLja6SLd3fRIK2tLVcV2Gx4IB21hE19atll5Cq9o3d0ZmAYC/8aw0ipieTSiekAea4SQ==}
@@ -9403,12 +9396,12 @@ packages:
       bs58check: 2.1.2
       create-hash: 1.2.0
       create-hmac: 1.1.7
-      hash.js: 1.1.7
+      hash.js: registry.npmjs.org/hash.js@1.1.7
       keccak: 3.0.3
       pbkdf2: 3.1.2
       randombytes: 2.1.0
       safe-buffer: 5.2.1
-      scrypt-js: 3.0.1
+      scrypt-js: registry.npmjs.org/scrypt-js@3.0.1
       secp256k1: 4.0.3
       setimmediate: 1.0.5
 
@@ -9417,7 +9410,7 @@ packages:
     engines: {node: '>=10.0.0'}
     dependencies:
       '@types/bn.js': 5.1.1
-      bn.js: 5.2.1
+      bn.js: registry.npmjs.org/bn.js@5.2.1
       create-hash: 1.2.0
       ethereum-cryptography: 0.1.3
       rlp: 2.2.7
@@ -9463,7 +9456,7 @@ packages:
     resolution: {integrity: sha512-/Sn9Y0oKl0uqQuvgFk/zQgR7aw1g36qX/jzSQ5lSwlO0GigPymk4eGQfeNTD03w1dPOqfz8V77Cy43jH56pagw==}
     engines: {node: '>=6.5.0', npm: '>=3'}
     dependencies:
-      bn.js: 4.11.6
+      bn.js: registry.npmjs.org/bn.js@4.11.6
       number-to-bn: 1.7.0
 
   /event-stream@3.3.4:
@@ -9504,7 +9497,7 @@ packages:
     resolution: {integrity: sha512-/f2Go4TognH/KvCISP7OUsHn85hT9nUkxxA9BEWxFn+Oj9o8ZNLm/40hdlgSLyuOimsrTKLUMEorQexp/aPQeA==}
     dependencies:
       md5.js: 1.3.5
-      safe-buffer: 5.2.1
+      safe-buffer: registry.npmjs.org/safe-buffer@5.2.1
 
   /execa@5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
@@ -10233,7 +10226,7 @@ packages:
       gcp-metadata: 5.2.0
       gtoken: 6.1.2
       jws: 4.0.0
-      lru-cache: 6.0.0
+      lru-cache: registry.npmjs.org/lru-cache@6.0.0
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -10437,9 +10430,9 @@ packages:
     resolution: {integrity: sha512-1nmYp/rhMDiE7AYkDw+lLwlAzz0AntGIe51F3RfFfEqyQ3feY2eI/NcwC6umIQVOASPMsWJLJScWKSSvzL9IVA==}
     engines: {node: '>=4'}
     dependencies:
-      inherits: 2.0.4
-      readable-stream: 3.6.0
-      safe-buffer: 5.2.1
+      inherits: registry.npmjs.org/inherits@2.0.4
+      readable-stream: registry.npmjs.org/readable-stream@3.6.0
+      safe-buffer: registry.npmjs.org/safe-buffer@5.2.1
 
   /hash-it@6.0.0:
     resolution: {integrity: sha512-KHzmSFx1KwyMPw0kXeeUD752q/Kfbzhy6dAZrjXV9kAIXGqzGvv8vhkUqj+2MGZldTo0IBpw6v7iWE7uxsvH0w==}
@@ -10497,7 +10490,7 @@ packages:
     resolution: {integrity: sha512-kyCuEOWjJqZuDbRHzL8V93NzQhwIB71oFWSyzVo+KPZI+pnQPPxucdkrOZvkLRnrf5URsQM+IJ09Dw29cRALIA==}
     engines: {node: '>=10'}
     dependencies:
-      lru-cache: 6.0.0
+      lru-cache: registry.npmjs.org/lru-cache@6.0.0
     dev: true
 
   /htmlparser2@8.0.2:
@@ -11037,7 +11030,7 @@ packages:
     peerDependencies:
       ws: '*'
     dependencies:
-      ws: 7.5.9
+      ws: registry.npmjs.org/ws@7.5.9
     dev: false
 
   /isomorphic-ws@5.0.0(ws@8.12.0):
@@ -11073,10 +11066,10 @@ packages:
       es6-promisify: 5.0.0
       eyes: 0.1.8
       isomorphic-ws: 4.0.1(ws@7.5.9)
-      json-stringify-safe: 5.0.1
+      json-stringify-safe: registry.npmjs.org/json-stringify-safe@5.0.1
       lodash: 4.17.21
       uuid: 8.3.2
-      ws: 7.5.9
+      ws: registry.npmjs.org/ws@7.5.9
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -11204,7 +11197,7 @@ packages:
     resolution: {integrity: sha512-aKS4WQjPenRxiQsC93MNfjx+nbF4PAdYzmd/1JIj8HYzqfbu86beTuNgXDzPknWk0n0uARlyewZo4s++ES36Ow==}
     hasBin: true
     dependencies:
-      minimist: 1.2.7
+      minimist: registry.npmjs.org/minimist@1.2.7
     dev: false
 
   /json5@2.2.3:
@@ -11752,7 +11745,7 @@ packages:
     resolution: {integrity: sha512-xitP+WxNPcTTOgnTJcrhM0xvdPepipPSf3I8EIpGKeFLjt3PlJLIDG3u8EX53ZIubkb+5U2+3rELYpEhHhzdkg==}
     dependencies:
       hash-base: 3.1.0
-      inherits: 2.0.4
+      inherits: registry.npmjs.org/inherits@2.0.4
       safe-buffer: 5.2.1
 
   /mdn-data@2.0.14:
@@ -12169,21 +12162,9 @@ packages:
     hasBin: true
     dependencies:
       json-stringify-safe: 5.0.1
-      minimist: 1.2.7
+      minimist: registry.npmjs.org/minimist@1.2.7
       split2: 2.2.0
       through2: 2.0.5
-    dev: false
-
-  /ndjson@2.0.0:
-    resolution: {integrity: sha512-nGl7LRGrzugTtaFcJMhLbpzJM6XdivmbkdlaGcrk/LXg2KL/YBC6z1g70xh0/al+oFuVFP8N8kiWRucmeEH/qQ==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dependencies:
-      json-stringify-safe: 5.0.1
-      minimist: registry.npmjs.org/minimist@1.2.7
-      readable-stream: 3.6.0
-      split2: 3.2.2
-      through2: 4.0.2
     dev: false
 
   /negotiator@0.6.3:
@@ -12772,7 +12753,7 @@ packages:
     resolution: {integrity: sha512-wsJ9gfSz1/s4ZsJN01lyonwuxA1tml6X1yBDnfpMglypcBRFZZkus26EdPSlqS5GJfYddVZa22p3VNb3z5m5Ig==}
     engines: {node: '>=6.5.0', npm: '>=3'}
     dependencies:
-      bn.js: 4.11.6
+      bn.js: registry.npmjs.org/bn.js@4.11.6
       strip-hex-prefix: 1.0.0
 
   /oauth-sign@0.9.0:
@@ -13155,7 +13136,7 @@ packages:
       create-hash: 1.2.0
       create-hmac: 1.1.7
       ripemd160: 2.0.2
-      safe-buffer: 5.2.1
+      safe-buffer: registry.npmjs.org/safe-buffer@5.2.1
       sha.js: 2.4.11
 
   /performance-now@2.1.0:
@@ -13206,7 +13187,7 @@ packages:
     resolution: {integrity: sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==}
     requiresBuild: true
     dependencies:
-      split2: 4.1.0
+      split2: registry.npmjs.org/split2@4.1.0
     dev: false
 
   /picocolors@1.0.0:
@@ -13248,7 +13229,7 @@ packages:
     resolution: {integrity: sha512-+KAgmVeqXYbTtU2FScx1XS3kNyfZ5TrXY07V96QnUSFqo2gAqlvmaxH67Lj7SWazqsMabf+58ctdTcBgnOLUOQ==}
     dependencies:
       duplexify: 4.1.2
-      split2: 4.1.0
+      split2: registry.npmjs.org/split2@4.1.0
     dev: false
 
   /pino-abstract-transport@1.0.0:
@@ -13264,7 +13245,7 @@ packages:
     dependencies:
       args: 5.0.3
       colorette: 2.0.19
-      ndjson: 2.0.0
+      ndjson: registry.npmjs.org/ndjson@2.0.0
       pino-abstract-transport: 0.4.0
       pino-pretty: 7.6.1
       pretty-ms: 7.0.1
@@ -13290,7 +13271,7 @@ packages:
       fast-safe-stringify: 2.1.1
       help-me: 4.2.0
       joycon: 3.1.1
-      minimist: 1.2.7
+      minimist: registry.npmjs.org/minimist@1.2.7
       on-exit-leak-free: 2.1.0
       pino-abstract-transport: 1.0.0
       pump: 3.0.0
@@ -13858,7 +13839,7 @@ packages:
     engines: {node: '>=0.10.0'}
     requiresBuild: true
     dependencies:
-      xtend: 4.0.2
+      xtend: registry.npmjs.org/xtend@4.0.2
     dev: false
 
   /preact-render-to-string@5.2.6(preact@10.12.1):
@@ -14204,7 +14185,7 @@ packages:
       '@types/react': 18.0.26
       react: 18.2.0
       react-style-singleton: 2.2.1(@types/react@18.0.26)(react@18.2.0)
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /react-remove-scroll@2.5.5(@types/react@18.0.26)(react@18.2.0):
@@ -14240,7 +14221,7 @@ packages:
       get-nonce: 1.0.1
       invariant: 2.2.4
       react: 18.2.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /react-wrap-balancer@0.4.0(react@18.2.0):
@@ -14531,7 +14512,7 @@ packages:
     resolution: {integrity: sha512-ii4iagi25WusVoiC4B4lq7pbXfAp3D9v5CwfkY33vffw2+pkDjY1D8GaN7spsxvCSx8dkPqOZCEZyfxcmJG2IA==}
     dependencies:
       hash-base: 3.1.0
-      inherits: 2.0.4
+      inherits: registry.npmjs.org/inherits@2.0.4
 
   /rlp@2.2.7:
     resolution: {integrity: sha512-d5gdPmgQ0Z+AklL2NVXr/IoSjNZFfTVvQWzL/AM2AOcSzYP2xjlb0AC8YyCLc41MSNf6P6QVtjgPdmVtzb+4lQ==}
@@ -14598,7 +14579,7 @@ packages:
       '@babel/runtime': 7.22.5
       eventemitter3: 4.0.7
       uuid: 8.3.2
-      ws: 8.12.1(bufferutil@4.0.7)(utf-8-validate@5.0.10)
+      ws: registry.npmjs.org/ws@8.12.1(bufferutil@4.0.7)(utf-8-validate@5.0.10)
     optionalDependencies:
       bufferutil: registry.npmjs.org/bufferutil@4.0.7
       utf-8-validate: registry.npmjs.org/utf-8-validate@5.0.10
@@ -14701,7 +14682,7 @@ packages:
     engines: {node: '>=10.0.0'}
     requiresBuild: true
     dependencies:
-      elliptic: 6.5.4
+      elliptic: registry.npmjs.org/elliptic@6.5.4
       node-addon-api: 2.0.2
       node-gyp-build: 4.6.0
 
@@ -16067,7 +16048,7 @@ packages:
     dependencies:
       '@types/react': 18.0.26
       react: 18.2.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /use-intl@2.12.0-alpha.1(react@18.2.0):
@@ -16105,7 +16086,7 @@ packages:
       '@types/react': 18.0.26
       detect-node-es: 1.1.0
       react: 18.2.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /use-sync-external-store@1.2.0(react@18.2.0):
@@ -16541,7 +16522,7 @@ packages:
     resolution: {integrity: sha512-0l+SP3IGhInw7Q20LY3IVafYEuufo4Dn75jAHT7c2aDJsIolvf2Lc6ugHkBajlwUneGfbRQs/ccYPQ9JeMUbrg==}
     engines: {node: '>=8.0.0'}
     dependencies:
-      bn.js: 5.2.1
+      bn.js: registry.npmjs.org/bn.js@5.2.1
       web3-utils: 1.10.0
     dev: true
 
@@ -16643,7 +16624,7 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       bn.js: 5.2.1
-      ethereum-bloom-filters: 1.0.10
+      ethereum-bloom-filters: registry.npmjs.org/ethereum-bloom-filters@1.0.10
       ethereumjs-util: 7.1.5
       ethjs-unit: 0.1.6
       number-to-bn: 1.7.0
@@ -16706,7 +16687,7 @@ packages:
     hasBin: true
     dependencies:
       concat-stream: 1.5.2
-      minimist: 1.2.7
+      minimist: registry.npmjs.org/minimist@1.2.7
     dev: false
 
   /whatwg-url@11.0.0:
@@ -16866,22 +16847,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-    dev: false
-
-  /ws@8.12.1(bufferutil@4.0.7)(utf-8-validate@5.0.10):
-    resolution: {integrity: sha512-1qo+M9Ba+xNhPB+YTWUlK6M17brTut5EXbcBaMRN5pH5dFrXz7lzz1ChFSUq3bOUl8yEvSenhHmYUNJxFzdJew==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dependencies:
-      bufferutil: registry.npmjs.org/bufferutil@4.0.7
-      utf-8-validate: registry.npmjs.org/utf-8-validate@5.0.10
     dev: false
 
   /xhr-request-promise@0.1.3:
@@ -19089,6 +19054,11 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
+  registry.npmjs.org/bn.js@4.11.6:
+    resolution: {integrity: sha512-XWwnNNFCuuSQ0m3r3C4LE3EiORltHd9M05pq6FOlVeiophzRbMo50Sbz1ehl8K3Z+jw9+vmgnXefY1hz8X+2wA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/bn.js/-/bn.js-4.11.6.tgz}
+    name: bn.js
+    version: 4.11.6
+
   registry.npmjs.org/bn.js@4.12.0:
     resolution: {integrity: sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/bn.js/-/bn.js-4.12.0.tgz}
     name: bn.js
@@ -19798,7 +19768,6 @@ packages:
     version: 1.0.10
     dependencies:
       js-sha3: registry.npmjs.org/js-sha3@0.8.0
-    dev: false
 
   registry.npmjs.org/ethers@5.7.2:
     resolution: {integrity: sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ethers/-/ethers-5.7.2.tgz}
@@ -20317,7 +20286,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: registry.npmjs.org/yallist@4.0.0
-    dev: false
 
   registry.npmjs.org/lru-cache@7.18.3:
     resolution: {integrity: sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/lru-cache/-/lru-cache-7.18.3.tgz}
@@ -20420,6 +20388,20 @@ packages:
       minimist: registry.npmjs.org/minimist@1.2.7
       split2: registry.npmjs.org/split2@2.2.0
       through2: registry.npmjs.org/through2@2.0.5
+    dev: false
+
+  registry.npmjs.org/ndjson@2.0.0:
+    resolution: {integrity: sha512-nGl7LRGrzugTtaFcJMhLbpzJM6XdivmbkdlaGcrk/LXg2KL/YBC6z1g70xh0/al+oFuVFP8N8kiWRucmeEH/qQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ndjson/-/ndjson-2.0.0.tgz}
+    name: ndjson
+    version: 2.0.0
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      json-stringify-safe: 5.0.1
+      minimist: registry.npmjs.org/minimist@1.2.7
+      readable-stream: 3.6.0
+      split2: 3.2.2
+      through2: 4.0.2
     dev: false
 
   registry.npmjs.org/node-gyp@8.4.1:
@@ -20825,6 +20807,16 @@ packages:
       util-deprecate: registry.npmjs.org/util-deprecate@1.0.2
     dev: false
 
+  registry.npmjs.org/readable-stream@3.6.0:
+    resolution: {integrity: sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/readable-stream/-/readable-stream-3.6.0.tgz}
+    name: readable-stream
+    version: 3.6.0
+    engines: {node: '>= 6'}
+    dependencies:
+      inherits: registry.npmjs.org/inherits@2.0.4
+      string_decoder: registry.npmjs.org/string_decoder@1.3.0
+      util-deprecate: registry.npmjs.org/util-deprecate@1.0.2
+
   registry.npmjs.org/readdirp@3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/readdirp/-/readdirp-3.6.0.tgz}
     name: readdirp
@@ -20896,6 +20888,11 @@ packages:
     version: 5.1.2
     dev: false
 
+  registry.npmjs.org/safe-buffer@5.2.1:
+    resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz}
+    name: safe-buffer
+    version: 5.2.1
+
   registry.npmjs.org/saslprep@1.0.3:
     resolution: {integrity: sha512-/MY/PEMbk2SuY5sScONwhUDsV2p77Znkb/q3nSVstq/yQzYJOH/Azh29p9oJLsl3LnQwSvZDKagDGBsBwSooag==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/saslprep/-/saslprep-1.0.3.tgz}
     name: saslprep
@@ -20911,7 +20908,6 @@ packages:
     resolution: {integrity: sha512-cdwTTnqPu0Hyvf5in5asVdZocVDTNRmR7XEcJuIzMjJeSHybHl7vpB66AzwTaIg6CLSbtjcxc8fqcySfnTkccA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/scrypt-js/-/scrypt-js-3.0.1.tgz}
     name: scrypt-js
     version: 3.0.1
-    dev: false
 
   registry.npmjs.org/semver@7.5.1:
     resolution: {integrity: sha512-Wvss5ivl8TMRZXXESstBA4uR5iXgEN/VC5/sOcuXdVLzcdkz4HWetIoRfG5gb5X+ij/G9rw9YoGn3QoQ8OCSpw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/semver/-/semver-7.5.1.tgz}
@@ -20963,6 +20959,13 @@ packages:
     version: 2.2.0
     dependencies:
       through2: registry.npmjs.org/through2@2.0.5
+    dev: false
+
+  registry.npmjs.org/split2@4.1.0:
+    resolution: {integrity: sha512-VBiJxFkxiXRlUIeyMQi8s4hgvKCSjtknJv/LVYbrgALPwf5zSKmEwV9Lst25AkvMDnvxODugjdl6KZgwKM1WYQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/split2/-/split2-4.1.0.tgz}
+    name: split2
+    version: 4.1.0
+    engines: {node: '>= 10.x'}
     dev: false
 
   registry.npmjs.org/sprintf-js@1.0.3:
@@ -21017,6 +21020,13 @@ packages:
       safe-buffer: registry.npmjs.org/safe-buffer@5.1.2
     dev: false
 
+  registry.npmjs.org/string_decoder@1.3.0:
+    resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/string_decoder/-/string_decoder-1.3.0.tgz}
+    name: string_decoder
+    version: 1.3.0
+    dependencies:
+      safe-buffer: registry.npmjs.org/safe-buffer@5.2.1
+
   registry.npmjs.org/strip-ansi@6.0.1:
     resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz}
     name: strip-ansi
@@ -21033,10 +21043,10 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  registry.npmjs.org/supagraph@0.0.1-rc.24:
-    resolution: {integrity: sha512-IXEg5hd7qs5h09+5GUP8fzqhN6Js6iBZqaa2wy0HlBBRNUF3mAoRoMc4xHxFQ7I8ZbITKgsnPlD+A8NHoXb/Lg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.24.tgz}
+  registry.npmjs.org/supagraph@0.0.1-rc.25:
+    resolution: {integrity: sha512-0cPfXNIla4npQQOGavi0Z3f/dDSaqsYvdpfl6gVrGGKMYTY86zGKK9inlOGdpqTz4ZYvDAoCpMhN0CS3sHoP1Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.25.tgz}
     name: supagraph
-    version: 0.0.1-rc.24
+    version: 0.0.1-rc.25
     dependencies:
       '@graphql-yoga/render-graphiql': registry.npmjs.org/@graphql-yoga/render-graphiql@3.8.0(graphql-yoga@3.8.0)
       csv-parser: registry.npmjs.org/csv-parser@3.0.0
@@ -21185,7 +21195,6 @@ packages:
     resolution: {integrity: sha512-mSxlJJwl3BMEQCUNnxXBU9jP4JBktcEGhURcPR6VQVlnP0FdDEsIaz0C35dXNGLyRfrATNofF0F5p2KPxQgB+w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/tslib/-/tslib-2.5.3.tgz}
     name: tslib
     version: 2.5.3
-    dev: false
 
   registry.npmjs.org/turbo-darwin-64@1.10.6:
     resolution: {integrity: sha512-s2Gc7i9Ud+H9GDcrGJjPIyscJfzDGQ6il4Sl2snfvwngJs4/TaqKuBoX3HNt/7F4NiFRs7ZhlLV1/Yu9zGBRhw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/turbo-darwin-64/-/turbo-darwin-64-1.10.6.tgz}
@@ -21291,7 +21300,6 @@ packages:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz}
     name: util-deprecate
     version: 1.0.2
-    dev: false
 
   registry.npmjs.org/v8-compile-cache@2.3.0:
     resolution: {integrity: sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz}
@@ -21390,6 +21398,21 @@ packages:
         optional: true
     dev: false
 
+  registry.npmjs.org/ws@7.5.9:
+    resolution: {integrity: sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ws/-/ws-7.5.9.tgz}
+    name: ws
+    version: 7.5.9
+    engines: {node: '>=8.3.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: false
+
   registry.npmjs.org/ws@8.12.0:
     resolution: {integrity: sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ws/-/ws-8.12.0.tgz}
     name: ws
@@ -21405,6 +21428,25 @@ packages:
         optional: true
     dev: false
 
+  registry.npmjs.org/ws@8.12.1(bufferutil@4.0.7)(utf-8-validate@5.0.10):
+    resolution: {integrity: sha512-1qo+M9Ba+xNhPB+YTWUlK6M17brTut5EXbcBaMRN5pH5dFrXz7lzz1ChFSUq3bOUl8yEvSenhHmYUNJxFzdJew==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ws/-/ws-8.12.1.tgz}
+    id: registry.npmjs.org/ws/8.12.1
+    name: ws
+    version: 8.12.1
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dependencies:
+      bufferutil: registry.npmjs.org/bufferutil@4.0.7
+      utf-8-validate: registry.npmjs.org/utf-8-validate@5.0.10
+    dev: false
+
   registry.npmjs.org/xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz}
     name: xtend
@@ -21416,7 +21458,6 @@ packages:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz}
     name: yallist
     version: 4.0.0
-    dev: false
 
   registry.npmjs.org/yaml@1.10.2:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/yaml/-/yaml-1.10.2.tgz}
