@@ -115,6 +115,7 @@ const config = {
       pendingMigrationsV2: [PendingMigrationV2!]! @derivedFrom(field: "account")
       migratedMnt: BigInt!
       migrationCount: Int!
+      migrationCountV2: Int!
       blockNumber: BigInt!
       transactionHash: String! 
     }
@@ -172,6 +173,7 @@ const config = {
         id
         migratedMnt
         migrationCount
+        migrationCountV2
         migrations(first: 10, orderBy: blockTimestamp, orderDirection: desc) {
           amountSwapped
           gasCost

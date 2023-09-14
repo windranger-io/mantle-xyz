@@ -36,11 +36,11 @@ export const TokensMigratedV2Handler = async (
     args.amountSwapped
   );
   // keep count of how many migrations the user has made (so we can paginate Migrations)
-  const newCount = BigNumber.from(account.migrationCount || "0").add("1");
+  const newCount = BigNumber.from(account.migrationCountV2 || "0").add("1");
 
   // update/set the accounts details
   account.set("migratedMnt", newBalance);
-  account.set("migrationCount", newCount);
+  account.set("migrationCountV2", newCount);
   account.set("blockNumber", tx.blockNumber);
   account.set("transactionHash", tx.transactionHash);
 
