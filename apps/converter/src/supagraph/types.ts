@@ -30,6 +30,7 @@ export type AccountEntity = {
   id: string;
   migratedMnt: BigNumberish;
   migrationCount: BigNumberish;
+  migrationCountV2: BigNumberish;
   blockNumber: BigNumberish;
   transactionHash: String;
 };
