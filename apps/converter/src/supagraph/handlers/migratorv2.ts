@@ -24,7 +24,7 @@ export const TokensMigratedV2Handler = async (
   args: TokensMigratedEvent,
   { tx, block }: { tx: TransactionReceipt & TransactionResponse; block: Block }
 ) => {
-  // load the entity for this account and migration (migration based on txHash)ç
+  // load the entity for this account and migration (pending migration based on user)
   const account = await Store.get<AccountEntity>("Account", args.to);
   const migration = await Store.get<MigationEntity>(
     "PendingMigrationV2",
@@ -64,7 +64,7 @@ export const TokensMigratedV2Handler = async (
   // store the pending entity (keep this around for easy most recent tx lookup/to simpifly the procedure)
   const newMigration = await migration.save();
 
-  // store the same entity against its txHash instead of pending into the MigrationV2 collection
+  // store the same entity against its txHash instead of pending into the MigrationV2 collection (migration based on txHash)
   await Store.set(
     // ref to the entity table
     "MigrationV2",
@@ -74,7 +74,7 @@ export const TokensMigratedV2Handler = async (
     {
       ...newMigration.valueOf(),
       // copy the correct id into the new entity
-      id: tx.transactionHash || tx.hash
+      id: tx.transactionHash || tx.hash,
     }
   );
 
@@ -87,7 +87,7 @@ export const TokenMigrationApprovedV2Handler = async (
   args: TokenMigrationApprovedEvent,
   { tx }: { tx: TransactionReceipt & TransactionResponse }
 ) => {
-  // load the entity for this account and migration (migration based on txHash)
+  // load the entity for this account and migration (pending migration based on user)
   const migration = await Store.get<MigationEntity>(
     "PendingMigrationV2",
     args.user

@@ -22,7 +22,7 @@ export const ApprovalHandler = async (
 ) => {
   // register a new PENDING migrationV2 entity
   if (getAddress(args.spender) === MIGRATOR_V2) {
-    // load the entity for this account and migration (migration based on txHash)
+    // load the entity for this account and migration (pending migration based on user)
     const account = await Store.get<AccountEntity>("Account", args.owner);
     const migration = await Store.get<MigationEntity>(
       "PendingMigrationV2",
