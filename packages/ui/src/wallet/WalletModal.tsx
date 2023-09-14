@@ -5,14 +5,26 @@
 import { ReactNode, useCallback, useEffect } from 'react'
 // import * as Dialog from '@radix-ui/react-dialog'
 import { Button } from '../actions/Button'
+import { BitgetSvg } from './Bitget'
+import { BybitSvg } from './Bybit'
 import { MetaMaskSvg } from './MetaMask'
+
+import { Coin98Svg } from './Coin98'
+import { RabbySvg } from './Rabby'
+import { TokenPocketSvg } from './TokenPocket'
 import { WalletConnectSvg } from './WalletConnect'
 
 type WalletModalProps = {
   injectedName?: string
+  connectors?: [] | { ready: boolean; id: string; name: string }[]
   onInjected?: () => void
   onMetamask?: () => void
   onWalletConnect?: () => void
+  onBybitWallet?: () => void
+  onBitgetWallet?: () => void
+  onTokenPocket?: () => void
+  onRabbyWallet?: () => void
+  onCoin98Wallet?: () => void
   open: boolean
   setOpen: (open: boolean) => void
 }
@@ -76,12 +88,26 @@ const Dialog = ({
 
 export const WalletModal = ({
   injectedName = undefined,
+  connectors = [],
   onInjected = undefined,
   onMetamask = undefined,
   onWalletConnect = undefined,
+  onBybitWallet = undefined,
+  onBitgetWallet = undefined,
+  onTokenPocket = undefined,
+  onRabbyWallet = undefined,
+  onCoin98Wallet = undefined,
   open = false,
   setOpen = () => {},
 }: WalletModalProps) => {
+  const browserWallets = connectors
+    .filter(conn => conn.ready)
+    .map(conn => conn.id)
+  const browserWalletsNames = connectors
+    .filter(conn => conn.ready)
+    .map(conn => conn.name)
+  const isWalletPresent = (id: string) => browserWallets.includes(id)
+  // console.log('browserWallets', browserWallets, browserWalletsNames, connectors)
   return (
     <Dialog open={open} setOpen={setOpen}>
       <div className="relative">
@@ -123,6 +149,71 @@ export const WalletModal = ({
           Metamask
         </Button>
       )}
+      {onBybitWallet && isWalletPresent('bybitWallet') && (
+        <Button
+          key="bybitWallet-button"
+          type="button"
+          variant="secondary"
+          size="full"
+          onClick={onBybitWallet}
+          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
+        >
+          <BybitSvg className="h-6 w-6" />
+          Bybit Wallet
+        </Button>
+      )}
+      {onBitgetWallet && isWalletPresent('bitgetWallet') && (
+        <Button
+          key="bitgetWallet-button"
+          type="button"
+          variant="secondary"
+          size="full"
+          onClick={onBitgetWallet}
+          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
+        >
+          <BitgetSvg className="h-6 w-6" />
+          Bitget Wallet
+        </Button>
+      )}
+      {onTokenPocket && isWalletPresent('tokenPocket') && (
+        <Button
+          key="tokenPocket-button"
+          type="button"
+          variant="secondary"
+          size="full"
+          onClick={onTokenPocket}
+          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
+        >
+          <TokenPocketSvg className="h-6 w-6" />
+          Token pocket
+        </Button>
+      )}
+      {onRabbyWallet && isWalletPresent('rabbyWallet') && (
+        <Button
+          key="rabbyWallet-button"
+          type="button"
+          variant="secondary"
+          size="full"
+          onClick={onRabbyWallet}
+          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
+        >
+          <RabbySvg className="h-6 w-6" />
+          Rabby Wallet
+        </Button>
+      )}
+      {onCoin98Wallet && isWalletPresent('coin98Wallet') && (
+        <Button
+          key="coin98Wallet-button"
+          type="button"
+          variant="secondary"
+          size="full"
+          onClick={onCoin98Wallet}
+          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
+        >
+          <Coin98Svg className="h-6 w-6" />
+          Coin98 Wallet
+        </Button>
+      )}
       {onWalletConnect && (
         <Button
           key="walletConnect-button"
@@ -136,19 +227,21 @@ export const WalletModal = ({
           Wallet Connect
         </Button>
       )}
-      {onInjected && injectedName !== 'Injected' && (
-        <Button
-          key="injected-button"
-          type="button"
-          variant="secondary"
-          size="full"
-          onClick={onInjected}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full"
-        >
-          {/* <MetaMaskSvg className="h-6 w-6" /> */}
-          Injected: {injectedName}
-        </Button>
-      )}
+      {onInjected &&
+        injectedName !== 'Injected' &&
+        !browserWalletsNames.includes(injectedName as string) && (
+          <Button
+            key="injected-button"
+            type="button"
+            variant="secondary"
+            size="full"
+            onClick={onInjected}
+            className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full"
+          >
+            {/* <MetaMaskSvg className="h-6 w-6" /> */}
+            Injected: {injectedName}
+          </Button>
+        )}
       <p className="text-sm text-center md:mt-10 mt-5 md:mb-0 mb-5">
         By connecting your wallet, you hereby acknowledge that you have read and
         accept the{' '}
