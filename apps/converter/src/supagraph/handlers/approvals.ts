@@ -26,7 +26,9 @@ export const ApprovalHandler = async (
     const account = await Store.get<AccountEntity>("Account", args.owner);
     const migration = await Store.get<MigationEntity>(
       "PendingMigrationV2",
-      args.owner
+      args.owner,
+      // skip collecting the current values of any past pending approval and replace with new set
+      true
     );
 
     // calculate gas usage
