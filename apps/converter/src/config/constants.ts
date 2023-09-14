@@ -27,7 +27,7 @@ export const L1_CONVERTER_CONTRACT_ADDRESSES: Record<number, `0x${string}`> = {
 };
 export const L1_CONVERTER_V2_CONTRACT_ADDRESSES: Record<number, `0x${string}`> =
   {
-    1: "0x",
+    1: "0x95cE6D5D5FD2063Fd9a10f7f8f81F9e3193Ca53F",
     5: "0x1142141E5BDF32FbF9129cC8c03932014E23164c",
   };
 
