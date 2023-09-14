@@ -9,7 +9,7 @@ import Image from "next/image";
 import { useContext, useEffect } from "react";
 
 import Values from "@components/converter/utils/Values";
-import useCallApprove from "@hooks/web3/converter/write/useCallApprove";
+import { useCallApprove } from "@hooks/web3/converter/write/useCallApprove";
 import { Button, Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
 
