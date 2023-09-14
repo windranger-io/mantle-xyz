@@ -1,25 +1,26 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { Tab } from "@headlessui/react";
-import { clsx } from "clsx";
 import { SimpleCard, Typography } from "@mantle/ui";
+import { clsx } from "clsx";
 
-import StateContext from "@providers/stateContext";
 import Account from "@components/account/Account";
+import StateContext from "@providers/stateContext";
 
 import { MdClear } from "react-icons/md";
 
-import Link from "next/link";
 import {
   L1_CHAIN_ID,
   L2_CHAIN_ID,
-  Views,
   MANTLE_BRIDGE_URL,
+  Views,
 } from "@config/constants";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Migration from "./Migration";
+import MigrationV2 from "./MigrationV2";
 
 export default function Tabs() {
   const { view, setView, setSafeChains } = useContext(StateContext);
@@ -28,6 +29,7 @@ export default function Tabs() {
     Deposit: [],
     Withdraw: [],
     Migrate: [<Migration />],
+    MigrateV2: [<MigrationV2 />],
   });
 
   const router = useRouter();
@@ -39,6 +41,7 @@ export default function Tabs() {
       // this will disable the incorrect network check (but still display if not L1 or L2 chainId)
       setSafeChains([L1_CHAIN_ID, L2_CHAIN_ID]);
       // align the selected tab
+      console.log(pathName);
       if (pathName?.indexOf("/account") === 0 && view !== Views.Account) {
         setView(Views.Account);
       }
@@ -47,7 +50,10 @@ export default function Tabs() {
     []
   );
 
-  const [selectedIndex, setSelectedIndex] = useState<number>(2);
+  const [selectedIndex, setSelectedIndex] = useState<number>(3);
+  function SplitCamelCase(s: string) {
+    return s.replace(/([a-z])([A-Z])/g, "$1 $2");
+  }
 
   return (
     (view === Views.Account && (
@@ -71,7 +77,7 @@ export default function Tabs() {
           onChange={(val) => {
             setSelectedIndex(val);
             // redirect to bridge app if the user chooses the deposit / withdraw app
-            if (val !== 2) {
+            if (val !== 2 && val !== 3) {
               window.open(
                 `${MANTLE_BRIDGE_URL[L1_CHAIN_ID]}/account/${
                   val === 0 ? "deposit" : "withdraw"
@@ -97,7 +103,7 @@ export default function Tabs() {
                     )
                   }
                 >
-                  {category}
+                  {SplitCamelCase(category)}
                 </Tab>
               </span>
             ))}
