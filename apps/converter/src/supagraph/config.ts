@@ -142,6 +142,8 @@ const config = {
       blockNumber: Int!
       approvedBy: String!
       approvalTx: String!
+      approvalBlockTimestamp: Int!
+      approvalBlockNumber: Int!
       transactionHash: String!
       status: String!
     }
@@ -158,6 +160,8 @@ const config = {
       transactionHash: String!
       approvedBy: String!
       approvalTx: String!
+      approvalBlockTimestamp: Int!
+      approvalBlockNumber: Int!
       status: String!
     }
   `,
@@ -190,6 +194,7 @@ const config = {
           blockTimestamp
           transactionHash
           approvedBy
+          approvalBlockTimestamp
           approvalTx
         }
         pendingMigrationsV2(

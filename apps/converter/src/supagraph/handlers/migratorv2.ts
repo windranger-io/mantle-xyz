@@ -6,6 +6,7 @@ import { Store } from "supagraph";
 
 // Each event is supplied the block and tx along with the typed args
 import {
+  Block,
   TransactionReceipt,
   TransactionResponse,
 } from "@ethersproject/providers";
@@ -81,7 +82,7 @@ export const TokensMigratedV2Handler = async (
 // Generic handler to consume TokensMigrated events (event TokensMigrationApproved(address indexed approver, address indexed user, uint256 amount))
 export const TokenMigrationApprovedV2Handler = async (
   args: TokenMigrationApprovedEvent,
-  { tx }: { tx: TransactionReceipt & TransactionResponse }
+  { tx, block }: { tx: TransactionReceipt & TransactionResponse; block: Block }
 ) => {
   // load the entity for this account and migration (pending migration based on user)
   const migration = await Store.get<MigationEntity>(
@@ -102,6 +103,8 @@ export const TokenMigrationApprovedV2Handler = async (
   // record gas-cost for future refund
   migration.set("approvedBy", args.approver);
   migration.set("approvalTx", tx.transactionHash || tx.hash);
+  migration.set("approvalBlockNumber", tx.blockNumber);
+  migration.set("approvalBlockTimestamp", block.timestamp);
 
   // set the status to pending
   migration.set("status", "PENDING");
