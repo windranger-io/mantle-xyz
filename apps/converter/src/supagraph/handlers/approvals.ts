@@ -26,10 +26,18 @@ export const ApprovalHandler = async (
     const account = await Store.get<AccountEntity>("Account", args.owner);
     const migration = await Store.get<MigationEntity>(
       "PendingMigrationV2",
-      args.owner,
-      // skip collecting the current values of any past pending approval and replace with new set
-      true
+      args.owner
     );
+
+    // reset the entity
+    if (
+      migration.status === "COMPLETE" &&
+      tx.transactionHash !== migration.transactionHash
+    ) {
+      migration.entries = [
+        migration.entries.find((entry) => entry.key === "id")!,
+      ];
+    }
 
     // calculate gas usage
     const gasUsed = BigNumber.from(tx.gasUsed);
