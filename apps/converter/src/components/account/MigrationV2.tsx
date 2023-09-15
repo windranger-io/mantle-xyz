@@ -44,8 +44,8 @@ export default function MigrationV2() {
         },
       });
 
-      if (data.accounts) {
-        setHistoryTotal(data.accounts[0].migrationCount);
+      if (data.accounts.length) {
+        setHistoryTotal(data.accounts[0]?.migrationCount || 0);
         setHistory((prevState) =>
           prevState.concat(data.accounts[0].migrationsV2)
         );
