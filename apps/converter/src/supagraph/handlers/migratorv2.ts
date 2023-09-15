@@ -6,7 +6,6 @@ import { Store } from "supagraph";
 
 // Each event is supplied the block and tx along with the typed args
 import {
-  Block,
   TransactionReceipt,
   TransactionResponse,
 } from "@ethersproject/providers";
@@ -22,7 +21,7 @@ import type {
 // Generic handler to consume TokensMigrated events (event TokensMigrated(address indexed to, uint256 amountSwapped))
 export const TokensMigratedV2Handler = async (
   args: TokensMigratedEvent,
-  { tx, block }: { tx: TransactionReceipt & TransactionResponse; block: Block }
+  { tx }: { tx: TransactionReceipt & TransactionResponse }
 ) => {
   // load the entity for this account and migration (pending migration based on user)
   const account = await Store.get<AccountEntity>("Account", args.to);
@@ -49,14 +48,11 @@ export const TokensMigratedV2Handler = async (
   migration.set(
     "amountApproved",
     // if an approver approves themselves via the MigratorV2 contract, the Approval event on the BIT contract will be for 0
-    BigNumber.from(migration.amountApproved).eq("0")
+    BigNumber.from(migration.amountApproved || "0").eq("0")
       ? args.amountSwapped
       : migration.amountApproved
   );
   migration.set("amountSwapped", args.amountSwapped);
-  migration.set("blockNumber", tx.blockNumber);
-  migration.set("blockTimestamp", block.timestamp);
-  migration.set("transactionHash", tx.transactionHash);
 
   // set the status to complete
   migration.set("status", "COMPLETE");
@@ -82,7 +78,7 @@ export const TokensMigratedV2Handler = async (
   await account.save();
 };
 
-// Generic handler to consume TokensMigrated events (event TokensMigrated(address indexed to, uint256 amountSwapped))
+// Generic handler to consume TokensMigrated events (event TokensMigrationApproved(address indexed approver, address indexed user, uint256 amount))
 export const TokenMigrationApprovedV2Handler = async (
   args: TokenMigrationApprovedEvent,
   { tx }: { tx: TransactionReceipt & TransactionResponse }
@@ -93,9 +89,22 @@ export const TokenMigrationApprovedV2Handler = async (
     args.user
   );
 
+  // reset the entity
+  if (
+    migration.status === "COMPLETE" &&
+    tx.transactionHash !== migration.transactionHash
+  ) {
+    migration.entries = [
+      migration.entries.find((entry) => entry.key === "id")!,
+    ];
+  }
+
   // record gas-cost for future refund
   migration.set("approvedBy", args.approver);
   migration.set("approvalTx", tx.transactionHash || tx.hash);
+
+  // set the status to pending
+  migration.set("status", "PENDING");
 
   // save all changes
   await migration.save();
