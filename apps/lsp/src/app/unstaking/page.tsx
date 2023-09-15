@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Button, T } from "@mantle/ui";
 import { BigNumber } from "ethers";
 import { formatEther, parseEther } from "ethers/lib/utils";
@@ -17,18 +17,28 @@ import TokenDirection from "@components/TokenDirection";
 import useMETHBalance from "@hooks/web3/read/useMETHBalance";
 import { formatEthTruncated } from "@util/util";
 import Divider from "@components/Convert/Divider";
+import usePermitApproval from "@hooks/web3/write/usePermitApproval";
+import StakeFailureDialogue from "@app/staking/dialogue/StakeFailureDialogue";
+import UnstakeConfirmDialogue from "./dialogue/UnstakeConfirmDialogue";
+import UnstakeSuccessDialogue from "./dialogue/UnstakeSuccessDialogue";
 
 export default function Unstaking() {
   const { address } = useAccount();
   const balance = useMETHBalance(address);
   const [methAmount, setMethAmount] = useState<BigNumber>(BigNumber.from(0));
-  // const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  // const [failureDialogOpen, setFailureDialogOpen] = useState(false);
-  // const [stakeTxHash, setStakeTxHash] = useState("");
-
-  const balanceString = formatEthTruncated(balance.data || 0);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [failureDialogOpen, setFailureDialogOpen] = useState(false);
+  const [txHash, setTxHash] = useState("");
 
   const stakingContract = contracts[CHAIN_ID][ContractName.Staking];
+  const methContract = contracts[CHAIN_ID][ContractName.METH];
+
+  const hasApproval = useContractRead({
+    ...methContract,
+    functionName: "allowance",
+    args: [address!, stakingContract.address],
+    enabled: Boolean(address),
+  });
 
   const outputAmount = useContractRead({
     ...stakingContract,
@@ -37,9 +47,69 @@ export default function Unstaking() {
     enabled: Boolean(address) && Number(methAmount) > 0,
   });
 
+  const approvalSignature = usePermitApproval({
+    methAmount: methAmount.toBigInt(),
+    address,
+  });
+
+  const doApproval = useCallback(async () => {
+    if (!approvalSignature.signTypedDataAsync) {
+      return;
+    }
+    await approvalSignature.signTypedDataAsync();
+    setConfirmDialogOpen(true);
+  }, [approvalSignature]);
+
+  const balanceString = formatEthTruncated(balance.data || 0);
   const formattedOutput = outputAmount.data
     ? formatEther(outputAmount.data)
     : "0";
+
+  const approvalHigherThanAmount =
+    hasApproval.data && hasApproval.data > methAmount.toBigInt();
+
+  if (confirmDialogOpen) {
+    return (
+      <UnstakeConfirmDialogue
+        unstakeAmount={methAmount.toBigInt()}
+        receiveAmount={outputAmount.data || BigInt(0)}
+        deadline={approvalSignature.deadline}
+        permitSignature={approvalSignature.data}
+        onUnstakeSuccess={(hash: string) => {
+          setConfirmDialogOpen(false);
+          setTxHash(hash);
+        }}
+        onClose={() => {
+          setConfirmDialogOpen(false);
+        }}
+        onUnstakeFailure={() => {
+          setConfirmDialogOpen(false);
+          setFailureDialogOpen(true);
+        }}
+      />
+    );
+  }
+
+  if (txHash) {
+    return (
+      <UnstakeSuccessDialogue
+        hash={txHash}
+        onClose={() => {
+          setTxHash("");
+        }}
+      />
+    );
+  }
+
+  if (failureDialogOpen) {
+    return (
+      <StakeFailureDialogue
+        onClose={() => {
+          setFailureDialogOpen(false);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="max-w-[484px] w-full grid relative bg-white/5 overflow-y-auto overflow-x-clip md:overflow-hidden border border-[#1C1E20] rounded-t-[30px] rounded-b-[20px] mx-auto">
@@ -81,12 +151,16 @@ export default function Unstaking() {
         <Button
           size="full"
           className="mb-4"
-          disabled={outputAmount.isLoading}
+          disabled={outputAmount.isLoading || hasApproval.isLoading}
           onClick={() => {
-            // setConfirmDialogOpen(true);
+            if (!approvalHigherThanAmount) {
+              doApproval();
+              return;
+            }
+            setConfirmDialogOpen(true);
           }}
         >
-          Unstake
+          {approvalHigherThanAmount ? "Unstake" : "Approve mETH"}
         </Button>
         <div className="flex flex-col space-y-2 w-full">
           <ExchangeRate />
