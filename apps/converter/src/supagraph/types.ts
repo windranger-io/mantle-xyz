@@ -49,5 +49,7 @@ export type MigationEntity = {
   refundTx: string;
   approvedBy: string;
   approvalTx: string;
+  approvalBlockTimestamp: number;
+  approvalBlockNumber: number;
   status: string;
 };
