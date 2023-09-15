@@ -76,7 +76,16 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
         <Typography variant="smallWidget" className="mb-6">
           Approve the Spender (Migrator v2) with the exact amount of $BIT you
           request to migrate. It may take up to 24 hours to complete qualified
-          migrations as per terms of MIP-27.
+          migrations as per terms of{" "}
+          <a
+            href="https://snapshot.org/#/bitdao.eth/proposal/0x00625c4f2d9aa9d4efb41ef3d0942194ca2087fae0599deced8b8ed86372c6c2"
+            target="__blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            MIP-27
+          </a>
+          .
         </Typography>
         <Button
           size="full"

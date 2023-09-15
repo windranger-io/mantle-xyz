@@ -1,21 +1,10 @@
-import { useContext } from "react";
-import StateContext from "@providers/stateContext";
-
 import { L1_MANTLE_TOKEN } from "@config/constants";
 
+import { useAddToken } from "@hooks/web3/write/useAddToken";
 import { Button, Typography } from "@mantle/ui";
 import { MdClear } from "react-icons/md";
-import { useAddToken } from "@hooks/web3/write/useAddToken";
 
-export default function Error({
-  reset,
-  closeModal,
-}: {
-  reset: () => void;
-  closeModal: () => void;
-}) {
-  const { ctaErrorReset } = useContext(StateContext);
-
+export default function Error({ closeModal }: { closeModal: () => void }) {
   const { addToken } = useAddToken();
 
   return (
@@ -110,16 +99,15 @@ export default function Error({
           </svg>
           Add Mantle Token to Wallet
         </Button>
+
         <Button
           type="button"
           size="full"
           className="h-14 my-4"
-          onClick={() =>
-            // either recall the tx and try waiting again or clear everything and go back to the initial screen
-            ctaErrorReset.current ? ctaErrorReset.current() : reset()
-          }
+          variant="primary"
+          onClick={closeModal}
         >
-          Try again...
+          Close
         </Button>
       </div>
     </>
