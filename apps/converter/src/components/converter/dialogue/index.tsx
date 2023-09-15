@@ -108,7 +108,7 @@ export default function Dialogue() {
             />
           )}
           {ctaPage === CTAPages.Error && (
-            <Error reset={reset} closeModal={closeModalAndReset} />
+            <Error closeModal={closeModalAndReset} />
           )}
         </div>
       </ConvertCard>

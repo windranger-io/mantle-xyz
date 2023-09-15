@@ -48,6 +48,9 @@ export function useCallApprove() {
         // wait for one confirmation
         await provider
           .waitForTransaction(txRes?.hash || "", 1)
+          .then(() => {
+            setCTAPage(CTAPages.Converted);
+          })
           .catch((e: any) => {
             throw e;
           });
@@ -57,12 +60,13 @@ export function useCallApprove() {
       } catch {
         // log the approval was cancelled
         setApprovalStatus("Approval cancelled");
+        console.log("Approval cancelled");
+        setCTAPage(CTAPages.Error);
       } finally {
         // call this to reset the allowance in the ui
         resetAllowance();
         // stop awaiting
         setApprovalStatus(false);
-        setCTAPage(CTAPages.Converted);
       }
 
       // token is now approved

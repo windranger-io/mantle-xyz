@@ -119,12 +119,30 @@ export default function Deposited({
         variant="modalHeadingSm"
         className="text-center w-full mt-4 px-4"
       >
-        For qualified requests as per MIP-27, it may take up to 24 hours to
-        receive $MNT
+        For qualified requests as per{" "}
+        <a
+          href="https://snapshot.org/#/bitdao.eth/proposal/0x00625c4f2d9aa9d4efb41ef3d0942194ca2087fae0599deced8b8ed86372c6c2"
+          target="__blank"
+          rel="noreferrer"
+          className="underline"
+        >
+          MIP-27
+        </a>
+        , it may take up to 24 hours to receive $MNT
       </Typography>
-      <div className="flex flex-col gap-4">
-        <TxLink chainId={L1_CHAIN_ID} txHash={txHash} />
-      </div>
+      <Typography
+        variant="smallWidget"
+        className="text-center w-full mt-4 px-4"
+      >
+        In the meantime, your $BIT will remain in your wallet under your
+        control. However, we recommend you do not move your $BIT while the
+        migration request is pending
+      </Typography>
+      {txHash && (
+        <div className="flex flex-col gap-4">
+          <TxLink chainId={L1_CHAIN_ID} txHash={txHash} />
+        </div>
+      )}
       <div>
         <Button
           type="button"
