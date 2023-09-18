@@ -7,16 +7,15 @@ type UsePermitResult = {
   isError: boolean;
   isLoading: boolean;
   signTypedDataAsync: any; // Unsure how to type this as the return type of useSignTypedData is not exported
-  deadline: bigint;
 };
-
-const THIRTY_MINUTES = 1000 * 60 * 30;
 
 export default function usePermitApproval({
   methAmount,
+  deadline,
   address,
 }: {
   methAmount: bigint;
+  deadline: bigint;
   address?: Address;
 }): UsePermitResult {
   const stakingContract = contracts[CHAIN_ID][ContractName.Staking];
@@ -29,7 +28,6 @@ export default function usePermitApproval({
     enabled: Boolean(address) && methAmount > 0,
   });
 
-  const deadline = BigInt(Math.ceil((Date.now() + THIRTY_MINUTES) / 1000));
   const { data, isError, isLoading, signTypedDataAsync } = useSignTypedData({
     account: address!,
     types: {
@@ -75,5 +73,10 @@ export default function usePermitApproval({
     },
   });
 
-  return { data, isError, isLoading, deadline, signTypedDataAsync };
+  return {
+    data,
+    isError,
+    isLoading,
+    signTypedDataAsync,
+  };
 }

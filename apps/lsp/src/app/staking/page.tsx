@@ -74,6 +74,7 @@ export default function Staking() {
         onStakeSuccess={(hash: string) => {
           setConfirmDialogOpen(false);
           setStakeTxHash(hash);
+          setEthAmount(BigNumber.from(0));
         }}
         onStakeFailure={() => {
           setConfirmDialogOpen(false);

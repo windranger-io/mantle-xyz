@@ -53,6 +53,8 @@ export default function UnstakeConfirmDialogue({
     signature = splitSignature(permitSignature);
   }
 
+  // When an account is connected, estimate the gas cost of the transaction.
+  // This handles both standard approvals and permit approvals.
   useEffect(() => {
     if (!address || !publicClient) {
       return;
@@ -98,6 +100,8 @@ export default function UnstakeConfirmDialogue({
     signature,
   ]);
 
+  // Prep writes for both standard approvals and permit approvals,
+  // but enabled based on whether we have a signature or not.
   const unstakePrep = usePrepareContractWrite({
     ...stakingContract,
     args: [unstakeAmount, getMinimumAmount(receiveAmount)],
@@ -131,15 +135,16 @@ export default function UnstakeConfirmDialogue({
     hash: resultData?.hash,
   });
 
+  // Effect for executing callbacks when the transaction succeeds or fails.
   useEffect(() => {
     if (isError) {
       onUnstakeFailure();
       return;
     }
-    if (isSuccess && data) {
-      onUnstakeSuccess(data.hash);
+    if (isSuccess && resultData) {
+      onUnstakeSuccess(resultData.hash);
     }
-  }, [isSuccess, isError, data, onUnstakeSuccess, onUnstakeFailure]);
+  }, [isSuccess, isError, resultData, onUnstakeSuccess, onUnstakeFailure]);
 
   const feeEstimate = feeData?.lastBaseFeePerGas
     ? feeData.lastBaseFeePerGas * stakeGas
