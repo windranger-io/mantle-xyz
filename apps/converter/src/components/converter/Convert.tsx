@@ -60,12 +60,12 @@ export default function Convert() {
       <Typography variant="body" className="text-center mt-6 mb-2">
         Request $BIT migration to $MNT, see{" "}
         <a
-          href="https://www.mantle.xyz/blog"
+          href="https://www.mantle.xyz/blog/announcements/migrator-v2-your-bit-to-mnt-guide"
           target="__blank"
           rel="noreferrer"
           className="underline"
         >
-          blogpost
+          blog post
         </a>{" "}
         for how it works
       </Typography>
