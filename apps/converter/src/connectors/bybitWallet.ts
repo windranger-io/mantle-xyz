@@ -47,7 +47,7 @@ export function getBybitWalletProvider(): WindowProvider | undefined {
 
   // No injected providers exist.
   if (!injectedProviderExist) {
-    return;
+    return undefined;
   }
 
   // Trust Wallet was injected into window.ethereum.
@@ -69,9 +69,12 @@ export function getBybitWalletProvider(): WindowProvider | undefined {
 }
 export class BybitWalletConnector extends InjectedConnector {
   readonly id = "bybitWallet";
+
   readonly name = "BybitWallet";
+
   readonly ready =
     typeof window !== "undefined" && typeof window.bybitWallet !== "undefined";
+
   provider?: Window["bybitWallet"];
 
   // constructor(config: {
@@ -115,7 +118,7 @@ export class BybitWalletConnector extends InjectedConnector {
       // shimChainChangedDisconnect: _options?.shimChainChangedDisconnect ?? true,
     };
 
-    console.log("bybit wallet", options);
+    // console.log("bybit wallet", options);
 
     super({
       chains,
@@ -124,11 +127,11 @@ export class BybitWalletConnector extends InjectedConnector {
   }
 
   async connect({ chainId }: { chainId?: number } = {}) {
-    console.log("bybit wallet connect");
+    // console.log("bybit wallet connect");
 
     try {
       const provider = await this.getProvider();
-      console.log(provider);
+      // console.log(provider);
       if (!provider) throw new ConnectorNotFoundError();
 
       if (provider.on) {
@@ -169,12 +172,14 @@ export class BybitWalletConnector extends InjectedConnector {
     }
   }
 
-  async addChain(chain: Chain) {
+  // eslint-disable-next-line class-methods-use-this
+  async addChain() {
     throw new Error(
       "As a custodial wallet, it currently does not support adding other EVM chains through the user interface. At present, only the built-in public chain can be used."
     );
   }
 
+  // eslint-disable-next-line class-methods-use-this
   async getProvider() {
     return getBybitWalletProvider();
   }

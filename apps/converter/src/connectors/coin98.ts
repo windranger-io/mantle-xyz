@@ -75,11 +75,14 @@ export function getCoin98WalletProvider(): WindowProvider | undefined {
 }
 export class Coin98WalletConnector extends InjectedConnector {
   readonly id = "coin98Wallet";
+
   readonly name = "Coin98";
+
   readonly ready =
     typeof window !== "undefined" &&
     typeof window.coin98?.provider !== "undefined" &&
     window.coin98?.provider.isReady;
+
   provider?: Window["coin98"];
 
   constructor({
@@ -174,11 +177,11 @@ export class Coin98WalletConnector extends InjectedConnector {
           method: "wallet_switchEthereumChain",
           params: [{ chainId: idHex }],
         }),
-        new Promise<void>((res) =>
+        new Promise<void>((res) => {
           this.on("change", ({ chain }) => {
             if (chain?.id === chainId) res();
-          })
-        ),
+          });
+        }),
       ]);
       return (
         this.chains.find((x) => x.id === chainId) ?? {
@@ -226,8 +229,8 @@ export class Coin98WalletConnector extends InjectedConnector {
             );
 
           return chain;
-        } catch (error) {
-          throw new UserRejectedRequestError(error as Error);
+        } catch (err) {
+          throw new UserRejectedRequestError(err as Error);
         }
       }
 
@@ -237,6 +240,7 @@ export class Coin98WalletConnector extends InjectedConnector {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   async getProvider() {
     return getCoin98WalletProvider();
   }

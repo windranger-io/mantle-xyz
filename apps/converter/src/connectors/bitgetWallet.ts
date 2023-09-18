@@ -51,7 +51,7 @@ export function getBitgetWalletProvider(): WindowProvider | undefined {
 
   // No injected providers exist.
   if (!injectedProviderExist) {
-    return;
+    return undefined;
   }
 
   // Trust Wallet was injected into window.ethereum.
@@ -73,9 +73,12 @@ export function getBitgetWalletProvider(): WindowProvider | undefined {
 }
 export class BitgetWalletConnector extends InjectedConnector {
   readonly id = "bitgetWallet";
+
   readonly name = "Bitget Wallet";
+
   readonly ready =
     typeof window !== "undefined" && typeof window.bitkeep !== "undefined";
+
   provider?: Window["bitkeep"];
 
   constructor({
@@ -146,7 +149,9 @@ export class BitgetWalletConnector extends InjectedConnector {
     const unsupported = this.isChainUnsupported(id);
     this.emit("change", { chain: { id, unsupported } });
   };
-  async addChain(chain: Chain) {
+
+  // eslint-disable-next-line class-methods-use-this
+  async addChain() {
     throw new Error(
       "As a custodial wallet, it currently does not support adding other EVM chains through the user interface. At present, only the built-in public chain can be used."
     );
@@ -175,11 +180,13 @@ export class BitgetWalletConnector extends InjectedConnector {
           method: "wallet_switchEthereumChain",
           params: [{ chainId: idHex }],
         }),
-        new Promise<void>((res) =>
+        new Promise<void>((res) => {
           this.on("change", ({ chain }) => {
-            if (chain?.id === chainId) res();
-          })
-        ),
+            if (chain?.id === chainId) {
+              res();
+            }
+          });
+        }),
       ]);
       return (
         this.chains.find((x) => x.id === chainId) ?? {
@@ -227,8 +234,8 @@ export class BitgetWalletConnector extends InjectedConnector {
             );
 
           return chain;
-        } catch (error) {
-          throw new UserRejectedRequestError(error as Error);
+        } catch (err) {
+          throw new UserRejectedRequestError(err as Error);
         }
       }
 
@@ -238,6 +245,7 @@ export class BitgetWalletConnector extends InjectedConnector {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   async getProvider() {
     return getBitgetWalletProvider();
   }

@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 export class ChainNotConfiguredForConnectorError extends Error {
   name = "ChainNotConfiguredForConnectorError";
 
@@ -14,5 +15,6 @@ export class ChainNotConfiguredForConnectorError extends Error {
 
 export class ConnectorNotFoundError extends Error {
   name = "ConnectorNotFoundError";
+
   message = "Connector not found";
 }

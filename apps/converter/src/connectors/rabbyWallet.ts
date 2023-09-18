@@ -23,7 +23,9 @@ export type RabbyWalletConnectorOptions = InjectedConnectorOptions;
 
 export class RabbyWalletConnector extends InjectedConnector {
   readonly id = "rabbyWallet";
+
   readonly name = "Rabby Wallet";
+
   readonly ready =
     typeof window !== "undefined" &&
     typeof window.ethereum !== "undefined" &&
@@ -40,14 +42,14 @@ export class RabbyWalletConnector extends InjectedConnector {
     super({ chains, options });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   async getProvider() {
-    const ethereum = (
-      window as unknown as {
-        ethereum: WindowProvider;
-      }
-    ).ethereum;
+    const { ethereum } = window as unknown as {
+      ethereum: WindowProvider;
+    };
     if (ethereum?.isRabby) {
       return ethereum;
     }
+    return undefined;
   }
 }

@@ -41,7 +41,6 @@ export default function Tabs() {
       // this will disable the incorrect network check (but still display if not L1 or L2 chainId)
       setSafeChains([L1_CHAIN_ID, L2_CHAIN_ID]);
       // align the selected tab
-      console.log(pathName);
       if (pathName?.indexOf("/account") === 0 && view !== Views.Account) {
         setView(Views.Account);
       }

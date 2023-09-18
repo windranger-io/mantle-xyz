@@ -23,7 +23,9 @@ export type BybitWalletConnectorOptions = InjectedConnectorOptions;
 
 export class TokenPocketConnector extends InjectedConnector {
   readonly id = "tokenPocket";
+
   readonly name = "TokenPocket";
+
   readonly ready =
     typeof window !== "undefined" &&
     typeof window.ethereum !== "undefined" &&
@@ -44,15 +46,14 @@ export class TokenPocketConnector extends InjectedConnector {
     super({ chains, options });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   async getProvider() {
-    const ethereum = (
-      window as unknown as {
-        ethereum: WindowProvider;
-      }
-    ).ethereum;
+    const { ethereum } = window as unknown as {
+      ethereum: WindowProvider;
+    };
     if (ethereum?.isTokenPocket) {
       return ethereum;
     }
-    return;
+    return undefined;
   }
 }

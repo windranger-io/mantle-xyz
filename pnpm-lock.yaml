@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .:
@@ -154,7 +158,7 @@ importers:
         version: 0.0.1-rc.17
       wagmi:
         specifier: ^1.3.9
-        version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
+        version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.10.9)
       zustand:
         specifier: ^4.0.0-rc.1
         version: 4.3.3(react@18.2.0)
@@ -245,7 +249,7 @@ importers:
         version: 4.8.0(react@18.2.0)
       wagmi:
         specifier: ^1.3.9
-        version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
+        version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.10.9)
       zustand:
         specifier: ^4.0.0-rc.1
         version: 4.3.3(react@18.2.0)
@@ -300,7 +304,7 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: ^3.7.16
-        version: 3.7.16(react-dom@18.2.0)(react@18.2.0)
+        version: 3.7.16(graphql@16.6.0)(react-dom@18.2.0)(react@18.2.0)
       '@apollo/experimental-nextjs-app-support':
         specifier: ^0.2.2
         version: 0.2.2(@apollo/client@3.7.16)(next@13.3.0)(react@18.2.0)
@@ -346,9 +350,12 @@ importers:
       supagraph:
         specifier: 0.0.1-rc.25
         version: registry.npmjs.org/supagraph@0.0.1-rc.25
+      viem:
+        specifier: ^1.10.9
+        version: registry.npmjs.org/viem@1.10.9(typescript@5.0.4)
       wagmi:
         specifier: ^1.3.9
-        version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
+        version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.10.9)
       zustand:
         specifier: ^4.0.0-rc.1
         version: 4.3.3(react@18.2.0)
@@ -479,7 +486,7 @@ importers:
         version: 1.2.1
       wagmi:
         specifier: ^1.3.9
-        version: 1.3.9(lokijs@1.5.12)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
+        version: 1.3.9(lokijs@1.5.12)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.10.9)
       zustand:
         specifier: ^4.0.0-rc.1
         version: 4.3.3(react@18.2.0)
@@ -570,7 +577,7 @@ importers:
         version: 0.0.1-rc.17
       wagmi:
         specifier: ^1.3.9
-        version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
+        version: 1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.10.9)
       zustand:
         specifier: ^4.3.3
         version: 4.3.3(react@18.2.0)
@@ -956,7 +963,7 @@ importers:
         version: 8.5.0(eslint@7.32.0)
       eslint-config-turbo:
         specifier: latest
-        version: registry.npmjs.org/eslint-config-turbo@1.10.13(eslint@7.32.0)
+        version: registry.npmjs.org/eslint-config-turbo@1.10.14(eslint@7.32.0)
       eslint-import-resolver-typescript:
         specifier: ^3.5.2
         version: 3.5.2(eslint-plugin-import@2.26.0)(eslint@7.32.0)
@@ -1107,14 +1114,6 @@ importers:
 
 packages:
 
-  /@adraffy/ens-normalize@1.9.0:
-    resolution: {integrity: sha512-iowxq3U30sghZotgl4s/oJRci6WPBfNO5YYgk2cIOMCHr3LeGPcsZjCEr+33Q4N+oV3OABDAtA+pyvWjbvBifQ==}
-    dev: false
-
-  /@adraffy/ens-normalize@1.9.4:
-    resolution: {integrity: sha512-UK0bHA7hh9cR39V+4gl2/NnBBjoXIxkuWAPCaY4X7fbH4L/azIi7ilWOCjMUYfpJgraLUAqkRi2BqrjME8Rynw==}
-    dev: false
-
   /@ampproject/remapping@2.2.0:
     resolution: {integrity: sha512-qRmjj8nj9qmLTQXXmaR1cck3UXSRMPrbsLJAasZpF+t3riI71BXed5ebIOYwQntykeZuhjsdweEc9BxH5Jc26w==}
     engines: {node: '>=6.0.0'}
@@ -1146,41 +1145,6 @@ packages:
       '@wry/trie': 0.4.3
       graphql: registry.npmjs.org/graphql@16.6.0
       graphql-tag: 2.12.6(graphql@16.6.0)
-      hoist-non-react-statics: 3.3.2
-      optimism: 0.16.2
-      prop-types: 15.8.1
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      response-iterator: 0.2.6
-      symbol-observable: 4.0.0
-      ts-invariant: 0.10.3
-      tslib: 2.5.3
-      zen-observable-ts: 1.2.5
-    dev: false
-
-  /@apollo/client@3.7.16(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-rdhoc7baSD7ZzcjavEpYN8gZJle1KhjEKj4SJeMgBpcnO4as7oXUVU4LtFpotzZdFlo57qaLrNzfvppSTsKvZQ==}
-    peerDependencies:
-      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-      graphql-ws: ^5.5.5
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      subscriptions-transport-ws: ^0.9.0 || ^0.11.0
-    peerDependenciesMeta:
-      graphql-ws:
-        optional: true
-      react:
-        optional: true
-      react-dom:
-        optional: true
-      subscriptions-transport-ws:
-        optional: true
-    dependencies:
-      '@graphql-typed-document-node/core': 3.2.0
-      '@wry/context': 0.7.3
-      '@wry/equality': 0.5.6
-      '@wry/trie': 0.4.3
-      graphql-tag: 2.12.6
       hoist-non-react-statics: 3.3.2
       optimism: 0.16.2
       prop-types: 15.8.1
@@ -3825,12 +3789,6 @@ packages:
       graphql: 16.6.0
     dev: false
 
-  /@graphql-typed-document-node/core@3.2.0:
-    resolution: {integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==}
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-    dev: false
-
   /@graphql-typed-document-node/core@3.2.0(graphql@16.6.0):
     resolution: {integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==}
     peerDependencies:
@@ -4189,29 +4147,8 @@ packages:
     resolution: {integrity: sha512-lMAnuOYjv5g22WhD00u0DQ9u2rTMJH0S64PKE4Sy8Y2q+FJTYs6ZHT2z3VRoI8+AOWSLK4FirpnygcjOienQ9A==}
     dev: true
 
-  /@noble/curves@1.0.0:
-    resolution: {integrity: sha512-2upgEu0iLiDVDZkNLeFV2+ht0BAVgQnEmCk6JsOch9Rp8xfkMCbvbAZlA2pBHQc73dbl+vFOXfqkf4uemdn0bw==}
-    dependencies:
-      '@noble/hashes': 1.3.0
-    dev: false
-
-  /@noble/curves@1.2.0:
-    resolution: {integrity: sha512-oYclrNgRaM9SsBUBVbb8M6DTV7ZHRTKugureoYEncY5c65HOmRzvSiTE3y5CYaPYJA/GVkrhXEoF0M3Ya9PMnw==}
-    dependencies:
-      '@noble/hashes': 1.3.2
-    dev: false
-
   /@noble/ed25519@1.7.3:
     resolution: {integrity: sha512-iR8GBkDt0Q3GyaVcIu7mSsVIqnFbkbRzGLWlvhwunacoLwt4J3swfKhfaM6rN6WY+TBGoYT1GtT1mIh2/jGbRQ==}
-    dev: false
-
-  /@noble/hashes@1.3.0:
-    resolution: {integrity: sha512-ilHEACi9DwqJB0pw7kv+Apvh50jiiSyR/cQ3y4W7lOR5mhvn/50FLUfsnfJz0BDZtl/RR16kXvptiv6q1msYZg==}
-    dev: false
-
-  /@noble/hashes@1.3.2:
-    resolution: {integrity: sha512-MVC8EAQp7MvEcm30KWENFjgR+Mkmf+D189XJTkFIlwohU5hcBbn1ZkKq7KVTi2Hme3PMGF390DaL52beVrIihQ==}
-    engines: {node: '>= 16'}
     dev: false
 
   /@noble/secp256k1@1.7.1:
@@ -4882,7 +4819,7 @@ packages:
     resolution: {integrity: sha512-gYw0ki/EAuV1oSyMxpqandHjnthZjYYy+YWpTAzf8BqfXM3ItcZLpjxfg+3+mXW8HIO+3jw6T9iiqEXsqHaMMw==}
     dependencies:
       '@safe-global/safe-gateway-typescript-sdk': 3.7.0
-      viem: 1.10.9(typescript@5.0.4)
+      viem: registry.npmjs.org/viem@1.10.9(typescript@5.0.4)
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -4897,44 +4834,6 @@ packages:
       cross-fetch: 3.1.5
     transitivePeerDependencies:
       - encoding
-    dev: false
-
-  /@scure/base@1.1.1:
-    resolution: {integrity: sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==}
-    dev: false
-
-  /@scure/base@1.1.3:
-    resolution: {integrity: sha512-/+SgoRjLq7Xlf0CWuLHq2LUZeL/w65kfzAPG5NH9pcmBhs+nunQTn4gvdwgMTIXnt9b2C/1SeL2XiysZEyIC9Q==}
-    dev: false
-
-  /@scure/bip32@1.3.0:
-    resolution: {integrity: sha512-bcKpo1oj54hGholplGLpqPHRbIsnbixFtc06nwuNM5/dwSXOq/AAYoIBRsBmnZJSdfeNW5rnff7NTAz3ZCqR9Q==}
-    dependencies:
-      '@noble/curves': 1.0.0
-      '@noble/hashes': 1.3.0
-      '@scure/base': 1.1.1
-    dev: false
-
-  /@scure/bip32@1.3.2:
-    resolution: {integrity: sha512-N1ZhksgwD3OBlwTv3R6KFEcPojl/W4ElJOeCZdi+vuI5QmTFwLq3OFf2zd2ROpKvxFdgZ6hUpb0dx9bVNEwYCA==}
-    dependencies:
-      '@noble/curves': 1.2.0
-      '@noble/hashes': 1.3.2
-      '@scure/base': 1.1.3
-    dev: false
-
-  /@scure/bip39@1.2.0:
-    resolution: {integrity: sha512-SX/uKq52cuxm4YFXWFaVByaSHJh2w3BnokVSeUJVCv6K7WulT9u2BuNRBhuFl8vAuYnzx9bEu9WgpcNYTrYieg==}
-    dependencies:
-      '@noble/hashes': 1.3.0
-      '@scure/base': 1.1.1
-    dev: false
-
-  /@scure/bip39@1.2.1:
-    resolution: {integrity: sha512-Z3/Fsz1yr904dduJD0NpiyRHhRYHdcnyh73FZWiV+/qhWi83wNJ3NWolYqCEN+ZWsUz2TWwajJggcRE9r1zUYg==}
-    dependencies:
-      '@noble/hashes': 1.3.2
-      '@scure/base': 1.1.1
     dev: false
 
   /@sendgrid/client@6.5.5:
@@ -5000,7 +4899,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.22.5
       '@noble/ed25519': 1.7.3
-      '@noble/hashes': 1.3.2
+      '@noble/hashes': registry.npmjs.org/@noble/hashes@1.3.2
       '@noble/secp256k1': 1.7.1
       '@solana/buffer-layout': 4.0.1
       agentkeepalive: 4.2.1
@@ -5273,7 +5172,7 @@ packages:
   /@types/bn.js@5.1.1:
     resolution: {integrity: sha512-qNrYbZqMx0uJAfKnKclPh+dTwK33KfLHYqtyODwd5HnXOjnkhc4qgn3BrK6RWyGZm5+sIFE7Q7Vz6QQtJB7w7g==}
     dependencies:
-      '@types/node': 20.5.4
+      '@types/node': registry.npmjs.org/@types/node@20.5.4
 
   /@types/body-parser@1.19.2:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
@@ -5287,7 +5186,7 @@ packages:
     dependencies:
       '@types/http-cache-semantics': 4.0.1
       '@types/keyv': 3.1.4
-      '@types/node': 20.5.4
+      '@types/node': registry.npmjs.org/@types/node@20.5.4
       '@types/responselike': 1.0.0
     dev: true
 
@@ -5371,7 +5270,7 @@ packages:
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 20.5.4
+      '@types/node': registry.npmjs.org/@types/node@20.5.4
     dev: true
 
   /@types/lodash.debounce@4.0.7:
@@ -5403,12 +5302,9 @@ packages:
   /@types/node-fetch@2.6.2:
     resolution: {integrity: sha512-DHqhlq5jeESLy19TYhLakJ07kNumXWjcDdxXsLUMJZ6ue8VZJj4kLPQVE/2mdHh3xZziNF1xppu5lwmS53HR+A==}
     dependencies:
-      '@types/node': 20.5.4
+      '@types/node': registry.npmjs.org/@types/node@20.5.4
       form-data: 3.0.1
     dev: false
-
-  /@types/node@12.20.55:
-    resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
 
   /@types/node@18.11.3:
     resolution: {integrity: sha512-fNjDQzzOsZeKZu5NATgXUPsaFaTxeRgFXoosrHivTl8RGeV733OLawXsGfEk9a8/tySyZUyiZ6E8LcjPFZ2y1A==}
@@ -5428,7 +5324,7 @@ packages:
   /@types/pbkdf2@3.1.0:
     resolution: {integrity: sha512-Cf63Rv7jCQ0LaL8tNXmEyqTHuIJxRdlS5vMh1mj5voN4+QFhVZnlZruezqpWYDiJ8UTzhP0VmeLXCmBk66YrMQ==}
     dependencies:
-      '@types/node': 20.5.4
+      '@types/node': registry.npmjs.org/@types/node@20.5.4
 
   /@types/prop-types@15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
@@ -5458,7 +5354,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@types/caseless': 0.12.2
-      '@types/node': 20.5.4
+      '@types/node': registry.npmjs.org/@types/node@20.5.4
       '@types/tough-cookie': 4.0.2
       form-data: 2.5.1
     dev: false
@@ -5471,7 +5367,7 @@ packages:
   /@types/responselike@1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 20.5.4
+      '@types/node': registry.npmjs.org/@types/node@20.5.4
     dev: true
 
   /@types/scheduler@0.16.2:
@@ -5480,7 +5376,7 @@ packages:
   /@types/secp256k1@4.0.3:
     resolution: {integrity: sha512-Da66lEIFeIz9ltsdMZcpQvmrmmoqrfju8pm1BH8WbYjZSwUgCwXLb9C+9XYogwBITnbsSaMdVPb2ekf7TV+03w==}
     dependencies:
-      '@types/node': 20.5.4
+      '@types/node': registry.npmjs.org/@types/node@20.5.4
 
   /@types/semver@7.3.13:
     resolution: {integrity: sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==}
@@ -5514,7 +5410,7 @@ packages:
   /@types/tunnel@0.0.3:
     resolution: {integrity: sha512-sOUTGn6h1SfQ+gbgqC364jLFBw2lnFqkgF3q0WovEHRLMrVD1sd5aufqi/aJObLekJO+Aq5z646U4Oxy6shXMA==}
     dependencies:
-      '@types/node': 20.5.4
+      '@types/node': registry.npmjs.org/@types/node@20.5.4
     dev: false
 
   /@types/webidl-conversions@7.0.0:
@@ -5526,18 +5422,6 @@ packages:
     dependencies:
       '@types/node': 20.5.4
       '@types/webidl-conversions': 7.0.0
-    dev: false
-
-  /@types/ws@7.4.7:
-    resolution: {integrity: sha512-JQbbmxZTZehdc2iszGKs5oC3NFnjeay7mtAWrdt7qNtAVK0g19muApzAy4bm9byz79xa2ZnO/BOBC2R8RC5Lww==}
-    dependencies:
-      '@types/node': 20.5.4
-    dev: false
-
-  /@types/ws@8.5.5:
-    resolution: {integrity: sha512-lwhs8hktwxSjf9UaZ9tG5M03PGogvFaH8gUgLNbN9HKIg0dvv6q+gkSuJ8HN4/VbyxkuLzCjlN7GquQ0gUJfIg==}
-    dependencies:
-      '@types/node': 20.5.4
     dev: false
 
   /@typescript-eslint/eslint-plugin@5.46.1(@typescript-eslint/parser@5.46.1)(eslint@7.32.0)(typescript@4.9.4):
@@ -5774,7 +5658,7 @@ packages:
       typescript: 5.0.4
     dev: false
 
-  /@wagmi/connectors@2.6.6(@wagmi/chains@1.6.0)(lokijs@1.5.12)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2):
+  /@wagmi/connectors@2.6.6(@wagmi/chains@1.6.0)(lokijs@1.5.12)(react@18.2.0)(typescript@5.0.4)(viem@1.10.9):
     resolution: {integrity: sha512-/o1c/TCivQs8DOAUOcQvY2UIt3p2mWOAHi39D0LC74+ncpXzLC5/gyaWU38qnTxPM8s/PmTmaWDgz+VhICXrag==}
     peerDependencies:
       '@wagmi/chains': '>=1.3.0'
@@ -5798,7 +5682,7 @@ packages:
       abitype: 0.8.7(typescript@5.0.4)
       eventemitter3: 4.0.7
       typescript: 5.0.4
-      viem: registry.npmjs.org/viem@1.4.2(typescript@5.0.4)
+      viem: registry.npmjs.org/viem@1.10.9(typescript@5.0.4)
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
       - bufferutil
@@ -5834,7 +5718,7 @@ packages:
       abitype: 0.8.7(typescript@5.0.4)
       eventemitter3: 4.0.7
       typescript: 5.0.4
-      viem: 1.10.9(typescript@5.0.4)
+      viem: registry.npmjs.org/viem@1.10.9(typescript@5.0.4)
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
       - bufferutil
@@ -5846,43 +5730,7 @@ packages:
       - zod
     dev: false
 
-  /@wagmi/connectors@2.6.6(@wagmi/chains@1.6.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2):
-    resolution: {integrity: sha512-/o1c/TCivQs8DOAUOcQvY2UIt3p2mWOAHi39D0LC74+ncpXzLC5/gyaWU38qnTxPM8s/PmTmaWDgz+VhICXrag==}
-    peerDependencies:
-      '@wagmi/chains': '>=1.3.0'
-      typescript: '>=5.0.4'
-      viem: '>=0.3.35'
-    peerDependenciesMeta:
-      '@wagmi/chains':
-        optional: true
-      typescript:
-        optional: true
-    dependencies:
-      '@coinbase/wallet-sdk': 3.7.1
-      '@ledgerhq/connect-kit-loader': 1.1.0
-      '@safe-global/safe-apps-provider': 0.17.1(typescript@5.0.4)
-      '@safe-global/safe-apps-sdk': 8.0.0(typescript@5.0.4)
-      '@wagmi/chains': 1.6.0(typescript@5.0.4)
-      '@walletconnect/ethereum-provider': 2.9.0(@walletconnect/modal@2.5.9)
-      '@walletconnect/legacy-provider': 2.0.0
-      '@walletconnect/modal': 2.5.9(react@18.2.0)
-      '@walletconnect/utils': 2.9.0
-      abitype: 0.8.7(typescript@5.0.4)
-      eventemitter3: 4.0.7
-      typescript: 5.0.4
-      viem: registry.npmjs.org/viem@1.4.2(typescript@5.0.4)
-    transitivePeerDependencies:
-      - '@react-native-async-storage/async-storage'
-      - bufferutil
-      - encoding
-      - lokijs
-      - react
-      - supports-color
-      - utf-8-validate
-      - zod
-    dev: false
-
-  /@wagmi/core@1.3.8(lokijs@1.5.12)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2):
+  /@wagmi/core@1.3.8(lokijs@1.5.12)(react@18.2.0)(typescript@5.0.4)(viem@1.10.9):
     resolution: {integrity: sha512-OYSxikoMizqVnpSkFTwGE7PwFaz2k0PXteSiI0W2Mtk4j4sZzRFdP+9AWeDB6AYm0yU3WvgN1IATx0EEBKUe3w==}
     peerDependencies:
       typescript: '>=5.0.4'
@@ -5892,11 +5740,11 @@ packages:
         optional: true
     dependencies:
       '@wagmi/chains': 1.6.0(typescript@5.0.4)
-      '@wagmi/connectors': 2.6.6(@wagmi/chains@1.6.0)(lokijs@1.5.12)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
+      '@wagmi/connectors': 2.6.6(@wagmi/chains@1.6.0)(lokijs@1.5.12)(react@18.2.0)(typescript@5.0.4)(viem@1.10.9)
       abitype: 0.8.7(typescript@5.0.4)
       eventemitter3: 4.0.7
       typescript: 5.0.4
-      viem: registry.npmjs.org/viem@1.4.2(typescript@5.0.4)
+      viem: registry.npmjs.org/viem@1.10.9(typescript@5.0.4)
       zustand: 4.3.3(react@18.2.0)
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
@@ -5924,35 +5772,7 @@ packages:
       abitype: 0.8.7(typescript@5.0.4)
       eventemitter3: 4.0.7
       typescript: 5.0.4
-      viem: 1.10.9(typescript@5.0.4)
-      zustand: 4.3.3(react@18.2.0)
-    transitivePeerDependencies:
-      - '@react-native-async-storage/async-storage'
-      - bufferutil
-      - encoding
-      - immer
-      - lokijs
-      - react
-      - supports-color
-      - utf-8-validate
-      - zod
-    dev: false
-
-  /@wagmi/core@1.3.8(react@18.2.0)(typescript@5.0.4)(viem@1.4.2):
-    resolution: {integrity: sha512-OYSxikoMizqVnpSkFTwGE7PwFaz2k0PXteSiI0W2Mtk4j4sZzRFdP+9AWeDB6AYm0yU3WvgN1IATx0EEBKUe3w==}
-    peerDependencies:
-      typescript: '>=5.0.4'
-      viem: '>=0.3.35'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@wagmi/chains': 1.6.0(typescript@5.0.4)
-      '@wagmi/connectors': 2.6.6(@wagmi/chains@1.6.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
-      abitype: 0.8.7(typescript@5.0.4)
-      eventemitter3: 4.0.7
-      typescript: 5.0.4
-      viem: registry.npmjs.org/viem@1.4.2(typescript@5.0.4)
+      viem: registry.npmjs.org/viem@1.10.9(typescript@5.0.4)
       zustand: 4.3.3(react@18.2.0)
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
@@ -6162,7 +5982,7 @@ packages:
       '@walletconnect/safe-json': 1.0.2
       events: 3.3.0
       tslib: registry.npmjs.org/tslib@1.14.1
-      ws: 7.5.9
+      ws: registry.npmjs.org/ws@7.5.9
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -6580,34 +6400,6 @@ packages:
       typescript: '>=5.0.4'
       zod: ^3 >=3.19.1
     peerDependenciesMeta:
-      zod:
-        optional: true
-    dependencies:
-      typescript: 5.0.4
-    dev: false
-
-  /abitype@0.9.3(typescript@5.0.4):
-    resolution: {integrity: sha512-dz4qCQLurx97FQhnb/EIYTk/ldQ+oafEDUqC0VVIeQS1Q48/YWt/9YNfMmp9SLFqN41ktxny3c8aYxHjmFIB/w==}
-    peerDependencies:
-      typescript: '>=5.0.4'
-      zod: ^3 >=3.19.1
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-      zod:
-        optional: true
-    dependencies:
-      typescript: 5.0.4
-    dev: false
-
-  /abitype@0.9.8(typescript@5.0.4):
-    resolution: {integrity: sha512-puLifILdm+8sjyss4S+fsUN09obiT1g2YW6CtcQF+QDzxR0euzgEB29MZujC6zMk2a6SVmtttq1fc6+YFA7WYQ==}
-    peerDependencies:
-      typescript: '>=5.0.4'
-      zod: ^3 >=3.19.1
-    peerDependenciesMeta:
-      typescript:
-        optional: true
       zod:
         optional: true
     dependencies:
@@ -9502,7 +9294,7 @@ packages:
       elliptic: 6.5.4
       nano-json-stream-parser: 0.1.2
       servify: 0.1.12
-      ws: 3.3.3
+      ws: registry.npmjs.org/ws@3.3.3
       xhr-request-promise: 0.1.3
     transitivePeerDependencies:
       - bufferutil
@@ -10458,15 +10250,6 @@ packages:
       tslib: 2.5.3
     dev: false
 
-  /graphql-tag@2.12.6:
-    resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      tslib: 2.5.3
-    dev: false
-
   /graphql-tag@2.12.6(graphql@16.6.0):
     resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
     engines: {node: '>=10'}
@@ -11185,30 +10968,6 @@ packages:
   /isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
-  /isomorphic-ws@4.0.1(ws@7.5.9):
-    resolution: {integrity: sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==}
-    peerDependencies:
-      ws: '*'
-    dependencies:
-      ws: registry.npmjs.org/ws@7.5.9
-    dev: false
-
-  /isomorphic-ws@5.0.0(ws@8.12.0):
-    resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
-    peerDependencies:
-      ws: '*'
-    dependencies:
-      ws: 8.12.0
-    dev: false
-
-  /isomorphic-ws@5.0.0(ws@8.13.0):
-    resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
-    peerDependencies:
-      ws: '*'
-    dependencies:
-      ws: 8.13.0
-    dev: false
-
   /isstream@0.1.2:
     resolution: {integrity: sha512-Yljz7ffyPbrLpLngrMtZ7NduUgVvi6wG9RJ9IUcyCd59YQ911PBJphODUcbOVbqYfxe1wuYf/LJ8PauMRwsM/g==}
 
@@ -11226,14 +10985,14 @@ packages:
     hasBin: true
     dependencies:
       '@types/connect': 3.4.35
-      '@types/node': 12.20.55
-      '@types/ws': 7.4.7
+      '@types/node': registry.npmjs.org/@types/node@12.20.55
+      '@types/ws': registry.npmjs.org/@types/ws@7.4.7
       JSONStream: 1.3.5
       commander: 2.20.3
       delay: 5.0.0
       es6-promisify: 5.0.0
       eyes: 0.1.8
-      isomorphic-ws: 4.0.1(ws@7.5.9)
+      isomorphic-ws: registry.npmjs.org/isomorphic-ws@4.0.1(ws@7.5.9)
       json-stringify-safe: registry.npmjs.org/json-stringify-safe@5.0.1
       lodash: 4.17.21
       uuid: 8.3.2
@@ -14747,7 +14506,7 @@ packages:
       '@babel/runtime': 7.22.5
       eventemitter3: 4.0.7
       uuid: 8.3.2
-      ws: registry.npmjs.org/ws@8.12.1(bufferutil@4.0.7)(utf-8-validate@5.0.10)
+      ws: registry.npmjs.org/ws@8.13.0(bufferutil@4.0.7)(utf-8-validate@5.0.10)
     optionalDependencies:
       bufferutil: registry.npmjs.org/bufferutil@4.0.7
       utf-8-validate: registry.npmjs.org/utf-8-validate@5.0.10
@@ -16375,54 +16134,6 @@ packages:
       extsprintf: 1.4.1
     dev: false
 
-  /viem@1.10.9(typescript@5.0.4):
-    resolution: {integrity: sha512-fhQxnMBFwGbyE/VOfcvcavxAPyqIHSgOB793gQcMPH1B9ahQvjMe3C3icqypC01ACaqpDPgYWGfvF/ExTeIPuA==}
-    peerDependencies:
-      typescript: '>=5.0.4'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@adraffy/ens-normalize': 1.9.4
-      '@noble/curves': 1.2.0
-      '@noble/hashes': 1.3.2
-      '@scure/bip32': 1.3.2
-      '@scure/bip39': 1.2.1
-      '@types/ws': 8.5.5
-      abitype: 0.9.8(typescript@5.0.4)
-      isomorphic-ws: 5.0.0(ws@8.13.0)
-      typescript: 5.0.4
-      ws: 8.13.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-      - zod
-    dev: false
-
-  /viem@1.4.2(typescript@5.0.4):
-    resolution: {integrity: sha512-125E7HoOr5PrL+Iwt8853dQexwRoiPpLwPsrRvlDX94su2xoe7AYqrdfR6N9nmy6vd6mt8eQy8+LWiP3A+1dqw==}
-    peerDependencies:
-      typescript: '>=5.0.4'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@adraffy/ens-normalize': 1.9.0
-      '@noble/curves': 1.0.0
-      '@noble/hashes': 1.3.0
-      '@scure/bip32': 1.3.0
-      '@scure/bip39': 1.2.0
-      '@wagmi/chains': 1.6.0(typescript@5.0.4)
-      abitype: 0.9.3(typescript@5.0.4)
-      isomorphic-ws: 5.0.0(ws@8.12.0)
-      typescript: 5.0.4
-      ws: 8.12.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-      - zod
-    dev: false
-
   /vite@4.3.7:
     resolution: {integrity: sha512-MTIFpbIm9v7Hh5b0wSBgkcWzSBz7SAa6K/cBTwS4kUiQJfQLFlZZRJRQgqunCVzhTPCk674tW+0Qaqh3Q00dBg==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -16474,7 +16185,7 @@ packages:
       '@vue/shared': 3.3.4
     dev: false
 
-  /wagmi@1.3.9(lokijs@1.5.12)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2):
+  /wagmi@1.3.9(lokijs@1.5.12)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.10.9):
     resolution: {integrity: sha512-BQbl+vWLNpLraXd/MWsl1P3I41l7DHrujx6qshIa1HDV7Mdh0GNrDuluRYBtuK2bBx9WM/Fjw45Ef2aKADan9A==}
     peerDependencies:
       react: '>=17.0.0'
@@ -16487,12 +16198,12 @@ packages:
       '@tanstack/query-sync-storage-persister': 4.29.19
       '@tanstack/react-query': 4.29.19(react-dom@18.2.0)(react@18.2.0)
       '@tanstack/react-query-persist-client': 4.29.19(@tanstack/react-query@4.29.19)
-      '@wagmi/core': 1.3.8(lokijs@1.5.12)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
+      '@wagmi/core': 1.3.8(lokijs@1.5.12)(react@18.2.0)(typescript@5.0.4)(viem@1.10.9)
       abitype: 0.8.7(typescript@5.0.4)
       react: 18.2.0
       typescript: 5.0.4
       use-sync-external-store: 1.2.0(react@18.2.0)
-      viem: registry.npmjs.org/viem@1.4.2(typescript@5.0.4)
+      viem: registry.npmjs.org/viem@1.10.9(typescript@5.0.4)
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
       - bufferutil
@@ -16524,39 +16235,7 @@ packages:
       react: 18.2.0
       typescript: 5.0.4
       use-sync-external-store: 1.2.0(react@18.2.0)
-      viem: 1.10.9(typescript@5.0.4)
-    transitivePeerDependencies:
-      - '@react-native-async-storage/async-storage'
-      - bufferutil
-      - encoding
-      - immer
-      - lokijs
-      - react-dom
-      - react-native
-      - supports-color
-      - utf-8-validate
-      - zod
-    dev: false
-
-  /wagmi@1.3.9(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)(viem@1.4.2):
-    resolution: {integrity: sha512-BQbl+vWLNpLraXd/MWsl1P3I41l7DHrujx6qshIa1HDV7Mdh0GNrDuluRYBtuK2bBx9WM/Fjw45Ef2aKADan9A==}
-    peerDependencies:
-      react: '>=17.0.0'
-      typescript: '>=5.0.4'
-      viem: '>=0.3.35'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@tanstack/query-sync-storage-persister': 4.29.19
-      '@tanstack/react-query': 4.29.19(react-dom@18.2.0)(react@18.2.0)
-      '@tanstack/react-query-persist-client': 4.29.19(@tanstack/react-query@4.29.19)
-      '@wagmi/core': 1.3.8(react@18.2.0)(typescript@5.0.4)(viem@1.4.2)
-      abitype: 0.8.7(typescript@5.0.4)
-      react: 18.2.0
-      typescript: 5.0.4
-      use-sync-external-store: 1.2.0(react@18.2.0)
-      viem: registry.npmjs.org/viem@1.4.2(typescript@5.0.4)
+      viem: registry.npmjs.org/viem@1.10.9(typescript@5.0.4)
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
       - bufferutil
@@ -16608,7 +16287,7 @@ packages:
     engines: {node: '>=8.0.0'}
     requiresBuild: true
     dependencies:
-      '@types/node': 12.20.55
+      '@types/node': registry.npmjs.org/@types/node@12.20.55
       got: 12.1.0
       swarm-js: 0.1.42
     transitivePeerDependencies:
@@ -16670,7 +16349,7 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       '@types/bn.js': 5.1.1
-      '@types/node': 12.20.55
+      '@types/node': registry.npmjs.org/@types/node@12.20.55
       bignumber.js: 9.1.1
       web3-core-helpers: 1.10.0
       web3-core-method: 1.10.0
@@ -16754,7 +16433,7 @@ packages:
     resolution: {integrity: sha512-anseKn98w/d703eWq52uNuZi7GhQeVjTC5/svrBWEKob0WZ5kPdo+EZoFN0sp5a5ubbrk/E0xSl1/M5yORMtpg==}
     engines: {node: '>=8.0.0'}
     dependencies:
-      '@types/node': 12.20.55
+      '@types/node': registry.npmjs.org/@types/node@12.20.55
       web3-core: 1.10.0
       web3-core-helpers: 1.10.0
       web3-core-method: 1.10.0
@@ -17006,22 +16685,6 @@ packages:
   /wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  /ws@3.3.3:
-    resolution: {integrity: sha512-nnWLa/NwZSt4KQJu51MYlCcSQ5g7INpOrOMt4XV8j4dqTXdmlUmSHQ8/oLC069ckre0fRsgfvsKwbTdtKLCDkA==}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dependencies:
-      async-limiter: 1.0.1
-      safe-buffer: 5.1.2
-      ultron: 1.1.1
-    dev: true
-
   /ws@7.4.6:
     resolution: {integrity: sha512-YmhHDO4MzaDLB+M9ym/mDA5z0naX8j7SIlT8f8z+I0VtzsRbekxEutHSme7NPS2qE8StCYQNUnfWdXta/Yu85A==}
     engines: {node: '>=8.3.0'}
@@ -17034,32 +16697,6 @@ packages:
       utf-8-validate:
         optional: true
 
-  /ws@7.5.9:
-    resolution: {integrity: sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==}
-    engines: {node: '>=8.3.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: false
-
-  /ws@8.12.0:
-    resolution: {integrity: sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: false
-
   /ws@8.12.1:
     resolution: {integrity: sha512-1qo+M9Ba+xNhPB+YTWUlK6M17brTut5EXbcBaMRN5pH5dFrXz7lzz1ChFSUq3bOUl8yEvSenhHmYUNJxFzdJew==}
     engines: {node: '>=10.0.0'}
@@ -17071,35 +16708,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-    dev: false
-
-  /ws@8.13.0:
-    resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: false
-
-  /ws@8.13.0(bufferutil@4.0.7)(utf-8-validate@5.0.10):
-    resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dependencies:
-      bufferutil: 4.0.7
-      utf-8-validate: 5.0.10
     dev: false
 
   /xhr-request-promise@0.1.3:
@@ -17302,10 +16910,10 @@ packages:
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
-  registry.npmjs.org/@adraffy/ens-normalize@1.9.0:
-    resolution: {integrity: sha512-iowxq3U30sghZotgl4s/oJRci6WPBfNO5YYgk2cIOMCHr3LeGPcsZjCEr+33Q4N+oV3OABDAtA+pyvWjbvBifQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@adraffy/ens-normalize/-/ens-normalize-1.9.0.tgz}
+  registry.npmjs.org/@adraffy/ens-normalize@1.9.4:
+    resolution: {integrity: sha512-UK0bHA7hh9cR39V+4gl2/NnBBjoXIxkuWAPCaY4X7fbH4L/azIi7ilWOCjMUYfpJgraLUAqkRi2BqrjME8Rynw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@adraffy/ens-normalize/-/ens-normalize-1.9.4.tgz}
     name: '@adraffy/ens-normalize'
-    version: 1.9.0
+    version: 1.9.4
     dev: false
 
   registry.npmjs.org/@babel/code-frame@7.12.11:
@@ -18970,18 +18578,19 @@ packages:
     dev: false
     optional: true
 
-  registry.npmjs.org/@noble/curves@1.0.0:
-    resolution: {integrity: sha512-2upgEu0iLiDVDZkNLeFV2+ht0BAVgQnEmCk6JsOch9Rp8xfkMCbvbAZlA2pBHQc73dbl+vFOXfqkf4uemdn0bw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@noble/curves/-/curves-1.0.0.tgz}
+  registry.npmjs.org/@noble/curves@1.2.0:
+    resolution: {integrity: sha512-oYclrNgRaM9SsBUBVbb8M6DTV7ZHRTKugureoYEncY5c65HOmRzvSiTE3y5CYaPYJA/GVkrhXEoF0M3Ya9PMnw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@noble/curves/-/curves-1.2.0.tgz}
     name: '@noble/curves'
-    version: 1.0.0
+    version: 1.2.0
     dependencies:
-      '@noble/hashes': registry.npmjs.org/@noble/hashes@1.3.0
+      '@noble/hashes': registry.npmjs.org/@noble/hashes@1.3.2
     dev: false
 
-  registry.npmjs.org/@noble/hashes@1.3.0:
-    resolution: {integrity: sha512-ilHEACi9DwqJB0pw7kv+Apvh50jiiSyR/cQ3y4W7lOR5mhvn/50FLUfsnfJz0BDZtl/RR16kXvptiv6q1msYZg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@noble/hashes/-/hashes-1.3.0.tgz}
+  registry.npmjs.org/@noble/hashes@1.3.2:
+    resolution: {integrity: sha512-MVC8EAQp7MvEcm30KWENFjgR+Mkmf+D189XJTkFIlwohU5hcBbn1ZkKq7KVTi2Hme3PMGF390DaL52beVrIihQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@noble/hashes/-/hashes-1.3.2.tgz}
     name: '@noble/hashes'
-    version: 1.3.0
+    version: 1.3.2
+    engines: {node: '>= 16'}
     dev: false
 
   registry.npmjs.org/@nodelib/fs.scandir@2.1.5:
@@ -19049,43 +18658,55 @@ packages:
     version: 3.0.4
     dev: false
 
-  registry.npmjs.org/@scure/base@1.1.1:
-    resolution: {integrity: sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@scure/base/-/base-1.1.1.tgz}
+  registry.npmjs.org/@scure/base@1.1.3:
+    resolution: {integrity: sha512-/+SgoRjLq7Xlf0CWuLHq2LUZeL/w65kfzAPG5NH9pcmBhs+nunQTn4gvdwgMTIXnt9b2C/1SeL2XiysZEyIC9Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@scure/base/-/base-1.1.3.tgz}
     name: '@scure/base'
-    version: 1.1.1
+    version: 1.1.3
     dev: false
 
-  registry.npmjs.org/@scure/bip32@1.3.0:
-    resolution: {integrity: sha512-bcKpo1oj54hGholplGLpqPHRbIsnbixFtc06nwuNM5/dwSXOq/AAYoIBRsBmnZJSdfeNW5rnff7NTAz3ZCqR9Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@scure/bip32/-/bip32-1.3.0.tgz}
+  registry.npmjs.org/@scure/bip32@1.3.2:
+    resolution: {integrity: sha512-N1ZhksgwD3OBlwTv3R6KFEcPojl/W4ElJOeCZdi+vuI5QmTFwLq3OFf2zd2ROpKvxFdgZ6hUpb0dx9bVNEwYCA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@scure/bip32/-/bip32-1.3.2.tgz}
     name: '@scure/bip32'
-    version: 1.3.0
+    version: 1.3.2
     dependencies:
-      '@noble/curves': registry.npmjs.org/@noble/curves@1.0.0
-      '@noble/hashes': registry.npmjs.org/@noble/hashes@1.3.0
-      '@scure/base': registry.npmjs.org/@scure/base@1.1.1
+      '@noble/curves': registry.npmjs.org/@noble/curves@1.2.0
+      '@noble/hashes': registry.npmjs.org/@noble/hashes@1.3.2
+      '@scure/base': registry.npmjs.org/@scure/base@1.1.3
     dev: false
 
-  registry.npmjs.org/@scure/bip39@1.2.0:
-    resolution: {integrity: sha512-SX/uKq52cuxm4YFXWFaVByaSHJh2w3BnokVSeUJVCv6K7WulT9u2BuNRBhuFl8vAuYnzx9bEu9WgpcNYTrYieg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@scure/bip39/-/bip39-1.2.0.tgz}
+  registry.npmjs.org/@scure/bip39@1.2.1:
+    resolution: {integrity: sha512-Z3/Fsz1yr904dduJD0NpiyRHhRYHdcnyh73FZWiV+/qhWi83wNJ3NWolYqCEN+ZWsUz2TWwajJggcRE9r1zUYg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@scure/bip39/-/bip39-1.2.1.tgz}
     name: '@scure/bip39'
-    version: 1.2.0
+    version: 1.2.1
     dependencies:
-      '@noble/hashes': registry.npmjs.org/@noble/hashes@1.3.0
-      '@scure/base': registry.npmjs.org/@scure/base@1.1.1
+      '@noble/hashes': registry.npmjs.org/@noble/hashes@1.3.2
+      '@scure/base': registry.npmjs.org/@scure/base@1.1.3
     dev: false
 
-  registry.npmjs.org/@wagmi/chains@1.6.0(typescript@5.0.4):
-    resolution: {integrity: sha512-5FRlVxse5P4ZaHG3GTvxwVANSmYJas1eQrTBHhjxVtqXoorm0aLmCHbhmN8Xo1yu09PaWKlleEvfE98yH4AgIw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@wagmi/chains/-/chains-1.6.0.tgz}
-    id: registry.npmjs.org/@wagmi/chains/1.6.0
-    name: '@wagmi/chains'
-    version: 1.6.0
-    peerDependencies:
-      typescript: '>=5.0.4'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
+  registry.npmjs.org/@types/node@12.20.55:
+    resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/node/-/node-12.20.55.tgz}
+    name: '@types/node'
+    version: 12.20.55
+
+  registry.npmjs.org/@types/node@20.5.4:
+    resolution: {integrity: sha512-Y9vbIAoM31djQZrPYjpTLo0XlaSwOIsrlfE3LpulZeRblttsLQRFRlBAppW0LOxyT3ALj2M5vU1ucQQayQH3jA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/node/-/node-20.5.4.tgz}
+    name: '@types/node'
+    version: 20.5.4
+
+  registry.npmjs.org/@types/ws@7.4.7:
+    resolution: {integrity: sha512-JQbbmxZTZehdc2iszGKs5oC3NFnjeay7mtAWrdt7qNtAVK0g19muApzAy4bm9byz79xa2ZnO/BOBC2R8RC5Lww==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/ws/-/ws-7.4.7.tgz}
+    name: '@types/ws'
+    version: 7.4.7
     dependencies:
-      typescript: 5.0.4
+      '@types/node': registry.npmjs.org/@types/node@20.5.4
+    dev: false
+
+  registry.npmjs.org/@types/ws@8.5.5:
+    resolution: {integrity: sha512-lwhs8hktwxSjf9UaZ9tG5M03PGogvFaH8gUgLNbN9HKIg0dvv6q+gkSuJ8HN4/VbyxkuLzCjlN7GquQ0gUJfIg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/ws/-/ws-8.5.5.tgz}
+    name: '@types/ws'
+    version: 8.5.5
+    dependencies:
+      '@types/node': registry.npmjs.org/@types/node@20.5.4
     dev: false
 
   registry.npmjs.org/@whatwg-node/events@0.0.2:
@@ -19133,11 +18754,11 @@ packages:
       tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
-  registry.npmjs.org/abitype@0.9.3(typescript@5.0.4):
-    resolution: {integrity: sha512-dz4qCQLurx97FQhnb/EIYTk/ldQ+oafEDUqC0VVIeQS1Q48/YWt/9YNfMmp9SLFqN41ktxny3c8aYxHjmFIB/w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/abitype/-/abitype-0.9.3.tgz}
-    id: registry.npmjs.org/abitype/0.9.3
+  registry.npmjs.org/abitype@0.9.8(typescript@5.0.4):
+    resolution: {integrity: sha512-puLifILdm+8sjyss4S+fsUN09obiT1g2YW6CtcQF+QDzxR0euzgEB29MZujC6zMk2a6SVmtttq1fc6+YFA7WYQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/abitype/-/abitype-0.9.8.tgz}
+    id: registry.npmjs.org/abitype/0.9.8
     name: abitype
-    version: 0.9.3
+    version: 0.9.8
     peerDependencies:
       typescript: '>=5.0.4'
       zod: ^3 >=3.19.1
@@ -19849,23 +19470,23 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
-  registry.npmjs.org/eslint-config-turbo@1.10.13(eslint@7.32.0):
-    resolution: {integrity: sha512-Ffa0SxkRCPMtfUX/HDanEqsWoLwZTQTAXO9W4IsOtycb2MzJDrVcLmoFW5sMwCrg7gjqbrC4ZJoD+1SPPzIVqg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-config-turbo/-/eslint-config-turbo-1.10.13.tgz}
-    id: registry.npmjs.org/eslint-config-turbo/1.10.13
+  registry.npmjs.org/eslint-config-turbo@1.10.14(eslint@7.32.0):
+    resolution: {integrity: sha512-ZeB+IcuFXy1OICkLuAplVa0euoYbhK+bMEQd0nH9+Lns18lgZRm33mVz/iSoH9VdUzl/1ZmFmoK+RpZc+8R80A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-config-turbo/-/eslint-config-turbo-1.10.14.tgz}
+    id: registry.npmjs.org/eslint-config-turbo/1.10.14
     name: eslint-config-turbo
-    version: 1.10.13
+    version: 1.10.14
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
       eslint: 7.32.0
-      eslint-plugin-turbo: registry.npmjs.org/eslint-plugin-turbo@1.10.13(eslint@7.32.0)
+      eslint-plugin-turbo: registry.npmjs.org/eslint-plugin-turbo@1.10.14(eslint@7.32.0)
     dev: false
 
-  registry.npmjs.org/eslint-plugin-turbo@1.10.13(eslint@7.32.0):
-    resolution: {integrity: sha512-el4AAmn0zXmvHEyp1h0IQMfse10Vy8g5Vbg4IU3+vD9CSj5sDbX07iFVt8sCKg7og9Q5FAa9mXzlCf7t4vYgzg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-plugin-turbo/-/eslint-plugin-turbo-1.10.13.tgz}
-    id: registry.npmjs.org/eslint-plugin-turbo/1.10.13
+  registry.npmjs.org/eslint-plugin-turbo@1.10.14(eslint@7.32.0):
+    resolution: {integrity: sha512-sBdBDnYr9AjT1g4lR3PBkZDonTrMnR4TvuGv5W0OiF7z9az1rI68yj2UHJZvjkwwcGu5mazWA1AfB0oaagpmfg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-plugin-turbo/-/eslint-plugin-turbo-1.10.14.tgz}
+    id: registry.npmjs.org/eslint-plugin-turbo/1.10.14
     name: eslint-plugin-turbo
-    version: 1.10.13
+    version: 1.10.14
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
@@ -20429,7 +20050,18 @@ packages:
     version: 2.0.0
     dev: false
 
-  registry.npmjs.org/isomorphic-ws@5.0.0(ws@8.12.0):
+  registry.npmjs.org/isomorphic-ws@4.0.1(ws@7.5.9):
+    resolution: {integrity: sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/isomorphic-ws/-/isomorphic-ws-4.0.1.tgz}
+    id: registry.npmjs.org/isomorphic-ws/4.0.1
+    name: isomorphic-ws
+    version: 4.0.1
+    peerDependencies:
+      ws: '*'
+    dependencies:
+      ws: registry.npmjs.org/ws@7.5.9
+    dev: false
+
+  registry.npmjs.org/isomorphic-ws@5.0.0(ws@8.13.0):
     resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/isomorphic-ws/-/isomorphic-ws-5.0.0.tgz}
     id: registry.npmjs.org/isomorphic-ws/5.0.0
     name: isomorphic-ws
@@ -20437,7 +20069,7 @@ packages:
     peerDependencies:
       ws: '*'
     dependencies:
-      ws: registry.npmjs.org/ws@8.12.0
+      ws: registry.npmjs.org/ws@8.13.0
     dev: false
 
   registry.npmjs.org/js-sha3@0.5.7:
@@ -21567,27 +21199,27 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  registry.npmjs.org/viem@1.4.2(typescript@5.0.4):
-    resolution: {integrity: sha512-125E7HoOr5PrL+Iwt8853dQexwRoiPpLwPsrRvlDX94su2xoe7AYqrdfR6N9nmy6vd6mt8eQy8+LWiP3A+1dqw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/viem/-/viem-1.4.2.tgz}
-    id: registry.npmjs.org/viem/1.4.2
+  registry.npmjs.org/viem@1.10.9(typescript@5.0.4):
+    resolution: {integrity: sha512-fhQxnMBFwGbyE/VOfcvcavxAPyqIHSgOB793gQcMPH1B9ahQvjMe3C3icqypC01ACaqpDPgYWGfvF/ExTeIPuA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/viem/-/viem-1.10.9.tgz}
+    id: registry.npmjs.org/viem/1.10.9
     name: viem
-    version: 1.4.2
+    version: 1.10.9
     peerDependencies:
       typescript: '>=5.0.4'
     peerDependenciesMeta:
       typescript:
         optional: true
     dependencies:
-      '@adraffy/ens-normalize': registry.npmjs.org/@adraffy/ens-normalize@1.9.0
-      '@noble/curves': registry.npmjs.org/@noble/curves@1.0.0
-      '@noble/hashes': registry.npmjs.org/@noble/hashes@1.3.0
-      '@scure/bip32': registry.npmjs.org/@scure/bip32@1.3.0
-      '@scure/bip39': registry.npmjs.org/@scure/bip39@1.2.0
-      '@wagmi/chains': registry.npmjs.org/@wagmi/chains@1.6.0(typescript@5.0.4)
-      abitype: registry.npmjs.org/abitype@0.9.3(typescript@5.0.4)
-      isomorphic-ws: registry.npmjs.org/isomorphic-ws@5.0.0(ws@8.12.0)
+      '@adraffy/ens-normalize': registry.npmjs.org/@adraffy/ens-normalize@1.9.4
+      '@noble/curves': registry.npmjs.org/@noble/curves@1.2.0
+      '@noble/hashes': registry.npmjs.org/@noble/hashes@1.3.2
+      '@scure/bip32': registry.npmjs.org/@scure/bip32@1.3.2
+      '@scure/bip39': registry.npmjs.org/@scure/bip39@1.2.1
+      '@types/ws': registry.npmjs.org/@types/ws@8.5.5
+      abitype: registry.npmjs.org/abitype@0.9.8(typescript@5.0.4)
+      isomorphic-ws: registry.npmjs.org/isomorphic-ws@5.0.0(ws@8.13.0)
       typescript: 5.0.4
-      ws: registry.npmjs.org/ws@8.12.0
+      ws: registry.npmjs.org/ws@8.13.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -21636,6 +21268,24 @@ packages:
     version: 1.0.2
     dev: false
 
+  registry.npmjs.org/ws@3.3.3:
+    resolution: {integrity: sha512-nnWLa/NwZSt4KQJu51MYlCcSQ5g7INpOrOMt4XV8j4dqTXdmlUmSHQ8/oLC069ckre0fRsgfvsKwbTdtKLCDkA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ws/-/ws-3.3.3.tgz}
+    name: ws
+    version: 3.3.3
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dependencies:
+      async-limiter: 1.0.1
+      safe-buffer: 5.1.2
+      ultron: 1.1.1
+    dev: true
+
   registry.npmjs.org/ws@7.4.6:
     resolution: {integrity: sha512-YmhHDO4MzaDLB+M9ym/mDA5z0naX8j7SIlT8f8z+I0VtzsRbekxEutHSme7NPS2qE8StCYQNUnfWdXta/Yu85A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ws/-/ws-7.4.6.tgz}
     name: ws
@@ -21666,10 +21316,10 @@ packages:
         optional: true
     dev: false
 
-  registry.npmjs.org/ws@8.12.0:
-    resolution: {integrity: sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ws/-/ws-8.12.0.tgz}
+  registry.npmjs.org/ws@8.13.0:
+    resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ws/-/ws-8.13.0.tgz}
     name: ws
-    version: 8.12.0
+    version: 8.13.0
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -21681,11 +21331,11 @@ packages:
         optional: true
     dev: false
 
-  registry.npmjs.org/ws@8.12.1(bufferutil@4.0.7)(utf-8-validate@5.0.10):
-    resolution: {integrity: sha512-1qo+M9Ba+xNhPB+YTWUlK6M17brTut5EXbcBaMRN5pH5dFrXz7lzz1ChFSUq3bOUl8yEvSenhHmYUNJxFzdJew==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ws/-/ws-8.12.1.tgz}
-    id: registry.npmjs.org/ws/8.12.1
+  registry.npmjs.org/ws@8.13.0(bufferutil@4.0.7)(utf-8-validate@5.0.10):
+    resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ws/-/ws-8.13.0.tgz}
+    id: registry.npmjs.org/ws/8.13.0
     name: ws
-    version: 8.12.1
+    version: 8.13.0
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
