@@ -16,5 +16,6 @@ export const getMinimumAmount = (x?: bigint) => {
 };
 
 export const formatEthTruncated = (x: BigNumberish) => {
-  return formatEther(x).substring(0, AMOUNT_MAX_DISPLAY_DIGITS);
+  const truncated = formatEther(x).substring(0, AMOUNT_MAX_DISPLAY_DIGITS);
+  return truncated.replace(/\.?0+$/, "");
 };

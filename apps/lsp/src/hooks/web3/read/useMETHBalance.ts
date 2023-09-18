@@ -11,6 +11,7 @@ export default function useMETHBalance(address: Address | undefined) {
     args: [address!],
     cacheOnBlock: true,
     enabled: Boolean(address),
+    keepPreviousData: true,
   });
 
   return { data, isError, isLoading };

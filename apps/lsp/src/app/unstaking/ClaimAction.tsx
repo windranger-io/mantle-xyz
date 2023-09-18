@@ -2,8 +2,13 @@ import Loading from "@components/Loading";
 import { CHAIN_ID } from "@config/constants";
 import { ContractName, contracts } from "@config/contracts";
 import { Button } from "@mantle/ui";
-import { useCallback } from "react";
-import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { useCallback, useEffect } from "react";
+import {
+  useAccount,
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
 
 export default function ClaimAction({
   id,
@@ -25,25 +30,47 @@ export default function ClaimAction({
 
   // TODO: Error handling for claim.
   // Success toast?
-  const { isLoading, write: doClaimAsync } = useContractWrite(claimPrep.config);
+  const {
+    data,
+    isLoading,
+    write: doClaimAsync,
+  } = useContractWrite(claimPrep.config);
+
+  const { isLoading: isWaitingForTx, isSuccess: claimIsSuccess } =
+    useWaitForTransaction({
+      hash: data?.hash,
+    });
 
   const claimRequest = useCallback(async () => {
     if (!doClaimAsync) {
       return;
     }
     await doClaimAsync();
-    onClaimed();
-  }, [doClaimAsync, onClaimed]);
+  }, [doClaimAsync]);
+
+  useEffect(() => {
+    if (claimIsSuccess) {
+      onClaimed();
+    }
+  }, [claimIsSuccess, onClaimed]);
+
+  const showLoading = isLoading || isWaitingForTx;
 
   return (
     <Button
       variant="dark"
-      disabled={!doClaimAsync || isLoading}
+      disabled={!doClaimAsync || showLoading}
+      className="flex flex-row items-center justify-center"
       onClick={() => {
         claimRequest();
       }}
     >
-      Claim {isLoading && <Loading />}
+      Claim{" "}
+      {showLoading && (
+        <span className="ml-2">
+          <Loading />
+        </span>
+      )}
     </Button>
   );
 }

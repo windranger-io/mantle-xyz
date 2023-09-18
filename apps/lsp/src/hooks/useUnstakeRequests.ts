@@ -1,4 +1,4 @@
-import { CHAIN_ID } from "@config/constants";
+import { CHAIN_ID, GRAPHQL_URL } from "@config/constants";
 import { ContractName, contracts } from "@config/contracts";
 import {
   Address,
@@ -63,14 +63,18 @@ function useUnstakeRequests() {
   return useQuery(
     ["UNSTAKE_REQUESTS", address],
     async () => {
-      return getUnstakeRequests(
-        "https://indexer-goerli.up.railway.app/",
-        address!
-      );
+      return getUnstakeRequests(GRAPHQL_URL, address!);
     },
     {
-      refetchInterval: 12000,
       enabled: shouldFetch,
+      select: (data) => {
+        return data.map((r) => ({
+          ...r,
+          ethAmountWei: BigInt(r.ethAmountWei),
+          mEthLockedWei: BigInt(r.mEthLockedWei),
+          requestedAt: new Date((r.requestedAt as any as number) * 1000),
+        }));
+      },
     }
   );
 }
@@ -119,7 +123,8 @@ export default function usePendingUnstakeRequests() {
   }
 
   return {
-    isLoading: requests.isLoading || claimState.isLoading,
+    isLoading:
+      requests.isLoading || requests.isRefetching || claimState.isLoading,
     data: result,
     refetch: () => {
       requests.refetch();

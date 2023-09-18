@@ -3,12 +3,6 @@ import { BigNumberish } from "ethers";
 import { Address, Chain } from "wagmi";
 import { ContractName, contracts } from "./contracts";
 
-// TODO: Add contract addresses in this pattern.
-// export const L1_BITDAO_TOKEN_ADDRESSES: Record<number, `0x${string}`> = {
-//   1: '0x1A4b46696b2bB4794Eb3D4c26f1c55F9170fa4C5',
-//   5: '0x5a94Dc6cc85fdA49d8E9A8b85DDE8629025C42be',
-// }
-
 export const CHAIN_ID = +(process.env["NEXT_PUBLIC_CHAIN_ID"] || "5");
 
 // TODO: Do all of these properly later.
@@ -32,6 +26,9 @@ export const TWITTER_TITLE = "MantleETH | Mantle Network";
 export const TWITTER_DESC = "Stake ETH for mETH";
 
 export const AMOUNT_MAX_DISPLAY_DIGITS = 10;
+
+export const GRAPHQL_URL =
+  CHAIN_ID === 5 ? "https://indexer-goerli.up.railway.app/" : "";
 
 // Get the current absolute path from the env
 export function getBaseUrl() {
