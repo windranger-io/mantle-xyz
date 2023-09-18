@@ -22,9 +22,7 @@ export default function AdjustmentRate() {
         {adjustment.data !== undefined ? (
           `${adjustment.data}%`
         ) : (
-          <TextLoading className="text-start">
-            <div className="w-8 h-4" />
-          </TextLoading>
+          <TextLoading className="text-start w-24 h-4" />
         )}
       </T>
     </div>

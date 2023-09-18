@@ -23,9 +23,7 @@ export default function ExchangeRate() {
         {exchange.data ? (
           `1 mETH = ${formatEther(exchange.data).slice(0, 6)} ETH`
         ) : (
-          <TextLoading className="text-start">
-            <div className="w-16 h-4" />
-          </TextLoading>
+          <TextLoading className="text-start w-24 h-4" />
         )}
       </T>
     </div>

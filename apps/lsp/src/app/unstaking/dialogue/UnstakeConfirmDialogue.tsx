@@ -7,7 +7,7 @@ import { Button, T } from "@mantle/ui";
 import { formatEthTruncated, getMinimumAmount } from "@util/util";
 import { Signature } from "ethers";
 import { splitSignature } from "ethers/lib/utils";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   useAccount,
   useContractWrite,
@@ -43,8 +43,13 @@ export default function UnstakeConfirmDialogue({
     isError: feeDataError,
     isLoading: feeDataLoading,
   } = useFeeData();
-  const [stakeGas, setStakeGas] = useState<bigint>(BigInt(0));
   const stakingContract = contracts[CHAIN_ID][ContractName.Staking];
+
+  const [stakeGas, setStakeGas] = useState<bigint>(BigInt(0));
+
+  // Even with the prep hooks, the 'unstake' click is slow, so we manually track
+  // the state so that we can disable the button immediately.
+  const [isUnstaking, setIsUnstaking] = useState(false);
 
   // If we're using standard approvals, there may not be a signature.
   // Use this to decide whether we should use the permit function or not.
@@ -129,9 +134,17 @@ export default function UnstakeConfirmDialogue({
   );
 
   const resultData = signature ? dataPermit : data;
-  const unstakeAction = signature ? doUnstakePermit : doUnstake;
+  const unstakeAction = useCallback(() => {
+    setIsUnstaking(true);
 
-  const { isLoading, isError, isSuccess } = useWaitForTransaction({
+    if (signature && doUnstakePermit) {
+      doUnstakePermit();
+      return;
+    }
+    doUnstake!();
+  }, [signature, doUnstake, doUnstakePermit]);
+
+  const { isError, isSuccess } = useWaitForTransaction({
     hash: resultData?.hash,
   });
 
@@ -139,10 +152,12 @@ export default function UnstakeConfirmDialogue({
   useEffect(() => {
     if (isError) {
       onUnstakeFailure();
+      setIsUnstaking(false);
       return;
     }
     if (isSuccess && resultData) {
       onUnstakeSuccess(resultData.hash);
+      setIsUnstaking(false);
     }
   }, [isSuccess, isError, resultData, onUnstakeSuccess, onUnstakeFailure]);
 
@@ -186,12 +201,12 @@ export default function UnstakeConfirmDialogue({
       )}
       <Button
         size="full"
-        disabled={!unstakeAction || isError || isLoading}
+        disabled={!unstakeAction || isError || isUnstaking}
         onClick={unstakeAction}
         className="flex flex-row justify-center items-center"
       >
         Confirm{" "}
-        {(isLoading || feeDataLoading) && (
+        {(isUnstaking || feeDataLoading) && (
           <span className="ml-2">
             <Loading />
           </span>

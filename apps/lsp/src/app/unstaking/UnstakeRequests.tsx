@@ -1,4 +1,4 @@
-import Loading from "@components/Loading";
+import { TextLoading } from "@components/Loading";
 import usePendingUnstakeRequests from "@hooks/useUnstakeRequests";
 import { T } from "@mantle/ui";
 import { formatEthTruncated } from "@util/util";
@@ -21,7 +21,16 @@ export default function UnstakeRequests() {
   if (requests.isLoading) {
     return (
       <div className="max-w-[484px] w-full px-5 py-4 bg-[#0C0C0C] border border-[#1C1E20] rounded-[20px] mx-auto items-center justify-center">
-        <Loading />
+        <div className="grid grid-cols-2">
+          <div className="flex flex-col">
+            <T>Pending</T>
+            <TextLoading className="w-16 h-4" />
+          </div>
+          <div className="flex flex-col">
+            <T>Ready to claim</T>
+            <TextLoading className="w-16 h-4" />
+          </div>
+        </div>
       </div>
     );
   }

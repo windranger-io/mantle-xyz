@@ -1,5 +1,5 @@
-// Page components
+import { redirect } from "next/navigation";
 
 export default async function Page() {
-  return <p>test</p>;
+  redirect("/staking");
 }
