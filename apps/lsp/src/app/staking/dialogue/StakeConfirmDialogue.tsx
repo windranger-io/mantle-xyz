@@ -37,9 +37,13 @@ export default function StakeConfirmDialogue({
     isError: feeDataError,
     isLoading: feeDataLoading,
   } = useFeeData();
+  const stakingContract = contracts[CHAIN_ID][ContractName.Staking];
+
   const [stakeGas, setStakeGas] = useState<bigint>(BigInt(0));
 
-  const stakingContract = contracts[CHAIN_ID][ContractName.Staking];
+  // Even with the prep hooks, the 'stake' click is slow, so we manually track
+  // the state so that we can disable the button immediately.
+  const [isStaking, setIsStaking] = useState(false);
 
   useEffect(() => {
     if (!address || !publicClient) {
@@ -69,16 +73,18 @@ export default function StakeConfirmDialogue({
   });
 
   const { data, writeAsync: doStake } = useContractWrite(stakePrep.config);
-  const { isLoading, isError, isSuccess } = useWaitForTransaction({
+  const { isError, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
   });
 
   useEffect(() => {
     if (isError) {
+      setIsStaking(false);
       onStakeFailure();
       return;
     }
     if (isSuccess && data) {
+      setIsStaking(false);
       onStakeSuccess(data.hash);
     }
   }, [isSuccess, isError, data, onStakeSuccess, onStakeFailure]);
@@ -123,12 +129,15 @@ export default function StakeConfirmDialogue({
       )}
       <Button
         size="full"
-        disabled={!doStake || isError || isLoading}
-        onClick={doStake}
+        disabled={!doStake || isError || isStaking}
+        onClick={() => {
+          setIsStaking(true);
+          doStake!();
+        }}
         className="flex flex-row justify-center items-center"
       >
         Confirm{" "}
-        {(isLoading || feeDataLoading) && (
+        {(isStaking || feeDataLoading) && (
           <span className="ml-2">
             <Loading />
           </span>
