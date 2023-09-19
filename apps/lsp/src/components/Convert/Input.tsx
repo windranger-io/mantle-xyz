@@ -9,6 +9,7 @@ const WIDTH_BUFFER = 14;
 type InputProps = {
   symbol: string;
   balance: string;
+  // eslint-disable-next-line react/require-default-props
   defaultAmount?: string;
   onChange: (_: string) => void;
 };
@@ -16,7 +17,7 @@ type InputProps = {
 export default function ConvertInput({
   symbol,
   balance,
-  defaultAmount,
+  defaultAmount = "",
   onChange,
 }: InputProps) {
   const [amount, setAmount] = useState(defaultAmount);
@@ -116,7 +117,3 @@ export default function ConvertInput({
     </div>
   );
 }
-
-ConvertInput.defaultProps = {
-  defaultAmount: "",
-};
