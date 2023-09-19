@@ -49,7 +49,9 @@ export default function Tabs() {
     []
   );
 
-  const [selectedIndex, setSelectedIndex] = useState<number>(3);
+  const [selectedIndex, setSelectedIndex] = useState<number>(
+    pathName?.indexOf("/account/migratev2") === 0 ? 3 : 2
+  );
   function SplitCamelCase(s: string) {
     return s.replace(/([a-z])([A-Z])/g, "$1 $2");
   }
@@ -76,7 +78,7 @@ export default function Tabs() {
           onChange={(val) => {
             setSelectedIndex(val);
             // redirect to bridge app if the user chooses the deposit / withdraw app
-            if (val !== 2 && val !== 3) {
+            if (val === 0 || val === 1) {
               window.open(
                 `${MANTLE_BRIDGE_URL[L1_CHAIN_ID]}/account/${
                   val === 0 ? "deposit" : "withdraw"
@@ -85,7 +87,7 @@ export default function Tabs() {
               );
               return;
             }
-            router.push(`/account/migrate`);
+            router.push(`/account/migrate${val === 3 ? "v2" : ""}`);
           }}
         >
           <Tab.List className="flex space-x-2 rounded-[10px] bg-white/[0.05] p-1 select-none md:w-1/2 md:mx-auto">
