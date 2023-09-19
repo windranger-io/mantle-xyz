@@ -14,7 +14,6 @@ export default function UnstakeRequests() {
   // requests. To ensure that we don't show requests which have already been claimed as
   // pending, we keep a local list of claimed IDs and filter them out.
   const [localClaimedIDs, setLocalClaimedIDs] = useState<number[]>([]);
-  console.log({ localClaimedIDs });
 
   const totalRequests = requests.data.reduce((acc, req) => {
     if (localClaimedIDs.includes(req.id)) {
