@@ -46,7 +46,7 @@ export default function StakeConfirmDialogue({
   const [isStaking, setIsStaking] = useState(false);
 
   useEffect(() => {
-    if (!address || !publicClient) {
+    if (!address || !publicClient || isStaking) {
       return;
     }
 
@@ -62,7 +62,14 @@ export default function StakeConfirmDialogue({
     };
 
     doEstimate();
-  }, [publicClient, address, stakingContract, stakeAmount, receiveAmount]);
+  }, [
+    publicClient,
+    address,
+    stakingContract,
+    stakeAmount,
+    receiveAmount,
+    isStaking,
+  ]);
 
   const stakePrep = usePrepareContractWrite({
     ...stakingContract,

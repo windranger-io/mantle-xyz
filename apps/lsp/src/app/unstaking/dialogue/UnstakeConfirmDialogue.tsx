@@ -61,7 +61,7 @@ export default function UnstakeConfirmDialogue({
   // When an account is connected, estimate the gas cost of the transaction.
   // This handles both standard approvals and permit approvals.
   useEffect(() => {
-    if (!address || !publicClient) {
+    if (!address || !publicClient || isUnstaking) {
       return;
     }
 
@@ -103,6 +103,7 @@ export default function UnstakeConfirmDialogue({
     receiveAmount,
     deadline,
     signature,
+    isUnstaking,
   ]);
 
   // Prep writes for both standard approvals and permit approvals,
