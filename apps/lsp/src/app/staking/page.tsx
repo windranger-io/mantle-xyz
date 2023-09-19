@@ -99,6 +99,10 @@ export default function Staking() {
             ethAmount && ethAmount.gt(0) ? formatEther(ethAmount) : ""
           }
           onChange={(val: string) => {
+            if (!val) {
+              setEthAmount(BigNumber.from(0));
+              return;
+            }
             setEthAmount(parseEther(val));
           }}
         />
@@ -127,12 +131,12 @@ export default function Staking() {
         <Button
           size="full"
           className="mb-4"
-          disabled={outputAmount.isLoading}
+          disabled={outputAmount.isLoading || !address}
           onClick={() => {
             setConfirmDialogOpen(true);
           }}
         >
-          Stake
+          {address ? "Stake" : "Connect wallet"}
         </Button>
         <div className="flex flex-col space-y-2 w-full">
           <ExchangeRate />

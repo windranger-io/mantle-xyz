@@ -154,6 +154,10 @@ export default function Unstaking() {
               methAmount && methAmount.gt(0) ? formatEther(methAmount) : ""
             }
             onChange={(val: string) => {
+              if (!val) {
+                setMethAmount(BigNumber.from(0));
+                return;
+              }
               setMethAmount(parseEther(val));
             }}
           />

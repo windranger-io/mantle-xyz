@@ -28,9 +28,7 @@ export default function ConvertOutput({
             {newAmount || "0"}
           </p>
         )}
-        <label htmlFor="convert-output" className="text-[#C4C4C4] font-bold">
-          {symbol}
-        </label>
+        <span className="text-[#C4C4C4] font-bold">{symbol}</span>
       </div>
     </div>
   );
