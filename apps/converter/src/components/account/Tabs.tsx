@@ -49,12 +49,15 @@ export default function Tabs() {
     []
   );
 
+  // pull current selection from the pathName
   const [selectedIndex, setSelectedIndex] = useState<number>(
     pathName?.indexOf("/account/migratev2") === 0 ? 3 : 2
   );
-  function SplitCamelCase(s: string) {
+
+  // split on capital letter
+  const SplitCamelCase = (s: string) => {
     return s.replace(/([a-z])([A-Z])/g, "$1 $2");
-  }
+  };
 
   return (
     (view === Views.Account && (

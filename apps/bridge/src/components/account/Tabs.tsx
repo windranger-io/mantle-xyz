@@ -35,7 +35,7 @@ export default function Tabs() {
     ...(L1_CHAIN_ID === 1
       ? {
           Migrate: [],
-          "Migrate V2": [],
+          MigrateV2: [],
         }
       : {}),
   });
@@ -48,6 +48,11 @@ export default function Tabs() {
       ? Direction.Withdraw
       : Direction.Deposit
   );
+
+  // split on capital letter
+  const SplitCamelCase = (s: string) => {
+    return s.replace(/([a-z])([A-Z])/g, "$1 $2");
+  };
 
   // on first load
   useEffect(
@@ -133,7 +138,7 @@ export default function Tabs() {
                     )
                   }
                 >
-                  {category}
+                  {SplitCamelCase(category)}
                 </Tab>
               </span>
             ))}
