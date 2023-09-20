@@ -96,7 +96,7 @@ export default function Default({
       <div>
         <Values
           label={`Amount to ${directionString.toLowerCase()}`}
-          value={`${destinationTokenAmount} ${destination.symbol}`}
+          value={`${destinationTokenAmount} ${destination?.symbol}`}
           border
         />
         <Values
