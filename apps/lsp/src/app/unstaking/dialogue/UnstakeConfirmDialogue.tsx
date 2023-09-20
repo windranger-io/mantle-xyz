@@ -3,6 +3,7 @@ import DialogValue from "@components/Dialogue/Value";
 import Loading from "@components/Loading";
 import { CHAIN_ID } from "@config/constants";
 import { ContractName, contracts } from "@config/contracts";
+import useTxFeeEstimate from "@hooks/web3/read/useTxFeeEstimate";
 import { Button, T } from "@mantle/ui";
 import { formatEthTruncated, getMinimumAmount } from "@util/util";
 import { Signature } from "ethers";
@@ -11,7 +12,6 @@ import { useCallback, useEffect, useState } from "react";
 import {
   useAccount,
   useContractWrite,
-  useFeeData,
   usePrepareContractWrite,
   usePublicClient,
   useWaitForTransaction,
@@ -38,14 +38,12 @@ export default function UnstakeConfirmDialogue({
 }: Props) {
   const { address } = useAccount();
   const publicClient = usePublicClient();
-  const {
-    data: feeData,
-    isError: feeDataError,
-    isLoading: feeDataLoading,
-  } = useFeeData();
+
   const stakingContract = contracts[CHAIN_ID][ContractName.Staking];
 
-  const [stakeGas, setStakeGas] = useState<bigint>(BigInt(0));
+  const [txGas, setTxGas] = useState<bigint>(BigInt(0));
+  const { estimate: feeEstimate, isLoading: feeEstimateLoading } =
+    useTxFeeEstimate(txGas);
 
   // Even with the prep hooks, the 'unstake' click is slow, so we manually track
   // the state so that we can disable the button immediately.
@@ -74,7 +72,7 @@ export default function UnstakeConfirmDialogue({
           args: [unstakeAmount, getMinimumAmount(receiveAmount)],
           account: address,
         });
-        setStakeGas(gas);
+        setTxGas(gas);
         return;
       }
 
@@ -91,7 +89,7 @@ export default function UnstakeConfirmDialogue({
         ],
         account: address,
       });
-      setStakeGas(gas);
+      setTxGas(gas);
     };
 
     doEstimate();
@@ -162,10 +160,6 @@ export default function UnstakeConfirmDialogue({
     }
   }, [isSuccess, isError, resultData, onUnstakeSuccess, onUnstakeFailure]);
 
-  const feeEstimate = feeData?.lastBaseFeePerGas
-    ? feeData.lastBaseFeePerGas * stakeGas
-    : null;
-
   return (
     <DialogBase isCloseable title="Confirm transaction" onClose={onClose}>
       <DialogValue
@@ -186,20 +180,18 @@ export default function UnstakeConfirmDialogue({
         }
         border
       />
-      {!feeDataError && (
-        <DialogValue
-          label="Transaction cost"
-          value={
-            <T variant="transactionTableHeading">
-              {feeDataLoading || feeEstimate === null ? (
-                <Loading />
-              ) : (
-                `~${formatEthTruncated(feeEstimate)} ETH`
-              )}
-            </T>
-          }
-        />
-      )}
+      <DialogValue
+        label="Transaction cost"
+        value={
+          <T variant="transactionTableHeading">
+            {feeEstimateLoading || feeEstimate === null ? (
+              <Loading />
+            ) : (
+              `~${formatEthTruncated(feeEstimate)} ETH`
+            )}
+          </T>
+        }
+      />
       <Button
         size="full"
         disabled={!unstakeAction || isError || isUnstaking}
@@ -207,7 +199,7 @@ export default function UnstakeConfirmDialogue({
         className="flex flex-row justify-center items-center"
       >
         Confirm{" "}
-        {(isUnstaking || feeDataLoading) && (
+        {(isUnstaking || feeEstimateLoading) && (
           <span className="ml-2">
             <Loading />
           </span>
