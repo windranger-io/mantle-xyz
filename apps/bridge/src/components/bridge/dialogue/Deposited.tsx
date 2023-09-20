@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { MdClear } from "react-icons/md";
 
 import { Typography } from "@mantle/ui";
-import { useNetwork, useQuery } from "wagmi";
+import { useQuery } from "wagmi";
 
 import StateContext from "@providers/stateContext";
 import { CTAPages, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
@@ -10,7 +10,7 @@ import TxLink from "@components/bridge/utils/TxLink";
 import AddNetworkBtn from "@components/bridge/dialogue/AddNetworkBtn";
 import { gql, useApolloClient } from "@apollo/client";
 import { useToast } from "@hooks/useToast";
-import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
+// import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 
 export default function Deposited({
   tx1Hash,
@@ -21,8 +21,8 @@ export default function Deposited({
 }) {
   const { ctaChainId, setCTAPage, client } = useContext(StateContext);
   const { createToast } = useToast();
-  const { addNetwork } = useSwitchToNetwork();
-  const { chain: givenChain } = useNetwork();
+  // const { addNetwork } = useSwitchToNetwork();
+  // const { chain: givenChain } = useNetwork();
 
   // get the apolloClient
   const gqclient = useApolloClient();
@@ -85,21 +85,22 @@ export default function Deposited({
             content: (
               <div className="flex flex-col">
                 <Typography variant="body" className="break-words">
-                  <b>MNT bonus sent!</b>
+                  <b>MNT Bonus Qualified</b>
                 </Typography>
                 <Typography variant="body" className="break-words">
-                  Your MNT bonus is sent to your wallet
+                  Your dust bonus in MNT will be on its way shortly to cover
+                  your gas fees on Mantle Network
                 </Typography>
               </div>
             ),
             id: `gas-drop-success-${client?.address}`,
-            buttonText: "Add Mantle Network",
-            onButtonClick: () => {
-              if (givenChain?.id !== L2_CHAIN_ID) {
-                addNetwork(L2_CHAIN_ID);
-              }
-              return true;
-            },
+            // buttonText: "Add Mantle Network",
+            // onButtonClick: () => {
+            //   if (givenChain?.id !== L2_CHAIN_ID) {
+            //     addNetwork(L2_CHAIN_ID);
+            //   }
+            //   return true;
+            // },
           });
         }
       });
