@@ -127,10 +127,16 @@ export default function UnstakeConfirmDialogue({
     enabled: Boolean(address) && unstakeAmount > 0 && Boolean(signature),
   });
 
-  const { data, writeAsync: doUnstake } = useContractWrite(unstakePrep.config);
-  const { data: dataPermit, writeAsync: doUnstakePermit } = useContractWrite(
-    unstakePermitPrep.config
-  );
+  const {
+    data,
+    isError: unstakeError,
+    writeAsync: doUnstake,
+  } = useContractWrite(unstakePrep.config);
+  const {
+    data: dataPermit,
+    isError: unstakePermitError,
+    writeAsync: doUnstakePermit,
+  } = useContractWrite(unstakePermitPrep.config);
 
   const resultData = signature ? dataPermit : data;
   const unstakeAction = useCallback(() => {
@@ -143,13 +149,13 @@ export default function UnstakeConfirmDialogue({
     doUnstake!();
   }, [signature, doUnstake, doUnstakePermit]);
 
-  const { isError, isSuccess } = useWaitForTransaction({
+  const { isError: txWaitError, isSuccess } = useWaitForTransaction({
     hash: resultData?.hash,
   });
 
   // Effect for executing callbacks when the transaction succeeds or fails.
   useEffect(() => {
-    if (isError) {
+    if (txWaitError || unstakeError || unstakePermitError) {
       onUnstakeFailure();
       setIsUnstaking(false);
       return;
@@ -158,7 +164,15 @@ export default function UnstakeConfirmDialogue({
       onUnstakeSuccess(resultData.hash);
       setIsUnstaking(false);
     }
-  }, [isSuccess, isError, resultData, onUnstakeSuccess, onUnstakeFailure]);
+  }, [
+    isSuccess,
+    txWaitError,
+    unstakeError,
+    unstakePermitError,
+    resultData,
+    onUnstakeSuccess,
+    onUnstakeFailure,
+  ]);
 
   return (
     <DialogBase isCloseable title="Confirm transaction" onClose={onClose}>
@@ -194,7 +208,9 @@ export default function UnstakeConfirmDialogue({
       />
       <Button
         size="full"
-        disabled={!unstakeAction || isError || isUnstaking}
+        disabled={
+          !unstakeAction || unstakeError || unstakePermitError || isUnstaking
+        }
         onClick={unstakeAction}
         className="flex flex-row justify-center items-center"
       >

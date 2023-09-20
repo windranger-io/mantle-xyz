@@ -77,13 +77,17 @@ export default function StakeConfirmDialogue({
     enabled: Boolean(address) && stakeAmount > 0,
   });
 
-  const { data, writeAsync: doStake } = useContractWrite(stakePrep.config);
-  const { isError, isSuccess } = useWaitForTransaction({
+  const {
+    data,
+    isError,
+    writeAsync: doStake,
+  } = useContractWrite(stakePrep.config);
+  const { isError: txWaitError, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
   });
 
   useEffect(() => {
-    if (isError) {
+    if (isError || txWaitError) {
       setIsStaking(false);
       onStakeFailure();
       return;
@@ -92,7 +96,7 @@ export default function StakeConfirmDialogue({
       setIsStaking(false);
       onStakeSuccess(data.hash);
     }
-  }, [isSuccess, isError, data, onStakeSuccess, onStakeFailure]);
+  }, [isSuccess, isError, txWaitError, data, onStakeSuccess, onStakeFailure]);
 
   return (
     <DialogBase isCloseable title="Confirm transaction" onClose={onClose}>
