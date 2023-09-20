@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { TextLoading } from "@components/Loading";
 import usePendingUnstakeRequests from "@hooks/useUnstakeRequests";
 import { T } from "@mantle/ui";
 import { formatEthTruncated } from "@util/util";
@@ -32,28 +31,17 @@ export default function UnstakeRequests() {
     return acc + req.claimState.amountFilledWei;
   }, BigInt(0));
 
-  if (requests.isLoading) {
-    return (
-      <div className="max-w-[484px] w-full px-5 py-4 bg-[#0C0C0C] border border-[#1C1E20] rounded-[20px] mx-auto items-center justify-center">
-        <div className="grid grid-cols-2">
-          <div className="flex flex-col">
-            <T>Pending</T>
-            <TextLoading className="w-16 h-4" />
-          </div>
-          <div className="flex flex-col">
-            <T>Ready to claim</T>
-            <TextLoading className="w-16 h-4" />
-          </div>
-        </div>
-      </div>
-    );
+  if (requests.isLoading || requests.data.length === 0) {
+    return null;
   }
+
   return (
     <div>
       <UnstakeStats
         totalPending={totalRequests - totalClaimable}
         totalClaimable={totalClaimable}
       />
+
       <div className="max-w-[484px] w-full grid relative px-5 py-4 bg-[#0C0C0C] overflow-y-auto overflow-x-clip md:overflow-hidden border border-[#1C1E20] rounded-[20px] mx-auto -mt-8">
         {requests.data.map((req, i) => {
           // Filter out any which were already claimed.

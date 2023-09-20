@@ -11,9 +11,10 @@ import { ContractName, contracts } from "@config/contracts";
 import { Button, T } from "@mantle/ui";
 import { BigNumber } from "ethers";
 import { formatEther, parseEther } from "ethers/lib/utils";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useAccount, useBalance, useContractRead } from "wagmi";
 import Divider from "@components/Convert/Divider";
+import StateContext from "@providers/stateContext";
 import StakeConfirmDialogue from "./dialogue/StakeConfirmDialogue";
 import StakeSuccessDialogue from "./dialogue/StakeSuccessDialogue";
 import StakeFailureDialogue from "./dialogue/StakeFailureDialogue";
@@ -25,6 +26,9 @@ export default function Staking() {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [failureDialogOpen, setFailureDialogOpen] = useState(false);
   const [stakeTxHash, setStakeTxHash] = useState("");
+
+  // Controls for wallet connection button
+  const { setWalletModalOpen, setMobileMenuOpen } = useContext(StateContext);
 
   const balanceString =
     balance.data?.formatted.slice(0, AMOUNT_MAX_DISPLAY_DIGITS) || "";
@@ -131,8 +135,13 @@ export default function Staking() {
         <Button
           size="full"
           className="mb-4"
-          disabled={outputAmount.isLoading || !address}
+          disabled={outputAmount.isLoading}
           onClick={() => {
+            if (!address) {
+              setWalletModalOpen(true);
+              setMobileMenuOpen(false);
+              return;
+            }
             setConfirmDialogOpen(true);
           }}
         >

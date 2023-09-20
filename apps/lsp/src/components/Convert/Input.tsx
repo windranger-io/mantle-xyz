@@ -3,6 +3,7 @@
 import { AMOUNT_MAX_DISPLAY_DIGITS } from "@config/constants";
 import { Button } from "@mantle/ui";
 import { useEffect, useRef, useState } from "react";
+import { useAccount } from "wagmi";
 
 const WIDTH_BUFFER = 14;
 
@@ -20,6 +21,7 @@ export default function ConvertInput({
   defaultAmount = "",
   onChange,
 }: InputProps) {
+  const { address } = useAccount();
   const [amount, setAmount] = useState(defaultAmount);
 
   const [width, setWidth] = useState(0);
@@ -99,21 +101,23 @@ export default function ConvertInput({
           {symbol}
         </label>
       </div>
-      <div className="flex flex-col w-full justify-center text-right">
-        <div>
-          <Button
-            type="button"
-            variant="outline"
-            className="btn"
-            onClick={() => {
-              setAmount(balance);
-              onChange(balance);
-            }}
-          >
-            MAX
-          </Button>
+      {address && (
+        <div className="flex flex-col w-full justify-center text-right">
+          <div>
+            <Button
+              type="button"
+              variant="outline"
+              className="btn"
+              onClick={() => {
+                setAmount(balance);
+                onChange(balance);
+              }}
+            >
+              MAX
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

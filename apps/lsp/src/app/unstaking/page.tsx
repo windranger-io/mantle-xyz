@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Button, T } from "@mantle/ui";
 import { BigNumber } from "ethers";
 import { formatEther, parseEther } from "ethers/lib/utils";
@@ -20,6 +20,7 @@ import Divider from "@components/Convert/Divider";
 import usePermitApproval from "@hooks/web3/write/usePermitApproval";
 import StakeFailureDialogue from "@app/staking/dialogue/StakeFailureDialogue";
 import { useInterval } from "@hooks/useInterval";
+import StateContext from "@providers/stateContext";
 import UnstakeConfirmDialogue from "./dialogue/UnstakeConfirmDialogue";
 import UnstakeSuccessDialogue from "./dialogue/UnstakeSuccessDialogue";
 import UnstakeRequests from "./UnstakeRequests";
@@ -35,6 +36,9 @@ export default function Unstaking() {
   const [failureDialogOpen, setFailureDialogOpen] = useState(false);
   const [txHash, setTxHash] = useState("");
   const [deadline, setDeadline] = useState(BigInt(0));
+
+  // Controls for wallet connection button
+  const { setWalletModalOpen, setMobileMenuOpen } = useContext(StateContext);
 
   const stakingContract = contracts[CHAIN_ID][ContractName.Staking];
   const methContract = contracts[CHAIN_ID][ContractName.METH];
@@ -138,6 +142,9 @@ export default function Unstaking() {
     );
   }
 
+  const actionText = approvalHigherThanAmount ? "Unstake" : "Approve mETH";
+  const buttonText = address ? actionText : "Connect Wallet";
+
   return (
     <div className="flex flex-col space-y-8">
       <div className="max-w-[484px] w-full grid relative bg-white/5 overflow-y-auto overflow-x-clip md:overflow-hidden border border-[#1C1E20] rounded-t-[30px] rounded-b-[20px] mx-auto">
@@ -189,6 +196,11 @@ export default function Unstaking() {
               deadline === BigInt(0)
             }
             onClick={() => {
+              if (!address) {
+                setWalletModalOpen(true);
+                setMobileMenuOpen(false);
+                return;
+              }
               if (!approvalHigherThanAmount) {
                 doApproval();
                 return;
@@ -196,7 +208,7 @@ export default function Unstaking() {
               setConfirmDialogOpen(true);
             }}
           >
-            {approvalHigherThanAmount ? "Unstake" : "Approve mETH"}
+            {buttonText}
           </Button>
           <div className="flex flex-col space-y-2 w-full">
             <ExchangeRate />
