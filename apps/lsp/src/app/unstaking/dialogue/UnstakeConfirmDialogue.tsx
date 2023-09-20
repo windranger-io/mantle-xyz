@@ -20,7 +20,6 @@ import {
 type Props = {
   unstakeAmount: bigint;
   receiveAmount: bigint;
-  // eslint-disable-next-line react/require-default-props
   permitSignature?: `0x${string}`;
   deadline: bigint;
   onClose: () => void;

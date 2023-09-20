@@ -2,11 +2,14 @@ import { useState } from "react";
 import usePendingUnstakeRequests from "@hooks/useUnstakeRequests";
 import { T } from "@mantle/ui";
 import { formatEthTruncated } from "@util/util";
+import { useToast } from "@hooks/useToast";
 import ClaimAction from "./ClaimAction";
 import UnstakeStats from "./UnstakeStats";
 
 export default function UnstakeRequests() {
   const requests = usePendingUnstakeRequests();
+
+  const { createToast } = useToast();
 
   // This is a slightly budget version of optimistic updates. As requests data is sourced
   // from 2 different places, it's a bit tricky to get good view of the correct state of
@@ -72,6 +75,14 @@ export default function UnstakeRequests() {
                     id={req.id}
                     onClaimed={() => {
                       setLocalClaimedIDs([...localClaimedIDs, req.id]);
+                      createToast({
+                        id: `unstake-claim-${req.id}`,
+                        content: `Unstake request claimed. You received ${formatEthTruncated(
+                          req.ethAmountWei
+                        )} ETH`,
+                        type: "success",
+                        borderLeft: "bg-green-500",
+                      });
                       requests.refetch();
                     }}
                   />

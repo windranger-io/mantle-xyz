@@ -7,7 +7,6 @@ export default function Loading() {
 }
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
-  // eslint-disable-next-line react/require-default-props
   children?: ReactNode;
 }
 

@@ -10,7 +10,6 @@ const WIDTH_BUFFER = 14;
 type InputProps = {
   symbol: string;
   balance: string;
-  // eslint-disable-next-line react/require-default-props
   defaultAmount?: string;
   onChange: (_: string) => void;
 };

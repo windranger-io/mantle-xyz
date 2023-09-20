@@ -34,9 +34,7 @@ export function ToastBody({
   borderLeft = "blue-700",
   children = [],
 }: {
-  // eslint-disable-next-line react/require-default-props
   type?: "success" | "error" | "onGoing";
-  // eslint-disable-next-line react/require-default-props
   borderLeft?: string;
   onClick: false | ((e: React.MouseEvent<HTMLElement>) => void);
   children: React.ReactNode;

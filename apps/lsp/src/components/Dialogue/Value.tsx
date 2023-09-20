@@ -5,7 +5,6 @@ export default function DialogValue({
 }: {
   label: string;
   value: string | JSX.Element;
-  // eslint-disable-next-line react/require-default-props
   border?: boolean;
 }) {
   return (

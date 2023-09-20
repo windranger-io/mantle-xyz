@@ -11,9 +11,7 @@ export default function TxLink({
 }: {
   chainId: number;
   txHash: string | boolean;
-  // eslint-disable-next-line react/require-default-props
   className?: string;
-  // eslint-disable-next-line react/require-default-props
   asHash?: boolean;
 }) {
   return (

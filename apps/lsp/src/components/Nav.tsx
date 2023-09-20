@@ -8,7 +8,6 @@ import { NavItem } from "@mantle/ui/src/navigation/NavigationLite";
 
 type NavProps = {
   hideConnectBtn: boolean;
-  // eslint-disable-next-line react/require-default-props
   className?: string | undefined;
 };
 
