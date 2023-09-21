@@ -3,7 +3,7 @@ import { BigNumberish } from "ethers";
 import { Address, Chain } from "wagmi";
 import { ContractName, contracts } from "./contracts";
 
-export const CHAIN_ID = +(process.env["NEXT_PUBLIC_CHAIN_ID"] || "5");
+export const CHAIN_ID: ChainID = +(process.env["NEXT_PUBLIC_CHAIN_ID"] || 5);
 
 export const IP_RESTRICTION_ENABLED = true;
 

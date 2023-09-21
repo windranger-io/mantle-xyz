@@ -5,6 +5,7 @@ import { Button, T } from "@mantle/ui";
 import { BigNumber } from "ethers";
 import { formatEther, parseEther } from "ethers/lib/utils";
 import { useAccount, useContractRead } from "wagmi";
+import { redirect } from "next/navigation";
 
 import { CHAIN_ID } from "@config/constants";
 import { ContractName, contracts } from "@config/contracts";
@@ -18,7 +19,7 @@ import useMETHBalance from "@hooks/web3/read/useMETHBalance";
 import { formatEthTruncated } from "@util/util";
 import Divider from "@components/Convert/Divider";
 import usePermitApproval from "@hooks/web3/write/usePermitApproval";
-import StakeFailureDialogue from "@app/staking/dialogue/StakeFailureDialogue";
+import StakeFailureDialogue from "@app/(convert)/staking/dialogue/StakeFailureDialogue";
 import { useInterval } from "@hooks/useInterval";
 import StateContext from "@providers/stateContext";
 import useGeolocationCheck from "@hooks/useGeolocationCheck";
