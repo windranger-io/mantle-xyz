@@ -5,6 +5,25 @@ import { ContractName, contracts } from "./contracts";
 
 export const CHAIN_ID = +(process.env["NEXT_PUBLIC_CHAIN_ID"] || "5");
 
+export const IP_RESTRICTION_ENABLED = true;
+
+export const RESTRICTED_COUNTRY_CODES = [
+  "US", // United States
+  "BY", // Belarus
+  "BI", // Burundi
+  "CD", // Democratic Republic of Congo
+  "CU", // Cuba
+  "IR", // Iran
+  "IQ", // Iraq
+  "LY", // Libya
+  "KP", // North Korea
+  "SO", // Somalia
+  "SD", // Sudan
+  "SY", // Syria
+  "VE", // Venezuela
+  "ZW", // Zimbabwe
+];
+
 // TODO: Do all of these properly later.
 
 // Configure the applications name

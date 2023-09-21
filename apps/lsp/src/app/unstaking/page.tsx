@@ -21,6 +21,8 @@ import usePermitApproval from "@hooks/web3/write/usePermitApproval";
 import StakeFailureDialogue from "@app/staking/dialogue/StakeFailureDialogue";
 import { useInterval } from "@hooks/useInterval";
 import StateContext from "@providers/stateContext";
+import useGeolocationCheck from "@hooks/useGeolocationCheck";
+
 import UnstakeConfirmDialogue from "./dialogue/UnstakeConfirmDialogue";
 import UnstakeSuccessDialogue from "./dialogue/UnstakeSuccessDialogue";
 import UnstakeRequests from "./UnstakeRequests";
@@ -36,6 +38,7 @@ export default function Unstaking() {
   const [failureDialogOpen, setFailureDialogOpen] = useState(false);
   const [txHash, setTxHash] = useState("");
   const [deadline, setDeadline] = useState(BigInt(0));
+  const { isRestricted } = useGeolocationCheck();
 
   // Controls for wallet connection button
   const { setWalletModalOpen, setMobileMenuOpen } = useContext(StateContext);
@@ -97,6 +100,11 @@ export default function Unstaking() {
 
   const approvalHigherThanAmount =
     hasApproval.data && hasApproval.data > methAmount.toBigInt();
+
+  // Redirect if in a restricted country
+  if (isRestricted) {
+    redirect("/restricted");
+  }
 
   if (confirmDialogOpen) {
     return (

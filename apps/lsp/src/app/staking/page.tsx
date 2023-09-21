@@ -1,5 +1,12 @@
 "use client";
 
+import { redirect } from "next/navigation";
+import { BigNumber } from "ethers";
+import { useContext, useState } from "react";
+import { useAccount, useBalance, useContractRead } from "wagmi";
+import { formatEther, parseEther } from "ethers/lib/utils";
+import { Button, T } from "@mantle/ui";
+
 import AdjustmentRate from "@components/Convert/AdjustmentRate";
 import ExchangeRate from "@components/Convert/ExchangeRate";
 import ConvertInput from "@components/Convert/Input";
@@ -8,13 +15,9 @@ import StakeToggle, { Mode } from "@components/StakeToggle";
 import TokenDirection from "@components/TokenDirection";
 import { AMOUNT_MAX_DISPLAY_DIGITS, CHAIN_ID } from "@config/constants";
 import { ContractName, contracts } from "@config/contracts";
-import { Button, T } from "@mantle/ui";
-import { BigNumber } from "ethers";
-import { formatEther, parseEther } from "ethers/lib/utils";
-import { useContext, useState } from "react";
-import { useAccount, useBalance, useContractRead } from "wagmi";
 import Divider from "@components/Convert/Divider";
 import StateContext from "@providers/stateContext";
+import useGeolocationCheck from "@hooks/useGeolocationCheck";
 import StakeConfirmDialogue from "./dialogue/StakeConfirmDialogue";
 import StakeSuccessDialogue from "./dialogue/StakeSuccessDialogue";
 import StakeFailureDialogue from "./dialogue/StakeFailureDialogue";
@@ -26,6 +29,7 @@ export default function Staking() {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [failureDialogOpen, setFailureDialogOpen] = useState(false);
   const [stakeTxHash, setStakeTxHash] = useState("");
+  const { isRestricted } = useGeolocationCheck();
 
   // Controls for wallet connection button
   const { setWalletModalOpen, setMobileMenuOpen } = useContext(StateContext);
@@ -45,6 +49,11 @@ export default function Staking() {
   const formattedOutput = outputAmount.data
     ? formatEther(outputAmount.data)
     : "0";
+
+  // Redirect if in a restricted country
+  if (isRestricted) {
+    redirect("/restricted");
+  }
 
   if (stakeTxHash) {
     return (
