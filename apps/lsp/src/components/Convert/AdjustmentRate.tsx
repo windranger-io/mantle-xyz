@@ -20,7 +20,7 @@ export default function AdjustmentRate() {
       <T variant="body">Adjustment rate</T>
       <T variant="body">
         {adjustment.data !== undefined ? (
-          `${adjustment.data}%`
+          `${adjustment.data / 100}%`
         ) : (
           <TextLoading className="text-start w-24 h-4" />
         )}
