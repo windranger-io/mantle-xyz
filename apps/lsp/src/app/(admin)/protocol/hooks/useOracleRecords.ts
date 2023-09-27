@@ -11,8 +11,8 @@ export type OracleRecord = {
   updateStartBlock: number;
   updateEndBlock: number;
   cumulativeProcessedDepositAmount: bigint;
-  cumulativeNumValidatorsFullyWithdrawn: number;
-  currentNumValidatorsWithBalance: number;
+  cumulativeNumValidatorsWithdrawable: number;
+  currentNumValidatorsNotWithdrawable: number;
   currentTotalValidatorBalance: bigint;
   windowWithdrawnPrincipalAmount: bigint;
   windowWithdrawnRewardAmount: bigint;
@@ -35,8 +35,8 @@ const getOracleRecordsQuery = gql`
       updateStartBlock
       updateEndBlock
       cumulativeProcessedDepositAmount
-      cumulativeNumValidatorsFullyWithdrawn
-      currentNumValidatorsWithBalance
+      cumulativeNumValidatorsWithdrawable
+      currentNumValidatorsNotWithdrawable
       currentTotalValidatorBalance
       windowWithdrawnPrincipalAmount
       windowWithdrawnRewardAmount

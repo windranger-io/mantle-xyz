@@ -112,7 +112,7 @@ export default function RecordsTable({
                     scope="col"
                     className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-100 sm:pl-3"
                   >
-                    Total validators withdrawn
+                    Total validators withdrawable
                   </th>
                   <th
                     scope="col"
@@ -179,10 +179,12 @@ export default function RecordsTable({
                             </a>
                           </td>
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100">
-                            {record.currentNumValidatorsWithBalance}{" "}
+                            {record.currentNumValidatorsNotWithdrawable}{" "}
                             <Delta
-                              prev={prevRecord?.currentNumValidatorsWithBalance}
-                              curr={record.currentNumValidatorsWithBalance}
+                              prev={
+                                prevRecord?.currentNumValidatorsNotWithdrawable
+                              }
+                              curr={record.currentNumValidatorsNotWithdrawable}
                             />
                           </td>
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100">
@@ -212,14 +214,12 @@ export default function RecordsTable({
                             />
                           </td>
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100">
-                            {record.cumulativeNumValidatorsFullyWithdrawn}
+                            {record.cumulativeNumValidatorsWithdrawable}
                             <Delta
                               prev={
-                                prevRecord?.cumulativeNumValidatorsFullyWithdrawn
+                                prevRecord?.cumulativeNumValidatorsWithdrawable
                               }
-                              curr={
-                                record.cumulativeNumValidatorsFullyWithdrawn
-                              }
+                              curr={record.cumulativeNumValidatorsWithdrawable}
                             />
                           </td>
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100">

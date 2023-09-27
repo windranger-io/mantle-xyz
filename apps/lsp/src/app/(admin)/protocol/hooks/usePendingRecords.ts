@@ -11,8 +11,8 @@ export type PendingOracleRecord = {
   updateStartBlock: number;
   updateEndBlock: number;
   cumulativeProcessedDepositAmount: bigint;
-  cumulativeNumValidatorsFullyWithdrawn: number;
-  currentNumValidatorsWithBalance: number;
+  cumulativeNumValidatorsWithdrawable: number;
+  currentNumValidatorsNotWithdrawable: number;
   currentTotalValidatorBalance: bigint;
   windowWithdrawnPrincipalAmount: bigint;
   windowWithdrawnRewardAmount: bigint;
@@ -30,8 +30,8 @@ const getPendingRecordQuery = gql`
       updateStartBlock
       updateEndBlock
       cumulativeProcessedDepositAmount
-      cumulativeNumValidatorsFullyWithdrawn
-      currentNumValidatorsWithBalance
+      cumulativeNumValidatorsWithdrawable
+      currentNumValidatorsNotWithdrawable
       currentTotalValidatorBalance
       windowWithdrawnPrincipalAmount
       windowWithdrawnRewardAmount

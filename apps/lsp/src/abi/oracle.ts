@@ -171,12 +171,12 @@ export const oracleABI = [
           },
           {
             internalType: "uint64",
-            name: "currentNumValidatorsWithBalance",
+            name: "currentNumValidatorsNotWithdrawable",
             type: "uint64",
           },
           {
             internalType: "uint64",
-            name: "cumulativeNumValidatorsFullyWithdrawn",
+            name: "cumulativeNumValidatorsWithdrawable",
             type: "uint64",
           },
           {
@@ -232,12 +232,12 @@ export const oracleABI = [
           },
           {
             internalType: "uint64",
-            name: "currentNumValidatorsWithBalance",
+            name: "currentNumValidatorsNotWithdrawable",
             type: "uint64",
           },
           {
             internalType: "uint64",
-            name: "cumulativeNumValidatorsFullyWithdrawn",
+            name: "cumulativeNumValidatorsWithdrawable",
             type: "uint64",
           },
           {
@@ -299,12 +299,12 @@ export const oracleABI = [
           },
           {
             internalType: "uint64",
-            name: "currentNumValidatorsWithBalance",
+            name: "currentNumValidatorsNotWithdrawable",
             type: "uint64",
           },
           {
             internalType: "uint64",
-            name: "cumulativeNumValidatorsFullyWithdrawn",
+            name: "cumulativeNumValidatorsWithdrawable",
             type: "uint64",
           },
           {
@@ -372,12 +372,12 @@ export const oracleABI = [
           },
           {
             internalType: "uint64",
-            name: "currentNumValidatorsWithBalance",
+            name: "currentNumValidatorsNotWithdrawable",
             type: "uint64",
           },
           {
             internalType: "uint64",
-            name: "cumulativeNumValidatorsFullyWithdrawn",
+            name: "cumulativeNumValidatorsWithdrawable",
             type: "uint64",
           },
           {
@@ -780,12 +780,12 @@ export const oracleABI = [
           },
           {
             internalType: "uint64",
-            name: "currentNumValidatorsWithBalance",
+            name: "currentNumValidatorsNotWithdrawable",
             type: "uint64",
           },
           {
             internalType: "uint64",
-            name: "cumulativeNumValidatorsFullyWithdrawn",
+            name: "cumulativeNumValidatorsWithdrawable",
             type: "uint64",
           },
           {
@@ -812,19 +812,6 @@ export const oracleABI = [
         internalType: "struct OracleRecord",
         name: "",
         type: "tuple",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "maxConsensusLayerBalancePerValidator",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -859,19 +846,6 @@ export const oracleABI = [
   {
     inputs: [],
     name: "maxDepositPerValidator",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "minConsensusLayerBalancePerValidator",
     outputs: [
       {
         internalType: "uint256",
@@ -942,12 +916,12 @@ export const oracleABI = [
           },
           {
             internalType: "uint64",
-            name: "currentNumValidatorsWithBalance",
+            name: "currentNumValidatorsNotWithdrawable",
             type: "uint64",
           },
           {
             internalType: "uint64",
-            name: "cumulativeNumValidatorsFullyWithdrawn",
+            name: "cumulativeNumValidatorsWithdrawable",
             type: "uint64",
           },
           {
@@ -1038,12 +1012,12 @@ export const oracleABI = [
           },
           {
             internalType: "uint64",
-            name: "currentNumValidatorsWithBalance",
+            name: "currentNumValidatorsNotWithdrawable",
             type: "uint64",
           },
           {
             internalType: "uint64",
-            name: "cumulativeNumValidatorsFullyWithdrawn",
+            name: "cumulativeNumValidatorsWithdrawable",
             type: "uint64",
           },
           {
@@ -1091,12 +1065,12 @@ export const oracleABI = [
           },
           {
             internalType: "uint64",
-            name: "currentNumValidatorsWithBalance",
+            name: "currentNumValidatorsNotWithdrawable",
             type: "uint64",
           },
           {
             internalType: "uint64",
-            name: "cumulativeNumValidatorsFullyWithdrawn",
+            name: "cumulativeNumValidatorsWithdrawable",
             type: "uint64",
           },
           {
@@ -1154,12 +1128,12 @@ export const oracleABI = [
           },
           {
             internalType: "uint64",
-            name: "currentNumValidatorsWithBalance",
+            name: "currentNumValidatorsNotWithdrawable",
             type: "uint64",
           },
           {
             internalType: "uint64",
-            name: "cumulativeNumValidatorsFullyWithdrawn",
+            name: "cumulativeNumValidatorsWithdrawable",
             type: "uint64",
           },
           {
@@ -1250,12 +1224,12 @@ export const oracleABI = [
           },
           {
             internalType: "uint64",
-            name: "currentNumValidatorsWithBalance",
+            name: "currentNumValidatorsNotWithdrawable",
             type: "uint64",
           },
           {
             internalType: "uint64",
-            name: "cumulativeNumValidatorsFullyWithdrawn",
+            name: "cumulativeNumValidatorsWithdrawable",
             type: "uint64",
           },
           {
@@ -1297,12 +1271,12 @@ export const oracleABI = [
           },
           {
             internalType: "uint64",
-            name: "currentNumValidatorsWithBalance",
+            name: "currentNumValidatorsNotWithdrawable",
             type: "uint64",
           },
           {
             internalType: "uint64",
-            name: "cumulativeNumValidatorsFullyWithdrawn",
+            name: "cumulativeNumValidatorsWithdrawable",
             type: "uint64",
           },
           {
@@ -1368,19 +1342,6 @@ export const oracleABI = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "maxConsensusLayerBalancePerValidator_",
-        type: "uint256",
-      },
-    ],
-    name: "setMaxConsensusLayerBalancePerValidator",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "uint40",
         name: "maxConsensusLayerGainPerBlockPPT_",
         type: "uint40",
@@ -1413,19 +1374,6 @@ export const oracleABI = [
       },
     ],
     name: "setMaxDepositPerValidator",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "minConsensusLayerBalancePerValidator_",
-        type: "uint256",
-      },
-    ],
-    name: "setMinConsensusLayerBalancePerValidator",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -1535,12 +1483,12 @@ export const oracleABI = [
           },
           {
             internalType: "uint64",
-            name: "currentNumValidatorsWithBalance",
+            name: "currentNumValidatorsNotWithdrawable",
             type: "uint64",
           },
           {
             internalType: "uint64",
-            name: "cumulativeNumValidatorsFullyWithdrawn",
+            name: "cumulativeNumValidatorsWithdrawable",
             type: "uint64",
           },
           {
