@@ -2,53 +2,70 @@ export const BitgetSvg = ({ className }: { className: string }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="512"
-      height="512"
-      viewBox="0 0 512 512"
+      width="800"
+      height="800"
+      viewBox="0 0 800 800"
       fill="none"
       className={className}
     >
-      <g clipPath="url(#clip0_2029_360)">
-        <rect width="512" height="512" fill="#54FFF5" />
-        <g filter="url(#filter0_f_2029_360)">
+      <g clipPath="url(#clip0_26_30)">
+        <mask
+          id="mask0_26_30"
+          style={{ maskType: 'alpha' }}
+          maskUnits="userSpaceOnUse"
+          x="0"
+          y="0"
+          width="800"
+          height="800"
+        >
           <path
-            d="M26.9613 397.206C-58.6549 638.082 399.323 570.05 639.014 505.924C884.329 424.513 714.772 65.6498 538.829 57.7076C362.886 49.7654 560.645 223.645 411.191 273.307C261.737 322.97 133.982 96.1127 26.9613 397.206Z"
-            fill="white"
+            d="M620 0H180C80.5887 0 0 80.5888 0 180V620C0 719.411 80.5888 800 180 800H620C719.411 800 800 719.411 800 620V180C800 80.5887 719.411 0 620 0Z"
+            fill="#54FFF5"
+          />
+        </mask>
+        <g mask="url(#mask0_26_30)">
+          <g filter="url(#filter0_f_26_30)">
+            <path
+              d="M620 0H180C80.5887 0 0 80.5888 0 180V620C0 719.411 80.5888 800 180 800H620C719.411 800 800 719.411 800 620V180C800 80.5887 719.411 0 620 0Z"
+              fill="#54FFF5"
+            />
+            <path
+              d="M42.127 620.634C-91.6483 997.003 623.942 890.703 998.459 790.506C1381.76 663.301 1116.83 102.578 841.92 90.168C567.009 77.7583 876.008 349.445 642.486 427.042C408.964 504.641 209.347 150.176 42.127 620.634Z"
+              fill="white"
+            />
+          </g>
+          <g filter="url(#filter1_f_26_30)">
+            <path
+              d="M267.225 -143.198C197.05 -334.928 -52.8715 -74.9882 -169.061 78.9481C-279.891 246.397 9.40441 391.097 122.878 312.614C236.352 234.132 24.2953 218.861 91.7839 116.805C159.272 14.7496 354.942 96.4645 267.225 -143.198Z"
+              fill="#00FFF0"
+            />
+          </g>
+          <g filter="url(#filter2_f_26_30)">
+            <path
+              d="M301.498 704.445C205.783 382.383 -206.505 551.987 -400.684 677.05C-587.469 825.128 -143.972 1251.08 40.2269 1229.3C224.425 1207.51 -107.536 1022.07 6.20976 931.779C119.956 841.483 421.145 1107.02 301.498 704.445Z"
+              fill="#9D81FF"
+            />
+          </g>
+          <g filter="url(#filter3_f_26_30)">
+            <path
+              d="M881.625 -335.478C675.147 -581.347 379.57 -378.031 257.592 -245.639C150.856 -95.7645 700.858 178.847 853.505 131.786C1006.15 84.7237 645.348 -12.6574 710.303 -104.025C775.256 -195.392 1139.72 -28.1426 881.625 -335.478Z"
+              fill="#4D94FF"
+            />
+          </g>
+          <path
+            d="M291.216 477.612H427.105L272.527 322.034L429.092 166.458L471.736 125H330.686L151.05 305.555C141.984 314.655 142.031 329.38 151.143 338.434L291.216 477.612ZM372.906 322.4H371.861L372.895 322.389L372.906 322.4ZM372.906 322.4L527.473 477.966L370.908 633.544L328.264 675.002H469.314L648.95 494.458C658.016 485.358 657.969 470.633 648.856 461.578L508.784 322.4H372.906Z"
+            fill="black"
           />
         </g>
-        <g filter="url(#filter1_f_2029_360)">
-          <path
-            d="M171.024 -91.647C126.112 -214.354 -33.8378 -47.9926 -108.199 50.5266C-179.13 157.694 6.01881 250.302 78.6417 200.073C151.265 149.844 15.549 140.071 58.7417 74.7551C101.934 9.43956 227.163 61.7371 171.024 -91.647Z"
-            fill="#00FFF0"
-            fillOpacity="0.67"
-          />
-        </g>
-        <g filter="url(#filter2_f_2029_360)">
-          <path
-            d="M192.959 450.845C131.701 244.725 -132.163 353.272 -256.438 433.312C-375.98 528.082 -92.1419 800.694 25.7452 786.749C143.632 772.804 -68.8233 654.128 3.97422 596.339C76.7718 538.549 269.533 708.496 192.959 450.845Z"
-            fill="#9D81FF"
-          />
-        </g>
-        <g filter="url(#filter3_f_2029_360)">
-          <path
-            d="M564.24 -214.706C432.094 -372.062 242.925 -241.94 164.859 -157.209C96.5476 -61.2893 448.549 114.462 546.243 84.3427C643.936 54.2231 413.023 -8.10076 454.594 -66.5759C496.164 -125.051 729.423 -18.0113 564.24 -214.706Z"
-            fill="#4D94FF"
-          />
-        </g>
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M186.378 305.672H273.347L174.417 206.102L274.619 106.533L301.911 80H211.639L96.672 195.555C90.8701 201.379 90.8998 210.803 96.7315 216.598L186.378 305.672ZM238.66 206.336H237.991L238.653 206.329L238.66 206.336ZM238.66 206.336L337.583 305.898L237.381 405.468L210.089 432.001H300.361L415.328 316.453C421.13 310.629 421.1 301.205 415.268 295.41L325.622 206.336H238.66Z"
-          fill="black"
-        />
       </g>
+
       <defs>
         <filter
-          id="filter0_f_2029_360"
-          x="-180.482"
-          y="-139.48"
-          width="1139.12"
-          height="902.864"
+          id="filter0_f_26_30"
+          x="-171.234"
+          y="-107.167"
+          width="1558.33"
+          height="1189.19"
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
         >
@@ -61,15 +78,15 @@ export const BitgetSvg = ({ className }: { className: string }) => {
           />
           <feGaussianBlur
             stdDeviation="98.4615"
-            result="effect1_foregroundBlur_2029_360"
+            result="effect1_foregroundBlur_26_30"
           />
         </filter>
         <filter
-          id="filter1_f_2029_360"
-          x="-321.021"
-          y="-331.978"
-          width="703.193"
-          height="743.016"
+          id="filter1_f_26_30"
+          x="-390.826"
+          y="-407.945"
+          width="877.2"
+          height="939.426"
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
         >
@@ -82,15 +99,15 @@ export const BitgetSvg = ({ className }: { className: string }) => {
           />
           <feGaussianBlur
             stdDeviation="98.4615"
-            result="effect1_foregroundBlur_2029_360"
+            result="effect1_foregroundBlur_26_30"
           />
         </filter>
         <filter
-          id="filter2_f_2029_360"
-          x="-482.155"
-          y="135.284"
-          width="889.703"
-          height="848.905"
+          id="filter2_f_26_30"
+          x="-642.598"
+          y="322.149"
+          width="1168.62"
+          height="1104.87"
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
         >
@@ -103,15 +120,15 @@ export const BitgetSvg = ({ className }: { className: string }) => {
           />
           <feGaussianBlur
             stdDeviation="98.4615"
-            result="effect1_foregroundBlur_2029_360"
+            result="effect1_foregroundBlur_26_30"
           />
         </filter>
         <filter
-          id="filter3_f_2029_360"
-          x="-40.7937"
-          y="-485.519"
-          width="860.381"
-          height="770.211"
+          id="filter3_f_26_30"
+          x="47.0291"
+          y="-647.853"
+          width="1122.81"
+          height="981.915"
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
         >
@@ -124,11 +141,11 @@ export const BitgetSvg = ({ className }: { className: string }) => {
           />
           <feGaussianBlur
             stdDeviation="98.4615"
-            result="effect1_foregroundBlur_2029_360"
+            result="effect1_foregroundBlur_26_30"
           />
         </filter>
-        <clipPath id="clip0_2029_360">
-          <rect width="512" height="512" fill="white" />
+        <clipPath id="clip0_26_30">
+          <rect width="800" height="800" fill="white" />
         </clipPath>
       </defs>
     </svg>

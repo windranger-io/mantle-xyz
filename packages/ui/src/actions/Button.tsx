@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
 
-import { type ButtonHTMLAttributes, type ReactNode } from 'react'
 import clsx from 'clsx'
+import { type ButtonHTMLAttributes, type ReactNode } from 'react'
 
 type ButtonVariant =
   | 'primary'
@@ -45,14 +45,18 @@ export const Button = ({
         }rounded-lg text-md font-medium transition-all`,
         'disabled:cursor-not-allowed disabled:opacity-50',
         size === 'large' &&
-          `${classNameHasWidth ? '' : 'w-fit '} px-5 py-3 text-base`,
+          `${classNameHasWidth ? '' : 'w-fit '} px-5 py-3 ${
+            className && className?.indexOf('text-') !== -1 ? `` : `text-base`
+          }`,
         size === 'regular' &&
           `${classNameHasWidth ? '' : 'w-fit '} px-4 py-2 ${
             className && className?.indexOf('text-xs') !== -1 ? `` : `text-sm`
           }`,
         size === 'small' && `${classNameHasWidth ? '' : 'w-fit '} px-2 py-2`,
         size === 'full' &&
-          `${classNameHasWidth ? '' : 'w-full '}px-5 py-3 text-base`,
+          `${classNameHasWidth ? '' : 'w-full '}px-5 py-3 ${
+            className && className?.indexOf('text-') !== -1 ? `` : `text-base`
+          }`,
         variant === 'primary' &&
           'text-black bg-button-primary hover:bg-button-primaryHover disabled:hover:bg-button-disabled',
         variant === 'secondary' &&

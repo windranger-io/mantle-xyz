@@ -78,7 +78,7 @@ const Dialog = ({
           role="presentation"
         />
         {/* dialog content */}
-        <div className="pointer-events-auto bg-black data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[490px] translate-x-[-50%] translate-y-[-50%] rounded-[32px] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border border-white/20 md:px-20 px-4 md:py-10 py-5 z-[10]">
+        <div className="pointer-events-auto bg-black data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[900px] translate-x-[-50%] translate-y-[-50%] rounded-[32px] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border border-white/20 md:px-20 px-4 md:py-10 py-5 z-[10] overflow-y-auto">
           {children}
         </div>
       </div>
@@ -108,6 +108,51 @@ export const WalletModal = ({
     .map(conn => conn.name)
   const isWalletPresent = (id: string) => browserWallets.includes(id)
   // console.log('browserWallets', browserWallets, browserWalletsNames, connectors)
+  const connectTo = (provider: () => void, wallet: string, url: string) => {
+    if (isWalletPresent(wallet)) {
+      provider()
+    } else {
+      window.open(url, '_blank')
+    }
+  }
+
+  const otherWallets = [
+    {
+      id: 'bybitWallet',
+      name: 'Bybit',
+      provider: onBybitWallet,
+      site: 'https://www.bybit.com/en-US/web3',
+      icon: BybitSvg,
+    },
+    {
+      id: 'bitgetWallet',
+      name: 'Bitget',
+      provider: onBitgetWallet,
+      site: 'https://web3.bitget.com',
+      icon: BitgetSvg,
+    },
+    {
+      id: 'tokenPocket',
+      name: 'Token Pocket',
+      provider: onTokenPocket,
+      site: 'https://www.tokenpocket.pro',
+      icon: TokenPocketSvg,
+    },
+    {
+      id: 'rabbyWallet',
+      name: 'Rabby',
+      provider: onRabbyWallet,
+      site: 'https://rabby.io',
+      icon: RabbySvg,
+    },
+    {
+      id: 'coin98Wallet',
+      name: 'Coin98',
+      provider: onCoin98Wallet,
+      site: 'https://coin98.com/wallet',
+      icon: Coin98Svg,
+    },
+  ]
   return (
     <Dialog open={open} setOpen={setOpen}>
       <div className="relative">
@@ -136,113 +181,84 @@ export const WalletModal = ({
           </Button>
         </div>
       </div>
-      {onMetamask && injectedName === 'MetaMask' && (
-        <Button
-          key="metaMask-button"
-          type="button"
-          variant="secondary"
-          size="full"
-          onClick={onMetamask}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
-        >
-          <MetaMaskSvg className="h-6 w-6" />
-          Metamask
-        </Button>
-      )}
-      {onBybitWallet && isWalletPresent('bybitWallet') && (
-        <Button
-          key="bybitWallet-button"
-          type="button"
-          variant="secondary"
-          size="full"
-          onClick={onBybitWallet}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
-        >
-          <BybitSvg className="h-6 w-6" />
-          Bybit Wallet
-        </Button>
-      )}
-      {onBitgetWallet && isWalletPresent('bitgetWallet') && (
-        <Button
-          key="bitgetWallet-button"
-          type="button"
-          variant="secondary"
-          size="full"
-          onClick={onBitgetWallet}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
-        >
-          <BitgetSvg className="h-6 w-6" />
-          Bitget Wallet
-        </Button>
-      )}
-      {onTokenPocket && isWalletPresent('tokenPocket') && (
-        <Button
-          key="tokenPocket-button"
-          type="button"
-          variant="secondary"
-          size="full"
-          onClick={onTokenPocket}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
-        >
-          <TokenPocketSvg className="h-6 w-6" />
-          Token pocket
-        </Button>
-      )}
-      {onRabbyWallet && isWalletPresent('rabbyWallet') && (
-        <Button
-          key="rabbyWallet-button"
-          type="button"
-          variant="secondary"
-          size="full"
-          onClick={onRabbyWallet}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
-        >
-          <RabbySvg className="h-6 w-6" />
-          Rabby Wallet
-        </Button>
-      )}
-      {onCoin98Wallet && isWalletPresent('coin98Wallet') && (
-        <Button
-          key="coin98Wallet-button"
-          type="button"
-          variant="secondary"
-          size="full"
-          onClick={onCoin98Wallet}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
-        >
-          <Coin98Svg className="h-6 w-6" />
-          Coin98 Wallet
-        </Button>
-      )}
-      {onWalletConnect && (
-        <Button
-          key="walletConnect-button"
-          type="button"
-          variant="secondary"
-          size="full"
-          onClick={onWalletConnect}
-          className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full mb-5"
-        >
-          <WalletConnectSvg className="h-6 w-6" />
-          Wallet Connect
-        </Button>
-      )}
-      {onInjected &&
-        injectedName !== 'Injected' &&
-        !browserWalletsNames.includes(injectedName as string) && (
-          <Button
-            key="injected-button"
-            type="button"
-            variant="secondary"
-            size="full"
-            onClick={onInjected}
-            className="flex flex-row items-center justify-center text-base min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-full"
-          >
-            {/* <MetaMaskSvg className="h-6 w-6" /> */}
-            Injected: {injectedName}
-          </Button>
-        )}
-      <p className="text-sm text-center md:mt-10 mt-5 md:mb-0 mb-5">
+      <div className="overflow-hidden">
+        <div className="text-[#464646] text-xs mb-4">Popular</div>
+
+        <div className="flex gap-5 mb-8">
+          {onMetamask && injectedName === 'MetaMask' && (
+            <Button
+              key="metaMask-button"
+              type="button"
+              variant="link"
+              size="large"
+              onClick={onMetamask}
+              className="flex flex-col items-center justify-center text-sm min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-[160px] h-[120px]"
+            >
+              <MetaMaskSvg className="h-9 w-9" />
+              Metamask
+            </Button>
+          )}
+          {onWalletConnect && (
+            <Button
+              key="walletConnect-button"
+              type="button"
+              variant="link"
+              size="large"
+              onClick={onWalletConnect}
+              className="flex flex-col items-center justify-center text-sm min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-[160px] h-[120px] "
+            >
+              <WalletConnectSvg className="h-9 w-9" />
+              Wallet Connect
+            </Button>
+          )}
+          {onInjected &&
+            injectedName !== 'Injected' &&
+            !browserWalletsNames.includes(injectedName as string) && (
+              <Button
+                key="injected-button"
+                type="button"
+                variant="link"
+                size="large"
+                onClick={onInjected}
+                className="flex flex-row items-center justify-center text-sm min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-[160px] h-[120px]"
+              >
+                {/* <MetaMaskSvg className="h-9 w-9" /> */}
+                Injected: {injectedName}
+              </Button>
+            )}
+        </div>
+        <div className="text-[#464646] text-xs mb-4">Others wallets</div>
+        <div className="flex gap-5 flex-wrap">
+          {otherWallets
+            .sort(
+              (a, b) =>
+                Number(isWalletPresent(b.id)) - Number(isWalletPresent(a.id)),
+            )
+            .map(
+              wallet =>
+                wallet.provider && (
+                  <Button
+                    key={`${wallet.id}-button`}
+                    type="button"
+                    variant="link"
+                    size="large"
+                    onClick={() =>
+                      connectTo(
+                        wallet.provider as () => void,
+                        wallet.id,
+                        wallet.site,
+                      )
+                    }
+                    className="flex flex-col items-center justify-center min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer md:text-sm text-xs w-[100px] md:w-[160px] md:h-[120px] truncate"
+                  >
+                    <wallet.icon className="h-9 w-9" />
+                    {wallet.name}
+                  </Button>
+                ),
+            )}
+        </div>
+      </div>
+      <p className="text-xs md:text-sm text-center md:mt-10 mt-5 md:mb-0 ">
         By connecting your wallet, you hereby acknowledge that you have read and
         accept the{' '}
         <a
