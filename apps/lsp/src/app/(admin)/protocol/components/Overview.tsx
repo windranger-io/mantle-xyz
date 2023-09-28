@@ -56,8 +56,8 @@ function StakingStats() {
 type OracleRecord = {
   updateStartBlock: bigint;
   updateEndBlock: bigint;
-  currentNumValidatorsWithBalance: bigint;
-  cumulativeNumValidatorsFullyWithdrawn: bigint;
+  currentNumValidatorsNotWithdrawable: bigint;
+  cumulativeNumValidatorsWithdrawable: bigint;
   windowWithdrawnPrincipalAmount: bigint;
   windowWithdrawnRewardAmount: bigint;
   currentTotalValidatorBalance: bigint;
@@ -78,7 +78,7 @@ function DebugOracleRecord({
     ).toString()} behind)`;
   }
 
-  const numValidators = `Vals: ${oracleRecord.currentNumValidatorsWithBalance.toString()} / Withdrawn: ${oracleRecord.cumulativeNumValidatorsFullyWithdrawn.toString()}`;
+  const numValidators = `Vals: ${oracleRecord.currentNumValidatorsNotWithdrawable.toString()} / Withdrawn: ${oracleRecord.cumulativeNumValidatorsWithdrawable.toString()}`;
   const withdrawn = `Withdrawn Principals: ${formatEther(
     oracleRecord.windowWithdrawnPrincipalAmount
   )} / Withdrawn Rewards: ${formatEther(
