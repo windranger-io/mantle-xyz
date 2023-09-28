@@ -6,6 +6,8 @@ import { useContext, useState } from "react";
 import { useAccount, useBalance, useContractRead } from "wagmi";
 import { formatEther, parseEther } from "ethers/lib/utils";
 import { Button, T } from "@mantle/ui";
+import { formatEthTruncated } from "@util/util";
+import { IconWarn } from "@mantle/ui/src/LocaleSwitcher/Button/Icons";
 
 import AdjustmentRate from "@components/Convert/AdjustmentRate";
 import ExchangeRate from "@components/Convert/ExchangeRate";
@@ -44,6 +46,12 @@ export default function Staking() {
     functionName: "ethToMETH",
     args: [ethAmount.toBigInt()],
     enabled: Boolean(address) && Number(ethAmount) > 0,
+  });
+
+  const minStakeAmount = useContractRead({
+    ...stakingContract,
+    functionName: "minimumStakeBound",
+    enabled: Boolean(address),
   });
 
   const formattedOutput = outputAmount.data
@@ -97,6 +105,30 @@ export default function Staking() {
     );
   }
 
+  const inputOverBalance = ethAmount.gt(
+    balance.data?.value || BigNumber.from(0)
+  );
+
+  const belowMinimumAmount =
+    ethAmount.gt(0) && minStakeAmount.data && ethAmount.lt(minStakeAmount.data);
+
+  const hasError = Boolean(inputOverBalance || belowMinimumAmount);
+
+  let buttonText = address ? "Stake" : "Connect wallet";
+  if (inputOverBalance) {
+    buttonText = "Insufficient balance";
+  }
+
+  let errorText = "";
+  if (inputOverBalance) {
+    errorText = "Insufficient balance";
+  }
+  if (belowMinimumAmount) {
+    errorText = `Must stake at least ${formatEthTruncated(
+      minStakeAmount.data || 1e17
+    )}`;
+  }
+
   return (
     <div className="max-w-[484px] w-full grid relative bg-white/5 overflow-y-auto overflow-x-clip md:overflow-hidden border border-[#1C1E20] rounded-t-[30px] rounded-b-[20px] mx-auto">
       <div className="p-5">
@@ -121,7 +153,14 @@ export default function Staking() {
         />
         {balance.data && (
           <div className="flex flex-col w-full justify-end text-right">
-            <div className="flex justify-end">
+            <div className="flex justify-between">
+              {hasError ? (
+                <div className="inline-flex justify-center items-center text-red-700">
+                  <IconWarn className="w-4 h-4 mr-2" /> {errorText}
+                </div>
+              ) : (
+                <span />
+              )}
               <div className="flex space-x-1 items-center">
                 <T variant="body">
                   Available:{" "}
@@ -144,7 +183,7 @@ export default function Staking() {
         <Button
           size="full"
           className="mb-4"
-          disabled={outputAmount.isLoading}
+          disabled={outputAmount.isLoading || hasError}
           onClick={() => {
             if (!address) {
               setWalletModalOpen(true);
@@ -154,7 +193,7 @@ export default function Staking() {
             setConfirmDialogOpen(true);
           }}
         >
-          {address ? "Stake" : "Connect wallet"}
+          {buttonText}
         </Button>
         <div className="flex flex-col space-y-2 w-full">
           <ExchangeRate />

@@ -23,6 +23,7 @@ import StakeFailureDialogue from "@app/(convert)/staking/dialogue/StakeFailureDi
 import { useInterval } from "@hooks/useInterval";
 import StateContext from "@providers/stateContext";
 import useGeolocationCheck from "@hooks/useGeolocationCheck";
+import { IconWarn } from "@mantle/ui/src/LocaleSwitcher/Button/Icons";
 
 import UnstakeConfirmDialogue from "./dialogue/UnstakeConfirmDialogue";
 import UnstakeSuccessDialogue from "./dialogue/UnstakeSuccessDialogue";
@@ -63,6 +64,12 @@ export default function Unstaking() {
     functionName: "mETHToETH",
     args: [methAmount.toBigInt()],
     enabled: Boolean(address) && Number(methAmount) > 0,
+  });
+
+  const minUnstakeMeth = useContractRead({
+    ...stakingContract,
+    functionName: "minimumUnstakeBound",
+    enabled: Boolean(address),
   });
 
   // Refresh the deadline every time it will expire. This ensures that unstaking
@@ -151,6 +158,23 @@ export default function Unstaking() {
     );
   }
 
+  const amountOverBalance = methAmount.gt(balance.data || BigNumber.from(0));
+  const belowMinimumAmount =
+    methAmount.gt(0) && methAmount.lt(minUnstakeMeth.data || 0);
+
+  const hasError = Boolean(
+    amountOverBalance || belowMinimumAmount || deadline === BigInt(0)
+  );
+
+  let errorText = "";
+  if (amountOverBalance) {
+    errorText = "Insufficient balance";
+  }
+  if (belowMinimumAmount) {
+    errorText = `Must unstake at least ${formatEther(
+      minUnstakeMeth.data || BigNumber.from(0)
+    )} mETH`;
+  }
   const actionText = approvalHigherThanAmount ? "Unstake" : "Approve mETH";
   const buttonText = address ? actionText : "Connect Wallet";
 
@@ -179,7 +203,14 @@ export default function Unstaking() {
           />
           {Boolean(balance.data) && (
             <div className="flex flex-col w-full justify-end text-right">
-              <div className="flex justify-end">
+              <div className="flex justify-between">
+                {hasError ? (
+                  <div className="inline-flex justify-center items-center text-red-700">
+                    <IconWarn className="w-4 h-4 mr-2" /> {errorText}
+                  </div>
+                ) : (
+                  <span />
+                )}
                 <div className="flex space-x-1 items-center">
                   <T variant="body">Available: {balanceString}</T>
                 </div>
@@ -200,9 +231,7 @@ export default function Unstaking() {
             size="full"
             className="mb-4"
             disabled={
-              outputAmount.isLoading ||
-              hasApproval.isLoading ||
-              deadline === BigInt(0)
+              outputAmount.isLoading || hasApproval.isLoading || hasError
             }
             onClick={() => {
               if (!address) {
