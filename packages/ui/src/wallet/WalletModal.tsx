@@ -155,10 +155,19 @@ export const WalletModal = ({
   ]
   return (
     <Dialog open={open} setOpen={setOpen}>
-      <div className="relative">
-        <p className="text-2xl md:pb-10 pb-5 mb-10 border-b border-white/20">
-          Connect your wallet
-        </p>
+      <div className="relative mb-10">
+        <span className="text-2xl font-medium mr-4">Connect your wallet</span>
+        <div className="text-[#C4C4C4] text-sm sm:inline">
+          First time with web3? Learn more on{' '}
+          <a
+            href="https://ethereum.org/en/wallets"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="text-[#0A8FF6]"
+          >
+            wallets
+          </a>
+        </div>
         <div className="absolute md:-right-14 -right-4 -top-1">
           <Button
             variant="ghost"
@@ -189,10 +198,10 @@ export const WalletModal = ({
             <Button
               key="metaMask-button"
               type="button"
-              variant="link"
+              variant="outline"
               size="large"
               onClick={onMetamask}
-              className="flex flex-col items-center justify-center text-sm min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-[160px] h-[120px]"
+              className="flex flex-col items-center justify-center text-sm min-h-[48px] text-white gap-2 border border-white/20 hover:bg-white/20 cursor-pointer w-[160px] h-[120px]"
             >
               <MetaMaskSvg className="h-9 w-9" />
               Metamask
@@ -202,10 +211,10 @@ export const WalletModal = ({
             <Button
               key="walletConnect-button"
               type="button"
-              variant="link"
+              variant="outline"
               size="large"
               onClick={onWalletConnect}
-              className="flex flex-col items-center justify-center text-sm min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-[160px] h-[120px] "
+              className="flex flex-col items-center justify-center text-sm min-h-[48px] text-white gap-2 border border-white/20 hover:bg-white/20 cursor-pointer w-[160px] h-[120px] "
             >
               <WalletConnectSvg className="h-9 w-9" />
               Wallet Connect
@@ -217,10 +226,10 @@ export const WalletModal = ({
               <Button
                 key="injected-button"
                 type="button"
-                variant="link"
+                variant="outline"
                 size="large"
                 onClick={onInjected}
-                className="flex flex-row items-center justify-center text-sm min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer w-[160px] h-[120px]"
+                className="flex flex-row items-center justify-center text-sm min-h-[48px] text-white gap-2 border border-white/20 hover:bg-white/20 cursor-pointer w-[160px] h-[120px]"
               >
                 {/* <MetaMaskSvg className="h-9 w-9" /> */}
                 Injected: {injectedName}
@@ -240,7 +249,7 @@ export const WalletModal = ({
                   <Button
                     key={`${wallet.id}-button`}
                     type="button"
-                    variant="link"
+                    variant="outline"
                     size="large"
                     onClick={() =>
                       connectTo(
@@ -249,7 +258,7 @@ export const WalletModal = ({
                         wallet.site,
                       )
                     }
-                    className="flex flex-col items-center justify-center min-h-[48px] text-white gap-2 bg-white/10 hover:bg-white/20 cursor-pointer md:text-sm text-xs w-[100px] md:w-[160px] md:h-[120px] truncate"
+                    className="flex flex-col items-center justify-center min-h-[48px] text-white gap-2  border-0 md:border md:border-white/20 hover:bg-white/20 cursor-pointer md:text-sm text-xs w-[100px] md:w-[160px] md:h-[120px] truncate"
                   >
                     <wallet.icon className="h-9 w-9" />
                     {wallet.name}
@@ -258,7 +267,7 @@ export const WalletModal = ({
             )}
         </div>
       </div>
-      <p className="text-xs md:text-sm text-center md:mt-10 mt-5 md:mb-0 ">
+      <p className="text-xs md:text-sm text-[#C4C4C4] max-w-[450px] text-center md:mt-10 mt-5 md:mb-0 text-center m-auto">
         By connecting your wallet, you hereby acknowledge that you have read and
         accept the{' '}
         <a
