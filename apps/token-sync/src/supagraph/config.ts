@@ -17,7 +17,7 @@ export const config: SyncConfig = {
   // set the reset condition (should the local db be restarted on sync?)
   reset: false,
   // should we cleanup files after the initial sync?
-  cleanup: false,
+  cleanup: true,
   // listen for updates as a daemon operation
   listen: true,
   // collect blocks to sort by ts
