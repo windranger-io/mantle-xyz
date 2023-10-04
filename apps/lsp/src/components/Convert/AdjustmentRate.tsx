@@ -2,16 +2,14 @@ import { TextLoading } from "@components/Loading";
 import { CHAIN_ID } from "@config/constants";
 import { ContractName, contracts } from "@config/contracts";
 import { T } from "@mantle/ui";
-import { useAccount, useContractRead } from "wagmi";
+import { useContractRead } from "wagmi";
 
 export default function AdjustmentRate() {
-  const { address } = useAccount();
   const stakingContract = contracts[CHAIN_ID][ContractName.Staking];
 
   const adjustment = useContractRead({
     ...stakingContract,
     functionName: "exchangeAdjustmentRate",
-    enabled: Boolean(address),
     watch: false,
   });
 

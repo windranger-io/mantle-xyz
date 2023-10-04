@@ -3,17 +3,15 @@ import { CHAIN_ID } from "@config/constants";
 import { ContractName, contracts } from "@config/contracts";
 import { T } from "@mantle/ui";
 import { formatEther } from "ethers/lib/utils";
-import { useAccount, useContractRead } from "wagmi";
+import { useContractRead } from "wagmi";
 
 export default function ExchangeRate() {
-  const { address } = useAccount();
   const stakingContract = contracts[CHAIN_ID][ContractName.Staking];
 
   const exchange = useContractRead({
     ...stakingContract,
     functionName: "mETHToETH",
     args: [BigInt(1e18)],
-    enabled: Boolean(address),
   });
 
   return (
