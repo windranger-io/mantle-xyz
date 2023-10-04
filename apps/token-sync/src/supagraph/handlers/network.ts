@@ -39,7 +39,10 @@ const updateVoter = async (
   let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
 
   // check for a balance here - if we don't have a balance this has been recorded as delegate yet
-  if (BigNumber.from(entity.l2MntBalance || "0").gt("0")) {
+  if (
+    BigNumber.from(newBalance || "0").gt("0") ||
+    BigNumber.from(entity.l2MntBalance || "0").gt("0")
+  ) {
     // set details on entity
     entity.block = block;
     entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
