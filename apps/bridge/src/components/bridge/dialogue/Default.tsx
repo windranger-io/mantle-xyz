@@ -31,8 +31,7 @@ export default function Default({
   ctaStatus: string | boolean;
   closeModal: () => void;
 }) {
-  const { destinationToken, destinationTokenAmount, setCTAChainId } =
-    useContext(StateContext);
+  const { destinationTokenAmount, setCTAChainId } = useContext(StateContext);
 
   // @TODO: we should keep track of which relays we have running
   // const [openToasts, setOpenToasts] = useState<string[]>([]);
@@ -97,7 +96,7 @@ export default function Default({
       <div>
         <Values
           label={`Amount to ${directionString.toLowerCase()}`}
-          value={`${destinationTokenAmount} ${destinationToken[direction]}`}
+          value={`${destinationTokenAmount} ${destination?.symbol}`}
           border
         />
         <Values
