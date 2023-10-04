@@ -59,7 +59,6 @@ export const handlers: Handlers = {
                 delegator: string;
                 fromDelegate: string;
                 toDelegate: string;
-                oldBalance: BigNumber;
                 newBalance: BigNumber;
               }
             );
@@ -68,9 +67,7 @@ export const handlers: Handlers = {
               item as {
                 tx: TransactionReceipt & TransactionResponse;
                 block: Block;
-                entity: string;
-                direction: number;
-                oldBalance: BigNumber;
+                delegator: string;
                 newBalance: BigNumber;
               }
             );

@@ -55,7 +55,6 @@ const updatePointers = async (
 // update the details according to an l2 DelegateChangedEvent
 const updateL2Delegate = async (
   args: DelegateChangedEvent & {
-    oldBalance: BigNumber;
     newBalance: BigNumber;
   },
   { tx, block }: { tx: TransactionReceipt & TransactionResponse; block: Block }
@@ -72,11 +71,10 @@ const updateL2Delegate = async (
   let newDelegate: typeof entity;
 
   // set block and chainId
-  entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
   entity.block = block;
+  entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
-  // fetch the oldBalance (if this isnt set then we havent recorded the delegation to the oldDelegate)
-  let oldBalance = args.oldBalance;
+  // unpack the newBalance
   let newBalance = args.newBalance;
 
   // if we're not setting a new delegation...
@@ -92,18 +90,20 @@ const updateL2Delegate = async (
           ));
 
     // set block and chainId
-    oldDelegate.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
     oldDelegate.block = block;
+    oldDelegate.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
     // update votes
     oldDelegate.set(
       "votes",
-      BigNumber.from(oldDelegate.votes || "0").sub(BigNumber.from(oldBalance))
+      BigNumber.from(oldDelegate.votes || "0").sub(
+        BigNumber.from(entity.l2MntBalance || "0")
+      )
     );
     oldDelegate.set(
       "l2MntVotes",
       BigNumber.from(oldDelegate.l2MntVotes || "0").sub(
-        BigNumber.from(oldBalance)
+        BigNumber.from(entity.l2MntBalance || "0")
       )
     );
 
@@ -135,8 +135,8 @@ const updateL2Delegate = async (
           ));
 
     // set block and chainId
-    newDelegate.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
     newDelegate.block = block;
+    newDelegate.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
     // set new votes...
     newDelegate.set(
@@ -335,7 +335,6 @@ export const DelegateChangedHandler = async (
           // set the type
           type: "DelegateChangedHandler",
           // place the balances
-          oldBalance: BigNumber.from(oldBalance),
           newBalance: BigNumber.from(newBalance),
           // copy the args
           delegator: args.delegator,
@@ -354,7 +353,6 @@ export const DelegateChangedHandler = async (
 // after enqueueing to process async pieces - process the items in order
 export const DelegateChangedHandlerPostProcessing = async (
   item: DelegateChangedEvent & {
-    oldBalance: BigNumber;
     newBalance: BigNumber;
     tx: TransactionReceipt & TransactionResponse;
     block: Block;
@@ -363,7 +361,6 @@ export const DelegateChangedHandlerPostProcessing = async (
   // process these sequentially
   await updateL2Delegate(
     item as DelegateChangedEvent & {
-      oldBalance: BigNumber;
       newBalance: BigNumber;
     },
     // pass the transaction through

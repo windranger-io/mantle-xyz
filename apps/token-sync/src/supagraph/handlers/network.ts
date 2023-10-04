@@ -39,74 +39,77 @@ const l2ContractAddress = getAddress(config.contracts.l2mantle.address);
 // update the voter with changed state
 const updateVoter = async (
   from: string,
+  newBalance: BigNumber,
   tx: TransactionReceipt & TransactionResponse,
-  block: Block,
-  direction: number,
-  oldBalance: BigNumber,
-  newBalance: BigNumber
+  block: Block
 ) => {
-  // fetch entity
-  let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
-  // define token specific props
-  const votesProp = "l2MntVotes";
-  const otherVotesProps = ["mntVotes", "bitVotes"];
+  // if we have a new balance then we successfully pulled the details in the enqueued promise
+  if (newBalance) {
+    // define token specific props
+    const votesProp = "l2MntVotes";
+    const otherVotesProps = ["mntVotes", "bitVotes"];
 
-  // set details on entity
-  entity.block = block;
-  entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
+    // fetch entity
+    let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
 
-  // get the voteRecipient so that we can add the value change now
-  let voteRecipient =
-    from === entity.l2MntTo
-      ? entity
-      : await Store.get<DelegateEntity>("Delegate", getAddress(entity.l2MntTo));
+    // set details on entity
+    entity.block = block;
+    entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
-  // set details on entity
-  voteRecipient.block = block;
-  voteRecipient.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
+    // get the voteRecipient so that we can add the value change now
+    let voteRecipient =
+      from === entity.l2MntTo
+        ? entity
+        : await Store.get<DelegateEntity>(
+            "Delegate",
+            getAddress(entity.l2MntTo)
+          );
 
-  // set new balance value for sender
-  entity.set("l2MntBalance", newBalance);
+    // set details on entity
+    voteRecipient.block = block;
+    voteRecipient.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
-  // update pointers for lastUpdate
-  entity.set("blockNumber", +tx.blockNumber);
-  entity.set("transactionHash", tx.hash || tx.transactionHash);
+    // get the corrected votes for this situation
+    const newL2Votes = BigNumber.from(voteRecipient[votesProp] || "0")
+      .sub(entity.l2MntBalance || "0")
+      .add(newBalance || "0");
 
-  // save the changes (in to the checkpoint - this doesnt cost us anything on the network yet)
-  entity = await entity.save();
+    // set new balance value for sender
+    entity.set("l2MntBalance", newBalance);
 
-  // if the entity is the recipient, make sure we don't lose data
-  if (from === entity.l2MntTo) {
-    voteRecipient = entity;
+    // update pointers for lastUpdate
+    entity.set("blockNumber", +tx.blockNumber);
+    entity.set("transactionHash", tx.hash || tx.transactionHash);
+
+    // save the changes (in to the checkpoint - this doesnt cost us anything on the network yet)
+    entity = await entity.save();
+
+    // if the entity is the recipient, make sure we don't lose data
+    if (from === entity.l2MntTo) {
+      voteRecipient = entity;
+    }
+
+    // update the votes for l2
+    voteRecipient.set(votesProp, newL2Votes);
+
+    // votes is always a sum of all vote props
+    voteRecipient.set(
+      "votes",
+      newL2Votes.add(
+        otherVotesProps.reduce((sum, otherVotesProp) => {
+          return sum.add(BigNumber.from(voteRecipient[otherVotesProp] || "0"));
+        }, BigNumber.from("0"))
+      )
+    );
+
+    // save the changes
+    voteRecipient = await voteRecipient.save();
+
+    // if the entity is the recipient, make sure we don't lose data
+    if (from === entity.l2MntTo) {
+      entity = voteRecipient;
+    }
   }
-
-  // get the corrected votes for this situation
-  const newL2Votes = BigNumber.from(voteRecipient[votesProp] || "0")
-    .sub(oldBalance)
-    .add(newBalance || "0");
-
-  // update the votes for l2
-  voteRecipient.set(votesProp, newL2Votes);
-
-  // votes is always a sum of all vote props
-  voteRecipient.set(
-    "votes",
-    newL2Votes.add(
-      otherVotesProps.reduce((sum, otherVotesProp) => {
-        return sum.add(BigNumber.from(voteRecipient[otherVotesProp] || "0"));
-      }, BigNumber.from("0"))
-    )
-  );
-
-  // save the changes
-  voteRecipient = await voteRecipient.save();
-
-  // if the entity is the recipient, make sure we don't lose data
-  if (from === entity.l2MntTo) {
-    entity = voteRecipient;
-  }
-
-  return entity;
 };
 
 // enqueue balance check to run updateVoter later
@@ -136,6 +139,16 @@ const enqueueTransactionHandler = async (
     ) {
       // if a promise rejects it will be reattempted - this is the safest way to handle async actions
       enqueuePromise(async () => {
+        // load the entities involved in this tx
+        let entity = await Store.get<DelegateEntity>(
+          "Delegate",
+          getAddress(from)
+        );
+
+        // set the entity with correct details
+        entity.block = block;
+        entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
+
         // get the balance before (this will only be applied if we already have the balance in the db)
         let newBalance = entity[balanceProp] || 0;
         let oldBalance = entity[balanceProp] || 0;
@@ -169,11 +182,9 @@ const enqueueTransactionHandler = async (
         return {
           tx,
           block,
-          direction,
+          delegator: from,
           type: "TransactionHandler",
-          entity: from,
           newBalance: BigNumber.from(newBalance),
-          oldBalance: BigNumber.from(oldBalance),
           // update pointers for lastUpdate
           blockNumber: +tx.blockNumber,
           transactionHash: tx.transactionHash || tx.hash,
@@ -199,20 +210,11 @@ export const TransactionHandler = async (
 
 // after enqueueing to process async pieces - process the items in order
 export const TransactionHandlerPostProcessing = async (item: {
-  entity: string;
+  delegator: string;
+  newBalance: BigNumber;
   tx: TransactionReceipt & TransactionResponse;
   block: Block;
-  direction: number;
-  oldBalance: BigNumber;
-  newBalance: BigNumber;
 }) => {
   // process these sequentially via a `withPromises` handler
-  await updateVoter(
-    item.entity,
-    item.tx,
-    item.block,
-    item.direction,
-    item.oldBalance,
-    item.newBalance
-  );
+  await updateVoter(item.delegator, item.newBalance, item.tx, item.block);
 };
