@@ -182,36 +182,6 @@ export const InitBalances = async (): Promise<Migration> => {
       );
       console.log("All balances retrieved at blockNumber", +blockNumber);
 
-      // remove all L2 Delegation details from the delegates
-      await processPromiseQueue(
-        Object.keys(balances).map((delegate) => async () => {
-          // load the entity for this batchIndex
-          const entity = await Store.get<DelegateEntity>(
-            "Delegate",
-            getAddress(delegate)
-          );
-
-          // zero out l2 MNT vote data
-          entity.set("l2MntVotes", BigNumber.from("0"));
-          entity.set("l2MntBalance", BigNumber.from("0"));
-          entity.set("l2MntDelegatorsCount", BigNumber.from("0"));
-          entity.set(
-            "votes",
-            BigNumber.from(entity.bitVotes || "0").add(entity.mntVotes || "0")
-          );
-          entity.set(
-            "delegatorsCount",
-            BigNumber.from(entity.bitDelegatorsCount || "0").add(
-              entity.mntDelegatorsCount || "0"
-            )
-          );
-
-          // save the changes into the staging area
-          await entity.save();
-        })
-      );
-      console.log("\nAll delegates l2 balances/votes zero'd");
-
       // place the correct balances against the entities (to recalculate the votes) sequentially to avoid race conditions
       for (const delegate of Object.keys(balances)) {
         // load the entity for this delegate
@@ -223,9 +193,11 @@ export const InitBalances = async (): Promise<Migration> => {
         // when delegation is set and not to burn address...
         if (
           entity.l2MntTo &&
-          entity.l2MntTo !== "0x0000000000000000000000000000000000000000"
+          entity.l2MntTo !== "0x0000000000000000000000000000000000000000" &&
           // check if the recorded balance is correct
-          // !BigNumber.from(entity.l2MntBalance || "0").eq(balances[delegate])
+          (!BigNumber.from(entity.l2MntBalance || "0").eq(balances[delegate]) ||
+            entity.l2MntBalance === null ||
+            typeof entity.l2MntBalance === "undefined")
         ) {
           // fetch current delegation - we correct votes here
           let toDelegate = await Store.get<DelegateEntity>(
@@ -236,24 +208,31 @@ export const InitBalances = async (): Promise<Migration> => {
           // set the correct values against the entities
           toDelegate.set(
             "votes",
-            BigNumber.from(toDelegate.votes || "0").add(
-              BigNumber.from(balances[delegate] || "0")
-            )
+            BigNumber.from(toDelegate.votes || "0")
+              .sub(BigNumber.from(entity.l2MntBalance || "0"))
+              .add(BigNumber.from(balances[delegate] || "0"))
           );
           toDelegate.set(
             "l2MntVotes",
-            BigNumber.from(toDelegate.l2MntVotes || "0").add(
-              BigNumber.from(balances[delegate] || "0")
-            )
+            BigNumber.from(toDelegate.l2MntVotes || "0")
+              .sub(BigNumber.from(entity.l2MntBalance || "0"))
+              .add(BigNumber.from(balances[delegate] || "0"))
           );
-          toDelegate.set(
-            "delegatorsCount",
-            BigNumber.from(toDelegate.delegatorsCount || "0").add(1)
-          );
-          toDelegate.set(
-            "l2MntDelegatorsCount",
-            BigNumber.from(toDelegate.l2MntDelegatorsCount || "0").add(1)
-          );
+
+          // if theres no balance this is a new delegate and we need to register the counts
+          if (
+            entity.l2MntBalance === null ||
+            typeof entity.l2MntBalance === "undefined"
+          ) {
+            toDelegate.set(
+              "delegatorsCount",
+              BigNumber.from(toDelegate.delegatorsCount || "0").add(1)
+            );
+            toDelegate.set(
+              "l2MntDelegatorsCount",
+              BigNumber.from(toDelegate.l2MntDelegatorsCount || "0").add(1)
+            );
+          }
 
           // update the entity
           toDelegate = await toDelegate.save();
