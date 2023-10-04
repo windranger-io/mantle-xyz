@@ -846,9 +846,6 @@ importers:
       eslint-plugin-prettier:
         specifier: ^4.2.1
         version: 4.2.1(eslint@7.32.0)(prettier@2.8.4)
-      ethereum-bloom-filters:
-        specifier: ^1.0.10
-        version: 1.0.10
       ethers:
         specifier: ^5.7.2
         version: 5.7.2

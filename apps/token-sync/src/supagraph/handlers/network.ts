@@ -1,5 +1,5 @@
 // We use BigNumber to handle all numeric operations
-import { ethers, BigNumber } from "ethers";
+import { BigNumber } from "ethers";
 import { getAddress } from "ethers/lib/utils";
 
 // Each event is supplied the block and tx along with the typed args
@@ -13,9 +13,6 @@ import {
 // Use Store to interact with entity storage and withDefault to type default values
 import { Store, enqueuePromise, withDefault } from "supagraph";
 
-// Import tooling to check bloomFilters
-import { isTopicInBloom } from "ethereum-bloom-filters";
-
 // Import outer config to pull provider dets
 import { config } from "@supagraph/config";
 
@@ -27,15 +24,6 @@ const provider = new JsonRpcProvider(
   config.providers[withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001)].rpcUrl
 );
 
-// Connect contract to fetch delegations
-const DelegatesInterface = new ethers.utils.Interface(config.events.tokenl2);
-// check that this event isn't being handled by an event watcher
-const DelegateChangedTopic =
-  DelegatesInterface.getEventTopic("DelegateChanged");
-
-// get the l2 contract address once
-const l2ContractAddress = getAddress(config.contracts.l2mantle.address);
-
 // update the voter with changed state
 const updateVoter = async (
   from: string,
@@ -43,72 +31,66 @@ const updateVoter = async (
   tx: TransactionReceipt & TransactionResponse,
   block: Block
 ) => {
-  // if we have a new balance then we successfully pulled the details in the enqueued promise
-  if (newBalance) {
-    // define token specific props
-    const votesProp = "l2MntVotes";
-    const otherVotesProps = ["mntVotes", "bitVotes"];
+  // define token specific props
+  const votesProp = "l2MntVotes";
+  const otherVotesProps = ["mntVotes", "bitVotes"];
 
-    // fetch entity
-    let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
+  // fetch entity
+  let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
 
-    // set details on entity
-    entity.block = block;
-    entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
+  // set details on entity
+  entity.block = block;
+  entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
-    // get the voteRecipient so that we can add the value change now
-    let voteRecipient =
-      from === entity.l2MntTo
-        ? entity
-        : await Store.get<DelegateEntity>(
-            "Delegate",
-            getAddress(entity.l2MntTo)
-          );
+  // get the voteRecipient so that we can add the value change now
+  let voteRecipient =
+    from === entity.l2MntTo
+      ? entity
+      : await Store.get<DelegateEntity>("Delegate", getAddress(entity.l2MntTo));
 
-    // set details on entity
-    voteRecipient.block = block;
-    voteRecipient.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
+  // set details on entity
+  voteRecipient.block = block;
+  voteRecipient.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
-    // get the corrected votes for this situation
-    const newL2Votes = BigNumber.from(voteRecipient[votesProp] || "0")
-      .sub(entity.l2MntBalance || "0")
-      .add(newBalance || "0");
+  // get the corrected votes for this situation
+  const newL2Votes = BigNumber.from(voteRecipient[votesProp] || "0")
+    .sub(entity.l2MntBalance || "0")
+    .add(newBalance || "0");
 
-    // set new balance value for sender
-    entity.set("l2MntBalance", BigNumber.from(newBalance || "0"));
+  // set new balance value for sender
+  entity.set("l2MntBalance", BigNumber.from(newBalance || "0"));
 
-    // update pointers for lastUpdate
-    entity.set("blockNumber", +tx.blockNumber);
-    entity.set("transactionHash", tx.hash || tx.transactionHash);
+  // update pointers for lastUpdate
+  entity.set("blockNumber", +tx.blockNumber);
+  entity.set("transactionHash", tx.hash || tx.transactionHash);
 
-    // save the changes (in to the checkpoint - this doesnt cost us anything on the network yet)
-    entity = await entity.save();
+  // save the changes (in to the checkpoint - this doesnt cost us anything on the network yet)
+  entity = await entity.save();
 
-    // if the entity is the recipient, make sure we don't lose data
-    if (entity.l2MntTo && getAddress(from) === getAddress(entity.l2MntTo)) {
-      voteRecipient = entity;
-    }
+  // if the entity is the recipient, make sure we don't lose data
+  if (entity.l2MntTo && getAddress(from) === getAddress(entity.l2MntTo)) {
+    voteRecipient = entity;
+  }
 
-    // update the votes for l2
-    voteRecipient.set(votesProp, newL2Votes);
+  // update the votes for l2
+  voteRecipient.set(votesProp, newL2Votes);
 
-    // votes is always a sum of all vote props
-    voteRecipient.set(
-      "votes",
-      newL2Votes.add(
-        otherVotesProps.reduce((sum, otherVotesProp) => {
-          return sum.add(BigNumber.from(voteRecipient[otherVotesProp] || "0"));
-        }, BigNumber.from("0"))
-      )
-    );
+  // votes is always a sum of all vote props
+  voteRecipient.set(
+    "votes",
+    newL2Votes.add(
+      otherVotesProps.reduce((sum, otherVotesProp) => {
+        return sum.add(BigNumber.from(voteRecipient[otherVotesProp] || "0"));
+      }, BigNumber.from("0"))
+    )
+  );
 
-    // save the changes
-    voteRecipient = await voteRecipient.save();
+  // save the changes
+  voteRecipient = await voteRecipient.save();
 
-    // if the entity is the recipient, make sure we don't lose data
-    if (entity.l2MntTo && getAddress(from) === getAddress(entity.l2MntTo)) {
-      entity = voteRecipient;
-    }
+  // if the entity is the recipient, make sure we don't lose data
+  if (entity.l2MntTo && getAddress(from) === getAddress(entity.l2MntTo)) {
+    entity = voteRecipient;
   }
 };
 
@@ -124,19 +106,8 @@ const enqueueTransactionHandler = async (
     // load the entities involved in this tx
     let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
 
-    // define token specific props
-    const balanceProp = "l2MntBalance";
-
     // only if the l2MntTo is set do we need to record l2 balance transfers (only record movements when we're not interacting with the delegation contract)
-    if (
-      entity.l2MntTo &&
-      !(
-        ((tx.contractAddress &&
-          getAddress(tx.contractAddress) === l2ContractAddress) ||
-          (tx.to && getAddress(tx.to) === l2ContractAddress)) &&
-        isTopicInBloom(tx.logsBloom, DelegateChangedTopic)
-      )
-    ) {
+    if (entity.l2MntTo) {
       // if a promise rejects it will be reattempted - this is the safest way to handle async actions
       enqueuePromise(async () => {
         // load the entities involved in this tx
@@ -150,12 +121,12 @@ const enqueueTransactionHandler = async (
         entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
         // get the balance before (this will only be applied if we already have the balance in the db)
-        let newBalance = entity[balanceProp] || 0;
+        let newBalance = entity.l2MntBalance || 0;
 
         // if we havent recorded the balance already, then we need to run this through the DelegateChangedHandler first
-        if ((entity[balanceProp] && direction === 0) || direction === 1) {
+        if ((entity.l2MntBalance && direction === 0) || direction === 1) {
           // get the current balance for this user as starting point (we don't see a balance but they have l2MntTo set - this shouldnt happen...)
-          if (!entity[balanceProp]) {
+          if (!entity.l2MntBalance) {
             // get the balance for this user in this block (we don't need to sub anything if we get the fresh balance)
             newBalance = await provider.getBalance(from, tx.blockNumber);
           } else {
