@@ -38,59 +38,65 @@ const updateVoter = async (
   // fetch entity
   let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
 
-  // set details on entity
-  entity.block = block;
-  entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
+  // check for a balance here - if we don't have a balance this has been recorded as delegate yet
+  if (BigNumber.from(entity.l2MntBalance || "0").gt("0")) {
+    // set details on entity
+    entity.block = block;
+    entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
-  // get the voteRecipient so that we can add the value change now
-  let voteRecipient =
-    from === entity.l2MntTo
-      ? entity
-      : await Store.get<DelegateEntity>("Delegate", getAddress(entity.l2MntTo));
+    // get the voteRecipient so that we can add the value change now
+    let voteRecipient =
+      from === entity.l2MntTo
+        ? entity
+        : await Store.get<DelegateEntity>(
+            "Delegate",
+            getAddress(entity.l2MntTo)
+          );
 
-  // set details on entity
-  voteRecipient.block = block;
-  voteRecipient.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
+    // set details on entity
+    voteRecipient.block = block;
+    voteRecipient.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
-  // get the corrected votes for this situation
-  const newL2Votes = BigNumber.from(voteRecipient[votesProp] || "0")
-    .sub(entity.l2MntBalance || "0")
-    .add(newBalance || "0");
+    // get the corrected votes for this situation
+    const newL2Votes = BigNumber.from(voteRecipient[votesProp] || "0")
+      .sub(entity.l2MntBalance || "0")
+      .add(newBalance || "0");
 
-  // set new balance value for sender
-  entity.set("l2MntBalance", BigNumber.from(newBalance || "0"));
+    // set new balance value for sender
+    entity.set("l2MntBalance", BigNumber.from(newBalance || "0"));
 
-  // update pointers for lastUpdate
-  entity.set("blockNumber", +tx.blockNumber);
-  entity.set("transactionHash", tx.hash || tx.transactionHash);
+    // update pointers for lastUpdate
+    entity.set("blockNumber", +tx.blockNumber);
+    entity.set("transactionHash", tx.hash || tx.transactionHash);
 
-  // save the changes (in to the checkpoint - this doesnt cost us anything on the network yet)
-  entity = await entity.save();
+    // save the changes (in to the checkpoint - this doesnt cost us anything on the network yet)
+    entity = await entity.save();
 
-  // if the entity is the recipient, make sure we don't lose data
-  if (entity.l2MntTo && getAddress(from) === getAddress(entity.l2MntTo)) {
-    voteRecipient = entity;
-  }
+    // if the entity is the recipient, make sure we don't lose data
+    if (entity.l2MntTo && getAddress(from) === getAddress(entity.l2MntTo)) {
+      voteRecipient = entity;
+    }
 
-  // update the votes for l2
-  voteRecipient.set(votesProp, newL2Votes);
+    // update the votes for l2
+    voteRecipient.set(votesProp, newL2Votes);
 
-  // votes is always a sum of all vote props
-  voteRecipient.set(
-    "votes",
-    newL2Votes.add(
-      otherVotesProps.reduce((sum, otherVotesProp) => {
-        return sum.add(BigNumber.from(voteRecipient[otherVotesProp] || "0"));
-      }, BigNumber.from("0"))
-    )
-  );
+    // votes is always a sum of all vote props
+    voteRecipient.set(
+      "votes",
+      newL2Votes.add(
+        otherVotesProps.reduce((sum, otherVotesProp) => {
+          return sum.add(BigNumber.from(voteRecipient[otherVotesProp] || "0"));
+        }, BigNumber.from("0"))
+      )
+    );
 
-  // save the changes
-  voteRecipient = await voteRecipient.save();
+    // save the changes
+    voteRecipient = await voteRecipient.save();
 
-  // if the entity is the recipient, make sure we don't lose data
-  if (entity.l2MntTo && getAddress(from) === getAddress(entity.l2MntTo)) {
-    entity = voteRecipient;
+    // if the entity is the recipient, make sure we don't lose data
+    if (entity.l2MntTo && getAddress(from) === getAddress(entity.l2MntTo)) {
+      entity = voteRecipient;
+    }
   }
 };
 
@@ -123,28 +129,25 @@ const enqueueTransactionHandler = async (
         // get the balance before (this will only be applied if we already have the balance in the db)
         let newBalance = entity.l2MntBalance || 0;
 
-        // if we havent recorded the balance already, then we need to run this through the DelegateChangedHandler first
-        if ((entity.l2MntBalance && direction === 0) || direction === 1) {
-          // get the current balance for this user as starting point (we don't see a balance but they have l2MntTo set - this shouldnt happen...)
-          if (!entity.l2MntBalance) {
-            // get the balance for this user in this block (we don't need to sub anything if we get the fresh balance)
+        // get the current balance for this user as starting point
+        if (!entity.l2MntBalance) {
+          // get the balance for this user in this block (we don't need to sub anything if we get the fresh balance)
+          newBalance = await provider.getBalance(from, tx.blockNumber);
+        } else {
+          if (direction === 0) {
+            // get the current l2Balance for the user (we want this post gas spend for this tx)
+            // newBalance = BigNumber.from(entity[balanceProp])
+            //   // remove value from tx
+            //   .sub(tx.value)
+            //   // remove the cost of the transaction
+            //   .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
+            //   // @ts-ignore
+            //   .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
             newBalance = await provider.getBalance(from, tx.blockNumber);
           } else {
-            if (direction === 0) {
-              // get the current l2Balance for the user (we want this post gas spend for this tx)
-              // newBalance = BigNumber.from(entity[balanceProp])
-              //   // remove value from tx
-              //   .sub(tx.value)
-              //   // remove the cost of the transaction
-              //   .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
-              //   // @ts-ignore
-              //   .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
-              newBalance = await provider.getBalance(from, tx.blockNumber);
-            } else {
-              // add the new value to the old balance (balance transfer added to users balance from tx.sender)
-              // newBalance = BigNumber.from(entity[balanceProp]).add(tx.value);
-              newBalance = await provider.getBalance(from, tx.blockNumber);
-            }
+            // add the new value to the old balance (balance transfer added to users balance from tx.sender)
+            // newBalance = BigNumber.from(entity[balanceProp]).add(tx.value);
+            newBalance = await provider.getBalance(from, tx.blockNumber);
           }
         }
 
@@ -154,7 +157,7 @@ const enqueueTransactionHandler = async (
           block,
           delegator: from,
           type: "TransactionHandler",
-          newBalance: BigNumber.from(newBalance),
+          newBalance: BigNumber.from(newBalance || "0"),
           // update pointers for lastUpdate
           blockNumber: +tx.blockNumber,
           transactionHash: tx.transactionHash || tx.hash,

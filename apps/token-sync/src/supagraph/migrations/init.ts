@@ -170,7 +170,7 @@ export const InitBalances = async (): Promise<Migration> => {
           const responses = await callMulticallContract(
             multicall,
             calls,
-            // set blockHeight for the multiCall
+            // set blockHeight for the multicall
             blockNumber
           );
           // place the balances for all users
