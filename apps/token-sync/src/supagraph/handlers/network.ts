@@ -49,7 +49,6 @@ const updateVoter = async (
   let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
   // define token specific props
   const votesProp = "l2MntVotes";
-  const balanceProp = "l2MntBalance";
   const otherVotesProps = ["mntVotes", "bitVotes"];
 
   // set details on entity
@@ -66,44 +65,41 @@ const updateVoter = async (
   voteRecipient.block = block;
   voteRecipient.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
-  // check that we have a balance to be altering
-  if ((oldBalance.gt("0") && direction === 0) || direction === 1) {
-    // set new balance value for sender
-    entity.set(balanceProp, newBalance);
+  // set new balance value for sender
+  entity.set("l2MntBalance", newBalance);
 
-    // update pointers for lastUpdate
-    entity.set("blockNumber", +tx.blockNumber);
-    entity.set("transactionHash", tx.hash || tx.transactionHash);
+  // update pointers for lastUpdate
+  entity.set("blockNumber", +tx.blockNumber);
+  entity.set("transactionHash", tx.hash || tx.transactionHash);
 
-    // save the changes (in to the checkpoint - this doesnt cost us anything on the network yet)
-    entity = await entity.save();
+  // save the changes (in to the checkpoint - this doesnt cost us anything on the network yet)
+  entity = await entity.save();
 
-    // if the entity is the recipient, make sure we don't lose data
-    if (from === entity.l2MntTo) {
-      voteRecipient = entity;
-    }
-
-    // get the corrected votes for this situation
-    const newL2Votes = BigNumber.from(voteRecipient[votesProp] || "0")
-      .sub(oldBalance)
-      .add(newBalance || "0");
-
-    // update the votes for l2
-    voteRecipient.set(votesProp, newL2Votes);
-
-    // votes is always a sum of all vote props
-    voteRecipient.set(
-      "votes",
-      newL2Votes.add(
-        otherVotesProps.reduce((sum, otherVotesProp) => {
-          return sum.add(BigNumber.from(voteRecipient[otherVotesProp] || "0"));
-        }, BigNumber.from("0"))
-      )
-    );
-
-    // save the changes
-    voteRecipient = await voteRecipient.save();
+  // if the entity is the recipient, make sure we don't lose data
+  if (from === entity.l2MntTo) {
+    voteRecipient = entity;
   }
+
+  // get the corrected votes for this situation
+  const newL2Votes = BigNumber.from(voteRecipient[votesProp] || "0")
+    .sub(oldBalance)
+    .add(newBalance || "0");
+
+  // update the votes for l2
+  voteRecipient.set(votesProp, newL2Votes);
+
+  // votes is always a sum of all vote props
+  voteRecipient.set(
+    "votes",
+    newL2Votes.add(
+      otherVotesProps.reduce((sum, otherVotesProp) => {
+        return sum.add(BigNumber.from(voteRecipient[otherVotesProp] || "0"));
+      }, BigNumber.from("0"))
+    )
+  );
+
+  // save the changes
+  voteRecipient = await voteRecipient.save();
 
   // if the entity is the recipient, make sure we don't lose data
   if (from === entity.l2MntTo) {
@@ -163,7 +159,8 @@ const enqueueTransactionHandler = async (
               newBalance = await provider.getBalance(from, tx.blockNumber);
             } else {
               // add the new value to the old balance (balance transfer added to users balance from tx.sender)
-              newBalance = BigNumber.from(newBalance).add(tx.value);
+              // newBalance = BigNumber.from(newBalance).add(tx.value);
+              newBalance = await provider.getBalance(from, tx.blockNumber);
             }
           }
         }

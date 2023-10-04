@@ -52,6 +52,121 @@ const updatePointers = async (
   return await entity.save();
 };
 
+// update the details according to an l2 DelegateChangedEvent
+const updateL2Delegate = async (
+  args: DelegateChangedEvent & {
+    oldBalance: BigNumber;
+    newBalance: BigNumber;
+  },
+  { tx, block }: { tx: TransactionReceipt & TransactionResponse; block: Block }
+) => {
+  // load the entity for this batchIndex
+  let entity = await Store.get<DelegateEntity>(
+    "Delegate",
+    getAddress(args.delegator)
+  );
+
+  // fetch old (this could be for the same delegate as entity)
+  let oldDelegate: typeof entity;
+  // fetch new (this could be for the same delegate as entity or oldDelegate)
+  let newDelegate: typeof entity;
+
+  // set block and chainId
+  entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
+  entity.block = block;
+
+  // fetch the oldBalance (if this isnt set then we havent recorded the delegation to the oldDelegate)
+  let oldBalance = args.oldBalance;
+  let newBalance = args.newBalance;
+
+  // if we're not setting a new delegation...
+  if (args.fromDelegate !== "0x0000000000000000000000000000000000000000") {
+    // get oldDelegate
+    oldDelegate =
+      oldDelegate ||
+      (args.fromDelegate === args.delegator
+        ? entity
+        : await Store.get<DelegateEntity>(
+            "Delegate",
+            getAddress(args.fromDelegate)
+          ));
+
+    // set block and chainId
+    oldDelegate.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
+    oldDelegate.block = block;
+
+    // update votes
+    oldDelegate.set(
+      "votes",
+      BigNumber.from(oldDelegate.votes || "0").sub(BigNumber.from(oldBalance))
+    );
+    oldDelegate.set(
+      "l2MntVotes",
+      BigNumber.from(oldDelegate.l2MntVotes || "0").sub(
+        BigNumber.from(oldBalance)
+      )
+    );
+
+    // save the changes to old delegate
+    oldDelegate = await updatePointers(oldDelegate, tx);
+
+    // align delegates
+    if (args.fromDelegate === args.delegator) {
+      entity = oldDelegate;
+    }
+    if (args.fromDelegate === args.toDelegate) {
+      newDelegate = oldDelegate;
+    }
+  }
+
+  // if we're not removing the delegation...
+  if (args.toDelegate !== "0x0000000000000000000000000000000000000000") {
+    // get newDelegate
+    newDelegate =
+      // eslint-disable-next-line no-nested-ternary
+      newDelegate ||
+      (args.toDelegate === args.delegator
+        ? entity
+        : args.fromDelegate === args.toDelegate
+        ? oldDelegate
+        : await Store.get<DelegateEntity>(
+            "Delegate",
+            getAddress(args.toDelegate)
+          ));
+
+    // set block and chainId
+    newDelegate.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
+    newDelegate.block = block;
+
+    // set new votes...
+    newDelegate.set(
+      "votes",
+      BigNumber.from(newDelegate.votes || "0").add(newBalance)
+    );
+    newDelegate.set(
+      "l2MntVotes",
+      BigNumber.from(newDelegate.l2MntVotes || "0").add(newBalance)
+    );
+
+    // save the changes to new delegate
+    newDelegate = await updatePointers(newDelegate, tx);
+
+    // align delegates
+    if (args.toDelegate === args.delegator) {
+      entity = newDelegate;
+    }
+    if (args.fromDelegate === args.toDelegate) {
+      oldDelegate = newDelegate;
+    }
+  }
+
+  // record the new balance
+  entity.set("l2MntBalance", newBalance);
+
+  // save the changes
+  entity = await updatePointers(entity, tx);
+};
+
 // Handler to consume DelegateChanged events from known contracts
 export const DelegateChangedHandler = async (
   args: DelegateChangedEvent,
@@ -254,121 +369,6 @@ export const DelegateChangedHandlerPostProcessing = async (
     // pass the transaction through
     { tx: item.tx, block: item.block }
   );
-};
-
-// update the details according to an l2 DelegateChangedEvent
-const updateL2Delegate = async (
-  args: DelegateChangedEvent & {
-    oldBalance: BigNumber;
-    newBalance: BigNumber;
-  },
-  { tx, block }: { tx: TransactionReceipt & TransactionResponse; block: Block }
-) => {
-  // load the entity for this batchIndex
-  let entity = await Store.get<DelegateEntity>(
-    "Delegate",
-    getAddress(args.delegator)
-  );
-
-  // fetch old (this could be for the same delegate as entity)
-  let oldDelegate: typeof entity;
-  // fetch new (this could be for the same delegate as entity or oldDelegate)
-  let newDelegate: typeof entity;
-
-  // set block and chainId
-  entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
-  entity.block = block;
-
-  // fetch the oldBalance (if this isnt set then we havent recorded the delegation to the oldDelegate)
-  let oldBalance = args.oldBalance;
-  let newBalance = args.newBalance;
-
-  // if we're not setting a new delegation...
-  if (args.fromDelegate !== "0x0000000000000000000000000000000000000000") {
-    // get oldDelegate
-    oldDelegate =
-      oldDelegate ||
-      (args.fromDelegate === args.delegator
-        ? entity
-        : await Store.get<DelegateEntity>(
-            "Delegate",
-            getAddress(args.fromDelegate)
-          ));
-
-    // set block and chainId
-    oldDelegate.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
-    oldDelegate.block = block;
-
-    // update votes
-    oldDelegate.set(
-      "votes",
-      BigNumber.from(oldDelegate.votes || "0").sub(BigNumber.from(oldBalance))
-    );
-    oldDelegate.set(
-      "l2MntVotes",
-      BigNumber.from(oldDelegate.l2MntVotes || "0").sub(
-        BigNumber.from(oldBalance)
-      )
-    );
-
-    // save the changes to old delegate
-    oldDelegate = await updatePointers(oldDelegate, tx);
-
-    // align delegates
-    if (args.fromDelegate === args.delegator) {
-      entity = oldDelegate;
-    }
-    if (args.fromDelegate === args.toDelegate) {
-      newDelegate = oldDelegate;
-    }
-  }
-
-  // if we're not removing the delegation...
-  if (args.toDelegate !== "0x0000000000000000000000000000000000000000") {
-    // get newDelegate
-    newDelegate =
-      // eslint-disable-next-line no-nested-ternary
-      newDelegate ||
-      (args.toDelegate === args.delegator
-        ? entity
-        : args.fromDelegate === args.toDelegate
-        ? oldDelegate
-        : await Store.get<DelegateEntity>(
-            "Delegate",
-            getAddress(args.toDelegate)
-          ));
-
-    // set block and chainId
-    newDelegate.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
-    newDelegate.block = block;
-
-    // set new votes...
-    newDelegate.set(
-      "votes",
-      BigNumber.from(newDelegate.votes || "0").add(newBalance)
-    );
-    newDelegate.set(
-      "l2MntVotes",
-      BigNumber.from(newDelegate.l2MntVotes || "0").add(newBalance)
-    );
-
-    // save the changes to new delegate
-    newDelegate = await updatePointers(newDelegate, tx);
-
-    // align delegates
-    if (args.toDelegate === args.delegator) {
-      entity = newDelegate;
-    }
-    if (args.fromDelegate === args.toDelegate) {
-      oldDelegate = newDelegate;
-    }
-  }
-
-  // record the new balance
-  entity.set("l2MntBalance", newBalance);
-
-  // save the changes
-  entity = await updatePointers(entity, tx);
 };
 
 // Handler to consume DelegateVotesChanged events from known contracts
