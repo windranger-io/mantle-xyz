@@ -16,7 +16,6 @@
     "dev:bridge": "turbo run dev:bridge",
     "dev:converter": "turbo run dev:converter",
     "dev:charity": "turbo run dev:charity",
-    "dev:cms": "turbo run dev:cms",
     "dev:events": "turbo run dev:events",
     "dev:lsp": "turbo run dev:lsp",
     "dev:template": "turbo run dev:template",

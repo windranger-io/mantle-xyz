@@ -92,9 +92,6 @@
         "BITDAO_END_BLOCK"
       ]
     },
-    "dev:cms": {
-      "cache": false
-    },
     "dev:events": {
       "cache": false
     },

@@ -15,7 +15,6 @@ This monorepo uses [turborepo](https://turbo.build) for the monorepo build and [
 - `mantle-faucet`: The mantle faucet application
 - `mantle-converter`: The mantle converter application
 - `mantle-lsd`: The mantle liquid staking derivatives (LSD) application
-- `mantle-cms`: The mantle cms application
 - `mantle-template`: A template for other apps
 
 **Packages**
@@ -92,12 +91,6 @@ Mantle Converter
 
 ```
 pnpm run dev:converter
-```
-
-Mantle CMS
-
-```
-pnpm run dev:cms
 ```
 
 ### Adding packages
