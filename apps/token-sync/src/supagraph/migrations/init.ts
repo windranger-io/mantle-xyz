@@ -48,12 +48,14 @@ export const InitTransactionHandler = async (): Promise<Migration> => {
     chainId: 1,
     blockNumber: "latest",
     handler: async () => {
+      // get the engine
+      const engine = await getEngine();
       // finish supagraphs log
       if (!hasRunTxInit && !hasRunBalanceInit) process.stdout.write("...");
       // log that migration is starting
       console.log(
         `\n\n--\n\nStartup one-time migration event to addSync a new listener to collect blocks after initial sync completes...${
-          hasRunBalanceInit ? "\n\n--\n\n" : ""
+          hasRunBalanceInit || engine.newDb ? "\n\n--\n\n" : ""
         }`
       );
       // mark as ran
@@ -91,178 +93,181 @@ export const InitBalances = async (): Promise<Migration> => {
     chainId: withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001),
     blockNumber: "latest",
     handler: async (blockNumber: number) => {
-      // finish supagraphs log
-      if (!hasRunTxInit && !hasRunBalanceInit) process.stdout.write("...");
-      // log that migration is starting
-      console.log(
-        `${
-          hasRunTxInit ? "" : "\n"
-        }\n--\n\nStartup one-time migration event to correct balances...\n\n--\n`
-      );
-      // place all discovered balances here prior to processing
-      const balances = {};
       // retrieve engine to call db directly
       const engine = await getEngine();
-      // batch 500 addresses at a time into a multicall3 req to check MNT balances
-      const mntTokenContract = new Contract(
-        "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
-        ["function balanceOf(address _owner) view returns (uint256 balance)"],
-        L2Provider
-      );
 
-      // clear the promiseQueue to prevent processing balance changes before withPromises
-      engine.promiseQueue.splice(0, engine.promiseQueue.length);
+      // finish supagraphs log
+      if (!hasRunTxInit && !hasRunBalanceInit) process.stdout.write("...");
 
-      // pull all known delegates from the snapshot table
-      const allDelegates = (await engine.db.get("delegate")) as Record<
-        string,
-        unknown
-      >[];
-      // record how many of these we're pulled from db
-      const checkpointDelegatesStart = allDelegates.length;
-
-      // take from the parent checkpoint and add to the batch to make sure we have everything covered
-      engine.stage.checkpoints[
-        engine.stage.checkpoints.length - 1
-      ].keyValueMap.forEach((values) => {
-        allDelegates.push(values[values.length - 1]);
-      });
-
-      // index all the delegates to get rid of dupes
-      const indexed = allDelegates.reduce((all, value: { id: string }) => {
-        all[value.id] = value;
-        return all;
-      }, {});
-
-      // current checkpoint length
-      const checkpointStart =
-        engine.stage.checkpoints[engine.stage.checkpoints.length - 1]
-          .keyValueMap.size;
-
-      // check the parent checkpoint length
-      const checkpointParentStart =
-        engine.stage.checkpoints[engine.stage.checkpoints.length - 2]
-          .keyValueMap.size;
-
-      // group the delegates into batches of 250
-      const batchedDelegates = createRanges(
-        Object.values(indexed) as unknown[],
-        250
-      );
-
-      // pull the balances in batches via multicall to reduce number of calls and to prevent exhausting gas limit
-      await processPromiseQueue(
-        batchedDelegates.map((batch) => async () => {
-          // produce a set of balanceOf calls to check every addresses MNT balance (on l2)
-          const calls = batch.map((item: { id: string }) => {
-            return {
-              contract: mntTokenContract,
-              target: "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000" as string,
-              fns: [
-                {
-                  fn: "balanceOf",
-                  args: [item.id as string],
-                },
-              ],
-            };
-          });
-          // run all calls...
-          const responses = await callMulticallContract(
-            multicall,
-            calls,
-            // set blockHeight for the multicall
-            blockNumber
-          );
-          // place the balances for all users
-          responses.map((response, index) => {
-            // index all balances by address
-            balances[(batch[index] as { id: string }).id] = response;
-          });
-        })
-      );
-      console.log("All balances retrieved at blockNumber", +blockNumber);
-
-      // place the correct balances against the entities (to recalculate the votes) sequentially to avoid race conditions
-      for (const delegate of Object.keys(balances)) {
-        // load the entity for this delegate
-        let entity = await Store.get<DelegateEntity>(
-          "Delegate",
-          getAddress(delegate)
+      // only run the process stack if this isnt a newDb run
+      if (!engine.newDb) {
+        // log that migration is starting
+        console.log(
+          `${
+            hasRunTxInit ? "" : "\n"
+          }\n--\n\nStartup one-time migration event to correct balances...\n\n--\n`
+        );
+        // place all discovered balances here prior to processing
+        const balances = {};
+        // batch 500 addresses at a time into a multicall3 req to check MNT balances
+        const mntTokenContract = new Contract(
+          "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
+          ["function balanceOf(address _owner) view returns (uint256 balance)"],
+          L2Provider
         );
 
-        // when delegation is set and not to burn address...
-        if (
-          entity.l2MntTo &&
-          entity.l2MntTo !== "0x0000000000000000000000000000000000000000" &&
-          // check if the recorded balance is correct
-          (!BigNumber.from(entity.l2MntBalance || "0").eq(
-            BigNumber.from(balances[delegate] || "0")
-          ) ||
-            entity.l2MntBalance === null ||
-            typeof entity.l2MntBalance === "undefined")
-        ) {
-          // fetch current delegation - we correct votes here
-          let toDelegate = await Store.get<DelegateEntity>(
+        // clear the promiseQueue to prevent processing balance changes before withPromises
+        engine.promiseQueue.splice(0, engine.promiseQueue.length);
+
+        // pull all known delegates from the snapshot table
+        const allDelegates = ((await engine.db.get("delegate")) ||
+          []) as Record<string, unknown>[];
+        // record how many of these we're pulled from db
+        const checkpointDelegatesStart = allDelegates.length;
+
+        // take from the parent checkpoint and add to the batch to make sure we have everything covered
+        engine.stage.checkpoints[
+          engine.stage.checkpoints.length - 1
+        ].keyValueMap.forEach((values) => {
+          allDelegates.push(values[values.length - 1]);
+        });
+
+        // index all the delegates to get rid of dupes
+        const indexed = allDelegates.reduce((all, value: { id: string }) => {
+          all[value.id] = value;
+          return all;
+        }, {});
+
+        // current checkpoint length
+        const checkpointStart =
+          engine.stage.checkpoints[engine.stage.checkpoints.length - 1]
+            .keyValueMap.size;
+
+        // check the parent checkpoint length
+        const checkpointParentStart =
+          engine.stage.checkpoints[engine.stage.checkpoints.length - 2]
+            .keyValueMap.size;
+
+        // group the delegates into batches of 250
+        const batchedDelegates = createRanges(
+          Object.values(indexed) as unknown[],
+          250
+        );
+
+        // pull the balances in batches via multicall to reduce number of calls and to prevent exhausting gas limit
+        await processPromiseQueue(
+          batchedDelegates.map((batch) => async () => {
+            // produce a set of balanceOf calls to check every addresses MNT balance (on l2)
+            const calls = batch.map((item: { id: string }) => {
+              return {
+                contract: mntTokenContract,
+                target: "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000" as string,
+                fns: [
+                  {
+                    fn: "balanceOf",
+                    args: [item.id as string],
+                  },
+                ],
+              };
+            });
+            // run all calls...
+            const responses = await callMulticallContract(
+              multicall,
+              calls,
+              // set blockHeight for the multicall
+              blockNumber
+            );
+            // place the balances for all users
+            responses.map((response, index) => {
+              // index all balances by address
+              balances[(batch[index] as { id: string }).id] = response;
+            });
+          })
+        );
+        console.log("All balances retrieved at blockNumber", +blockNumber);
+
+        // place the correct balances against the entities (to recalculate the votes) sequentially to avoid race conditions
+        for (const delegate of Object.keys(balances)) {
+          // load the entity for this delegate
+          let entity = await Store.get<DelegateEntity>(
             "Delegate",
-            getAddress(entity.l2MntTo)
+            getAddress(delegate)
           );
 
-          // set the correct values against the entities
-          toDelegate.set(
-            "votes",
-            BigNumber.from(toDelegate.votes || "0")
-              .sub(BigNumber.from(entity.l2MntBalance || "0"))
-              .add(BigNumber.from(balances[delegate] || "0"))
-          );
-          toDelegate.set(
-            "l2MntVotes",
-            BigNumber.from(toDelegate.l2MntVotes || "0")
-              .sub(BigNumber.from(entity.l2MntBalance || "0"))
-              .add(BigNumber.from(balances[delegate] || "0"))
-          );
-
-          // if theres no balance this is a new delegate and we need to register the counts
+          // when delegation is set and not to burn address...
           if (
-            entity.l2MntBalance === null ||
-            typeof entity.l2MntBalance === "undefined"
+            entity.l2MntTo &&
+            entity.l2MntTo !== "0x0000000000000000000000000000000000000000" &&
+            // check if the recorded balance is correct
+            (!BigNumber.from(entity.l2MntBalance || "0").eq(
+              BigNumber.from(balances[delegate] || "0")
+            ) ||
+              entity.l2MntBalance === null ||
+              typeof entity.l2MntBalance === "undefined")
           ) {
+            // fetch current delegation - we correct votes here
+            let toDelegate = await Store.get<DelegateEntity>(
+              "Delegate",
+              getAddress(entity.l2MntTo)
+            );
+
+            // set the correct values against the entities
             toDelegate.set(
-              "delegatorsCount",
-              BigNumber.from(toDelegate.delegatorsCount || "0").add(1)
+              "votes",
+              BigNumber.from(toDelegate.votes || "0")
+                .sub(BigNumber.from(entity.l2MntBalance || "0"))
+                .add(BigNumber.from(balances[delegate] || "0"))
             );
             toDelegate.set(
-              "l2MntDelegatorsCount",
-              BigNumber.from(toDelegate.l2MntDelegatorsCount || "0").add(1)
+              "l2MntVotes",
+              BigNumber.from(toDelegate.l2MntVotes || "0")
+                .sub(BigNumber.from(entity.l2MntBalance || "0"))
+                .add(BigNumber.from(balances[delegate] || "0"))
             );
+
+            // if theres no balance this is a new delegate and we need to register the counts
+            if (
+              entity.l2MntBalance === null ||
+              typeof entity.l2MntBalance === "undefined"
+            ) {
+              toDelegate.set(
+                "delegatorsCount",
+                BigNumber.from(toDelegate.delegatorsCount || "0").add(1)
+              );
+              toDelegate.set(
+                "l2MntDelegatorsCount",
+                BigNumber.from(toDelegate.l2MntDelegatorsCount || "0").add(1)
+              );
+            }
+
+            // update the entity
+            toDelegate = await toDelegate.save();
+
+            // check for self delegation
+            if (entity.id === toDelegate.id) {
+              entity = toDelegate;
+            }
+
+            // set new balance
+            entity.set("l2MntBalance", balances[delegate]);
+
+            // save the balance
+            entity = await entity.save();
           }
-
-          // update the entity
-          toDelegate = await toDelegate.save();
-
-          // check for self delegation
-          if (entity.id === toDelegate.id) {
-            entity = toDelegate;
-          }
-
-          // set new balance
-          entity.set("l2MntBalance", balances[delegate]);
-
-          // save the balance
-          entity = await entity.save();
         }
-      }
-      // count how big the checkpoint is now
-      const checkpointEnd =
-        engine.stage.checkpoints[engine.stage.checkpoints.length - 1]
-          .keyValueMap.size;
+        // count how big the checkpoint is now
+        const checkpointEnd =
+          engine.stage.checkpoints[engine.stage.checkpoints.length - 1]
+            .keyValueMap.size;
 
-      // log the result of the op
-      console.log("\nAll delegate sums recalculated", {
-        delegates: Object.keys(balances).length,
-        fromDb: checkpointDelegatesStart,
-        fromCheckpoint: checkpointParentStart,
-        updatedEntries: checkpointEnd - checkpointStart,
-      });
+        // log the result of the op
+        console.log("\nAll delegate sums recalculated", {
+          delegates: Object.keys(balances).length,
+          fromDb: checkpointDelegatesStart,
+          fromCheckpoint: checkpointParentStart,
+          updatedEntries: checkpointEnd - checkpointStart,
+        });
+      }
       // mark as ran
       hasRunBalanceInit = true;
     },

@@ -20,6 +20,8 @@ export const config: SyncConfig = {
   cleanup: true,
   // listen for updates as a daemon operation
   listen: true,
+  // hide console log
+  silent: false,
   // collect blocks to sort by ts
   collectBlocks: true,
   // flag mutable to insert by upsert only on id field (mutate entities)
