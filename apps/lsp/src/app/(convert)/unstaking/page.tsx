@@ -162,6 +162,8 @@ export default function Unstaking() {
   const belowMinimumAmount =
     methAmount.gt(0) && methAmount.lt(minUnstakeMeth.data || 0);
 
+  const hasInputAmount = methAmount && methAmount.gt(0);
+
   const hasError = Boolean(
     amountOverBalance || belowMinimumAmount || deadline === BigInt(0)
   );
@@ -231,7 +233,10 @@ export default function Unstaking() {
             size="full"
             className="mb-4"
             disabled={
-              outputAmount.isLoading || hasApproval.isLoading || hasError
+              outputAmount.isLoading ||
+              hasApproval.isLoading ||
+              hasError ||
+              !hasInputAmount
             }
             onClick={() => {
               if (!address) {

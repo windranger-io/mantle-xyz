@@ -112,6 +112,8 @@ export default function Staking() {
   const belowMinimumAmount =
     ethAmount.gt(0) && minStakeAmount.data && ethAmount.lt(minStakeAmount.data);
 
+  const hasInputAmount = ethAmount && ethAmount.gt(0);
+
   const hasError = Boolean(inputOverBalance || belowMinimumAmount);
 
   let buttonText = address ? "Stake" : "Connect wallet";
@@ -183,7 +185,7 @@ export default function Staking() {
         <Button
           size="full"
           className="mb-4"
-          disabled={outputAmount.isLoading || hasError}
+          disabled={outputAmount.isLoading || hasError || !hasInputAmount}
           onClick={() => {
             if (!address) {
               setWalletModalOpen(true);
