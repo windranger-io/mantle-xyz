@@ -75,7 +75,7 @@ const updateL2Delegate = async (
   entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
   // unpack the newBalance
-  let newBalance = args.newBalance;
+  const newBalance = args.newBalance || "0";
 
   // if we're not setting a new delegation...
   if (args.fromDelegate !== "0x0000000000000000000000000000000000000000") {
@@ -141,11 +141,13 @@ const updateL2Delegate = async (
     // set new votes...
     newDelegate.set(
       "votes",
-      BigNumber.from(newDelegate.votes || "0").add(newBalance)
+      BigNumber.from(newDelegate.votes || "0").add(BigNumber.from(newBalance))
     );
     newDelegate.set(
       "l2MntVotes",
-      BigNumber.from(newDelegate.l2MntVotes || "0").add(newBalance)
+      BigNumber.from(newDelegate.l2MntVotes || "0").add(
+        BigNumber.from(newBalance)
+      )
     );
 
     // save the changes to new delegate
@@ -161,7 +163,7 @@ const updateL2Delegate = async (
   }
 
   // record the new balance
-  entity.set("l2MntBalance", newBalance);
+  entity.set("l2MntBalance", BigNumber.from(newBalance));
 
   // save the changes
   entity = await updatePointers(entity, tx);
@@ -399,7 +401,7 @@ export const DelegateVotesChangedHandler = async (
     );
 
     // store changes
-    entity.set(votesProp, args.newBalance);
+    entity.set(votesProp, BigNumber.from(args.newBalance || "0"));
 
     // votes is always a sum of both
     entity.set(

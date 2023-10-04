@@ -75,7 +75,7 @@ const updateVoter = async (
       .add(newBalance || "0");
 
     // set new balance value for sender
-    entity.set("l2MntBalance", newBalance);
+    entity.set("l2MntBalance", BigNumber.from(newBalance || "0"));
 
     // update pointers for lastUpdate
     entity.set("blockNumber", +tx.blockNumber);
@@ -85,7 +85,7 @@ const updateVoter = async (
     entity = await entity.save();
 
     // if the entity is the recipient, make sure we don't lose data
-    if (from === entity.l2MntTo) {
+    if (entity.l2MntTo && getAddress(from) === getAddress(entity.l2MntTo)) {
       voteRecipient = entity;
     }
 
@@ -106,7 +106,7 @@ const updateVoter = async (
     voteRecipient = await voteRecipient.save();
 
     // if the entity is the recipient, make sure we don't lose data
-    if (from === entity.l2MntTo) {
+    if (entity.l2MntTo && getAddress(from) === getAddress(entity.l2MntTo)) {
       entity = voteRecipient;
     }
   }
@@ -151,10 +151,9 @@ const enqueueTransactionHandler = async (
 
         // get the balance before (this will only be applied if we already have the balance in the db)
         let newBalance = entity[balanceProp] || 0;
-        let oldBalance = entity[balanceProp] || 0;
 
         // if we havent recorded the balance already, then we need to run this through the DelegateChangedHandler first
-        if ((oldBalance && direction === 0) || direction === 1) {
+        if ((entity[balanceProp] && direction === 0) || direction === 1) {
           // get the current balance for this user as starting point (we don't see a balance but they have l2MntTo set - this shouldnt happen...)
           if (!entity[balanceProp]) {
             // get the balance for this user in this block (we don't need to sub anything if we get the fresh balance)
@@ -162,7 +161,7 @@ const enqueueTransactionHandler = async (
           } else {
             if (direction === 0) {
               // get the current l2Balance for the user (we want this post gas spend for this tx)
-              // newBalance = BigNumber.from(oldBalance)
+              // newBalance = BigNumber.from(entity[balanceProp])
               //   // remove value from tx
               //   .sub(tx.value)
               //   // remove the cost of the transaction
@@ -172,7 +171,7 @@ const enqueueTransactionHandler = async (
               newBalance = await provider.getBalance(from, tx.blockNumber);
             } else {
               // add the new value to the old balance (balance transfer added to users balance from tx.sender)
-              // newBalance = BigNumber.from(newBalance).add(tx.value);
+              // newBalance = BigNumber.from(entity[balanceProp]).add(tx.value);
               newBalance = await provider.getBalance(from, tx.blockNumber);
             }
           }
