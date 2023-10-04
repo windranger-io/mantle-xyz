@@ -22,6 +22,7 @@ This monorepo uses [turborepo](https://turbo.build) for the monorepo build and [
 - `@mantle/eslint-config-next`: `eslint` configurations for nextjs apps
 - `@mantle/tsconfig`: `tsconfig.json`s used throughout the monorepo
 - `@mantle/ui`: A shared design system component library
+- `@mantle/wallet`: Shared connectos for the wallet
 - `@mantle/utils`: A shared utility functions library
 - `@mantle/web-tests`: e2e tests configurable for all projects
 

@@ -1,0 +1,19 @@
+{
+  "name": "@mantle/wallet",
+  "version": "0.0.0",
+  "main": "./index.tsx",
+  "types": "./index.tsx",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint *.ts*"
+  },
+  "devDependencies": {
+    "@mantle/eslint-config-next": "workspace:*",
+    "@mantle/tsconfig": "workspace:*",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "viem": "^1.10.9",
+    "wagmi": "^1.3.9"
+  }
+}

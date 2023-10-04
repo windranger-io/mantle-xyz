@@ -5,13 +5,13 @@
 import { ReactNode, useCallback, useEffect } from 'react'
 // import * as Dialog from '@radix-ui/react-dialog'
 import { Button } from '../actions/Button'
-import { BitgetSvg } from './Bitget'
-import { BybitSvg } from './Bybit'
-import { MetaMaskSvg } from './MetaMask'
+import { BitgetSvg } from './logos/Bitget'
+import { BybitSvg } from './logos/Bybit'
+import { MetaMaskSvg } from './logos/MetaMask'
 
-import { Coin98Svg } from './Coin98'
-import { RabbySvg } from './Rabby'
-import { TokenPocketSvg } from './TokenPocket'
+import { Coin98Svg } from './logos/Coin98'
+import { RabbySvg } from './logos/Rabby'
+import { TokenPocketSvg } from './logos/TokenPocket'
 import { WalletConnectSvg } from './WalletConnect'
 
 type WalletModalProps = {

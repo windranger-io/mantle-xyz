@@ -36,6 +36,7 @@ export default function WalletProvider() {
     <DynamicWalletModal
       open={walletModalOpen}
       setOpen={setWalletModalOpen}
+      connectors={connectors as []}
       injectedName={hasInjected?.name?.replace(/Injected\s\(([^)]+)\)/, "$1")}
       onInjected={
         hasInjected && hasInjected.name !== "Injected (MetaMask)"
@@ -68,6 +69,51 @@ export default function WalletProvider() {
         connect({
           chainId,
           connector: connectors.find((conn) => conn.id === "walletConnect"),
+        });
+      }}
+      onBybitWallet={() => {
+        setClient({
+          ...client,
+          connector: "bybitWallet",
+        });
+        connect({
+          connector: connectors.find((conn) => conn.id === "bybitWallet"),
+        });
+      }}
+      onBitgetWallet={() => {
+        setClient({
+          ...client,
+          connector: "bitgetWallet",
+        });
+        connect({
+          connector: connectors.find((conn) => conn.id === "bitgetWallet"),
+        });
+      }}
+      onTokenPocket={() => {
+        setClient({
+          ...client,
+          connector: "tokenPocket",
+        });
+        connect({
+          connector: connectors.find((conn) => conn.id === "tokenPocket"),
+        });
+      }}
+      onRabbyWallet={() => {
+        setClient({
+          ...client,
+          connector: "rabbyWallet",
+        });
+        connect({
+          connector: connectors.find((conn) => conn.id === "rabbyWallet"),
+        });
+      }}
+      onCoin98Wallet={() => {
+        setClient({
+          ...client,
+          connector: "coin98Wallet",
+        });
+        connect({
+          connector: connectors.find((conn) => conn.id === "coin98Wallet"),
         });
       }}
     />

@@ -10,11 +10,13 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
-import { BitgetWalletConnector } from "@connectors/bitgetWallet";
-import { BybitWalletConnector } from "@connectors/bybitWallet";
-import { Coin98WalletConnector } from "@connectors/coin98";
-import { RabbyWalletConnector } from "@connectors/rabbyWallet";
-import { TokenPocketConnector } from "@connectors/tokenPocket";
+import {
+  BitgetWalletConnector,
+  BybitWalletConnector,
+  Coin98WalletConnector,
+  RabbyWalletConnector,
+  TokenPocketConnector,
+} from "@mantle/wallet";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
 
