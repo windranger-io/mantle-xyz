@@ -37,12 +37,12 @@ const StateContext: Context<StateProps> = createContext<StateProps>(
 
 // create a provider to contain all state
 export function StateProvider({ children }: { children: React.ReactNode }) {
-  const defaultChainId = 5;
+  const defaultChainId = 1;
 
   const [chainId, setChainId] = useState(defaultChainId);
 
   // initially set to just the current chainId (this will control when to show unsupported in the ConnectWallet component)
-  const [safeChains, setSafeChains] = useState([defaultChainId]);
+  const [safeChains, setSafeChains] = useState([defaultChainId, 5]);
 
   // get the provider for the chosen chain
   const publicClient = usePublicClient({ chainId });
