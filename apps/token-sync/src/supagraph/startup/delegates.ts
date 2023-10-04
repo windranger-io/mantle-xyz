@@ -7,7 +7,7 @@ export const WarmupDelegates = async () => {
   const engine = await getEngine();
 
   // pull the full list of delegates - this will trigger a snapshot on the immutable table
-  const allDelegates = await engine.db.get("delegate");
+  const allDelegates = (await engine.db.get("delegate")) || [];
 
   // we're going to pull all entities at the current head into the cache, set ref location
   engine.db.kv["delegate"] = engine.db.kv["delegate"] || {};
