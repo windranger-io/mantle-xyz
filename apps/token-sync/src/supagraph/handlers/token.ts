@@ -201,11 +201,16 @@ export const DelegateChangedHandler = async (
           // get the current l2Balance for the user (we want this post gas spend after this tx)
           // *NOTE we can only apply this once - if we've already migrated the balance in this call (via migration) we should omit saving
           // this change - this is being controlled by the `withPromise` handler
-          newBalance = BigNumber.from(oldBalance)
-            // remove the cost of the transaction
-            .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
-            // @ts-ignore
-            .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
+          // newBalance = BigNumber.from(oldBalance)
+          //   // remove the cost of the transaction
+          //   .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
+          //   // @ts-ignore
+          //   .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
+          // get balance at tx blockNumber
+          newBalance = await L2Provider.getBalance(
+            args.delegator,
+            tx.blockNumber
+          );
         }
 
         // return the action with async parts resolved

@@ -153,15 +153,14 @@ const enqueueTransactionHandler = async (
           } else {
             if (direction === 0) {
               // get the current l2Balance for the user (we want this post gas spend for this tx)
-              newBalance = BigNumber.from(oldBalance)
-                // remove value from tx
-                .sub(tx.value)
-                // remove the cost of the transaction
-                .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
-                // @ts-ignore
-                .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
-
-              // newBalance = await provider.getBalance(from, tx.blockNumber);
+              // newBalance = BigNumber.from(oldBalance)
+              //   // remove value from tx
+              //   .sub(tx.value)
+              //   // remove the cost of the transaction
+              //   .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
+              //   // @ts-ignore
+              //   .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
+              newBalance = await provider.getBalance(from, tx.blockNumber);
             } else {
               // add the new value to the old balance (balance transfer added to users balance from tx.sender)
               newBalance = BigNumber.from(newBalance).add(tx.value);
