@@ -5,6 +5,10 @@ import { ContractName, contracts } from "./contracts";
 
 export const CHAIN_ID: ChainID = +(process.env["NEXT_PUBLIC_CHAIN_ID"] || 5);
 
+export const WALLETCONNECT_ID =
+  process.env.NEXT_PUBLIC_WALLETCONNECT_ID ||
+  "a5ba05041a95d2525cea0cf32fe02b44";
+
 export const IP_RESTRICTION_ENABLED = true;
 
 export const RESTRICTED_COUNTRY_CODES = [

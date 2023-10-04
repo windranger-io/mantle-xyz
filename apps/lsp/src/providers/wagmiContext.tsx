@@ -1,14 +1,17 @@
 "use client";
 
-// this version of L1_CHAIN will use infura
-import { CHAINS_FORMATTED, CHAIN_ID } from "@config/constants";
+import {
+  CHAINS_FORMATTED,
+  CHAIN_ID,
+  WALLETCONNECT_ID,
+} from "@config/constants";
 
 // Required components for wagmi...
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
 
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
-// import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
@@ -46,12 +49,12 @@ const config = createConfig({
         shimDisconnect: true,
       },
     }),
-    // new WalletConnectConnector({
-    //   chains,
-    //   options: {
-    //     projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_ID || "",
-    //   },
-    // }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        projectId: WALLETCONNECT_ID,
+      },
+    }),
   ],
   publicClient,
   webSocketPublicClient,
