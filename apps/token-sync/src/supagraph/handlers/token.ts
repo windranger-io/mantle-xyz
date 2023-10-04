@@ -205,8 +205,6 @@ export const DelegateChangedHandler = async (
             // remove the cost of the transaction
             .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
             // @ts-ignore
-            .sub(BigNumber.from(tx.l1Fee))
-            // @ts-ignore
             .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
         }
 

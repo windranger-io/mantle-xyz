@@ -195,7 +195,9 @@ export const InitBalances = async (): Promise<Migration> => {
           entity.l2MntTo &&
           entity.l2MntTo !== "0x0000000000000000000000000000000000000000" &&
           // check if the recorded balance is correct
-          (!BigNumber.from(entity.l2MntBalance || "0").eq(balances[delegate]) ||
+          (!BigNumber.from(entity.l2MntBalance || "0").eq(
+            BigNumber.from(balances[delegate] || "0")
+          ) ||
             entity.l2MntBalance === null ||
             typeof entity.l2MntBalance === "undefined")
         ) {

@@ -159,8 +159,6 @@ const enqueueTransactionHandler = async (
                 // remove the cost of the transaction
                 .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
                 // @ts-ignore
-                .sub(BigNumber.from(tx.l1Fee))
-                // @ts-ignore
                 .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
 
               // newBalance = await provider.getBalance(from, tx.blockNumber);
