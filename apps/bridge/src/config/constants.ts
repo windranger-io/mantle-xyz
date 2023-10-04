@@ -330,6 +330,7 @@ export const USDT_APPROVE_ABI = [
 
 export const MANTLE_MIGRATOR_URL = "https://migratebit.mantle.xyz";
 export const MANTLE_MIGRATOR_HISTORY_PATH = "/account/migrate";
+export const MANTLE_MIGRATOR_V2_HISTORY_PATH = "/account/migratev2";
 
 export const DELEGATION_URL: string = "https://delegatevote.mantle.xyz/";
 

@@ -49,7 +49,7 @@ const faqList: Array<AccordionItemType> = [
         Migrator v2 has been deployed to give effect to the MIP-27 Proposal. See
         more details in the{" "}
         <a
-          href="https://www.mantle.xyz/blog/announcements/bit-to-mnt-user-guide"
+          href="https://www.mantle.xyz/blog/announcements/migrator-v2-your-bit-to-mnt-guide"
           target="__blank"
           rel="noreferrer"
           className="underline"
@@ -72,7 +72,7 @@ const faqList: Array<AccordionItemType> = [
         Please see the &quot;Steps for using Etherscan (advanced users)&quot;
         section of the{" "}
         <a
-          href="https://www.mantle.xyz/blog/announcements/bit-to-mnt-user-guide"
+          href="https://www.mantle.xyz/blog/announcements/migrator-v2-your-bit-to-mnt-guide"
           target="__blank"
           rel="noreferrer"
           className="underline"

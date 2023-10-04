@@ -45,6 +45,7 @@ export default function Dialogue({
     setSafeChains,
     isCTAPageOpenRef: isOpenRef,
     setSelectedTokenAmount,
+    setDestinationTokenAmount,
   } = useContext(StateContext);
 
   const reset = () => {
@@ -60,6 +61,7 @@ export default function Dialogue({
     // reset selected token amount
     if (ctaPage !== CTAPages.Default) {
       setSelectedTokenAmount("");
+      setDestinationTokenAmount("");
     }
   };
 

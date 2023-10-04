@@ -60,7 +60,7 @@ export function useCallApprove() {
       } catch {
         // log the approval was cancelled
         setApprovalStatus("Approval cancelled");
-        // move to the error page to display error
+        // change the page to show error
         setCTAPage(CTAPages.Error);
       } finally {
         // call this to reset the allowance in the ui

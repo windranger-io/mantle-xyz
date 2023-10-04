@@ -20,6 +20,7 @@ import {
   L2_CHAIN_ID,
   MANTLE_MIGRATOR_HISTORY_PATH,
   MANTLE_MIGRATOR_URL,
+  MANTLE_MIGRATOR_V2_HISTORY_PATH,
   Views,
 } from "@config/constants";
 import { usePathname, useRouter } from "next/navigation";
@@ -34,6 +35,7 @@ export default function Tabs() {
     ...(L1_CHAIN_ID === 1
       ? {
           Migrate: [],
+          MigrateV2: [],
         }
       : {}),
   });
@@ -46,6 +48,11 @@ export default function Tabs() {
       ? Direction.Withdraw
       : Direction.Deposit
   );
+
+  // split on capital letter
+  const SplitCamelCase = (s: string) => {
+    return s.replace(/([a-z])([A-Z])/g, "$1 $2");
+  };
 
   // on first load
   useEffect(
@@ -96,7 +103,7 @@ export default function Tabs() {
         <Tab.Group
           selectedIndex={selectedTab === 1 ? 0 : 1}
           onChange={(val) => {
-            // redirect to migrator app if the user chooses the last tab (index 2)
+            // redirect to migrator app if the user chooses a "migrator" tab (index 2/3)
             if (val === 2) {
               window.open(
                 `${MANTLE_MIGRATOR_URL}${MANTLE_MIGRATOR_HISTORY_PATH}`,
@@ -104,6 +111,14 @@ export default function Tabs() {
               );
               return;
             }
+            if (val === 3) {
+              window.open(
+                `${MANTLE_MIGRATOR_URL}${MANTLE_MIGRATOR_V2_HISTORY_PATH}`,
+                "_self"
+              );
+              return;
+            }
+            // otherwise stay local
             router.push(`/account/${val === 0 ? "deposit" : "withdraw"}`);
             // set the selected tab according to the direction
             setSelectedTab(val === 0 ? Direction.Deposit : Direction.Withdraw);
@@ -123,7 +138,7 @@ export default function Tabs() {
                     )
                   }
                 >
-                  {category}
+                  {SplitCamelCase(category)}
                 </Tab>
               </span>
             ))}
