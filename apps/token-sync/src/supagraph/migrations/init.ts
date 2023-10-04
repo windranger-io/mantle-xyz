@@ -182,6 +182,36 @@ export const InitBalances = async (): Promise<Migration> => {
       );
       console.log("All balances retrieved at blockNumber", +blockNumber);
 
+      // remove all L2 Delegation details from the delegates
+      await processPromiseQueue(
+        Object.keys(balances).map((delegate) => async () => {
+          // load the entity for this batchIndex
+          const entity = await Store.get<DelegateEntity>(
+            "Delegate",
+            getAddress(delegate)
+          );
+
+          // zero out l2 MNT vote data
+          entity.set("l2MntVotes", BigNumber.from("0"));
+          entity.set("l2MntBalance", BigNumber.from("0"));
+          entity.set("l2MntDelegatorsCount", BigNumber.from("0"));
+          entity.set(
+            "votes",
+            BigNumber.from(entity.bitVotes || "0").add(entity.mntVotes || "0")
+          );
+          entity.set(
+            "delegatorsCount",
+            BigNumber.from(entity.bitDelegatorsCount || "0").add(
+              entity.mntDelegatorsCount || "0"
+            )
+          );
+
+          // save the changes into the staging area
+          await entity.save();
+        })
+      );
+      console.log("\nAll delegates l2 balances/votes zero'd");
+
       // place the correct balances against the entities (to recalculate the votes) sequentially to avoid race conditions
       for (const delegate of Object.keys(balances)) {
         // load the entity for this delegate
@@ -193,9 +223,9 @@ export const InitBalances = async (): Promise<Migration> => {
         // when delegation is set and not to burn address...
         if (
           entity.l2MntTo &&
-          entity.l2MntTo !== "0x0000000000000000000000000000000000000000" &&
+          entity.l2MntTo !== "0x0000000000000000000000000000000000000000"
           // check if the recorded balance is correct
-          !BigNumber.from(entity.l2MntBalance || "0").eq(balances[delegate])
+          // !BigNumber.from(entity.l2MntBalance || "0").eq(balances[delegate])
         ) {
           // fetch current delegation - we correct votes here
           let toDelegate = await Store.get<DelegateEntity>(
