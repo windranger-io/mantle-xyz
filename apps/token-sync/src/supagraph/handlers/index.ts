@@ -46,7 +46,7 @@ export const handlers: Handlers = {
       // on first-run we noop the promise queue because it contains only balance-updates which will have already been correctly placed by the init-Balances migration handler
       if (!hasRun && !engine.newDb) {
         // ignore the promiseQueue and end the process update
-        process.stdout.write("\n\n--\n\nEvents processed ");
+        process.stdout.write("\n--\n\nEvents processed ");
         // mark as ran - for all future encounters we want to process the items to accept balance transfers...
         hasRun = true;
       } else {

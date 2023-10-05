@@ -45,7 +45,7 @@ const createRanges = (input: unknown[], limit: number): unknown[][] => {
 export const InitTransactionHandler = async (): Promise<Migration> => {
   // return handler to initialse the L2 onTransaction handler after initial sync
   return {
-    chainId: 1,
+    chainId: withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001),
     blockNumber: "latest",
     handler: async () => {
       // get the engine
@@ -54,8 +54,10 @@ export const InitTransactionHandler = async (): Promise<Migration> => {
       if (!hasRunTxInit && !hasRunBalanceInit) process.stdout.write("...");
       // log that migration is starting
       console.log(
-        `\n\n--\n\nStartup one-time migration event to addSync a new listener to collect blocks after initial sync completes...${
-          hasRunBalanceInit || engine.newDb ? "\n\n--\n\n" : ""
+        `${
+          !hasRunBalanceInit ? "\n" : ""
+        }\n--\n\nStartup one-time migration event to addSync a new listener to collect blocks after initial sync completes...${
+          engine.newDb ? "\n\n--\n\n" : ""
         }`
       );
       // mark as ran
@@ -105,7 +107,7 @@ export const InitBalances = async (): Promise<Migration> => {
         console.log(
           `${
             hasRunTxInit ? "" : "\n"
-          }\n--\n\nStartup one-time migration event to correct balances...\n\n--\n`
+          }\n--\n\nStartup one-time migration event to correct L2 balances...\n\n--\n`
         );
         // place all discovered balances here prior to processing
         const balances = {};

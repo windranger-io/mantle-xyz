@@ -22,6 +22,8 @@ export const config: SyncConfig = {
   listen: true,
   // hide console log
   silent: false,
+  // set readOnly mode
+  readOnly: false,
   // collect blocks to sort by ts
   collectBlocks: true,
   // flag mutable to insert by upsert only on id field (mutate entities)
