@@ -29,7 +29,8 @@ const updateVoter = async (
   from: string,
   newBalance: BigNumber,
   tx: TransactionReceipt & TransactionResponse,
-  block: Block
+  block: Block,
+  direction: number
 ) => {
   // define token specific props
   const votesProp = "l2MntVotes";
@@ -38,11 +39,8 @@ const updateVoter = async (
   // fetch entity
   let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
 
-  // check for a balance here - if we don't have a balance this has been recorded as delegate yet
-  if (
-    BigNumber.from(newBalance || "0").gt("0") ||
-    BigNumber.from(entity.l2MntBalance || "0").gt("0")
-  ) {
+  // check for a balance here - if we don't have a balance this has not been recorded as delegate yet
+  if (BigNumber.from(entity.l2MntBalance || "0").gt("0") || direction === 1) {
     // set details on entity
     entity.block = block;
     entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
@@ -158,6 +156,7 @@ const enqueueTransactionHandler = async (
         return {
           tx,
           block,
+          direction,
           delegator: from,
           type: "TransactionHandler",
           newBalance: BigNumber.from(newBalance || "0"),
@@ -190,7 +189,14 @@ export const TransactionHandlerPostProcessing = async (item: {
   newBalance: BigNumber;
   tx: TransactionReceipt & TransactionResponse;
   block: Block;
+  direction: number;
 }) => {
   // process these sequentially via a `withPromises` handler
-  await updateVoter(item.delegator, item.newBalance, item.tx, item.block);
+  await updateVoter(
+    item.delegator,
+    item.newBalance,
+    item.tx,
+    item.block,
+    item.direction
+  );
 };

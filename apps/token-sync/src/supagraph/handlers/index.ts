@@ -71,6 +71,7 @@ export const handlers: Handlers = {
                 block: Block;
                 delegator: string;
                 newBalance: BigNumber;
+                direction: number;
               }
             );
           }
