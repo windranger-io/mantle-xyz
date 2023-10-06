@@ -1,0 +1,49 @@
+export default function EthToken() {
+  return (
+    <svg
+      width="40"
+      height="40"
+      viewBox="0 0 40 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="40" height="40" rx="20" fill="white" />
+      <g clipPath="url(#clip0_8563_3101)">
+        <path
+          d="M19.9971 5L19.8018 5.64548V24.3759L19.9971 24.5655L28.9418 19.4262L19.9971 5Z"
+          fill="#343434"
+        />
+        <path
+          d="M19.9974 5L11.0527 19.4262L19.9974 24.5656V15.4744V5Z"
+          fill="#8C8C8C"
+        />
+        <path
+          d="M19.9978 26.2129L19.8877 26.3433V33.0155L19.9978 33.3281L28.9479 21.0762L19.9978 26.2129Z"
+          fill="#3C3C3B"
+        />
+        <path
+          d="M19.9974 33.3262V26.2109L11.0527 21.0742L19.9974 33.3262Z"
+          fill="#8C8C8C"
+        />
+        <path
+          d="M19.9971 24.5657L28.9416 19.4265L19.9971 15.4746V24.5657Z"
+          fill="#141414"
+        />
+        <path
+          d="M11.0527 19.4245L19.9973 24.5638V15.4727L11.0527 19.4245Z"
+          fill="#393939"
+        />
+      </g>
+      <defs>
+        <clipPath id="clip0_8563_3101">
+          <rect
+            width="17.8947"
+            height="28.3333"
+            fill="white"
+            transform="translate(11.0527 5)"
+          />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+}

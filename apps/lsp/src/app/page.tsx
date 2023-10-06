@@ -1,9 +1,5 @@
-import { Typography } from "@mantle/ui";
+import { redirect } from "next/navigation";
 
-/**
- *
- * @todo Updated with real components and content when ready
- */
-export default function Page() {
-  return <Typography>Mantle Template</Typography>;
+export default async function Page() {
+  redirect("/staking");
 }
