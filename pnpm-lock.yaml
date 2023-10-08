@@ -859,8 +859,8 @@ importers:
         specifier: ^5.6.0
         version: 5.6.0
       supagraph:
-        specifier: 0.0.1-rc.31
-        version: registry.npmjs.org/supagraph@0.0.1-rc.31
+        specifier: 0.0.1-rc.32
+        version: registry.npmjs.org/supagraph@0.0.1-rc.32
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -966,7 +966,7 @@ importers:
         version: 8.5.0(eslint@7.32.0)
       eslint-config-turbo:
         specifier: latest
-        version: registry.npmjs.org/eslint-config-turbo@1.10.14(eslint@7.32.0)
+        version: registry.npmjs.org/eslint-config-turbo@1.10.15(eslint@7.32.0)
       eslint-import-resolver-typescript:
         specifier: ^3.5.2
         version: 3.5.2(eslint-plugin-import@2.26.0)(eslint@7.32.0)
@@ -19650,23 +19650,23 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
-  registry.npmjs.org/eslint-config-turbo@1.10.14(eslint@7.32.0):
-    resolution: {integrity: sha512-ZeB+IcuFXy1OICkLuAplVa0euoYbhK+bMEQd0nH9+Lns18lgZRm33mVz/iSoH9VdUzl/1ZmFmoK+RpZc+8R80A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-config-turbo/-/eslint-config-turbo-1.10.14.tgz}
-    id: registry.npmjs.org/eslint-config-turbo/1.10.14
+  registry.npmjs.org/eslint-config-turbo@1.10.15(eslint@7.32.0):
+    resolution: {integrity: sha512-76mpx2x818JZE26euen14utYcFDxOahZ9NaWA+6Xa4pY2ezVKVschuOxS96EQz3o3ZRSmcgBOapw/gHbN+EKxQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-config-turbo/-/eslint-config-turbo-1.10.15.tgz}
+    id: registry.npmjs.org/eslint-config-turbo/1.10.15
     name: eslint-config-turbo
-    version: 1.10.14
+    version: 1.10.15
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
       eslint: 7.32.0
-      eslint-plugin-turbo: registry.npmjs.org/eslint-plugin-turbo@1.10.14(eslint@7.32.0)
+      eslint-plugin-turbo: registry.npmjs.org/eslint-plugin-turbo@1.10.15(eslint@7.32.0)
     dev: false
 
-  registry.npmjs.org/eslint-plugin-turbo@1.10.14(eslint@7.32.0):
-    resolution: {integrity: sha512-sBdBDnYr9AjT1g4lR3PBkZDonTrMnR4TvuGv5W0OiF7z9az1rI68yj2UHJZvjkwwcGu5mazWA1AfB0oaagpmfg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-plugin-turbo/-/eslint-plugin-turbo-1.10.14.tgz}
-    id: registry.npmjs.org/eslint-plugin-turbo/1.10.14
+  registry.npmjs.org/eslint-plugin-turbo@1.10.15(eslint@7.32.0):
+    resolution: {integrity: sha512-Tv4QSKV/U56qGcTqS/UgOvb9HcKFmWOQcVh3HEaj7of94lfaENgfrtK48E2CckQf7amhKs1i+imhCsNCKjkQyA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/eslint-plugin-turbo/-/eslint-plugin-turbo-1.10.15.tgz}
+    id: registry.npmjs.org/eslint-plugin-turbo/1.10.15
     name: eslint-plugin-turbo
-    version: 1.10.14
+    version: 1.10.15
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
@@ -21136,10 +21136,10 @@ packages:
       ts-interface-checker: registry.npmjs.org/ts-interface-checker@0.1.13
     dev: false
 
-  registry.npmjs.org/supagraph@0.0.1-rc.31:
-    resolution: {integrity: sha512-x/Lkj4vXjgux3aMGQBgXZfZcGcpmHgXSaq3YPKeBKGcsECkfmNtdeu0vN6OtmZ7llOaBKe+KgW9jIGWPuYaRRw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.31.tgz}
+  registry.npmjs.org/supagraph@0.0.1-rc.32:
+    resolution: {integrity: sha512-0C059nXZ6IiJPbPYCSKFQhDHqK0U4qFR1qnLCucpiC7kgHL9jAFSeowpmeUioc+M5kcbYU50mRCTXcMVBspAJg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.32.tgz}
     name: supagraph
-    version: 0.0.1-rc.31
+    version: 0.0.1-rc.32
     dependencies:
       '@graphql-yoga/render-graphiql': registry.npmjs.org/@graphql-yoga/render-graphiql@3.8.0(graphql-yoga@3.8.0)
       csv-parser: registry.npmjs.org/csv-parser@3.0.0

@@ -15,7 +15,7 @@ export const config: SyncConfig = {
   // set the local engine (true: db || false: mongo)
   dev: false,
   // set the reset condition (should the local db be restarted on sync?)
-  reset: false,
+  reset: true,
   // should we cleanup files after the initial sync?
   cleanup: true,
   // listen for updates as a daemon operation
