@@ -51,7 +51,9 @@ export const TWITTER_DESC = "Stake ETH for mETH";
 export const AMOUNT_MAX_DISPLAY_DIGITS = 10;
 
 export const GRAPHQL_URL =
-  CHAIN_ID === 5 ? "https://indexer-goerli.up.railway.app/" : "";
+  CHAIN_ID === 5
+    ? "https://indexer-goerli.up.railway.app/"
+    : "https://lsd-indexer.mantle.xyz/";
 
 // Get the current absolute path from the env
 export function getBaseUrl() {
