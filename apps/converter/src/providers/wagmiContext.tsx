@@ -10,6 +10,13 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
+import {
+  BitgetWalletConnector,
+  BybitWalletConnector,
+  Coin98WalletConnector,
+  RabbyWalletConnector,
+  TokenPocketConnector,
+} from "@mantle/wallet";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
 
@@ -52,6 +59,27 @@ const config = createConfig({
       options: {
         projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_ID || "",
       },
+    }),
+    new BybitWalletConnector({
+      chains,
+      options: {
+        name: "BybitWallet",
+      },
+    }),
+    new BitgetWalletConnector({
+      chains,
+      options: {
+        name: "BitgetWallet",
+      },
+    }),
+    new TokenPocketConnector({
+      chains,
+    }),
+    new RabbyWalletConnector({
+      chains,
+    }),
+    new Coin98WalletConnector({
+      chains,
     }),
   ],
   publicClient,

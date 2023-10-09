@@ -2,8 +2,8 @@
 
 "use client";
 
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import StateContext from "@providers/stateContext";
 
@@ -12,8 +12,8 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
-import Avatar from "@mantle/ui/src/presentational/Avatar";
 import { Button } from "@mantle/ui";
+import Avatar from "@mantle/ui/src/presentational/Avatar";
 import { truncateAddress } from "@mantle/utils";
 
 import { BiError } from "react-icons/bi";
