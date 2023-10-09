@@ -15,7 +15,6 @@ This monorepo uses [turborepo](https://turbo.build) for the monorepo build and [
 - `mantle-faucet`: The mantle faucet application
 - `mantle-converter`: The mantle converter application
 - `mantle-lsd`: The mantle liquid staking derivatives (LSD) application
-- `mantle-cms`: The mantle cms application
 - `mantle-template`: A template for other apps
 
 **Packages**
@@ -23,6 +22,7 @@ This monorepo uses [turborepo](https://turbo.build) for the monorepo build and [
 - `@mantle/eslint-config-next`: `eslint` configurations for nextjs apps
 - `@mantle/tsconfig`: `tsconfig.json`s used throughout the monorepo
 - `@mantle/ui`: A shared design system component library
+- `@mantle/wallet`: Shared connectos for the wallet
 - `@mantle/utils`: A shared utility functions library
 - `@mantle/web-tests`: e2e tests configurable for all projects
 
@@ -92,12 +92,6 @@ Mantle Converter
 
 ```
 pnpm run dev:converter
-```
-
-Mantle CMS
-
-```
-pnpm run dev:cms
 ```
 
 ### Adding packages

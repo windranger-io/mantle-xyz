@@ -17,6 +17,7 @@
     "@headlessui/react": "^1.7.13",
     "@mantle/constants": "workspace:*",
     "@mantle/ui": "workspace:*",
+    "@mantle/wallet": "workspace:*",
     "@mantle/utils": "workspace:*",
     "@mantleio/contracts": "^0.2.0",
     "@mantleio/core-utils": "^0.1.0",
