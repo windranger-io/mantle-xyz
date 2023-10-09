@@ -1,28 +1,29 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import { Button, T } from "@mantle/ui";
+import { IconWarn } from "@mantle/ui/src/LocaleSwitcher/Button/Icons";
+import { formatEthTruncated } from "@util/util";
 import { BigNumber } from "ethers";
+import { formatEther, parseEther } from "ethers/lib/utils";
+import { redirect } from "next/navigation";
 import { useContext, useState } from "react";
 import { useAccount, useBalance, useContractRead } from "wagmi";
-import { formatEther, parseEther } from "ethers/lib/utils";
-import { Button, T } from "@mantle/ui";
-import { formatEthTruncated } from "@util/util";
-import { IconWarn } from "@mantle/ui/src/LocaleSwitcher/Button/Icons";
 
 import AdjustmentRate from "@components/Convert/AdjustmentRate";
+import Divider from "@components/Convert/Divider";
 import ExchangeRate from "@components/Convert/ExchangeRate";
 import ConvertInput from "@components/Convert/Input";
 import ConvertOutput from "@components/Convert/Output";
 import StakeToggle, { Mode } from "@components/StakeToggle";
 import TokenDirection from "@components/TokenDirection";
+import ClientOnly from "@components/clientOnly";
 import { AMOUNT_MAX_DISPLAY_DIGITS, CHAIN_ID } from "@config/constants";
 import { ContractName, contracts } from "@config/contracts";
-import Divider from "@components/Convert/Divider";
-import StateContext from "@providers/stateContext";
 import useGeolocationCheck from "@hooks/useGeolocationCheck";
+import StateContext from "@providers/stateContext";
 import StakeConfirmDialogue from "./dialogue/StakeConfirmDialogue";
-import StakeSuccessDialogue from "./dialogue/StakeSuccessDialogue";
 import StakeFailureDialogue from "./dialogue/StakeFailureDialogue";
+import StakeSuccessDialogue from "./dialogue/StakeSuccessDialogue";
 
 export default function Staking() {
   const { address } = useAccount();
@@ -198,8 +199,17 @@ export default function Staking() {
           {buttonText}
         </Button>
         <div className="flex flex-col space-y-2 w-full">
-          <ExchangeRate />
-          <AdjustmentRate />
+          <ClientOnly
+            fallback={
+              <div
+                className="animate-pulse h-12 w-12 flex-shrink-0 bg-gray-300 rounded-full"
+                style={{ width: 30, height: 30 }}
+              />
+            }
+          >
+            <ExchangeRate />
+            <AdjustmentRate />
+          </ClientOnly>
         </div>
       </div>
     </div>
