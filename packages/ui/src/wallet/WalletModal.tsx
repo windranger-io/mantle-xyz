@@ -133,7 +133,7 @@ export const WalletModal = ({
     },
     {
       id: 'tokenPocket',
-      name: 'Token Pocket',
+      name: 'TokenPocket',
       provider: onTokenPocket,
       site: 'https://www.tokenpocket.pro',
       icon: TokenPocketSvg,
