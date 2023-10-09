@@ -16,6 +16,7 @@
     "@headlessui/react": "^1.7.13",
     "@mantle/constants": "workspace:*",
     "@mantle/ui": "workspace:*",
+    "@mantle/wallet": "workspace:*",
     "@mantle/utils": "workspace:*",
     "@tanstack/react-query": "^4.29.19",
     "ethers": "^5.7.2",
