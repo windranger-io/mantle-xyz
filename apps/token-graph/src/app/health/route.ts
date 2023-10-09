@@ -62,7 +62,7 @@ export async function GET() {
       {
         headers: {
           // allow to be cached for 60 seconds and allow caching in shared public cache
-          "Cache-Control": `max-age=60, public, s-maxage=60`,
+          "Cache-Control": `no-cache, no-store`,
         },
       }
     );
