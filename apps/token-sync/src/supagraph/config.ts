@@ -1,12 +1,12 @@
 // Assign default value to provided env
-import { withDefault } from "supagraph";
+import { SyncConfig, withDefault } from "supagraph";
 
 // import env file and load contents
 import dotenv from "dotenv";
 dotenv.config();
 
 // Export the complete supagraph configuration (sync & graph)
-const config = {
+export const config: SyncConfig = {
   // name your supagraph (this will inform mongo table name etc...)
   name: withDefault(
     process.env.SUPAGRAPH_NAME,
@@ -14,10 +14,16 @@ const config = {
   ),
   // set the local engine (true: db || false: mongo)
   dev: false,
-  // set the reset condition (should the db be restarted on sync?)
-  reset: false,
+  // set the reset condition (should the local db be restarted on sync?)
+  reset: true,
   // should we cleanup files after the initial sync?
   cleanup: true,
+  // listen for updates as a daemon operation
+  listen: true,
+  // hide console log
+  silent: false,
+  // set readOnly mode
+  readOnly: false,
   // collect blocks to sort by ts
   collectBlocks: true,
   // flag mutable to insert by upsert only on id field (mutate entities)
@@ -55,14 +61,6 @@ const config = {
   },
   // configure available Contracts and their block details
   contracts: {
-    // setup network listeners
-    [withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001)]: {
-      // establish the point we want to start and stop syncing from
-      startBlock: withDefault(process.env.L2_MANTLE_START_BLOCK, 18889522),
-      endBlock: withDefault(process.env.L2_MANTLE_END_BLOCK, "latest"),
-      // collect receipts to gather gas usage
-      collectTxReceipts: true,
-    },
     mantle: {
       // establish all event signatures available on this contract (we could also accept a .sol or .json file here)
       events: "tokenl1",
@@ -97,13 +95,15 @@ const config = {
       // use handlers registered against "token" named group in handlers/index.ts
       handlers: "tokenl2",
       // set config from env
-      chainId: withDefault(process.env.L2_MANTLE_CHAIN_ID, 5),
+      chainId: withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001),
       address: withDefault(
         process.env.L2_MANTLE_ADDRESS,
         "0xEd459209796D741F5B609131aBd927586fcCACC5"
       ),
       startBlock: withDefault(process.env.L2_MANTLE_START_BLOCK, 18889522),
       endBlock: withDefault(process.env.L2_MANTLE_END_BLOCK, "latest"),
+      // collect the receipts
+      collectTxReceipts: true,
     },
   },
   // define supagraph schema

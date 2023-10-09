@@ -5,7 +5,7 @@ import { createSupagraph, memoryResolver, mongoResolver } from "supagraph";
 import { getMongodb } from "@providers/mongoClient";
 
 // Import the currect configuration
-import config from "@supagraph/config";
+import { config } from "@supagraph/config";
 
 // Revalidate this page every 12s (avg block time)
 export const { revalidate } = config;
