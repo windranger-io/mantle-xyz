@@ -31,23 +31,23 @@ type ContractConfig = {
 export const contracts: Record<number, ContractConfig> = {
   1: {
     [ContractName.Staking]: {
-      address: "0x00",
+      address: "0xe3cBd06D7dadB3F4e6557bAb7EdD924CD1489E8f",
       abi: stakingABI,
     },
     [ContractName.METH]: {
-      address: "0x00",
+      address: "0xd5F7838F5C461fefF7FE49ea5ebaF7728bB0ADfa",
       abi: methABI,
     },
     [ContractName.Oracle]: {
-      address: "0x00",
+      address: "0x8735049F496727f824Cc0f2B174d826f5c408192",
       abi: oracleABI,
     },
     [ContractName.ReturnsAggregator]: {
-      address: "0x00",
+      address: "0x1766be66fBb0a1883d41B4cfB0a533c5249D3b82",
       abi: returnsAggregatorABI,
     },
     [ContractName.Pauser]: {
-      address: "0x00",
+      address: "0x29Ab878aEd032e2e2c86FF4A9a9B05e3276cf1f8",
       abi: pauserABI,
     },
   },
