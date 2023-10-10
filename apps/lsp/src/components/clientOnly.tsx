@@ -18,7 +18,7 @@ export default function ClientOnly({
   }, []);
 
   // Render
-  if (!hasMounted) return { fallback };
+  if (!hasMounted) return <>{fallback}</>;
 
-  return { children };
+  return <>{children}</>;
 }
