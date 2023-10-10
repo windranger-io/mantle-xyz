@@ -8,6 +8,9 @@ import { withDefault } from "supagraph";
 // Import client generator
 import { getMongodb } from "@providers/mongoClient";
 
+// force-dynamic rendering as we're basing reqs on url
+export const dynamic = "force-dynamic";
+
 // Generate client
 const client = getMongodb(process.env.MONGODB_URI!);
 
