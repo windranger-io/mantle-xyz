@@ -27,7 +27,7 @@ export default function StatPanel() {
       <div className="flex flex-row justify-between items-center">
         <T>TVL</T>
         {oracleRecord.isLoading ||
-        !oracleRecord?.data?.currentTotalValidatorBalance ? (
+        oracleRecord?.data?.currentTotalValidatorBalance === undefined ? (
           <Loading />
         ) : (
           <T className="text-white font-medium text-lg">
