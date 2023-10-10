@@ -9,6 +9,8 @@ module.exports = {
   rules: {
     "import/no-extraneous-dependencies": "off",
     "import/prefer-default-export": "off",
+    "react/require-default-props": "off",
+    "react/jsx-no-useless-fragment": "off",
   },
   parserOptions: {
     tsconfigRootDir: __dirname,

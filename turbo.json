@@ -99,6 +99,13 @@
       "cache": false
     },
     "dev:lsp": {
+      "env": [
+        "NEXT_PUBLIC_INFURA_API_KEY",
+        "NEXT_PUBLIC_SITE_URL",
+        "NEXT_PUBLIC_VERCEL_URL",
+        "NEXT_PUBLIC_CHAIN_ID",
+        "NEXT_PUBLIC_WALLETCONNECT_ID"
+      ],
       "cache": false
     },
     "e2e:test:template": {
