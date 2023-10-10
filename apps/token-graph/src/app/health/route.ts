@@ -61,7 +61,7 @@ export async function GET() {
       },
       {
         headers: {
-          // allow to be cached for 60 seconds and allow caching in shared public cache
+          // prevent any form of caching on this response
           "Cache-Control": `no-cache, no-store`,
         },
       }
