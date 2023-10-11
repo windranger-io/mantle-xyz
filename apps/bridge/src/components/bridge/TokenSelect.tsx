@@ -21,6 +21,8 @@ import DirectionLabel from "@components/bridge/utils/DirectionLabel";
 import { MantleLogo } from "@components/bridge/utils/MantleLogo";
 import { searchTokensByNameAndSymbol } from "@utils/searchTokens";
 
+const PRIORITIZED_TOKENS_SUBSTRING = ["ETH", "USD", "MNT"];
+
 export default function TokenSelect({
   direction: givenDirection,
   selected: givenSelected,
@@ -62,24 +64,42 @@ export default function TokenSelect({
 
   const [searchResult, setSearchResult] = useState<Token[]>([]);
 
+  const [sortedTokens, setSortedTokens] = useState<Token[]>([]);
+
+  useEffect(() => {
+    let clonedTokens = [...tokens];
+    PRIORITIZED_TOKENS_SUBSTRING.forEach((substring) => {
+      const tokenWithSubstring = clonedTokens.filter((t) =>
+        t.symbol.includes(substring)
+      );
+      const tokenWithoutSubstring = clonedTokens.filter(
+        (t) => !t.symbol.includes(substring)
+      );
+      clonedTokens = [...tokenWithSubstring, ...tokenWithoutSubstring];
+    });
+    setSortedTokens(clonedTokens);
+  }, [tokens]);
+
   const selectBtnClicked = () => {
     setIsOpen(true);
     // move selected token to the front of the token list
-    const selectedIndex = tokens.findIndex((t) => t.symbol === selected.symbol);
+    const selectedIndex = sortedTokens.findIndex(
+      (t) => t.symbol === selected.symbol
+    );
     if (selectedIndex !== -1) {
       const reorderedTokens = [
-        tokens[selectedIndex],
-        ...tokens.slice(0, selectedIndex),
-        ...tokens.slice(selectedIndex + 1),
+        sortedTokens[selectedIndex],
+        ...sortedTokens.slice(0, selectedIndex),
+        ...sortedTokens.slice(selectedIndex + 1),
       ];
       setSearchResult(reorderedTokens);
     } else {
-      setSearchResult(tokens);
+      setSearchResult(sortedTokens);
     }
   };
 
   const handleSearch = debounce((e: { target: { value: any } }) => {
-    const searched = searchTokensByNameAndSymbol(tokens, e.target.value);
+    const searched = searchTokensByNameAndSymbol(sortedTokens, e.target.value);
     setSearchResult(searched);
   }, 300);
 
