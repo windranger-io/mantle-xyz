@@ -21,8 +21,6 @@ import DirectionLabel from "@components/bridge/utils/DirectionLabel";
 import { MantleLogo } from "@components/bridge/utils/MantleLogo";
 import { searchTokensByNameAndSymbol } from "@utils/searchTokens";
 
-const POPULAR_TOKEN_SYMBOLS = ["ETH", "MNT", "USDT"];
-
 export default function TokenSelect({
   direction: givenDirection,
   selected: givenSelected,
@@ -61,25 +59,6 @@ export default function TokenSelect({
 
   // control if token selection dialog opens
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  // get popular token info from token list
-  const [popularTokenMap, setPopularTokenMap] = useState<{
-    [key in string]: Token;
-  }>({});
-
-  useEffect(() => {
-    if (Object.values(popularTokenMap).length < 1) {
-      const mapping: { [key in string]: Token } = {};
-      const popularTokens = tokens.filter((t) =>
-        POPULAR_TOKEN_SYMBOLS.includes(t.symbol)
-      );
-      popularTokens.forEach((t) => {
-        mapping[t.symbol] = t;
-      });
-      setPopularTokenMap(mapping);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokens]);
 
   const [searchResult, setSearchResult] = useState<Token[]>([]);
 
@@ -343,38 +322,6 @@ export default function TokenSelect({
                         />
                       </svg>
                     </div>
-                  </div>
-                </div>
-                <div className="mt-2.5 w-full flex justify-between items-center px-5">
-                  <Typography variant="microBody14" className="hidden lg:block">
-                    Popular tokens
-                  </Typography>
-                  <div className="flex items-center gap-5">
-                    {POPULAR_TOKEN_SYMBOLS.map((symbol) =>
-                      popularTokenMap[symbol] ? (
-                        <button
-                          type="button"
-                          key={symbol}
-                          onClick={() => {
-                            setSelectedToken(
-                              direction,
-                              popularTokenMap[symbol]?.name
-                            );
-                            setIsOpen(false);
-                          }}
-                          className="flex items-center gap-2 py-2.5 px-2 rounded-lg	border border-stroke-primary hover:border-stroke-ghostHover hover:text-stroke-ghostHover"
-                        >
-                          <Image
-                            alt={`Logo for ${popularTokenMap[symbol]?.name}`}
-                            src={popularTokenMap[symbol]?.logoURI}
-                            width={24}
-                            height={24}
-                          />
-
-                          {popularTokenMap[symbol]?.symbol}
-                        </button>
-                      ) : null
-                    )}
                   </div>
                 </div>
                 <DividerCaret className="mt-4" stroke="#1C1E20" />
