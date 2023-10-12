@@ -101,6 +101,62 @@ const updateVoter = async (
   }
 };
 
+// get the balance data for a delegate
+const getDelegateBalances = (
+  from: string,
+  tx: TransactionReceipt & TransactionResponse,
+  block: Block,
+  direction: number
+) => {
+  return async () => {
+    // load the entities involved in this tx
+    let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
+
+    // set the entity with correct details
+    entity.block = block;
+    entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
+
+    // get the balance before (this will only be applied if we already have the balance in the db)
+    let newBalance = entity.l2MntBalance || 0;
+
+    // get the current balance for this user as starting point
+    if (!entity.l2MntBalance) {
+      // get the balance for this user in this block (we don't need to sub anything if we get the fresh balance)
+      newBalance = await provider.getBalance(from, tx.blockNumber);
+    } else {
+      if (direction === 0) {
+        // get the current l2Balance for the user (we want this post gas spend for this tx)
+        // newBalance = BigNumber.from(entity[balanceProp])
+        //   // remove value from tx
+        //   .sub(tx.value)
+        //   // remove the cost of the transaction
+        //   .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
+        //   // @ts-ignore
+        //   .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
+        newBalance = await provider.getBalance(from, tx.blockNumber);
+      } else {
+        // add the new value to the old balance (balance transfer added to users balance from tx.sender)
+        // newBalance = BigNumber.from(entity[balanceProp]).add(tx.value);
+        newBalance = await provider.getBalance(from, tx.blockNumber);
+      }
+    }
+
+    // return the action with async parts resolved
+    return {
+      tx,
+      block,
+      direction,
+      delegator: from,
+      type: "TransactionHandler",
+      newBalance: BigNumber.from(newBalance || "0"),
+      // update pointers for lastUpdate
+      blockNumber: +tx.blockNumber,
+      transactionHash: tx.transactionHash || tx.hash,
+      transactionIndex: tx.transactionIndex,
+    };
+  };
+};
+
 // enqueue balance check to run updateVoter later
 const enqueueTransactionHandler = async (
   from: string,
@@ -116,56 +172,7 @@ const enqueueTransactionHandler = async (
     // only if the l2MntTo is set do we need to record l2 balance transfers (only record movements when we're not interacting with the delegation contract)
     if (entity.l2MntTo) {
       // if a promise rejects it will be reattempted - this is the safest way to handle async actions
-      enqueuePromise(async () => {
-        // load the entities involved in this tx
-        let entity = await Store.get<DelegateEntity>(
-          "Delegate",
-          getAddress(from)
-        );
-
-        // set the entity with correct details
-        entity.block = block;
-        entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
-
-        // get the balance before (this will only be applied if we already have the balance in the db)
-        let newBalance = entity.l2MntBalance || 0;
-
-        // get the current balance for this user as starting point
-        if (!entity.l2MntBalance) {
-          // get the balance for this user in this block (we don't need to sub anything if we get the fresh balance)
-          newBalance = await provider.getBalance(from, tx.blockNumber);
-        } else {
-          if (direction === 0) {
-            // get the current l2Balance for the user (we want this post gas spend for this tx)
-            // newBalance = BigNumber.from(entity[balanceProp])
-            //   // remove value from tx
-            //   .sub(tx.value)
-            //   // remove the cost of the transaction
-            //   .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
-            //   // @ts-ignore
-            //   .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
-            newBalance = await provider.getBalance(from, tx.blockNumber);
-          } else {
-            // add the new value to the old balance (balance transfer added to users balance from tx.sender)
-            // newBalance = BigNumber.from(entity[balanceProp]).add(tx.value);
-            newBalance = await provider.getBalance(from, tx.blockNumber);
-          }
-        }
-
-        // return the action with async parts resolved
-        return {
-          tx,
-          block,
-          direction,
-          delegator: from,
-          type: "TransactionHandler",
-          newBalance: BigNumber.from(newBalance || "0"),
-          // update pointers for lastUpdate
-          blockNumber: +tx.blockNumber,
-          transactionHash: tx.transactionHash || tx.hash,
-          transactionIndex: tx.transactionIndex,
-        };
-      });
+      enqueuePromise(getDelegateBalances(from, tx, block, direction));
     }
   }
 };

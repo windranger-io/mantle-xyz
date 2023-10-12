@@ -169,6 +169,59 @@ const updateL2Delegate = async (
   entity = await updatePointers(entity, tx);
 };
 
+// retrieve balance from delegateChanged events
+const getDelegateBalances = (
+  args: DelegateChangedEvent,
+  { tx, block }: { tx: TransactionReceipt & TransactionResponse; block: Block }
+) => {
+  return async () => {
+    // load the entity for this batchIndex
+    let entity = await Store.get<DelegateEntity>(
+      "Delegate",
+      getAddress(args.delegator)
+    );
+
+    // fetch the oldBalance (if this isnt set then we havent recorded the delegation to the oldDelegate)
+    let oldBalance = entity.l2MntBalance || 0;
+    let newBalance = oldBalance;
+
+    // we have to read the balance if this is a new delegation
+    if (!oldBalance) {
+      // get balance at tx blockNumber
+      newBalance = await L2Provider.getBalance(args.delegator, tx.blockNumber);
+    } else {
+      // get the current l2Balance for the user (we want this post gas spend after this tx)
+      // *NOTE we can only apply this once - if we've already migrated the balance in this call (via migration) we should omit saving
+      // this change - this is being controlled by the `withPromise` handler
+      // newBalance = BigNumber.from(oldBalance)
+      //   // remove the cost of the transaction
+      //   .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
+      //   // @ts-ignore
+      //   .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
+      // get balance at tx blockNumber
+      newBalance = await L2Provider.getBalance(args.delegator, tx.blockNumber);
+    }
+
+    // return the action with async parts resolved
+    return {
+      tx,
+      block,
+      // set the type
+      type: "DelegateChangedHandler",
+      // place the balances
+      newBalance: BigNumber.from(newBalance),
+      // copy the args
+      delegator: args.delegator,
+      fromDelegate: args.fromDelegate,
+      toDelegate: args.toDelegate,
+      // update pointers for lastUpdate
+      blockNumber: +tx.blockNumber,
+      transactionHash: tx.transactionHash || tx.hash,
+      transactionIndex: tx.transactionIndex,
+    };
+  };
+};
+
 // Handler to consume DelegateChanged events from known contracts
 export const DelegateChangedHandler = async (
   args: DelegateChangedEvent,
@@ -296,58 +349,7 @@ export const DelegateChangedHandler = async (
     if (contractAddress === L2_MANTLE_TOKEN_ADDRESS) {
       // inline all of these - the order isnt important
       // if a promise rejects it will be reattempted - this is the safest way to handle async actions
-      enqueuePromise(async () => {
-        // load the entity for this batchIndex
-        let entity = await Store.get<DelegateEntity>(
-          "Delegate",
-          getAddress(args.delegator)
-        );
-
-        // fetch the oldBalance (if this isnt set then we havent recorded the delegation to the oldDelegate)
-        let oldBalance = entity.l2MntBalance || 0;
-        let newBalance = oldBalance;
-
-        // we have to read the balance if this is a new delegation
-        if (!oldBalance) {
-          // get balance at tx blockNumber
-          newBalance = await L2Provider.getBalance(
-            args.delegator,
-            tx.blockNumber
-          );
-        } else {
-          // get the current l2Balance for the user (we want this post gas spend after this tx)
-          // *NOTE we can only apply this once - if we've already migrated the balance in this call (via migration) we should omit saving
-          // this change - this is being controlled by the `withPromise` handler
-          // newBalance = BigNumber.from(oldBalance)
-          //   // remove the cost of the transaction
-          //   .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
-          //   // @ts-ignore
-          //   .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
-          // get balance at tx blockNumber
-          newBalance = await L2Provider.getBalance(
-            args.delegator,
-            tx.blockNumber
-          );
-        }
-
-        // return the action with async parts resolved
-        return {
-          tx,
-          block,
-          // set the type
-          type: "DelegateChangedHandler",
-          // place the balances
-          newBalance: BigNumber.from(newBalance),
-          // copy the args
-          delegator: args.delegator,
-          fromDelegate: args.fromDelegate,
-          toDelegate: args.toDelegate,
-          // update pointers for lastUpdate
-          blockNumber: +tx.blockNumber,
-          transactionHash: tx.transactionHash || tx.hash,
-          transactionIndex: tx.transactionIndex,
-        };
-      });
+      enqueuePromise(getDelegateBalances(args, { tx, block }));
     }
   }
 };

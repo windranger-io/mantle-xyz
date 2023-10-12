@@ -31,10 +31,11 @@ let hasRunBalanceInit = false;
 // slice the range according to the provided limit
 const createRanges = (input: unknown[], limit: number): unknown[][] => {
   // each current is a tuple containing from and to
-  let output: unknown[][] = [];
+  const output: unknown[][] = [];
 
-  while (input.length) {
-    output.push(input.splice(0, limit < input.length ? limit : input.length));
+  // split into ranges according to the limit (by taking limit items from the input)
+  for (let i = 0; i < input.length; i += limit) {
+    output.push(input.slice(i, i + limit));
   }
 
   // return all ranges
@@ -119,7 +120,7 @@ export const InitBalances = async (): Promise<Migration> => {
         );
 
         // clear the promiseQueue to prevent processing balance changes before withPromises
-        engine.promiseQueue.splice(0, engine.promiseQueue.length);
+        engine.promiseQueue.length = 0;
 
         // pull all known delegates from the snapshot table
         const allDelegates = ((await engine.db.get("delegate")) ||

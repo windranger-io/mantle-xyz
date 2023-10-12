@@ -40,7 +40,7 @@ export const handlers: Handlers = {
   // we're using "internal" to hold `withPromises` - any group can hold a `withPromises` handler - each will be supplied the full promiseQueue when called
   internal: {
     // post event handled after all events in sync have been ran
-    withPromises: async (queue: unknown[]) => {
+    withPromises: async (queue: Promise<unknown>[]) => {
       // fetch engine
       const engine = await getEngine();
       // on first-run we noop the promise queue because it contains only balance-updates which will have already been correctly placed by the init-Balances migration handler
@@ -53,9 +53,11 @@ export const handlers: Handlers = {
         // process the sorted updates sequentially
         for (const item of queue) {
           // process *Handler types in the order they we're stacked into the queue
-          if ((item as { type: string }).type === "DelegateChangedHandler") {
+          if (
+            ((await item) as { type: string }).type === "DelegateChangedHandler"
+          ) {
             await DelegateChangedHandlerPostProcessing(
-              item as {
+              (await item) as {
                 tx: TransactionReceipt & TransactionResponse;
                 block: Block;
                 delegator: string;
@@ -64,9 +66,11 @@ export const handlers: Handlers = {
                 newBalance: BigNumber;
               }
             );
-          } else if ((item as { type: string }).type === "TransactionHandler") {
+          } else if (
+            ((await item) as { type: string }).type === "TransactionHandler"
+          ) {
             await TransactionHandlerPostProcessing(
-              item as {
+              (await item) as {
                 tx: TransactionReceipt & TransactionResponse;
                 block: Block;
                 delegator: string;
