@@ -21,7 +21,11 @@ import DirectionLabel from "@components/bridge/utils/DirectionLabel";
 import { MantleLogo } from "@components/bridge/utils/MantleLogo";
 import { searchTokensByNameAndSymbol } from "@utils/searchTokens";
 
-const POPULAR_TOKEN_SYMBOLS = ["ETH", "MNT", "USDT"];
+const PRIORITIZED_TOKENS_SUBSTRING: Record<string, string[]> = {
+  ETH: ["ETH", "wstETH", "mETH"],
+  USD: ["USDT", "USDC"],
+  MNT: ["MNT"],
+};
 
 export default function TokenSelect({
   direction: givenDirection,
@@ -62,45 +66,55 @@ export default function TokenSelect({
   // control if token selection dialog opens
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  // get popular token info from token list
-  const [popularTokenMap, setPopularTokenMap] = useState<{
-    [key in string]: Token;
-  }>({});
+  const [searchResult, setSearchResult] = useState<Token[]>([]);
+
+  const [sortedTokens, setSortedTokens] = useState<Token[]>([]);
 
   useEffect(() => {
-    if (Object.values(popularTokenMap).length < 1) {
-      const mapping: { [key in string]: Token } = {};
-      const popularTokens = tokens.filter((t) =>
-        POPULAR_TOKEN_SYMBOLS.includes(t.symbol)
+    let clonedTokens = [...tokens];
+    Object.keys(PRIORITIZED_TOKENS_SUBSTRING).forEach((substring: string) => {
+      const prioritySymbols = PRIORITIZED_TOKENS_SUBSTRING[substring];
+      const tokenWithSubstring = clonedTokens.filter((t) =>
+        t.symbol.toUpperCase().includes(substring.toUpperCase())
       );
-      popularTokens.forEach((t) => {
-        mapping[t.symbol] = t;
-      });
-      setPopularTokenMap(mapping);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      const higherPriority = tokenWithSubstring.filter((t) =>
+        prioritySymbols.includes(t.symbol.toUpperCase())
+      );
+      const lowerPriority = tokenWithSubstring.filter(
+        (t) => !prioritySymbols.includes(t.symbol.toUpperCase())
+      );
+      const tokenWithoutSubstring = clonedTokens.filter(
+        (t) => !t.symbol.toUpperCase().includes(substring.toUpperCase())
+      );
+      clonedTokens = [
+        ...higherPriority,
+        ...lowerPriority,
+        ...tokenWithoutSubstring,
+      ];
+    });
+    setSortedTokens(clonedTokens);
   }, [tokens]);
-
-  const [searchResult, setSearchResult] = useState<Token[]>([]);
 
   const selectBtnClicked = () => {
     setIsOpen(true);
     // move selected token to the front of the token list
-    const selectedIndex = tokens.findIndex((t) => t.symbol === selected.symbol);
+    const selectedIndex = sortedTokens.findIndex(
+      (t) => t.symbol === selected.symbol
+    );
     if (selectedIndex !== -1) {
       const reorderedTokens = [
-        tokens[selectedIndex],
-        ...tokens.slice(0, selectedIndex),
-        ...tokens.slice(selectedIndex + 1),
+        sortedTokens[selectedIndex],
+        ...sortedTokens.slice(0, selectedIndex),
+        ...sortedTokens.slice(selectedIndex + 1),
       ];
       setSearchResult(reorderedTokens);
     } else {
-      setSearchResult(tokens);
+      setSearchResult(sortedTokens);
     }
   };
 
   const handleSearch = debounce((e: { target: { value: any } }) => {
-    const searched = searchTokensByNameAndSymbol(tokens, e.target.value);
+    const searched = searchTokensByNameAndSymbol(sortedTokens, e.target.value);
     setSearchResult(searched);
   }, 300);
 
@@ -343,38 +357,6 @@ export default function TokenSelect({
                         />
                       </svg>
                     </div>
-                  </div>
-                </div>
-                <div className="mt-2.5 w-full flex justify-between items-center px-5">
-                  <Typography variant="microBody14" className="hidden lg:block">
-                    Popular tokens
-                  </Typography>
-                  <div className="flex items-center gap-5">
-                    {POPULAR_TOKEN_SYMBOLS.map((symbol) =>
-                      popularTokenMap[symbol] ? (
-                        <button
-                          type="button"
-                          key={symbol}
-                          onClick={() => {
-                            setSelectedToken(
-                              direction,
-                              popularTokenMap[symbol]?.name
-                            );
-                            setIsOpen(false);
-                          }}
-                          className="flex items-center gap-2 py-2.5 px-2 rounded-lg	border border-stroke-primary hover:border-stroke-ghostHover hover:text-stroke-ghostHover"
-                        >
-                          <Image
-                            alt={`Logo for ${popularTokenMap[symbol]?.name}`}
-                            src={popularTokenMap[symbol]?.logoURI}
-                            width={24}
-                            height={24}
-                          />
-
-                          {popularTokenMap[symbol]?.symbol}
-                        </button>
-                      ) : null
-                    )}
                   </div>
                 </div>
                 <DividerCaret className="mt-4" stroke="#1C1E20" />
