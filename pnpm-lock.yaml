@@ -874,8 +874,8 @@ importers:
         specifier: ^5.6.0
         version: 5.6.0
       supagraph:
-        specifier: 0.0.1-rc.38
-        version: registry.npmjs.org/supagraph@0.0.1-rc.38
+        specifier: 0.0.1-rc.39
+        version: registry.npmjs.org/supagraph@0.0.1-rc.39
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -8114,7 +8114,7 @@ packages:
     resolution: {integrity: sha512-aKS4WQjPenRxiQsC93MNfjx+nbF4PAdYzmd/1JIj8HYzqfbu86beTuNgXDzPknWk0n0uARlyewZo4s++ES36Ow==}
     hasBin: true
     dependencies:
-      minimist: 1.2.7
+      minimist: registry.npmjs.org/minimist@1.2.7
     dev: false
 
   /json5@2.2.3:
@@ -10049,7 +10049,7 @@ packages:
       '@types/react': 18.0.26
       react: 18.2.0
       react-style-singleton: 2.2.1(@types/react@18.0.26)(react@18.2.0)
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /react-remove-scroll@2.5.5(@types/react@18.0.26)(react@18.2.0):
@@ -10085,7 +10085,7 @@ packages:
       get-nonce: 1.0.1
       invariant: 2.2.4
       react: 18.2.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /react-wrap-balancer@0.4.0(react@18.2.0):
@@ -11431,7 +11431,7 @@ packages:
     dependencies:
       '@types/react': 18.0.26
       react: 18.2.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /use-intl@2.12.0-alpha.1(react@18.2.0):
@@ -11469,7 +11469,7 @@ packages:
       '@types/react': 18.0.26
       detect-node-es: 1.1.0
       react: 18.2.0
-      tslib: 2.5.3
+      tslib: registry.npmjs.org/tslib@2.5.3
     dev: false
 
   /use-sync-external-store@1.2.0(react@18.2.0):
@@ -16096,10 +16096,10 @@ packages:
       ts-interface-checker: registry.npmjs.org/ts-interface-checker@0.1.13
     dev: false
 
-  registry.npmjs.org/supagraph@0.0.1-rc.38:
-    resolution: {integrity: sha512-PJP778oAWPEy/umhL+vd3GNTkFJ3g6gtMU5GxPE+n02tuF+EFt1/cBxlpp7sq0xHruDws+lXrNRY6VaaljVaag==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.38.tgz}
+  registry.npmjs.org/supagraph@0.0.1-rc.39:
+    resolution: {integrity: sha512-uisj2Fqs7g4VZG0qQQ5LzGDOSy5Bf59AWyznIFr9VlV1AVWkbdbM/PPDYY5MQu7wR+r1DtUaKKyMcNDrIpf7LA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.39.tgz}
     name: supagraph
-    version: 0.0.1-rc.38
+    version: 0.0.1-rc.39
     dependencies:
       '@graphql-yoga/render-graphiql': registry.npmjs.org/@graphql-yoga/render-graphiql@3.8.0(graphql-yoga@3.8.0)
       csv-parser: registry.npmjs.org/csv-parser@3.0.0
