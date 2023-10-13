@@ -21,7 +21,11 @@ import DirectionLabel from "@components/bridge/utils/DirectionLabel";
 import { MantleLogo } from "@components/bridge/utils/MantleLogo";
 import { searchTokensByNameAndSymbol } from "@utils/searchTokens";
 
-const PRIORITIZED_TOKENS_SUBSTRING = ["ETH", "USD", "MNT"];
+const PRIORITIZED_TOKENS_SUBSTRING: Record<string, string[]> = {
+  ETH: ["ETH", "wstETH", "mETH"],
+  USD: ["USDT", "USDC"],
+  MNT: ["MNT"],
+};
 
 export default function TokenSelect({
   direction: givenDirection,
@@ -68,14 +72,25 @@ export default function TokenSelect({
 
   useEffect(() => {
     let clonedTokens = [...tokens];
-    PRIORITIZED_TOKENS_SUBSTRING.forEach((substring) => {
+    Object.keys(PRIORITIZED_TOKENS_SUBSTRING).forEach((substring: string) => {
+      const prioritySymbols = PRIORITIZED_TOKENS_SUBSTRING[substring];
       const tokenWithSubstring = clonedTokens.filter((t) =>
-        t.symbol.includes(substring)
+        t.symbol.toUpperCase().includes(substring.toUpperCase())
+      );
+      const higherPriority = tokenWithSubstring.filter((t) =>
+        prioritySymbols.includes(t.symbol.toUpperCase())
+      );
+      const lowerPriority = tokenWithSubstring.filter(
+        (t) => !prioritySymbols.includes(t.symbol.toUpperCase())
       );
       const tokenWithoutSubstring = clonedTokens.filter(
-        (t) => !t.symbol.includes(substring)
+        (t) => !t.symbol.toUpperCase().includes(substring.toUpperCase())
       );
-      clonedTokens = [...tokenWithSubstring, ...tokenWithoutSubstring];
+      clonedTokens = [
+        ...higherPriority,
+        ...lowerPriority,
+        ...tokenWithoutSubstring,
+      ];
     });
     setSortedTokens(clonedTokens);
   }, [tokens]);
