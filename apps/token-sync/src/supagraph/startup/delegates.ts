@@ -6,16 +6,15 @@ export const WarmupDelegates = async () => {
   // get the engine to manipulate the db store
   const engine = await getEngine();
 
-  // pull the full list of delegates - this will trigger a snapshot on the immutable table
-  const allDelegates = (await engine.db.get("delegate")) || [];
+  // printing to show we're not hanging...
+  console.log("Get all delegates from db");
 
-  // we're going to pull all entities at the current head into the cache, set ref location
-  engine.db.kv["delegate"] = engine.db.kv["delegate"] || {};
+  // pull the full list of delegates - this will trigger a snapshot on the immutable table and save it into the kv store
+  const allDelegates =
+    ((await engine.db.get("delegate")) as Record<string, unknown>[]) || [];
 
-  // place each entity into the cache against its .id
-  for (const delegate of allDelegates as { id: string }[]) {
-    engine.db.kv["delegate"][delegate.id] = delegate;
-  }
+  // printing result
+  console.log("Got all delegates:", allDelegates.length);
 
   // mark as warm (this will prevent going to db for missing values (assumes everything is already in cache))
   engine.warmDb = true;
