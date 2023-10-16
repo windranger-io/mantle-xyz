@@ -300,7 +300,12 @@ export const InitBalances = async (): Promise<Migration> => {
           // retrieve the corrosponding newEntity
           const newEntity = rebalanced.get(delegate);
           // when delegation is set and not to burn address...
-          if (newEntity && !entity.votes.eq(newEntity.votes)) {
+          if (
+            newEntity &&
+            !BigNumber.from(entity.votes || "0").eq(
+              BigNumber.from(newEntity.votes || "0")
+            )
+          ) {
             // make the change
             entity.replace({
               ...newEntity,
