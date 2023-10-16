@@ -209,6 +209,23 @@ export const InitBalances = async (): Promise<Migration> => {
                   )
                 ).valueOf() || {}),
               } as DelegateEntity);
+
+          // reset all values on entity
+          if (!rebalanced.has(entity.id)) {
+            // clear all values back to mnt and bit values
+            entity.votes = BigNumber.from(entity.mntVotes || "0").add(
+              BigNumber.from(entity.bitVotes || "0")
+            );
+            entity.delegatorsCount = BigNumber.from(
+              entity.mntDelegatorsCount || "0"
+            ).add(BigNumber.from(entity.bitDelegatorsCount || "0"));
+            // clear back to 0 (and rebuild)
+            entity.l2MntVotes = BigNumber.from("0");
+            entity.l2MntDelegatorsCount = BigNumber.from("0");
+            // set into rebalanced so that we dont clear it again
+            rebalanced.set(entity.id, entity);
+          }
+
           // run through everything and reassign true values
           if (
             entity.l2MntTo &&
