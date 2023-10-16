@@ -1,5 +1,5 @@
 // We use BigNumber to handle all numeric operations
-import { BigNumber } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import { getAddress } from "ethers/lib/utils";
 
 // Each event is supplied the block and tx along with the typed args
@@ -23,6 +23,26 @@ import type { DelegateEntity } from "@supagraph/types";
 const provider = new JsonRpcProvider(
   config.providers[withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001)].rpcUrl
 );
+
+// produce an ethers contract to check balances against
+const mntTokenContract = new Contract(
+  "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
+  ["function balanceOf(address _owner) view returns (uint256 balance)"],
+  provider
+);
+
+// get the balance at the given block height
+const getBalance = async (address: string, block: number) => {
+  try {
+    return (
+      await mntTokenContract.functions.balanceOf(address, {
+        blockTag: `0x${(+block).toString(16)}`,
+      })
+    ).balance;
+  } catch (e) {
+    throw e;
+  }
+};
 
 // update the voter with changed state
 const updateVoter = async (
@@ -60,8 +80,8 @@ const updateVoter = async (
 
     // get the corrected votes for this situation
     const newL2Votes = BigNumber.from(voteRecipient[votesProp] || "0")
-      .sub(entity.l2MntBalance || "0")
-      .add(newBalance || "0");
+      .add(newBalance || "0")
+      .sub(entity.l2MntBalance || "0");
 
     // set new balance value for sender
     entity.set("l2MntBalance", BigNumber.from(newBalance || "0"));
@@ -91,69 +111,66 @@ const updateVoter = async (
       )
     );
 
-    // save the changes
-    voteRecipient = await voteRecipient.save();
+    // update pointers for lastUpdate
+    voteRecipient.set("blockNumber", +tx.blockNumber);
+    voteRecipient.set("transactionHash", tx.hash || tx.transactionHash);
 
-    // if the entity is the recipient, make sure we don't lose data
-    if (entity.l2MntTo && getAddress(from) === getAddress(entity.l2MntTo)) {
-      entity = voteRecipient;
-    }
+    // save the changes
+    await voteRecipient.save();
   }
 };
 
 // get the balance data for a delegate
-const getDelegateBalances = (
+const getDelegateBalances = async (
   from: string,
   tx: TransactionReceipt & TransactionResponse,
   block: Block,
   direction: number
 ) => {
-  return async () => {
-    // load the entities involved in this tx
-    let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
+  // load the entities involved in this tx
+  let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
 
-    // set the entity with correct details
-    entity.block = block;
-    entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
+  // set the entity with correct details
+  entity.block = block;
+  entity.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
-    // get the balance before (this will only be applied if we already have the balance in the db)
-    let newBalance = entity.l2MntBalance || 0;
+  // get the balance before (this will only be applied if we already have the balance in the db)
+  let newBalance = entity.l2MntBalance || 0;
 
-    // get the current balance for this user as starting point
-    if (!entity.l2MntBalance) {
-      // get the balance for this user in this block (we don't need to sub anything if we get the fresh balance)
-      newBalance = await provider.getBalance(from, tx.blockNumber);
+  // get the current balance for this user as starting point
+  if (!entity.l2MntBalance) {
+    // get the balance for this user in this block (we don't need to sub anything if we get the fresh balance)
+    newBalance = await getBalance(from, tx.blockNumber);
+  } else {
+    if (direction === 0) {
+      // get the current l2Balance for the user (we want this post gas spend for this tx)
+      // newBalance = BigNumber.from(entity[balanceProp])
+      //   // remove value from tx
+      //   .sub(tx.value)
+      //   // remove the cost of the transaction
+      //   .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
+      //   // @ts-ignore
+      //   .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
+      newBalance = await getBalance(from, tx.blockNumber);
     } else {
-      if (direction === 0) {
-        // get the current l2Balance for the user (we want this post gas spend for this tx)
-        // newBalance = BigNumber.from(entity[balanceProp])
-        //   // remove value from tx
-        //   .sub(tx.value)
-        //   // remove the cost of the transaction
-        //   .sub(BigNumber.from(tx.gasUsed).mul(tx.gasPrice))
-        //   // @ts-ignore
-        //   .sub(BigNumber.from(tx.l1GasUsed).mul(tx.l1GasPrice));
-        newBalance = await provider.getBalance(from, tx.blockNumber);
-      } else {
-        // add the new value to the old balance (balance transfer added to users balance from tx.sender)
-        // newBalance = BigNumber.from(entity[balanceProp]).add(tx.value);
-        newBalance = await provider.getBalance(from, tx.blockNumber);
-      }
+      // add the new value to the old balance (balance transfer added to users balance from tx.sender)
+      // newBalance = BigNumber.from(entity[balanceProp]).add(tx.value);
+      newBalance = await getBalance(from, tx.blockNumber);
     }
+  }
 
-    // return the action with async parts resolved
-    return {
-      tx,
-      block,
-      direction,
-      delegator: from,
-      type: "TransactionHandler",
-      newBalance: BigNumber.from(newBalance || "0"),
-      // update pointers for lastUpdate
-      blockNumber: +tx.blockNumber,
-      transactionHash: tx.transactionHash || tx.hash,
-      transactionIndex: tx.transactionIndex,
-    };
+  // return the action with async parts resolved
+  return {
+    tx,
+    block,
+    direction,
+    delegator: from,
+    type: "TransactionHandler",
+    newBalance: BigNumber.from(newBalance || "0"),
+    // update pointers for lastUpdate
+    blockNumber: +tx.blockNumber,
+    transactionHash: tx.transactionHash || tx.hash,
+    transactionIndex: tx.transactionIndex,
   };
 };
 
@@ -172,7 +189,7 @@ const enqueueTransactionHandler = async (
     // only if the l2MntTo is set do we need to record l2 balance transfers (only record movements when we're not interacting with the delegation contract)
     if (entity.l2MntTo) {
       // if a promise rejects it will be reattempted - this is the safest way to handle async actions
-      enqueuePromise(getDelegateBalances(from, tx, block, direction));
+      enqueuePromise(() => getDelegateBalances(from, tx, block, direction));
     }
   }
 };

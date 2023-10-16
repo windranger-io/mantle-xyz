@@ -112,6 +112,9 @@ export const InitBalances = async (): Promise<Migration> => {
         );
         // place all discovered balances here prior to processing
         const balances = {};
+        // rebalance all l2 balances
+        const rebalanced = new Map<string, DelegateEntity>();
+
         // batch 500 addresses at a time into a multicall3 req to check MNT balances
         const mntTokenContract = new Contract(
           "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
@@ -127,6 +130,8 @@ export const InitBalances = async (): Promise<Migration> => {
           []) as Record<string, unknown>[];
         // record how many of these we're pulled from db
         const checkpointDelegatesStart = allDelegates.length;
+
+        console.log("All delegates at start:", checkpointDelegatesStart);
 
         // take from the parent checkpoint and add to the batch to make sure we have everything covered
         engine.stage.checkpoints[
@@ -154,7 +159,7 @@ export const InitBalances = async (): Promise<Migration> => {
         // group the delegates into batches of 250
         const batchedDelegates = createRanges(
           Object.values(indexed) as unknown[],
-          250
+          200
         );
 
         // pull the balances in batches via multicall to reduce number of calls and to prevent exhausting gas limit
@@ -185,80 +190,111 @@ export const InitBalances = async (): Promise<Migration> => {
               // index all balances by address
               balances[(batch[index] as { id: string }).id] = response;
             });
-          })
+          }),
+          50
         );
+
         console.log("All balances retrieved at blockNumber", +blockNumber);
 
         // place the correct balances against the entities (to recalculate the votes) sequentially to avoid race conditions
         for (const delegate of Object.keys(balances)) {
           // load the entity for this delegate
-          let entity = await Store.get<DelegateEntity>(
-            "Delegate",
-            getAddress(delegate)
-          );
-
-          // when delegation is set and not to burn address...
+          let entity = rebalanced.has(delegate)
+            ? rebalanced.get(delegate)
+            : ({
+                ...((
+                  await Store.get<DelegateEntity>(
+                    "Delegate",
+                    getAddress(delegate)
+                  )
+                ).valueOf() || {}),
+              } as DelegateEntity);
+          // run through everything and reassign true values
           if (
             entity.l2MntTo &&
-            entity.l2MntTo !== "0x0000000000000000000000000000000000000000" &&
-            // check if the recorded balance is correct
-            (!BigNumber.from(entity.l2MntBalance || "0").eq(
-              BigNumber.from(balances[delegate] || "0")
-            ) ||
-              entity.l2MntBalance === null ||
-              typeof entity.l2MntBalance === "undefined")
+            entity.l2MntTo !== "0x0000000000000000000000000000000000000000"
           ) {
             // fetch current delegation - we correct votes here
-            let toDelegate = await Store.get<DelegateEntity>(
-              "Delegate",
-              getAddress(entity.l2MntTo)
-            );
+            const toDelegate =
+              entity.l2MntTo === entity.id
+                ? entity
+                : rebalanced.has(entity.l2MntTo as string)
+                ? rebalanced.get(entity.l2MntTo as string)
+                : ({
+                    ...((
+                      await Store.get<DelegateEntity>(
+                        "Delegate",
+                        getAddress(entity.l2MntTo)
+                      )
+                    ).valueOf() || {}),
+                  } as DelegateEntity);
 
-            // set the correct values against the entities
-            toDelegate.set(
-              "votes",
-              BigNumber.from(toDelegate.votes || "0")
-                .sub(BigNumber.from(entity.l2MntBalance || "0"))
-                .add(BigNumber.from(balances[delegate] || "0"))
-            );
-            toDelegate.set(
-              "l2MntVotes",
-              BigNumber.from(toDelegate.l2MntVotes || "0")
-                .sub(BigNumber.from(entity.l2MntBalance || "0"))
-                .add(BigNumber.from(balances[delegate] || "0"))
-            );
-
-            // if theres no balance this is a new delegate and we need to register the counts
-            if (
-              entity.l2MntBalance === null ||
-              typeof entity.l2MntBalance === "undefined"
-            ) {
-              toDelegate.set(
-                "delegatorsCount",
-                BigNumber.from(toDelegate.delegatorsCount || "0").add(1)
+            // reset all values
+            if (!rebalanced.has(entity.l2MntTo)) {
+              // clear all values back to mnt and bit values
+              toDelegate.votes = BigNumber.from(toDelegate.mntVotes || "0").add(
+                BigNumber.from(toDelegate.bitVotes || "0")
               );
-              toDelegate.set(
-                "l2MntDelegatorsCount",
-                BigNumber.from(toDelegate.l2MntDelegatorsCount || "0").add(1)
-              );
+              toDelegate.delegatorsCount = BigNumber.from(
+                toDelegate.mntDelegatorsCount || "0"
+              ).add(BigNumber.from(toDelegate.bitDelegatorsCount || "0"));
+              // clear back to 0 (and rebuild)
+              toDelegate.l2MntVotes = BigNumber.from("0");
+              toDelegate.l2MntDelegatorsCount = BigNumber.from("0");
+              // set into rebalanced so that we dont clear it again
+              rebalanced.set(entity.l2MntTo, toDelegate);
             }
 
-            // update the entity
-            toDelegate = await toDelegate.save();
+            // set the correct values against the entities
+            toDelegate.votes = BigNumber.from(toDelegate.votes || "0").add(
+              BigNumber.from(balances[delegate] || "0")
+            );
+            toDelegate.l2MntVotes = BigNumber.from(
+              toDelegate.l2MntVotes || "0"
+            ).add(BigNumber.from(balances[delegate] || "0"));
+            // add 1 to the counts
+            toDelegate.delegatorsCount = BigNumber.from(
+              toDelegate.delegatorsCount || "0"
+            ).add(1);
+            toDelegate.l2MntDelegatorsCount = BigNumber.from(
+              toDelegate.l2MntDelegatorsCount || "0"
+            ).add(1);
 
             // check for self delegation
-            if (entity.id === toDelegate.id) {
+            if (entity.id === entity.l2MntTo) {
               entity = toDelegate;
             }
 
             // set new balance
-            entity.set("l2MntBalance", balances[delegate]);
+            entity.l2MntBalance = balances[delegate];
 
             // save the balance
-            entity = await entity.save();
+            rebalanced.set(entity.id, entity);
           }
         }
-        // count how big the checkpoint is now
+
+        // run through the delegates again and check for incorrect vote values which need to be replaced with the correct entity values
+        for (const delegate of Object.keys(balances)) {
+          // load the entity for this delegate
+          const entity = await Store.get<DelegateEntity>(
+            "Delegate",
+            getAddress(delegate)
+          );
+          // retrieve the corrosponding newEntity
+          const newEntity = rebalanced.get(delegate);
+          // when delegation is set and not to burn address...
+          if (newEntity && entity.votes !== newEntity.votes) {
+            // make the change
+            entity.replace({
+              ...newEntity,
+              blockNumber,
+            });
+            // save the changes (with block/timestamp set to now)
+            await entity.save();
+          }
+        }
+
+        // check how big the checkpoint is now
         const checkpointEnd =
           engine.stage.checkpoints[engine.stage.checkpoints.length - 1]
             .keyValueMap.size;
@@ -271,6 +307,7 @@ export const InitBalances = async (): Promise<Migration> => {
           updatedEntries: checkpointEnd - checkpointStart,
         });
       }
+
       // mark as ran
       hasRunBalanceInit = true;
     },

@@ -20,6 +20,8 @@ export const config: SyncConfig = {
   cleanup: true,
   // listen for updates as a daemon operation
   listen: true,
+  // set multithread to spawn child_processes to handle block & tx fetching in listen-mode
+  multithread: withDefault(process.env.SUPAGRAPH_MULTITHREAD, false),
   // hide console log
   silent: false,
   // set readOnly mode
