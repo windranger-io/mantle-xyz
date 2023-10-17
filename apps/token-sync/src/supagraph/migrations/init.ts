@@ -85,12 +85,6 @@ export const InitTransactionHandler = async (): Promise<Migration> => {
 
 // Initiate an L2 balance correction handler
 export const InitBalances = async (): Promise<Migration> => {
-  // get the current multicall contract (same address on L1 and L2 (and mainnet and goerli if we want to use this there))
-  const multicall = await getMulticallContract(
-    "0xcA11bde05977b3631167028862bE2a173976CA11",
-    L2Provider
-  );
-
   // return handler to correct any mistakes in the L2 balance handling
   return {
     chainId: withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001),
@@ -98,6 +92,12 @@ export const InitBalances = async (): Promise<Migration> => {
     handler: async (blockNumber: number) => {
       // retrieve engine to call db directly
       const engine = await getEngine();
+
+      // get the current multicall contract (same address on L1 and L2 (and mainnet and goerli if we want to use this there))
+      const multicall = await getMulticallContract(
+        "0xcA11bde05977b3631167028862bE2a173976CA11",
+        L2Provider
+      );
 
       // finish supagraphs log
       if (!hasRunTxInit && !hasRunBalanceInit) process.stdout.write("...");

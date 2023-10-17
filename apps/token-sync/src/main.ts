@@ -43,6 +43,7 @@ app.listen(withDefault(process.env.PORT, 8000), async () => {
     // if we exit more than 999999999 times, we will need to manually restart the app (when deployed via railway.app)
     process.exit(1);
   });
-  // start the sync operation (no need to await - it will run forever)
-  start();
 });
+
+// start the sync operation (no need to await - it will run forever)
+start();

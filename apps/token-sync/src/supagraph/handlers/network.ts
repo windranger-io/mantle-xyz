@@ -209,10 +209,5 @@ export const TransactionHandlerPostProcessing = async (item: {
   direction: number;
 }) => {
   // process these sequentially via a `withPromises` handler
-  await updateVoter(
-    item.delegator,
-    item.newBalance,
-    item.tx,
-    item.block
-  );
+  await updateVoter(item.delegator, item.newBalance, item.tx, item.block);
 };
