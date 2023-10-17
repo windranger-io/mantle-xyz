@@ -23,7 +23,7 @@ export const config: SyncConfig = {
   // set multithread to spawn child_processes to handle block & tx fetching in listen-mode
   multithread: withDefault(process.env.SUPAGRAPH_MULTITHREAD, false),
   // hide console log
-  silent: false,
+  silent: withDefault(process.env.SUPAGRAPH_SILENT, false),
   // set readOnly mode
   readOnly: false,
   // collect blocks to sort by ts
