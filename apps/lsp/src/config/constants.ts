@@ -48,7 +48,7 @@ export const AMOUNT_MAX_DISPLAY_DIGITS = 10;
 
 export const GRAPHQL_URL =
   CHAIN_ID === 5
-    ? "https://indexer-goerli.up.railway.app/"
+    ? "https://lsd-indexer.qa.gomantle.org/"
     : "https://lsd-indexer.mantle.xyz/";
 
 // Get the current absolute path from the env
