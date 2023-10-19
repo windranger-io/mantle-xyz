@@ -7,8 +7,8 @@
     "dev:token": "tsx watch src/main.ts",
     "test": "echo 'Running token tests'",
     "build": "esbuild src/main.ts --bundle --platform=node --outfile=dist/main.js --loader:.node=file",
-    "start": "NODE_ENV=production node --expose_gc ./dist/main.js",
-    "inspect": "pnpm run build && NODE_ENV=production node --inspect --expose_gc ./dist/main.js",
+    "start": "NODE_ENV=production node ./dist/main.js",
+    "inspect": "pnpm run build && NODE_ENV=production node --inspect ./dist/main.js",
     "clean": "rm -rf dist",
     "lint": "eslint --ext .ts ./src",
     "lint:fix": "eslint --ext .ts ./src --fix"
