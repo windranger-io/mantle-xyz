@@ -19,11 +19,6 @@ import { config } from "@supagraph/config";
 // import local types used here
 import { DelegateEntity } from "@supagraph/types";
 
-// construct the provider once
-const L2Provider = new JsonRpcProvider(
-  config.providers[withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001)].rpcUrl
-);
-
 // mark as started after first run
 let hasRunTxInit = false;
 let hasRunBalanceInit = false;
@@ -92,6 +87,13 @@ export const InitBalances = async (): Promise<Migration> => {
     handler: async (blockNumber: number) => {
       // retrieve engine to call db directly
       const engine = await getEngine();
+
+      // construct the provider once
+      const L2Provider = new JsonRpcProvider(
+        config.providers[
+          withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001)
+        ].rpcUrl
+      );
 
       // get the current multicall contract (same address on L1 and L2 (and mainnet and goerli if we want to use this there))
       const multicall = await getMulticallContract(

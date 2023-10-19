@@ -19,21 +19,21 @@ import { config } from "@supagraph/config";
 // Import types for defined entities
 import type { DelegateEntity } from "@supagraph/types";
 
-// construct the provider once
-const provider = new JsonRpcProvider(
-  config.providers[withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001)].rpcUrl
-);
-
-// produce an ethers contract to check balances against
-const mntTokenContract = new Contract(
-  "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
-  ["function balanceOf(address _owner) view returns (uint256 balance)"],
-  provider
-);
-
 // get the balance at the given block height
 const getBalance = async (address: string, block: number) => {
   try {
+    // construct the provider once
+    const provider = new JsonRpcProvider(
+      config.providers[withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001)].rpcUrl
+    );
+
+    // produce an ethers contract to check balances against
+    const mntTokenContract = new Contract(
+      "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
+      ["function balanceOf(address _owner) view returns (uint256 balance)"],
+      provider
+    );
+
     return (
       await mntTokenContract.functions.balanceOf(address, {
         blockTag: `0x${(+block).toString(16)}`,

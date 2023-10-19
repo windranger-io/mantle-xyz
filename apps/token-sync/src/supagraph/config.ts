@@ -20,12 +20,14 @@ export const config: SyncConfig = {
   cleanup: true,
   // listen for updates as a daemon operation
   listen: true,
-  // set multithread to spawn child_processes to handle block & tx fetching in listen-mode
-  multithread: withDefault(process.env.SUPAGRAPH_MULTITHREAD, false),
   // hide console log
   silent: withDefault(process.env.SUPAGRAPH_SILENT, false),
-  // set readOnly mode
-  readOnly: false,
+  // set to ingester only mode (only saves data if cleanup is false)
+  noop: withDefault(process.env.SUPAGRAPH_NOOP, false),
+  // set multithread to spawn child_processes to handle block & tx fetching when listen: true
+  multithread: withDefault(process.env.SUPAGRAPH_MULTITHREAD, false),
+  // set readOnly mode - disables writes to mongodb
+  readOnly: withDefault(process.env.SUPAGRAPH_READONLY, false),
   // collect blocks to sort by ts
   collectBlocks: true,
   // flag mutable to insert by upsert only on id field (mutate entities)
