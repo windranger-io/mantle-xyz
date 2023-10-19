@@ -874,8 +874,8 @@ importers:
         specifier: 5.9.0
         version: registry.npmjs.org/mongodb@5.9.0
       supagraph:
-        specifier: 0.0.1-rc.45
-        version: registry.npmjs.org/supagraph@0.0.1-rc.45
+        specifier: 0.0.1-rc.46
+        version: registry.npmjs.org/supagraph@0.0.1-rc.46
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -14315,6 +14315,15 @@ packages:
     version: 1.0.3
     dev: false
 
+  registry.npmjs.org/cron-parser@4.9.0:
+    resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/cron-parser/-/cron-parser-4.9.0.tgz}
+    name: cron-parser
+    version: 4.9.0
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      luxon: registry.npmjs.org/luxon@3.4.3
+    dev: false
+
   registry.npmjs.org/cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/cross-spawn/-/cross-spawn-7.0.3.tgz}
     name: cross-spawn
@@ -15080,6 +15089,7 @@ packages:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.10.tgz}
     name: graceful-fs
     version: 4.2.10
+    requiresBuild: true
     dev: true
 
   registry.npmjs.org/graphql-scalars@1.21.3(graphql@16.6.0):
@@ -15406,6 +15416,13 @@ packages:
     resolution: {integrity: sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/lru-cache/-/lru-cache-7.18.3.tgz}
     name: lru-cache
     version: 7.18.3
+    engines: {node: '>=12'}
+    dev: false
+
+  registry.npmjs.org/luxon@3.4.3:
+    resolution: {integrity: sha512-tFWBiv3h7z+T/tDaoxA8rqTxy1CHV6gHS//QdaH4pulbq/JuBSGgQspQQqcgnwdAx6pNI7cmvz5Sv/addzHmUg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/luxon/-/luxon-3.4.3.tgz}
+    name: luxon
+    version: 3.4.3
     engines: {node: '>=12'}
     dev: false
 
@@ -16081,12 +16098,13 @@ packages:
       ts-interface-checker: registry.npmjs.org/ts-interface-checker@0.1.13
     dev: false
 
-  registry.npmjs.org/supagraph@0.0.1-rc.45:
-    resolution: {integrity: sha512-QGYNDENJcmf2GzvPAe0OSKDV49UO3BEAWzN/TfOVE4OWvTBc3pN3Xcf3DymyWA2ulLFQxBijlsCQula9G6A/Dw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.45.tgz}
+  registry.npmjs.org/supagraph@0.0.1-rc.46:
+    resolution: {integrity: sha512-7+RvqajJ6J3+c7CRYeqwHXhfbQK6PEIVoOVC8+2yQXJsM1JuIyNPO0TpOrDb1gsIajtIoZ6b31XBCAD2W686KA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.46.tgz}
     name: supagraph
-    version: 0.0.1-rc.45
+    version: 0.0.1-rc.46
     dependencies:
       '@graphql-yoga/render-graphiql': registry.npmjs.org/@graphql-yoga/render-graphiql@3.8.0(graphql-yoga@3.8.0)
+      cron-parser: registry.npmjs.org/cron-parser@4.9.0
       csv-parser: registry.npmjs.org/csv-parser@3.0.0
       csv-write-stream: registry.npmjs.org/csv-write-stream@2.0.0
       dotenv: registry.npmjs.org/dotenv@16.3.1

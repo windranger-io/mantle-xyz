@@ -15,7 +15,7 @@ import { migrations } from "@supagraph/migrations";
 // construct the sync call
 const syncLogic = async () => {
   // Switch out the engine for development to avoid the mongo requirment locally
-  await setEngine({
+  const engine = await setEngine({
     // name the connection
     name: config.name,
     // db is dependent on state
@@ -48,6 +48,21 @@ const syncLogic = async () => {
     // insert config and handlers via sync (this will be merged with in memory syncs)
     config,
     handlers,
+    // apply operations according to a cron schedule (applicable in listen-mode only)
+    schedule: [
+      {
+        // @ half past on every hour - 30 */1 * * *
+        // @ every 10 minutes (6 times per hour) - */10 * * * *
+        expr: "*/10 * * * *",
+        // stop execution and throw every 10 minutes to clear memory and run startup migrations again
+        handler: () => {
+          // mark as error to hit onError and terminate
+          engine.error = "\n\nScheduled restart\n\n";
+          // end process on the minute mark
+          engine.close();
+        },
+      },
+    ],
     // setup the imported migrations
     migrations: await migrations(),
     // construct error handler to exit the process on error
@@ -77,7 +92,9 @@ export async function start() {
     // this can help with memory / garbage collection issues during long running processes and aid in self-recovery
     await syncLogic();
   } catch (err) {
+    // something went wrong...
     console.error("[SERVER ERROR - STOP]:", err);
+    // stop when the logic throws
     process.exit(1);
   }
 }
