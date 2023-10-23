@@ -24,7 +24,10 @@ import { startups } from "@supagraph/startup";
 import { migrations } from "@supagraph/migrations";
 
 // should we print dumps?
-const PRINT_DUMPS = withDefault(process.env.SUPAGRAPH_PRINT_DUMPS, false);
+const PRINT_DUMPS = withDefault(
+  process.env.SUPAGRAPH_PRINT_DUMP_EVERY_MIN,
+  false
+);
 
 // print a heap dump to check for memory leaks (disabled when SUPAGRAPH_PRINT_DUMPS = "false")
 const v8Print = (message: string) => {
@@ -51,7 +54,7 @@ const v8Print = (message: string) => {
 // construct the sync call
 const syncLogic = async () => {
   // Switch out the engine for development to avoid the mongo requirment locally
-  await setEngine({
+  const engine = await setEngine({
     // name the connection
     name: config.name,
     // db is dependent on state
@@ -93,7 +96,16 @@ const syncLogic = async () => {
             expr: "*/1 * * * *",
             // print a heap dump every minute
             handler: async () => {
+              // tidy up log stagements
+              if (!engine.flags.silent) process.stdout.write("...\n");
+              // print the detailed dump
               v8Print("1 minute heap dump");
+              // mark successful g/c run
+              if (global.gc && !engine.flags.silent)
+                process.stdout.write("\nGarbage collected ✔");
+              // reprint the Function processed line...
+              if (!engine.flags.silent)
+                process.stdout.write("\nFunction processed ");
             },
           }
         : undefined,
