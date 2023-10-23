@@ -53,23 +53,23 @@ export const contracts: Record<number, ContractConfig> = {
   },
   5: {
     [ContractName.Staking]: {
-      address: "0xEB5812Ee87bE867375C7B2B6DEEC1424E0b6184d",
+      address: "0x33A5fa3C07AB3AFCC2112d24A4076BA8ABCE21fE",
       abi: stakingABI,
     },
     [ContractName.METH]: {
-      address: "0x84e3C88fb1656e4beE355b9d248e5D60003228F5",
+      address: "0xc7fcE3be043601032e22267978b4A91438765315",
       abi: methABI,
     },
     [ContractName.Oracle]: {
-      address: "0xe70d89506d8B6a12276a816b58138031A5C94deb",
+      address: "0x0799E7dfC6CC666A6643299ab86BB5811fA80209",
       abi: oracleABI,
     },
     [ContractName.ReturnsAggregator]: {
-      address: "0xD237CDFD9FeF28a4b558e08D1f4F4D4A636664E6",
+      address: "0xD04464efd4c79a563925F058497D85A404F2C97d",
       abi: returnsAggregatorABI,
     },
     [ContractName.Pauser]: {
-      address: "0x62c5974312F91CD23Af85F19c0bcc612B711B9e0",
+      address: "0x989a800b6FC81E39d8988bE4427A3aCCbe40C3e4",
       abi: pauserABI,
     },
   },
