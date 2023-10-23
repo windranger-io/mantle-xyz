@@ -1,3 +1,1 @@
 # Mantle Liquid Staking
-
-# Mantle
