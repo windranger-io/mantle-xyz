@@ -1,5 +1,16 @@
+// use v8 to give detailed reports on memory usage
+import v8 from "v8";
+
 // import supagraph tooling
-import { DB, Mongo, SyncConfig, sync, setEngine } from "supagraph";
+import {
+  DB,
+  Mongo,
+  SyncConfig,
+  sync,
+  setEngine,
+  resetEngine,
+  withDefault,
+} from "supagraph";
 
 // import mongo client factory
 import { getMongodb } from "@providers/mongoClient";
@@ -12,10 +23,35 @@ import { handlers } from "@supagraph/handlers";
 import { startups } from "@supagraph/startup";
 import { migrations } from "@supagraph/migrations";
 
+// should we print dumps?
+const PRINT_DUMPS = withDefault(process.env.SUPAGRAPH_PRINT_DUMPS, false);
+
+// print a heap dump to check for memory leaks (disabled when SUPAGRAPH_PRINT_DUMPS = "false")
+const v8Print = (message: string) => {
+  // when node is started with --expose-gc
+  if (global.gc) {
+    // call gc first
+    global.gc();
+    // collect heap stats
+    const heapStats = v8.getHeapStatistics();
+    const heapStatsMB = heapStats;
+    for (const key in heapStatsMB) {
+      heapStatsMB[key] = `${(
+        ((heapStatsMB[key] / 1024 / 1024) * 100) /
+        100
+      ).toFixed(2)} MB`;
+    }
+    console.log("");
+    console.log(message);
+    console.table(heapStatsMB);
+    console.log("");
+  }
+};
+
 // construct the sync call
 const syncLogic = async () => {
   // Switch out the engine for development to avoid the mongo requirment locally
-  const engine = await setEngine({
+  await setEngine({
     // name the connection
     name: config.name,
     // db is dependent on state
@@ -50,19 +86,18 @@ const syncLogic = async () => {
     handlers,
     // apply operations according to a cron schedule (applicable in listen-mode only)
     schedule: [
-      {
-        // @ half past on every hour - 30 */1 * * *
-        // @ every 10 minutes (6 times per hour) - */10 * * * *
-        expr: "*/10 * * * *",
-        // stop execution and throw every 10 minutes to clear memory and run startup migrations again
-        handler: () => {
-          // mark as error to hit onError and terminate
-          engine.error = "\n\nScheduled restart\n\n";
-          // end process on the minute mark
-          engine.close();
-        },
-      },
-    ],
+      // print heap dumps when enabled
+      PRINT_DUMPS
+        ? {
+            // @ every 1 minutes (60 times per hour) - */1 * * * *
+            expr: "*/1 * * * *",
+            // print a heap dump every minute
+            handler: async () => {
+              v8Print("1 minute heap dump");
+            },
+          }
+        : undefined,
+    ].filter((v) => v),
     // setup the imported migrations
     migrations: await migrations(),
     // construct error handler to exit the process on error

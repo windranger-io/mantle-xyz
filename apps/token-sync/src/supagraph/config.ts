@@ -22,12 +22,17 @@ export const config: SyncConfig = {
   listen: true,
   // hide console log
   silent: withDefault(process.env.SUPAGRAPH_SILENT, false),
-  // set to ingester only mode (only saves data if cleanup is false)
-  noop: withDefault(process.env.SUPAGRAPH_NOOP, false),
-  // set multithread to spawn child_processes to handle block & tx fetching when listen: true
-  multithread: withDefault(process.env.SUPAGRAPH_MULTITHREAD, false),
   // set readOnly mode - disables writes to mongodb
   readOnly: withDefault(process.env.SUPAGRAPH_READONLY, false),
+  // number of workers to dedicate to block processing
+  numBlockWorkers: withDefault(process.env.SUPAGRAPH_BLOCK_WORKERS, 12),
+  // number of workers to dedicate to transaction processing
+  numTransactionWorkers: withDefault(process.env.SUPAGRAPH_TX_WORKERS, 32),
+  // should the heap_dumps and errors be reported in the ingestion process (we can safely ignore errors in prod)
+  printIngestionErrors: withDefault(
+    process.env.SUPAGRAPH_INGESTION_LOGS,
+    false
+  ),
   // collect blocks to sort by ts
   collectBlocks: true,
   // flag mutable to insert by upsert only on id field (mutate entities)
