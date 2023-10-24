@@ -16,12 +16,12 @@ export const WarmupDelegates = async () => {
       ((await engine.db.get("delegate")) as Record<string, unknown>[]) || [];
 
     // printing result
-    console.log("Got all delegates:", allDelegates.length);
+    console.log("\nGot all delegates:", allDelegates.length, "\n\n--");
 
     // mark as warm (this will prevent going to db for missing values (assumes everything is already in cache))
     engine.warmDb = true;
   } catch {
     // if not found log that we're starting new (this state is handled internally)
-    console.log("No delegates found, starting fresh db");
+    console.log("\nNo delegates found, starting fresh db\n\n--");
   }
 };
