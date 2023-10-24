@@ -1,4 +1,4 @@
-// We use BigNumber to handle all numeric operations
+// We use BigNumber to handle all numerical operations
 import { BigNumber, Contract } from "ethers";
 import { getAddress } from "ethers/lib/utils";
 
