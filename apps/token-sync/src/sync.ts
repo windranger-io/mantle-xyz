@@ -1,6 +1,3 @@
-// use v8 to give detailed reports on memory usage
-import v8 from "v8";
-
 // import supagraph tooling
 import {
   DB,
@@ -8,8 +5,8 @@ import {
   SyncConfig,
   sync,
   setEngine,
-  resetEngine,
   withDefault,
+  withHeapDump,
 } from "supagraph";
 
 // import mongo client factory
@@ -28,28 +25,6 @@ const PRINT_DUMPS = withDefault(
   process.env.SUPAGRAPH_PRINT_DUMP_EVERY_MIN,
   false
 );
-
-// print a heap dump to check for memory leaks (disabled when SUPAGRAPH_PRINT_DUMPS = "false")
-const v8Print = (message: string) => {
-  // when node is started with --expose-gc
-  if (global.gc) {
-    // call gc first
-    global.gc();
-    // collect heap stats
-    const heapStats = v8.getHeapStatistics();
-    const heapStatsMB = heapStats;
-    for (const key in heapStatsMB) {
-      heapStatsMB[key] = `${(
-        ((heapStatsMB[key] / 1024 / 1024) * 100) /
-        100
-      ).toFixed(2)} MB`;
-    }
-    console.log("");
-    console.log(message);
-    console.table(heapStatsMB);
-    console.log("");
-  }
-};
 
 // construct the sync call
 const syncLogic = async () => {
@@ -96,16 +71,23 @@ const syncLogic = async () => {
             expr: "*/1 * * * *",
             // print a heap dump every minute
             handler: async () => {
-              // tidy up log stagements
-              if (!engine.flags.silent) process.stdout.write("...\n");
-              // print the detailed dump
-              v8Print("1 minute heap dump");
-              // mark successful g/c run
-              if (global.gc && !engine.flags.silent)
-                process.stdout.write("\nGarbage collected ✔");
-              // reprint the Function processed line...
-              if (!engine.flags.silent)
+              // when not running in silent mode...
+              if (!engine.flags.silent) {
+                // continue supagraphs last statement ("Function processed ")
+                process.stdout.write("...\n");
+                // use supagraph/utils/withHeapDump to print a summary of the heap
+                withHeapDump("1 minute heap dump", engine.flags.silent);
+                // mark successful/failed g/c run
+                process.stdout.write(
+                  `\nGarbage collected ${
+                    global.gc
+                      ? "✔"
+                      : "X (\x1b[3mrun node with --expose-gc to enable\x1b[0m)"
+                  }`
+                );
+                // reprint the Function processed line...
                 process.stdout.write("\nFunction processed ");
+              }
             },
           }
         : undefined,
