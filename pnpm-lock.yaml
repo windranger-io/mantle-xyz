@@ -874,8 +874,8 @@ importers:
         specifier: 5.9.0
         version: registry.npmjs.org/mongodb@5.9.0
       supagraph:
-        specifier: 0.0.1-rc.59
-        version: registry.npmjs.org/supagraph@0.0.1-rc.59
+        specifier: 0.0.1-rc.60
+        version: registry.npmjs.org/supagraph@0.0.1-rc.60
     devDependencies:
       '@mantle/eslint-config-next':
         specifier: workspace:*
@@ -16098,10 +16098,10 @@ packages:
       ts-interface-checker: registry.npmjs.org/ts-interface-checker@0.1.13
     dev: false
 
-  registry.npmjs.org/supagraph@0.0.1-rc.59:
-    resolution: {integrity: sha512-/C7N3zQ0XS3gHp//u+NhFwydspN9psBUgMWcCoORaqfu7DVAxY/iKCO1F+aV/xjBfW4jHmC1qCd+kbM0XFzOWw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.59.tgz}
+  registry.npmjs.org/supagraph@0.0.1-rc.60:
+    resolution: {integrity: sha512-ayFVNMNiygBse2Ny90kEgA5yJj12rqicU4cmd1dQ/UaF4BRvx5mavN5yk3MTXfa36n2klNxi0XiyKfCFeoG8wg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/supagraph/-/supagraph-0.0.1-rc.60.tgz}
     name: supagraph
-    version: 0.0.1-rc.59
+    version: 0.0.1-rc.60
     dependencies:
       '@graphql-yoga/render-graphiql': registry.npmjs.org/@graphql-yoga/render-graphiql@3.8.0(graphql-yoga@3.8.0)
       cron-parser: registry.npmjs.org/cron-parser@4.9.0
