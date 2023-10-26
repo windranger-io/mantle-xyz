@@ -41,10 +41,8 @@ export const handlers: Handlers = {
   internal: {
     // post event handled after all events in sync have been ran
     withPromises: async (queue: Promise<unknown>[]) => {
-      // fetch engine
-      const engine = await getEngine();
       // on first-run we noop the promise queue because it contains only balance-updates which will have already been correctly placed by the init-Balances migration handler
-      if (!hasRun && !engine.newDb) {
+      if (!hasRun) {
         // ignore the promiseQueue and end the process update
         process.stdout.write("\n--\n\nEvents processed ");
         // mark as ran - for all future encounters we want to process the items to accept balance transfers...

@@ -52,9 +52,7 @@ export const InitTransactionHandler = async (): Promise<Migration> => {
       console.log(
         `${
           !hasRunBalanceInit ? "\n" : ""
-        }\n--\n\nStartup one-time migration event to addSync a new listener to collect blocks after initial sync completes...${
-          engine.newDb ? "\n\n--\n\n" : ""
-        }`
+        }\n--\n\nStartup one-time migration event to addSync a new listener to collect transactions on L2 after initial sync completes...`
       );
       // mark as ran
       hasRunTxInit = true;
