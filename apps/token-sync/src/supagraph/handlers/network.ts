@@ -82,7 +82,7 @@ const updateVoter = async (
 
   // update pointers for lastUpdate
   entity.set("blockNumber", +tx.blockNumber);
-  entity.set("transactionHash", tx.hash || tx.transactionHash);
+  entity.set("transactionHash", tx.transactionHash || tx.hash);
 
   // save the changes (in to the checkpoint - this doesnt cost us anything on the network yet)
   entity = await entity.save();
@@ -107,7 +107,7 @@ const updateVoter = async (
 
   // update pointers for lastUpdate
   voteRecipient.set("blockNumber", +tx.blockNumber);
-  voteRecipient.set("transactionHash", tx.hash || tx.transactionHash);
+  voteRecipient.set("transactionHash", tx.transactionHash || tx.hash);
 
   // save the changes
   await voteRecipient.save();
