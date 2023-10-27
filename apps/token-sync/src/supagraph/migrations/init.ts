@@ -44,8 +44,6 @@ export const InitTransactionHandler = async (): Promise<Migration> => {
     chainId: withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001),
     blockNumber: "latest",
     handler: async () => {
-      // get the engine
-      const engine = await getEngine();
       // finish supagraphs log
       if (!hasRunTxInit && !hasRunBalanceInit) process.stdout.write("...");
       // log that migration is starting
@@ -190,7 +188,7 @@ export const InitBalances = async (): Promise<Migration> => {
           const calls = batch.map((item: { id: string }) => {
             return {
               contract: mntTokenContract,
-              target: "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000" as string,
+              target: "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
               fns: [
                 {
                   fn: "balanceOf",
