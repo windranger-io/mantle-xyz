@@ -39,20 +39,9 @@ const L2Provider = new JsonRpcProvider(
   config.providers[withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001)].rpcUrl
 );
 
-// produce an ethers contract to check balances against
-const mntTokenContract = new Contract(
-  "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
-  ["function balanceOf(address _owner) view returns (uint256 balance)"],
-  L2Provider
-);
-
 // get the balance at the given block height
 const getBalance = async (address: string, block: number) => {
-  return (
-    await mntTokenContract.functions.balanceOf(address, {
-      blockTag: `0x${(+block).toString(16)}`,
-    })
-  ).balance;
+  return L2Provider.getBalance(address, `0x${(+block).toString(16)}`);
 };
 
 // update sync pointers and save

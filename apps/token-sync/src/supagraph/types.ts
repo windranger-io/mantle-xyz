@@ -44,7 +44,7 @@ export type OwnershipTransferredEvent = {
 export type TransferEvent = {
   from: string;
   to: string;
-  value: string;
+  value: BigNumber;
 };
 
 // Delegate entity definition
