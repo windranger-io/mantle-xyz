@@ -60,12 +60,14 @@ export const config: SyncConfig = {
   // register events into named groups
   events: {
     tokenl1: [
-      "event Transfer(address indexed from, address indexed to, uint256 value)",
-      "event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance)",
       "event DelegateChanged(address indexed delegator, address indexed fromDelegate, address indexed toDelegate)",
+      "event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance)",
     ],
     tokenl2: [
       "event DelegateChanged(address indexed delegator, address indexed fromDelegate, address indexed toDelegate)",
+    ],
+    nativeTokenl2: [
+      "event Transfer(address indexed from, address indexed to, uint256 value)",
     ],
   },
   // configure available Contracts and their block details

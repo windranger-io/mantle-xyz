@@ -17,7 +17,7 @@ import { Store, enqueuePromise, withDefault } from "supagraph";
 import { config } from "@supagraph/config";
 
 // Import types for defined entities
-import type { DelegateEntity } from "@supagraph/types";
+import type { DelegateEntity, TransferEvent } from "@supagraph/types";
 
 // get the balance at the given block height
 const getBalance = async (address: string, block: number) => {
@@ -187,12 +187,25 @@ const enqueueTransactionHandler = async (
   }
 };
 
+// Handler to consume Transfer Log events for known delegates
+export const TransferHandler = async (
+  args: TransferEvent,
+  { tx, block }: { tx: TransactionReceipt & TransactionResponse; block: Block }
+) => {
+  // console.log("transfer: from", args.from, "to", args.to, "for", args.value.toString());
+  // update sender (if they are delegating)
+  await enqueueTransactionHandler(args.from, tx, block, 0);
+
+  // update the recipient (if they are delegating)
+  if (args.to) await enqueueTransactionHandler(args.to, tx, block, 1);
+};
+
 // Handler to consume Transfer events for known delegates
 export const TransactionHandler = async (
   _: unknown,
   { tx, block }: { tx: TransactionReceipt & TransactionResponse; block: Block }
 ) => {
-  // console.log("transfer: from", args.from, "to", args.to, "for", args.value.toString());
+  // console.log("transfer: from", tx.from, "to", tx.to, "for", tx.value.toString());
   // update sender (if they are delegating)
   await enqueueTransactionHandler(tx.from, tx, block, 0);
 

@@ -3,6 +3,7 @@ import { Handlers, getEngine, withDefault } from "supagraph";
 
 // Import the handlers
 import {
+  TransferHandler,
   TransactionHandler,
   TransactionHandlerPostProcessing,
 } from "./network";
@@ -27,6 +28,9 @@ export const handlers: Handlers = {
   [withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001)]: {
     // eventName -> handler()
     onTransaction: TransactionHandler,
+  },
+  nativeTokenl2: {
+    Transfer: TransferHandler,
   },
   tokenl1: {
     // eventName -> handler()

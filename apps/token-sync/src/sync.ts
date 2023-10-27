@@ -2,12 +2,14 @@
 import {
   DB,
   Mongo,
-  SyncConfig,
   sync,
   setEngine,
   withDefault,
   withHeapDump,
 } from "supagraph";
+
+// Import types we'll use here
+import type { SyncConfig } from "supagraph";
 
 // import mongo client factory
 import { getMongodb } from "@providers/mongoClient";

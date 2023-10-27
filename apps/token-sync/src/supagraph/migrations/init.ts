@@ -56,12 +56,33 @@ export const InitTransactionHandler = async (): Promise<Migration> => {
       );
       // mark as ran
       hasRunTxInit = true;
-      // add the sync after catchup
+      // add a sync after catchup to watch for all transactions - we want to keep spender balance up to date
       await addSync({
         chainId: withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001),
         handlers: `${withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001)}`,
         // process each transaction globally - we need to observe every value transfer for our delegates
         eventName: "onTransaction",
+        // establish the point we want to start and stop syncing from
+        startBlock: "latest",
+        endBlock: withDefault(process.env.L2_MANTLE_END_BLOCK, "latest"),
+        opts: {
+          // set the mode as ephemeral to delete the sync between startups
+          mode: "ephemeral",
+          // collect receipts to gather gas usage
+          collectTxReceipts: true,
+        },
+      });
+      // check transfers on the nativeToken - these are logged when contracts spend EOAs native MNT tokens
+      await addSync({
+        chainId: withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001),
+        // against the native token handlers
+        handlers: "nativeTokenl2",
+        // pick up abis from nativeTokenl2 abi group
+        events: "nativeTokenl2",
+        // use native MNT token address to gather events
+        address: "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
+        // process each transaction globally - we need to observe every value transfer for our delegates
+        eventName: "Transfer",
         // establish the point we want to start and stop syncing from
         startBlock: "latest",
         endBlock: withDefault(process.env.L2_MANTLE_END_BLOCK, "latest"),
