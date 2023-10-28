@@ -321,9 +321,16 @@ export const InitBalances = async (): Promise<Migration> => {
         // when delegation is set and not to burn address...
         if (
           newEntity &&
-          !BigNumber.from(entity.votes || "0").eq(
+          // check if the vote has changed on the newEntity
+          (!BigNumber.from(entity.votes || "0").eq(
             BigNumber.from(newEntity.votes || "0")
-          )
+          ) ||
+            // record any voters new l2MntBalances so future handlers start working from the correct starting point
+            (entity.l2MntTo &&
+              entity.l2MntTo !== "0x0000000000000000000000000000000000000000" &&
+              !BigNumber.from(entity.l2MntBalance || "0").eq(
+                BigNumber.from(newEntity.l2MntBalance || "0")
+              )))
         ) {
           // make the change
           entity.replace({
