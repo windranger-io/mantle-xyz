@@ -24,9 +24,18 @@ const provider = new JsonRpcProvider(
   config.providers[withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001)].rpcUrl
 );
 
+// produce an ethers contract to check balances against
+const mntTokenContract = new Contract(
+  "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
+  ["function balanceOf(address _owner) view returns (uint256 balance)"],
+  provider
+);
+
 // get the balance at the given block height
 const getBalance = async (address: string, block: number) => {
-  return provider.getBalance(address, `0x${(+block).toString(16)}`);
+  return mntTokenContract.balanceOf(address, {
+    blockTag: `0x${(+block).toString(16)}`,
+  });
 };
 
 // update the voter with changed state
@@ -36,10 +45,6 @@ const updateVoter = async (
   tx: TransactionReceipt & TransactionResponse,
   block: Block
 ) => {
-  // define token specific props
-  const votesProp = "l2MntVotes";
-  const otherVotesProps = ["mntVotes", "bitVotes"];
-
   // fetch entity
   let entity = await Store.get<DelegateEntity>("Delegate", getAddress(from));
 
@@ -58,9 +63,9 @@ const updateVoter = async (
   voteRecipient.chainId = withDefault(process.env.L2_MANTLE_CHAIN_ID, 5001);
 
   // get the corrected votes for this situation
-  const newL2Votes = BigNumber.from(voteRecipient[votesProp] || "0")
-    .add(newBalance || "0")
-    .sub(entity.l2MntBalance || "0");
+  const newL2Votes = BigNumber.from(voteRecipient.l2MntVotes || "0")
+    .sub(entity.l2MntBalance || "0")
+    .add(newBalance || "0");
 
   // set new balance value for sender
   entity.set("l2MntBalance", BigNumber.from(newBalance || "0"));
@@ -78,13 +83,13 @@ const updateVoter = async (
   }
 
   // update the votes for l2
-  voteRecipient.set(votesProp, newL2Votes);
+  voteRecipient.set("l2MntVotes", newL2Votes);
 
   // votes is always a sum of all vote props
   voteRecipient.set(
     "votes",
     newL2Votes.add(
-      otherVotesProps.reduce((sum, otherVotesProp) => {
+      ["mntVotes", "bitVotes"].reduce((sum, otherVotesProp) => {
         return sum.add(BigNumber.from(voteRecipient[otherVotesProp] || "0"));
       }, BigNumber.from("0"))
     )
