@@ -159,9 +159,16 @@ export const InitBalances = async (): Promise<Migration> => {
         allDelegates.push(values[values.length - 1]);
       });
 
+      // take from the parents parent checkpoint and add to the batch to make sure we have everything covered
+      engine.stage.checkpoints[
+        engine.stage.checkpoints.length - 2
+      ].keyValueMap.forEach((values) => {
+        allDelegates.push(values[values.length - 1]);
+      });
+
       // index all the delegates to get rid of dupes
       const indexed = allDelegates.reduce((all, value: { id: string }) => {
-        all[value.id] = value;
+        if (value) all[value.id] = value;
         return all;
       }, {});
 
@@ -340,7 +347,8 @@ export const InitBalances = async (): Promise<Migration> => {
           // make the change
           entity.replace({
             ...newEntity,
-            blockNumber,
+            // place as int
+            blockNumber: +blockNumber,
           });
           // save the changes (with block/timestamp set to now)
           await entity.save();
