@@ -54,32 +54,37 @@ export const handlers: Handlers = {
       } else {
         // process the sorted updates sequentially
         for (const item of queue) {
-          // process *Handler types in the order they we're stacked into the queue
-          if (
-            ((await item) as { type: string }).type === "DelegateChangedHandler"
-          ) {
-            await DelegateChangedHandlerPostProcessing(
-              (await item) as {
-                tx: TransactionReceipt & TransactionResponse;
-                block: Block;
-                delegator: string;
-                fromDelegate: string;
-                toDelegate: string;
-                newBalance: BigNumber;
-              }
-            );
-          } else if (
-            ((await item) as { type: string }).type === "TransactionHandler"
-          ) {
-            await TransactionHandlerPostProcessing(
-              (await item) as {
-                tx: TransactionReceipt & TransactionResponse;
-                block: Block;
-                delegator: string;
-                newBalance: BigNumber;
-                direction: number;
-              }
-            );
+          try {
+            // process *Handler types in the order they we're stacked into the queue
+            if (
+              ((await item) as { type: string }).type ===
+              "DelegateChangedHandler"
+            ) {
+              await DelegateChangedHandlerPostProcessing(
+                (await item) as {
+                  tx: TransactionReceipt & TransactionResponse;
+                  block: Block;
+                  delegator: string;
+                  fromDelegate: string;
+                  toDelegate: string;
+                  newBalance: BigNumber;
+                }
+              );
+            } else if (
+              ((await item) as { type: string }).type === "TransactionHandler"
+            ) {
+              await TransactionHandlerPostProcessing(
+                (await item) as {
+                  tx: TransactionReceipt & TransactionResponse;
+                  block: Block;
+                  delegator: string;
+                  newBalance: BigNumber;
+                  direction: number;
+                }
+              );
+            }
+          } catch (e) {
+            console.log("Processing error", e);
           }
         }
       }

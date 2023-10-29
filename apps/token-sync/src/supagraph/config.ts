@@ -28,6 +28,8 @@ export const config: SyncConfig = {
   numBlockWorkers: withDefault(process.env.SUPAGRAPH_BLOCK_WORKERS, 12),
   // number of workers to dedicate to transaction processing
   numTransactionWorkers: withDefault(process.env.SUPAGRAPH_TX_WORKERS, 32),
+  // reducing number of concurrent reqs made on promiseQueue - want to reduce the likelyhood of these timing out and rejecting
+  concurrency: withDefault(process.env.SUPAGRAPH_CONCURRENCY, 10),
   // should the heap_dumps and errors be reported in the ingestion process (we can safely ignore errors in prod)
   printIngestionErrors: withDefault(
     process.env.SUPAGRAPH_INGESTION_LOGS,

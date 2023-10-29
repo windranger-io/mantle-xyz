@@ -63,7 +63,7 @@ const updatePointers = async (
   entity.set("transactionHash", tx.transactionHash || tx.hash);
 
   // save the changes
-  return await entity.save();
+  return entity.save();
 };
 
 // update the details according to an l2 DelegateChangedEvent
@@ -376,9 +376,7 @@ export const DelegateChangedHandlerPostProcessing = async (
 ) => {
   // process these sequentially
   await updateL2Delegate(
-    item as DelegateChangedEvent & {
-      newBalance: BigNumber;
-    },
+    item,
     // pass the transaction through
     { tx: item.tx, block: item.block }
   );

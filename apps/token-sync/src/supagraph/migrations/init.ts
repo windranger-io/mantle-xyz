@@ -301,6 +301,11 @@ export const InitBalances = async (): Promise<Migration> => {
             entity = toDelegate;
           }
 
+          // // log course correction details
+          // if (!BigNumber.from(entity.l2MntBalance || "0").eq(BigNumber.from(balances[delegate]))) {
+          //   console.log(delegate, entity.l2MntBalance, "should be", BigNumber.from(balances[delegate]).toString());
+          // }
+
           // set new balance
           entity.l2MntBalance = balances[delegate];
 
