@@ -12,6 +12,32 @@ function useTokenList(tokenListUrl: string) {
     async () => {
       const res = await fetch(tokenListUrl);
       const data = await res.json();
+      data.tokens.push(
+        {
+          chainId: 5,
+          address: "0x6320cD32aA674d2898A68ec82e869385Fc5f7E2f",
+          name: "Wrapped liquid staked Ether 2.0",
+          symbol: "wstETH",
+          decimals: 18,
+          logoURI:
+            "https://github.com/lidofinance/logos/blob/main/wstETH/wstETH.svg",
+          extensions: {
+            optimismBridgeAddress: "0x2fD573Ace456904709444d04AdCa189fB19e725a",
+          },
+        },
+        {
+          chainId: 5001,
+          address: "0x4CAD3137E9e6994A6E9442e723B7EEF04335C944",
+          name: "Wrapped liquid staked Ether 2.0",
+          symbol: "wstETH",
+          decimals: 18,
+          logoURI:
+            "https://github.com/lidofinance/logos/blob/main/wstETH/wstETH.svg",
+          extensions: {
+            optimismBridgeAddress: "0x08C2EE913D3cb544D182bCC7632cB0B382A2933e",
+          },
+        }
+      );
 
       return data;
     },
