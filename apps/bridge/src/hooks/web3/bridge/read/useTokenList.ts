@@ -19,8 +19,7 @@ function useTokenList(tokenListUrl: string) {
           name: "Wrapped liquid staked Ether 2.0",
           symbol: "wstETH",
           decimals: 18,
-          logoURI:
-            "https://github.com/lidofinance/logos/blob/main/wstETH/wstETH.svg",
+          logoURI: "https://token-list.mantle.xyz/data/wstETH/logo.svg",
           extensions: {
             optimismBridgeAddress: "0x2fD573Ace456904709444d04AdCa189fB19e725a",
           },
@@ -31,8 +30,7 @@ function useTokenList(tokenListUrl: string) {
           name: "Wrapped liquid staked Ether 2.0",
           symbol: "wstETH",
           decimals: 18,
-          logoURI:
-            "https://github.com/lidofinance/logos/blob/main/wstETH/wstETH.svg",
+          logoURI: "https://token-list.mantle.xyz/data/wstETH/logo.svg",
           extensions: {
             optimismBridgeAddress: "0x08C2EE913D3cb544D182bCC7632cB0B382A2933e",
           },
