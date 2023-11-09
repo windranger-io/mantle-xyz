@@ -30,11 +30,10 @@ import type {
   TransactionReceipt,
   TransactionResponse,
 } from "@ethersproject/providers";
-import { BytesLike, Signer, ethers, providers } from "ethers";
+import { Signer, ethers, providers } from "ethers";
 
 import { timeout } from "@utils/toolSet";
 
-import { gql, useApolloClient } from "@apollo/client";
 import { useMemo } from "react";
 
 type WaitForMessageStatus = (
@@ -73,27 +72,6 @@ interface MantleSDKProviderProps {
   children: React.ReactNode;
 }
 
-// Construct query to pull stateBatch at index
-const GetBatchStateAtIndexQuery = gql`
-  query GetBatchStateAtIndex($transactionIndex: String!) {
-    stateBatchAppends(
-      first: 1
-      orderBy: batchIndex
-      orderDirection: desc
-      where: { prevTotalElements_lte: $transactionIndex }
-    ) {
-      txHash
-      txBlock
-      batchIndex
-      batchRoot
-      batchSize
-      prevTotalElements
-      signature
-      extraData
-    }
-  }
-`;
-
 // Exports a provider containing the crossChainMessenger and some additional overridden helper methods
 function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   // currently selected chain according to wagmi (associated with provider/signer combo)
@@ -119,9 +97,6 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   const layer1ProviderRef = React.useRef<Provider>();
   const layer1SignerRef = React.useRef<Signer>();
   const mantleTestnetRef = React.useRef<Provider>();
-
-  // get the apolloClient
-  const gqclient = useApolloClient();
 
   // pull all the signers/privders and set handlers and associate boundaries as we go
   const walletClient = useWalletClient({ chainId: L1_CHAIN_ID });
@@ -246,80 +221,6 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
 
         return period.toNumber();
       };
-
-    // get the stateRootBatch associated with this transactionIndex (get the result from graphql)
-    context.crossChainMessenger.getStateRootBatchByTransactionIndex = async (
-      transactionIndex
-    ) => {
-      // fetch the appendStateBatch event from supagraph that matches this transactionIndex
-      const { data } = await gqclient.query({
-        query: GetBatchStateAtIndexQuery,
-        variables: {
-          transactionIndex: `${transactionIndex}`,
-        },
-        // disable apollo cache to force new fetch call every invoke
-        fetchPolicy: "no-cache",
-        // use next cache to store the responses for 30s
-        context: {
-          fetchOptions: {
-            next: { revalidate: 30 },
-          },
-        },
-      });
-
-      // return null if we didn't find the index
-      if (
-        data.stateBatchAppends.length === 0 ||
-        parseInt(data.stateBatchAppends[0].prevTotalElements, 10) +
-          parseInt(data.stateBatchAppends[0].batchSize, 10) <=
-          transactionIndex
-      ) {
-        return null;
-      }
-
-      // if we have results, we should only have 1
-      const stateBatchAppendedEvent = data.stateBatchAppends[0];
-
-      // we will need to get the transaction for the txHash provided by the graphql response
-      const stateBatchTransaction =
-        await layer1InfuraRef.current?.getTransaction(
-          stateBatchAppendedEvent.txHash
-        );
-
-      // check both contracts for the initial call that set the stateRoots
-      let stateRoots;
-      try {
-        // eslint-disable-next-line prefer-destructuring
-        stateRoots =
-          context.crossChainMessenger.contracts.l1.StateCommitmentChain.interface.decodeFunctionData(
-            "appendStateBatch",
-            stateBatchTransaction?.data as BytesLike
-          )[0];
-      } catch (e) {
-        // eslint-disable-next-line prefer-destructuring
-        stateRoots =
-          context.crossChainMessenger.contracts.l1.Rollup.interface.decodeFunctionData(
-            "createAssertionWithStateBatch",
-            stateBatchTransaction?.data as BytesLike
-          )[2];
-      }
-
-      // return the content from supagraph + the stateRoots from the transaction
-      return {
-        blockNumber: parseInt(stateBatchAppendedEvent.txBlock, 10),
-        stateRoots,
-        header: {
-          batchRoot: stateBatchAppendedEvent.batchRoot,
-          signature: stateBatchAppendedEvent.signature,
-          extraData: stateBatchAppendedEvent.extraData,
-          batchIndex: ethers.BigNumber.from(stateBatchAppendedEvent.batchIndex),
-          batchSize: ethers.BigNumber.from(stateBatchAppendedEvent.batchSize),
-          prevTotalElements: ethers.BigNumber.from(
-            stateBatchAppendedEvent.prevTotalElements
-          ),
-        },
-      };
-    };
 
     // get the stateRoot for a given message
     context.getMessageStateRoot = async (message: MessageLike) => {
@@ -818,7 +719,6 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     layer1ProviderRef,
     mantleSigner,
     mantleProvider,
-    gqclient,
     chain,
     challengePeriod,
     batchIndexChecks,
