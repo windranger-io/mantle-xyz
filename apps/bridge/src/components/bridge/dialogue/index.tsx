@@ -91,7 +91,11 @@ export default function Dialogue({
             />
           )}
           {ctaPage === CTAPages.Deposit && (
-            <Deposited tx1Hash={tx1Hash} tx2Hash={tx2Hash} />
+            <Deposited
+              tx1Hash={tx1Hash}
+              tx2Hash={tx2Hash}
+              direction={direction}
+            />
           )}
           {ctaPage === CTAPages.Deposited && (
             <WhatsNext closeModal={closeModalAndReset} />

@@ -5,21 +5,31 @@ import { Typography } from "@mantle/ui";
 import { useNetwork, useQuery } from "wagmi";
 
 import StateContext from "@providers/stateContext";
-import { CTAPages, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
+import {
+  CHAINS,
+  CTAPages,
+  Direction,
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
+} from "@config/constants";
 import TxLink from "@components/bridge/utils/TxLink";
 import AddNetworkBtn from "@components/bridge/dialogue/AddNetworkBtn";
 import { gql, useApolloClient } from "@apollo/client";
 import { useToast } from "@hooks/useToast";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
+import ImportTokenBtn from "./ImportTokenBtn";
 
 export default function Deposited({
   tx1Hash,
   tx2Hash,
+  direction,
 }: {
   tx1Hash: string | boolean;
   tx2Hash: string | boolean;
+  direction: Direction;
 }) {
-  const { ctaChainId, setCTAPage, client } = useContext(StateContext);
+  const { ctaChainId, setCTAPage, client, destinationToken } =
+    useContext(StateContext);
   const { createToast } = useToast();
   const { addNetwork } = useSwitchToNetwork();
   const { chain: givenChain } = useNetwork();
@@ -164,7 +174,17 @@ export default function Deposited({
         />
       </div>
       <div>
+        {destinationToken[direction] !==
+          CHAINS[L2_CHAIN_ID]?.nativeCurrency?.name && (
+          <Typography variant="smallWidget16" className="text-center">
+            Not seeing your deposited balance in your wallet?
+          </Typography>
+        )}
         <AddNetworkBtn />
+        {destinationToken[direction] !==
+          CHAINS[L2_CHAIN_ID]?.nativeCurrency?.name && (
+          <ImportTokenBtn direction={direction} />
+        )}
       </div>
     </>
   );
