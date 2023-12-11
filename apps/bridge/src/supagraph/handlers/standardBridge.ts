@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign, no-console, no-underscore-dangle */
-import { MessageDirection } from "@mantleio/sdk";
+import { MessageDirection } from "@ethan-bedrock/sdk";
 
 // Supagraph specific constants detailing the contracts we'll sync against
 import {
   TransactionReceipt,
   TransactionResponse,
 } from "@ethersproject/providers";
-import { hashCrossDomainMessage } from "@mantleio/core-utils";
+import { hashCrossDomainMessage } from "@ethan-bedrock/core-utils";
 
 import { BigNumber } from "ethers";
 import { Store, enqueuePromise } from "supagraph";
@@ -60,7 +60,8 @@ const storeL1toL2Message = async (
         resolved.messageNonce,
         resolved.sender,
         resolved.target,
-        resolved.value,
+        resolved.mntValue,
+        resolved.ethValue,
         resolved.minGasLimit,
         resolved.message
       );
@@ -79,7 +80,7 @@ const storeL1toL2Message = async (
       message.set("messageNonce", resolved.messageNonce);
       message.set("sender", resolved.sender);
       message.set("target", resolved.target);
-      message.set("value", resolved.value);
+      message.set("value", resolved.ethValue);
       message.set("minGasLimit", resolved.minGasLimit);
       message.set("message", resolved.message);
 

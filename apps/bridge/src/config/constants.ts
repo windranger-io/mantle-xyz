@@ -7,6 +7,8 @@ export const L1_CHAIN_ID =
 export const L2_CHAIN_ID =
   parseInt(process.env.NEXT_PUBLIC_L2_CHAIN_ID || "0", 10) || 5001;
 
+export const IS_MANTLE_V2 = process.env.NEXT_PUBLIC_IS_MANTLE_V2 === "true";
+
 // Configure the applications name
 export const APP_NAME = `Mantle${
   L2_CHAIN_ID === 5001 ? " Testnet" : ""
@@ -167,6 +169,34 @@ export const CHAINS: Record<
     rpcUrls: ["https://rpc.testnet.mantle.xyz"],
     blockExplorerUrls: ["https://explorer.testnet.mantle.xyz/"],
   },
+  // sepolia
+  11155111: {
+    chainId: "0xaa36a7",
+    chainName: "Sepolia",
+    nativeCurrency: {
+      name: "sepoliaETH",
+      symbol: "sepoliaETH",
+      decimals: 18,
+    },
+    rpcUrls: [
+      "https://eth-sepolia.g.alchemy.com/v2/mCOx1cDI3IKDuTnFIvoTv_lEeLUg0NoC",
+    ],
+    blockExplorerUrls: ["https://sepolia.etherscan.io/"],
+  },
+  // mantle sepolia
+  5003: {
+    chainId: "0x138b",
+    chainName: "Mantle Sepolia",
+    nativeCurrency: {
+      name: "Mantle",
+      symbol: "MNT",
+      decimals: 18,
+    },
+    // rpcUrls: ["https://op-geth-sepolia.qa.gomantle.org"],
+    rpcUrls: ["https://rpc-internal.sepolia.mantle.xyz"],
+    // blockExplorerUrls: ["https://explorer-fronted-sepolia-qa2.qa.gomantle.org/"],
+    blockExplorerUrls: ["https://explorer-v1.sepolia.mantle.xyz/"], // https://explorer.sepolia.mantle.xyz/
+  },
 };
 
 export const CHAINS_FORMATTED: Record<number, Chain> = {
@@ -227,6 +257,37 @@ export const CHAINS_FORMATTED: Record<number, Chain> = {
     id: 5001,
     nativeCurrency: CHAINS[5001].nativeCurrency,
   },
+  // sepolia
+  11155111: {
+    testnet: true,
+    name: CHAINS[11155111].chainName,
+    network: CHAINS[11155111].chainName,
+    rpcUrls: {
+      default: {
+        http: [CHAINS[11155111].rpcUrls[0]],
+      },
+      public: {
+        http: [CHAINS[11155111].rpcUrls[0]],
+      },
+    },
+    id: 11155111,
+    nativeCurrency: CHAINS[11155111].nativeCurrency,
+  },
+  // mantle sepolia
+  5003: {
+    name: CHAINS[5003].chainName,
+    network: CHAINS[5003].chainName,
+    rpcUrls: {
+      default: {
+        http: [CHAINS[5003].rpcUrls[0]],
+      },
+      public: {
+        http: [CHAINS[5003].rpcUrls[0]],
+      },
+    },
+    id: 5003,
+    nativeCurrency: CHAINS[5003].nativeCurrency,
+  },
 };
 
 export enum ChainID {
@@ -234,6 +295,8 @@ export enum ChainID {
   Mantle = 5000,
   Goerli = 5,
   MantleTestnet = 5001,
+  MantleSepolia = 5003,
+  Sepolia = 11155111,
 }
 
 export interface Token {
@@ -268,6 +331,8 @@ export const MULTICALL_CONTRACTS: Record<number, string> = {
   5000: "0x9155FcC40E05616EBFf068446136308e757e43dA",
   5: "0xcA11bde05977b3631167028862bE2a173976CA11",
   5001: "0xcA11bde05977b3631167028862bE2a173976CA11",
+  11155111: "0xcA11bde05977b3631167028862bE2a173976CA11",
+  5003: "0x67BC9D445AE0bb1c9CDd4De674618dad094b5ACB",
 };
 
 // ERC-20 abi for balanceOf && allowanceOf

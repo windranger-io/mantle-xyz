@@ -1,10 +1,8 @@
 "use client";
 
 import {
-  BRIDGE_BACKEND,
   CTAPages,
   Direction,
-  HISTORY_ITEMS_PER_PAGE,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
   MANTLE_TOKEN_LIST_URL,
@@ -15,7 +13,7 @@ import {
 } from "@config/constants";
 
 import { Contract, providers } from "ethers";
-import { MessageLike } from "@mantleio/sdk";
+import { MessageLike } from "@ethan-bedrock/sdk";
 import { BaseProvider, Network } from "@ethersproject/providers";
 
 import {
@@ -274,8 +272,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // control the page to load more items from the history pages
   // - we're not using this style of pagination
   // - its cheaper to just request everything in 1 req because the sort order of the pagination is reversed
-  const withdrawalsPage = useRef(0);
-  const depositsPage = useRef(0);
+  const withdrawalsPage = useRef(1);
+  const depositsPage = useRef(1);
 
   // combine all results into arrays
   const [withdrawals, setWithdrawals] = useState<Withdrawal[] | undefined>([]);
@@ -291,11 +289,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     setWithdrawals(undefined);
     return (
       (client.address &&
-        `${BRIDGE_BACKEND}/v1/withdrawals/${getAddress(
-          client.address
-        )}?offset=${
-          withdrawalsPage.current * HISTORY_ITEMS_PER_PAGE
-        }&limit=${HISTORY_ITEMS_PER_PAGE}`) ||
+        `/api/withdraw?address=${getAddress(client.address)}&page=${
+          withdrawalsPage.current
+        }&pageSize=10`) ||
       ""
     );
   }, [client.address, withdrawalsPage]);
@@ -304,9 +300,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     setDeposits(undefined);
     return (
       (client.address &&
-        `${BRIDGE_BACKEND}/v1/deposits/${getAddress(client.address)}?offset=${
-          depositsPage.current * HISTORY_ITEMS_PER_PAGE
-        }&limit=${HISTORY_ITEMS_PER_PAGE}`) ||
+        `/api/deposit?address=${getAddress(client.address)}&page=${
+          depositsPage.current
+        }&pageSize=10`) ||
       ""
     );
   }, [client.address, depositsPage]);

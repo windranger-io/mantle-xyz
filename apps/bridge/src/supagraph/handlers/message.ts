@@ -13,12 +13,11 @@ import {
 
 // Using CrossChainMessenger for contract/address management
 import {
-  CrossChainMessage,
   CrossChainMessenger,
   MessageDirection,
   TransactionLike,
   toTransactionHash,
-} from "@mantleio/sdk";
+} from "@ethan-bedrock/sdk";
 
 // Construct providers to supply the CrossChainMessenger
 const L1_PROVIDER = new JsonRpcProvider(
@@ -45,7 +44,7 @@ export const getMessagesByTransaction = async (
   } = {
     direction: MessageDirection.L1_TO_L2,
   }
-): Promise<CrossChainMessage[]> => {
+): Promise<void> => {
   // Wait for the transaction receipt if the input is waitable.
   await (transaction as TransactionResponse)?.wait?.();
 
@@ -94,7 +93,7 @@ export const getMessagesByTransaction = async (
       : crossChainMessenger.contracts.l2.L2CrossDomainMessenger;
 
   // run through the logs and find the "SentMessage" call
-  return receipt.logs
+  receipt.logs
     .filter((log) => {
       // only look at logs emitted by the messenger address
       return log.address === messenger.address;

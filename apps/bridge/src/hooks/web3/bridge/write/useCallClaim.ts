@@ -5,7 +5,7 @@ import {
 } from "@ethersproject/providers";
 import StateContext from "@providers/stateContext";
 import { useContext, useState } from "react";
-import { MessageLike, MessageReceipt, MessageStatus } from "@mantleio/sdk";
+import { MessageLike, MessageReceipt, MessageStatus } from "@ethan-bedrock/sdk";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 

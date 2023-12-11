@@ -3,7 +3,7 @@
 /* eslint-disable no-await-in-loop */
 
 import { TransactionReceipt } from "@ethersproject/providers";
-import { MessageReceipt, MessageStatus } from "@mantleio/sdk";
+import { MessageReceipt, MessageStatus } from "@ethan-bedrock/sdk";
 
 import { useContext } from "react";
 import StateContext from "@providers/stateContext";

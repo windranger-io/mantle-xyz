@@ -10,6 +10,8 @@ export type Deposit = {
   blockTimestamp: number;
   status: string;
 };
+const ZERO_TX =
+  "0x0000000000000000000000000000000000000000000000000000000000000000";
 
 function useHistoryDeposits(
   client: { address?: string | undefined },
@@ -24,6 +26,30 @@ function useHistoryDeposits(
       async () => {
         const res = await fetch(depositsUrl);
         const data = await res.json();
+        const dataItems = data.Records.map((record: any) => {
+          let amount = "0";
+          if (record.ERC20Amount) {
+            amount = record.ERC20Amount.toString();
+          } else if (record.ETHAmount) {
+            amount = record.ETHAmount.toString();
+          }
+          return {
+            transactionHash: record.l1TransactionHash,
+            l1_token: record.l1TokenAddress,
+            l2_token: record.l2TokenAddress,
+            l1_hash:
+              record.l1TransactionHash === ZERO_TX
+                ? null
+                : record.l1TransactionHash,
+            l2_hash:
+              record.l2TransactionHash === ZERO_TX
+                ? null
+                : record.l2TransactionHash,
+            amount,
+            status: record.status && (record.status + 1).toString(),
+            blockTimestamp: record.timestamp,
+          };
+        });
         const items: Deposit[] = [...(deposits || [])];
         const uniques: Record<string, Deposit> = (deposits || []).reduce(
           (txs: Record<string, Deposit>, tx: Deposit) => {
@@ -36,7 +62,7 @@ function useHistoryDeposits(
         );
 
         // update old entries and place new ones
-        data.items?.forEach((tx: Deposit) => {
+        dataItems?.forEach((tx: Deposit) => {
           if (!uniques[tx.transactionHash]) {
             items.push(tx);
           } else {
@@ -57,7 +83,7 @@ function useHistoryDeposits(
           [...items].sort((a, b) => b.blockTimestamp - a.blockTimestamp)
         );
 
-        return data.items;
+        return dataItems;
       },
       { enabled: !!client.address && !!depositsUrl, cacheTime: 30000 }
     );

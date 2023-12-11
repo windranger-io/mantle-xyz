@@ -1,4 +1,10 @@
-import { L1_CHAIN_ID, CTAPages, Direction, Token } from "@config/constants";
+import {
+  L1_CHAIN_ID,
+  CTAPages,
+  Direction,
+  Token,
+  IS_MANTLE_V2,
+} from "@config/constants";
 import {
   TransactionReceipt,
   TransactionResponse,
@@ -106,15 +112,24 @@ export function useCallBridge(
           throw e;
         };
 
+        const isDeposit = chainId === L1_CHAIN_ID;
+        const isMantleV2 = IS_MANTLE_V2;
+        const isETH = selected.name === "ETH";
+        const isMNT = selected.name === "Mantle";
         // if we've been given a receipt then the tx is already out there...
         if (!givenReceipt) {
           // for each type of interaction...
-          if (chainId === L1_CHAIN_ID && selected.name === "ETH") {
+          if (isDeposit && isETH) {
             // depositETH
             receipt = await crossChainMessenger!
               .depositETH(parseUnits(destinationTokenAmount, selected.decimals))
               .catch(errorHandler);
-          } else if (chainId === L1_CHAIN_ID) {
+          } else if (isDeposit && isMNT && isMantleV2) {
+            // mantle v2 depositMNT
+            receipt = await crossChainMessenger!
+              .depositMNT(parseUnits(destinationTokenAmount, selected.decimals))
+              .catch(errorHandler);
+          } else if (isDeposit) {
             // depositERC20
             receipt = await crossChainMessenger!
               .depositERC20(
@@ -123,10 +138,17 @@ export function useCallBridge(
                 parseUnits(destinationTokenAmount, selected.decimals)
               )
               .catch(errorHandler);
-          } else if (selected.name === "ETH") {
+          } else if (isETH) {
             // withdrawETH
             receipt = await crossChainMessenger!
               .withdrawETH(
+                parseUnits(destinationTokenAmount, selected.decimals)
+              )
+              .catch(errorHandler);
+          } else if (isMNT && isMantleV2) {
+            // mantle v2 withdrawMNT
+            receipt = await crossChainMessenger!
+              .withdrawMNT(
                 parseUnits(destinationTokenAmount, selected.decimals)
               )
               .catch(errorHandler);

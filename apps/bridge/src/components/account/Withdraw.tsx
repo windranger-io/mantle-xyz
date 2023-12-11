@@ -3,7 +3,12 @@ import StateContext from "@providers/stateContext";
 
 import { Button } from "@mantle/ui";
 import { formatUnits, getAddress } from "ethers/lib/utils.js";
-import { L1_CHAIN_ID, L2_CHAIN_ID, Token } from "@config/constants";
+import {
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
+  Token,
+  IS_MANTLE_V2,
+} from "@config/constants";
 
 import TxLink from "@components/bridge/utils/TxLink";
 
@@ -134,22 +139,37 @@ export default function Withdraw() {
                   </div>
                 </td>
                 <td className="table-row md:table-cell">
-                  <div className="py-2">
-                    {transaction.l1_hash ||
-                    tx2Hashes[transaction.transactionHash] ? (
-                      <TxLink
-                        chainId={L1_CHAIN_ID}
-                        txHash={
-                          transaction.l1_hash ||
-                          tx2Hashes[transaction.transactionHash]
-                        }
-                        className=""
-                        asHash
-                      />
-                    ) : (
-                      <span />
-                    )}
-                  </div>
+                  {IS_MANTLE_V2 ? (
+                    <div className="py-2">
+                      {transaction.l1_hash ? (
+                        <TxLink
+                          chainId={L1_CHAIN_ID}
+                          txHash={transaction.l1_hash}
+                          className=""
+                          asHash
+                        />
+                      ) : (
+                        <span />
+                      )}
+                    </div>
+                  ) : (
+                    <div className="py-2">
+                      {transaction.l1_hash ||
+                      tx2Hashes[transaction.transactionHash] ? (
+                        <TxLink
+                          chainId={L1_CHAIN_ID}
+                          txHash={
+                            transaction.l1_hash ||
+                            tx2Hashes[transaction.transactionHash]
+                          }
+                          className=""
+                          asHash
+                        />
+                      ) : (
+                        <span />
+                      )}
+                    </div>
+                  )}
                 </td>
                 <td className="table-row md:table-cell">
                   <div className="py-2 pb-4 md:pb-2">
@@ -157,6 +177,8 @@ export default function Withdraw() {
                       transactionHash={transaction.transactionHash}
                       tx2Hashes={tx2Hashes}
                       setTx2Hashes={setTx2Hashes}
+                      rawStatus={transaction.status}
+                      timeLeft={transaction.time_left}
                     />
                   </div>
                 </td>
