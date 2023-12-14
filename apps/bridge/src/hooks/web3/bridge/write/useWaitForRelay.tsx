@@ -16,6 +16,7 @@ import {
   Direction,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
+  WithdrawStatus,
 } from "@config/constants";
 import MantleToL1SVG from "@components/bridge/utils/MantleToL1SVG";
 import { useMantleSDK } from "@providers/mantleSDKContext";
@@ -44,6 +45,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
     setIsCTAPageOpen,
     refetchWithdrawals,
     refetchDeposits,
+    setWithdrawStatus,
   } = useContext(StateContext);
 
   // import sdk comms
@@ -241,12 +243,15 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
 
         // loop for 2000 blocks or until stopped
         while (!stopped && iterations < 2000) {
+          console.log("while: ", stopped, iterations);
           // 12s is approx time it takes to mine a block (wait 3 blocks before checking again)
           await timeout(36000);
           // check the status now
+          console.log("checking", txHash);
           status = await getMessageStatus!(txHash)
             // eslint-disable-next-line @typescript-eslint/no-loop-func
             .catch((e) => {
+              console.log("error", e);
               // throw server errors to the outside
               if (
                 e.reason === "failed to meet quorum" &&
@@ -261,12 +266,19 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
             .then((val) => {
               return val as MessageStatus;
             });
-          // based on the status update the states status and wait for the relayed message before setting the L1 txHash
-          if (status === MessageStatus.IN_CHALLENGE_PERIOD) {
-            // update status
+          console.log("status: ", status);
+          // Mantle v2 has new Status READY_TO_PROVE
+          if (status === MessageStatus.READY_TO_PROVE) {
+            setCTAStatus(
+              "Mantle v2 need to prove the withdraw message, waiting for status READY_TO_PROVE..."
+            );
+            setWithdrawStatus(WithdrawStatus.READY_TO_PROVE);
+          } else if (status === MessageStatus.IN_CHALLENGE_PERIOD) {
+            // based on the status update the states status and wait for the relayed message before setting the L1 txHash
             setCTAStatus(
               "In the challenge period, waiting for status READY_FOR_RELAY..."
             );
+            setWithdrawStatus(WithdrawStatus.IN_CHALLENGE_PERIOD);
           } else if (
             status === MessageStatus.READY_FOR_RELAY &&
             // this should prevent page from turning back after the claim has succeeded
@@ -305,6 +317,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
               page: CTAPages.Withdraw,
               safeChains: [L1_CHAIN_ID, L2_CHAIN_ID],
             });
+            setWithdrawStatus(WithdrawStatus.READY_FOR_RELAY);
           } else if (status === MessageStatus.RELAYED) {
             try {
               // resolve the cross chain message
@@ -313,6 +326,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
               );
               // the message has been relayed and the l1 tx should be onchain
               setCTAStatus("RELAYED");
+              setWithdrawStatus(WithdrawStatus.RELAYED);
               // restore/store the l1 receipt for final screen
               setTx1(receipt);
               // restore/store the l1 txHash for final screen

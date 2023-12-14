@@ -4,6 +4,7 @@ import {
   Direction,
   Token,
   IS_MANTLE_V2,
+  WithdrawStatus,
 } from "@config/constants";
 import {
   TransactionReceipt,
@@ -88,6 +89,7 @@ export function useCallBridge(
     setCTAStatus,
     setCTAPage,
     setIsCTAPageOpen,
+    setWithdrawStatus,
   } = useContext(StateContext);
 
   // setup the waitForRelay with the given direction
@@ -234,6 +236,7 @@ export function useCallBridge(
 
         // move to the loading page
         setCTAPage(CTAPages.Loading);
+        setWithdrawStatus(WithdrawStatus.SENDING_TX);
 
         // wait for the receipt if its not already present
         if (

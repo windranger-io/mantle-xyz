@@ -84,6 +84,15 @@ export enum CTAPages {
   "Error",
 }
 
+export enum WithdrawStatus {
+  "INIT" = 1,
+  "SENDING_TX",
+  "READY_TO_PROVE",
+  "IN_CHALLENGE_PERIOD",
+  "READY_FOR_RELAY",
+  "RELAYED",
+}
+
 // Base GasFee mul HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS === the approximate gasFee to call message relayer
 export const HARDCODED_EXPECTED_CLAIM_FEE_IN_GAS = (800000).toString();
 

@@ -328,13 +328,16 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     ): Promise<
       MessageStatus | { status: MessageStatus; receipt: MessageReceipt }
     > => {
+      console.log("getMessageStatus1: ", message);
       // attempt to fetch the messages receipt
       const receipt = await context.crossChainMessenger.getMessageReceipt(
         message
       );
+      console.log("receipt", receipt);
 
       const status: MessageStatus =
         await context.crossChainMessenger.getMessageStatus(message);
+      console.log("getMessageStatus2: ", status);
 
       // if returnReceipt is set then return an obj else just the status
       return options?.returnReceipt
@@ -417,11 +420,6 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
       }
 
       throw new Error(`timed out waiting for message status change`);
-    };
-
-    // attach this to internal getMessageStatus
-    context.crossChainMessenger.getMessageStatus = async (message) => {
-      return (await context.getMessageStatus(message)) as MessageStatus;
     };
 
     // attach this to internal waitForMessageStatus

@@ -2,6 +2,7 @@
 
 import {
   CTAPages,
+  WithdrawStatus,
   Direction,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
@@ -110,6 +111,7 @@ export type StateProps = {
   hasClosedClaims: boolean;
   isLoadingDeposits: boolean;
   isLoadingWithdrawals: boolean;
+  withdrawStatus: WithdrawStatus;
 
   setView: (v: Views) => void;
   setChainId: (v: number) => void;
@@ -140,6 +142,7 @@ export type StateProps = {
   setHasClosedClaims: (closed: boolean) => void;
   setWalletModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setWithdrawStatus: (withdrawStatus: WithdrawStatus) => void;
 };
 
 // create a context to bind the provider to
@@ -198,6 +201,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // the selected page within CTAPage to open
   const [ctaPage, setCTAPage] = useState<CTAPages>(CTAPages.Default);
+  const [withdrawStatus, setWithdrawStatus] = useState<WithdrawStatus>(
+    WithdrawStatus.INIT
+  );
   // seperate the ctaChainId from the chainId to dissassociate the tabs from the cta
   const [ctaChainId, setCTAChainId] = useState(chainId);
   // status from the cta operation (this is currently being logged in the console)
@@ -633,6 +639,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       destinationTokenAmount,
 
       ctaErrorReset,
+      withdrawStatus,
 
       setView,
       setClient,
@@ -661,6 +668,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setDestinationTokenAmount,
       setSelectedToken: setSelectTokenByType,
       setDestinationToken: setDestinationTokenByType,
+      setWithdrawStatus,
     } as StateProps;
   }, [
     view,
@@ -714,6 +722,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     destinationTokenAmount,
 
     ctaErrorReset,
+    withdrawStatus,
 
     resetBalances,
     resetAllowance,
