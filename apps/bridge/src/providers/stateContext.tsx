@@ -11,6 +11,7 @@ import {
   Token,
   TokenList,
   Views,
+  WithdrawHash,
 } from "@config/constants";
 
 import { Contract, providers } from "ethers";
@@ -86,6 +87,7 @@ export type StateProps = {
   ctaErrorReset: MutableRefObject<(() => void | boolean) | undefined>;
   walletModalOpen: boolean;
   mobileMenuOpen: boolean;
+  withdrawHash: WithdrawHash;
 
   tokens: Token[];
   tokenList: TokenList;
@@ -143,6 +145,7 @@ export type StateProps = {
   setWalletModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setWithdrawStatus: (withdrawStatus: WithdrawStatus) => void;
+  setWithdrawHash: (wh: WithdrawHash) => void;
 };
 
 // create a context to bind the provider to
@@ -204,6 +207,11 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [withdrawStatus, setWithdrawStatus] = useState<WithdrawStatus>(
     WithdrawStatus.INIT
   );
+  const [withdrawHash, setWithdrawHash] = useState<WithdrawHash>({
+    init: "",
+    prove: "",
+    claim: "",
+  });
   // seperate the ctaChainId from the chainId to dissassociate the tabs from the cta
   const [ctaChainId, setCTAChainId] = useState(chainId);
   // status from the cta operation (this is currently being logged in the console)
@@ -640,6 +648,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
       ctaErrorReset,
       withdrawStatus,
+      withdrawHash,
 
       setView,
       setClient,
@@ -669,6 +678,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setSelectedToken: setSelectTokenByType,
       setDestinationToken: setDestinationTokenByType,
       setWithdrawStatus,
+      setWithdrawHash,
     } as StateProps;
   }, [
     view,
@@ -723,6 +733,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
     ctaErrorReset,
     withdrawStatus,
+    withdrawHash,
 
     resetBalances,
     resetAllowance,

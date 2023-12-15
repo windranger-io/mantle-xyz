@@ -103,7 +103,7 @@ export default function Deposit() {
               >
                 <td className="py-4 table-row md:table-cell">
                   <div className="pt-4 py-2 md:pt-2">
-                    {new Date(transaction.blockTimestamp).toUTCString()}
+                    {new Date(transaction.blockTimestamp * 1000).toUTCString()}
                   </div>
                 </td>
                 <td className="table-row md:table-cell">

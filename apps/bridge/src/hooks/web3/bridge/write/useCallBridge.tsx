@@ -81,6 +81,7 @@ export function useCallBridge(
     ctaErrorReset,
     tx1HashRef,
     tx2HashRef,
+    withdrawHash,
     resetBalances,
     setCTAChainId,
     setTx1,
@@ -90,6 +91,7 @@ export function useCallBridge(
     setCTAPage,
     setIsCTAPageOpen,
     setWithdrawStatus,
+    setWithdrawHash,
   } = useContext(StateContext);
 
   // setup the waitForRelay with the given direction
@@ -202,7 +204,7 @@ export function useCallBridge(
         } as ToastProps;
 
         // only update toast when it is not deposit
-        if (ctaChainId !== L1_CHAIN_ID) {
+        if (ctaChainId !== L1_CHAIN_ID && !IS_MANTLE_V2) {
           // update the content and the callbacks
           updateToast({
             ...toastProps,
@@ -237,6 +239,14 @@ export function useCallBridge(
         // move to the loading page
         setCTAPage(CTAPages.Loading);
         setWithdrawStatus(WithdrawStatus.SENDING_TX);
+        console.log({
+          ...withdrawHash,
+          init: txHash || "",
+        });
+        setWithdrawHash({
+          ...withdrawHash,
+          init: txHash || "",
+        });
 
         // wait for the receipt if its not already present
         if (
@@ -321,26 +331,28 @@ export function useCallBridge(
         const associatedtx2Hash = tx2HashRef.current;
 
         // update the content and the callbacks
-        updateToast({
-          ...toastProps,
-          onButtonClick: () => {
-            setCTAChainId(chainId);
-            setTx1(data.receipt);
-            setTx1Hash(txHash);
-            setTx2Hash(associatedtx2Hash || false);
-            setCTAPage(
-              direction === Direction.Deposit
-                ? CTAPages.Deposit
-                : CTAPages.Withdrawn
-            );
-            setIsCTAPageOpen(true);
-            // mark open now
-            isCTAPageOpenRef.current = true;
+        if (!IS_MANTLE_V2) {
+          updateToast({
+            ...toastProps,
+            onButtonClick: () => {
+              setCTAChainId(chainId);
+              setTx1(data.receipt);
+              setTx1Hash(txHash);
+              setTx2Hash(associatedtx2Hash || false);
+              setCTAPage(
+                direction === Direction.Deposit
+                  ? CTAPages.Deposit
+                  : CTAPages.Withdrawn
+              );
+              setIsCTAPageOpen(true);
+              // mark open now
+              isCTAPageOpenRef.current = true;
 
-            // close the toast when clicked...
-            return false;
-          },
-        });
+              // close the toast when clicked...
+              return false;
+            },
+          });
+        }
       }
 
       // deposits move on from here, withdrawals will have already been moved on when they reach here

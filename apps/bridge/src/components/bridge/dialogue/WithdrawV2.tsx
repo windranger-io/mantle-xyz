@@ -7,7 +7,7 @@ import {
   WithdrawStatus,
   CHAINS,
 } from "@config/constants";
-
+import TxLink from "@components/bridge/utils/TxLink";
 import { useContext, useEffect, useState } from "react";
 import StateContext from "@providers/stateContext";
 
@@ -55,8 +55,14 @@ export default function Default({
   ctaStatus: string | boolean;
   closeModal: () => void;
 }) {
-  const { destinationTokenAmount, setCTAChainId, withdrawStatus, tx1 } =
-    useContext(StateContext);
+  const {
+    destinationTokenAmount,
+    setCTAChainId,
+    withdrawStatus,
+    tx1,
+    withdrawHash,
+    setWithdrawHash,
+  } = useContext(StateContext);
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
   const { switchToNetwork } = useSwitchToNetwork();
 
@@ -97,14 +103,24 @@ export default function Default({
 
   // use the callCTA method...
   const callCTA = useCallBridge(direction, selected, destination);
-  const { isLoading: proveLoading, callProve } = useCallProve(
-    "0x4d370a4db611ada86b821be156bf89832291c8dec08da8b96a94b7388235abdb",
+  const { isLoading: proveLoading, callProve } = useCallProve(tx1, (tx) => {
+    setWithdrawHash({
+      ...withdrawHash,
+      init: tx?.hash || "",
+    });
+  });
+
+  const { isLoading: claimLoading, callClaim } = useCallClaim(
+    tx1,
+    false,
+    true,
     (tx) => {
-      console.log("useCallProve: ", tx);
+      setWithdrawHash({
+        ...withdrawHash,
+        init: tx?.transactionHash || "",
+      });
     }
   );
-
-  const { isLoading: claimLoading, callClaim } = useCallClaim(tx1);
 
   // const ONE_HOUR_MS = 3600000;
 
@@ -160,18 +176,28 @@ export default function Default({
         </div>
         <div>
           <div
-            className={`flex items-center rounded-full px-4 py-2 ${
+            className={`flex items-center justify-between rounded-full px-4 py-2 ${
               withdrawStatus === WithdrawStatus.INIT && "bg-slate-500/[.6]"
             }`}
           >
-            {withdrawStatus > WithdrawStatus.INIT ? (
-              <IconCheck className="mr-4" />
-            ) : (
-              <No n="1" />
-            )}
-            <span>Initiate withdrawal</span>
-            {withdrawStatus === WithdrawStatus.INIT && ctaStatus && (
-              <IconLoading />
+            <div className="flex items-center">
+              {withdrawStatus > WithdrawStatus.INIT ? (
+                <IconCheck className="mr-4" />
+              ) : (
+                <No n="1" />
+              )}
+              <span>Initiate withdrawal</span>
+              {withdrawStatus === WithdrawStatus.INIT && ctaStatus && (
+                <IconLoading />
+              )}
+            </div>
+            {withdrawHash.init && (
+              <TxLink
+                chainId={L2_CHAIN_ID}
+                txHash={withdrawHash.init}
+                className=""
+                asHash
+              />
             )}
           </div>
           <DottedLine />
@@ -191,19 +217,29 @@ export default function Default({
           </div>
           <DottedLine />
           <div
-            className={`flex items-center rounded-full px-4 py-2 ${
+            className={`flex items-center justify-between rounded-full px-4 py-2 ${
               withdrawStatus === WithdrawStatus.READY_TO_PROVE &&
               "bg-slate-500/[.6]"
             }`}
           >
-            {withdrawStatus > WithdrawStatus.READY_TO_PROVE ? (
-              <IconCheck className="mr-4" />
-            ) : (
-              <No n="3" />
+            <div className="flex items-center">
+              {withdrawStatus > WithdrawStatus.READY_TO_PROVE ? (
+                <IconCheck className="mr-4" />
+              ) : (
+                <No n="3" />
+              )}
+              <span>Prove withdrawal</span>
+              {withdrawStatus === WithdrawStatus.READY_TO_PROVE &&
+                proveLoading && <IconLoading />}
+            </div>
+            {withdrawHash.prove && (
+              <TxLink
+                chainId={L1_CHAIN_ID}
+                txHash={withdrawHash.prove}
+                className=""
+                asHash
+              />
             )}
-            <span>Prove withdrawal</span>
-            {withdrawStatus === WithdrawStatus.READY_TO_PROVE &&
-              proveLoading && <IconLoading />}
           </div>
           <DottedLine />
           <div
@@ -224,19 +260,29 @@ export default function Default({
           </div>
           <DottedLine />
           <div
-            className={`flex items-center rounded-full px-4 py-2 ${
+            className={`flex items-center justify-between rounded-full px-4 py-2 ${
               withdrawStatus === WithdrawStatus.READY_FOR_RELAY &&
               "bg-slate-500/[.6]"
             }`}
           >
-            {withdrawStatus > WithdrawStatus.READY_FOR_RELAY ? (
-              <IconCheck className="mr-4" />
-            ) : (
-              <No n="5" />
+            <div className="flex items-center">
+              {withdrawStatus > WithdrawStatus.READY_FOR_RELAY ? (
+                <IconCheck className="mr-4" />
+              ) : (
+                <No n="5" />
+              )}
+              <span>Claim withdrawal</span>
+              {withdrawStatus === WithdrawStatus.READY_FOR_RELAY &&
+                claimLoading && <IconLoading />}
+            </div>
+            {withdrawHash.claim && (
+              <TxLink
+                chainId={L1_CHAIN_ID}
+                txHash={withdrawHash.claim}
+                className=""
+                asHash
+              />
             )}
-            <span>Claim withdrawal</span>
-            {withdrawStatus === WithdrawStatus.READY_FOR_RELAY &&
-              claimLoading && <IconLoading />}
           </div>
         </div>
         {withdrawStatus <= WithdrawStatus.INIT && (
@@ -315,6 +361,7 @@ export default function Default({
               withdrawStatus === WithdrawStatus.IN_CHALLENGE_PERIOD ||
               (withdrawStatus === WithdrawStatus.READY_FOR_RELAY &&
                 claimLoading) ||
+              withdrawStatus === WithdrawStatus.RELAYED ||
               !chkbx1 ||
               !chkbx2
             }
@@ -361,6 +408,8 @@ export default function Default({
                   <IconLoading className="w-8 h-8" />
                 </div>
               )}
+            {withdrawStatus === WithdrawStatus.RELAYED &&
+              "Complete Withdrawal🎉"}
           </Button>
         )}
       </div>

@@ -201,10 +201,12 @@ export const CHAINS: Record<
       symbol: "MNT",
       decimals: 18,
     },
-    // rpcUrls: ["https://op-geth-sepolia.qa.gomantle.org"],
-    rpcUrls: ["https://rpc-internal.sepolia.mantle.xyz"],
-    // blockExplorerUrls: ["https://explorer-fronted-sepolia-qa2.qa.gomantle.org/"],
-    blockExplorerUrls: ["https://explorer-v1.sepolia.mantle.xyz/"], // https://explorer.sepolia.mantle.xyz/
+    // rpcUrls: ["https://rpc-internal.sepolia.mantle.xyz"],
+    // blockExplorerUrls: ["https://explorer-v1.sepolia.mantle.xyz/"],
+    rpcUrls: ["https://op-geth-sepolia.qa.gomantle.org"],
+    blockExplorerUrls: [
+      "https://explorer-fronted-sepolia-qa2.qa.gomantle.org/",
+    ],
   },
 };
 
@@ -414,3 +416,9 @@ export const MANTLE_BRIDGE_URL: Record<number, string> = {
 };
 
 export const MANTLE_JOURNEY_URL = "https://journey.mantle.xyz";
+
+export type WithdrawHash = {
+  init: string;
+  prove: string;
+  claim: string;
+};

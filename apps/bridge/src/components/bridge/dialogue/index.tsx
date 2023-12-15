@@ -2,7 +2,13 @@ import { useContext } from "react";
 
 import StateContext from "@providers/stateContext";
 
-import { Direction, CTAPages, Token, IS_MANTLE_V2 } from "@config/constants";
+import {
+  Direction,
+  CTAPages,
+  Token,
+  IS_MANTLE_V2,
+  WithdrawStatus,
+} from "@config/constants";
 
 import Default from "@components/bridge/dialogue/Default";
 
@@ -47,6 +53,8 @@ export default function Dialogue({
     isCTAPageOpenRef: isOpenRef,
     setSelectedTokenAmount,
     setDestinationTokenAmount,
+    setWithdrawHash,
+    setWithdrawStatus,
   } = useContext(StateContext);
 
   const reset = () => {
@@ -59,6 +67,12 @@ export default function Dialogue({
     setCTAPage(CTAPages.Default);
     // restore safeChains to selected chain
     setSafeChains([chainId]);
+    setWithdrawHash({
+      init: "",
+      prove: "",
+      claim: "",
+    });
+    setWithdrawStatus(WithdrawStatus.INIT);
     // reset selected token amount
     if (ctaPage !== CTAPages.Default) {
       setSelectedTokenAmount("");
