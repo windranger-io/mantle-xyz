@@ -13,6 +13,7 @@ import {
 
 // Using CrossChainMessenger for contract/address management
 import {
+  CrossChainMessage,
   CrossChainMessenger,
   MessageDirection,
   TransactionLike,
@@ -44,7 +45,7 @@ export const getMessagesByTransaction = async (
   } = {
     direction: MessageDirection.L1_TO_L2,
   }
-): Promise<void> => {
+): Promise<CrossChainMessage[]> => {
   // Wait for the transaction receipt if the input is waitable.
   await (transaction as TransactionResponse)?.wait?.();
 
@@ -93,7 +94,7 @@ export const getMessagesByTransaction = async (
       : crossChainMessenger.contracts.l2.L2CrossDomainMessenger;
 
   // run through the logs and find the "SentMessage" call
-  receipt.logs
+  return receipt.logs
     .filter((log) => {
       // only look at logs emitted by the messenger address
       return log.address === messenger.address;
@@ -118,7 +119,7 @@ export const getMessagesByTransaction = async (
       // convert each SentMessage log into a message object
       const parsed = messenger.interface.parseLog(log);
       return {
-        value,
+        // value,
         direction: opts.direction,
         target: parsed.args.target,
         sender: parsed.args.sender,
@@ -128,6 +129,8 @@ export const getMessagesByTransaction = async (
         logIndex: log.logIndex,
         blockNumber: log.blockNumber,
         transactionHash: log.transactionHash,
+        mntValue: value,
+        ethValue: value,
       };
     });
 };
