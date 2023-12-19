@@ -201,12 +201,12 @@ export const CHAINS: Record<
       symbol: "MNT",
       decimals: 18,
     },
-    // rpcUrls: ["https://rpc-internal.sepolia.mantle.xyz"],
-    // blockExplorerUrls: ["https://explorer-v1.sepolia.mantle.xyz/"],
-    rpcUrls: ["https://op-geth-sepolia.qa.gomantle.org"],
-    blockExplorerUrls: [
-      "https://explorer-fronted-sepolia-qa2.qa.gomantle.org/",
-    ],
+    rpcUrls: ["https://rpc-internal.sepolia.mantle.xyz"],
+    blockExplorerUrls: ["https://explorer-v2.sepolia.mantle.xyz/"],
+    // rpcUrls: ["https://op-geth-sepolia.qa.gomantle.org"],
+    // blockExplorerUrls: [
+    //   "https://explorer-fronted-sepolia-qa2.qa.gomantle.org/",
+    // ],
   },
 };
 
@@ -343,7 +343,7 @@ export const MULTICALL_CONTRACTS: Record<number, string> = {
   5: "0xcA11bde05977b3631167028862bE2a173976CA11",
   5001: "0xcA11bde05977b3631167028862bE2a173976CA11",
   11155111: "0xcA11bde05977b3631167028862bE2a173976CA11",
-  5003: "0x67BC9D445AE0bb1c9CDd4De674618dad094b5ACB",
+  5003: "0x783983D4FE933F52C79E179301Bc293508dfea19",
 };
 
 // ERC-20 abi for balanceOf && allowanceOf

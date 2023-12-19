@@ -30,12 +30,13 @@ export function useCallProve(
         const tx: TransactionResponse = await crossChainMessenger.proveMessage(
           tx1
         );
+        console.log("proveMessage: ", tx);
         if (onSuccess) {
+          setIsLoading(false);
           onSuccess(tx);
         }
       }
     }
-    setIsLoading(false);
   };
 
   return {

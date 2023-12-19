@@ -13,7 +13,7 @@ import {
   CrossChainMessage,
   StateRoot,
   StateRootBatch,
-  CONTRACT_ADDRESSES,
+  // CONTRACT_ADDRESSES,
 } from "@ethan-bedrock/sdk";
 
 // import * as contracts from "@ethan-bedrock/contracts";
@@ -175,15 +175,15 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     )
       return { crossChainMessenger: undefined };
 
-    const contractAddr = CONTRACT_ADDRESSES[5003];
-    contractAddr.l1.OptimismPortal =
-      "0xB217AEC0575F07A799d54beB67e96C38fea4888a";
-    contractAddr.l1.L2OutputOracle =
-      "0xBAf60CcFd1B3ce1eD813A5628580c8aFA6a9F039";
-    contractAddr.l1.L1StandardBridge =
-      "0xf33939c0170F46174D62315F0128A2f1a38f99bE";
-    contractAddr.l1.L1CrossDomainMessenger =
-      "0x152Eeb5d3669Ce07C27DD6EC33A6c67C6610Fc1f";
+    // const contractAddr = CONTRACT_ADDRESSES[5003];
+    // contractAddr.l1.OptimismPortal =
+    //   "0xB3db4bd5bc225930eD674494F9A4F6a11B8EFBc8";
+    // contractAddr.l1.L2OutputOracle =
+    //   "0x4121dc8e48Bc6196795eb4867772A5e259fecE07";
+    // contractAddr.l1.L1StandardBridge =
+    //   "0x21F308067241B2028503c07bd7cB3751FFab0Fb2";
+    // contractAddr.l1.L1CrossDomainMessenger =
+    //   "0x37dAC5312e31Adb8BB0802Fc72Ca84DA5cDfcb4c";
     // context only stores the manager
     const context: MantleSDK = {
       crossChainMessenger: new CrossChainMessenger({
@@ -194,7 +194,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
         l2SignerOrProvider:
           chain?.id === L2_CHAIN_ID ? mantleSigner! : mantleProvider!,
         bedrock: IS_MANTLE_V2,
-        contracts: contractAddr,
+        // contracts: contractAddr,
       }),
     } as MantleSDK;
 

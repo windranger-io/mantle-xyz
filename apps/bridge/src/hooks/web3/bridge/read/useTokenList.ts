@@ -24,7 +24,7 @@ function useTokenList(tokenListUrl: string) {
             logoURI: "https://token-list.mantle.xyz/data/ETH/logo.svg",
             extensions: {
               optimismBridgeAddress:
-                "0xf33939c0170F46174D62315F0128A2f1a38f99bE",
+                "0x21F308067241B2028503c07bd7cB3751FFab0Fb2",
             },
           },
           {
@@ -48,7 +48,7 @@ function useTokenList(tokenListUrl: string) {
             logoURI: "https://token-list.mantle.xyz/data/Mantle/logo.svg",
             extensions: {
               optimismBridgeAddress:
-                "0xf33939c0170F46174D62315F0128A2f1a38f99bE",
+                "0x21F308067241B2028503c07bd7cB3751FFab0Fb2",
             },
           },
           {
@@ -72,12 +72,12 @@ function useTokenList(tokenListUrl: string) {
             logoURI: "https://token-list.mantle.xyz/data/Babydoge/logo.png",
             extensions: {
               optimismBridgeAddress:
-                "0xf33939c0170F46174D62315F0128A2f1a38f99bE",
+                "0x21F308067241B2028503c07bd7cB3751FFab0Fb2",
             },
           },
           {
             chainId: 5003,
-            address: "0x27ee0eB6EbbcbCd4706C3291604AdC2F4384d09F",
+            address: "0x579c282aF1cD3EEbeb2b452d0de94563CDe18DCe",
             name: "Albert Token",
             symbol: "ATT",
             decimals: 18,

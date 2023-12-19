@@ -12,5 +12,8 @@ export async function GET(request: NextRequest) {
   const url = `${process.env.NEXT_PUBLIC_LITHOSPHERE_API_URL}/api/v1/deposits?address=${address}&page=${page}&pageSize=${pageSize}`;
   console.log(url);
   const res = await fetch(url);
-  return NextResponse.json(await res.json());
+  if (res.status === 200) {
+    return NextResponse.json(await res.json());
+  }
+  return NextResponse.json(null);
 }
