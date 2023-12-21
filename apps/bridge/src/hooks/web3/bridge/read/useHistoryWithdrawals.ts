@@ -36,9 +36,9 @@ function useHistoryWithdrawals(
           data.Records.map((record: any) => {
             let amount = "0";
             if (record.ERC20Amount) {
-              amount = record.ERC20Amount.toString();
+              amount = BigInt(record.ERC20Amount).toString();
             } else if (record.ETHAmount) {
-              amount = record.ETHAmount.toString();
+              amount = BigInt(record.ETHAmount).toString();
             }
             return {
               transactionHash: record.l2TransactionHash,
@@ -60,7 +60,7 @@ function useHistoryWithdrawals(
                   : record.l1FinalizeTxHash,
               amount,
               status: record.status.toString(),
-              blockTimestamp: record.timestamp,
+              blockTimestamp: record.timestamp * 1000,
               time_left: record.timeLeft,
             };
           });
@@ -105,6 +105,8 @@ function useHistoryWithdrawals(
         setWithdrawals(
           [...items].sort((a, b) => b.blockTimestamp - a.blockTimestamp)
         );
+
+        console.log("withdraw dataItems: ", dataItems);
 
         // we're not using this response directly atm
         return dataItems;

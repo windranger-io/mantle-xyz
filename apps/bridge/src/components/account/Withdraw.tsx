@@ -178,7 +178,6 @@ export default function Withdraw() {
                       tx2Hashes={tx2Hashes}
                       setTx2Hashes={setTx2Hashes}
                       rawStatus={transaction.status}
-                      timeLeft={transaction.time_left}
                     />
                   </div>
                 </td>

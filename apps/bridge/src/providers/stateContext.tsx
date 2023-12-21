@@ -305,7 +305,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       (client.address &&
         `/api/withdraw?address=${getAddress(client.address)}&page=${
           withdrawalsPage.current
-        }&pageSize=10`) ||
+        }&pageSize=1000`) ||
       ""
     );
   }, [client.address, withdrawalsPage]);
@@ -316,7 +316,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       (client.address &&
         `/api/deposit?address=${getAddress(client.address)}&page=${
           depositsPage.current
-        }&pageSize=10`) ||
+        }&pageSize=1000`) ||
       ""
     );
   }, [client.address, depositsPage]);

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   if (!s || !address || !page || !pageSize) {
     return NextResponse.json({});
   }
-  const url = `${process.env.NEXT_PUBLIC_LITHOSPHERE_API_URL}/api/v1/deposits?address=${address}&page=${page}&pageSize=${pageSize}`;
+  const url = `${process.env.NEXT_PUBLIC_LITHOSPHERE_API_URL}/api/v1/deposits?address=${address}&page=${page}&pageSize=${pageSize}&order=desc`;
   console.log(url);
   const res = await fetch(url);
   if (res.status === 200) {

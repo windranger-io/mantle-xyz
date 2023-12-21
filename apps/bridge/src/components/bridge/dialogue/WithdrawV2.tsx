@@ -103,12 +103,17 @@ export default function Default({
 
   // use the callCTA method...
   const callCTA = useCallBridge(direction, selected, destination);
-  const { isLoading: proveLoading, callProve } = useCallProve(tx1, (tx) => {
-    setWithdrawHash({
-      ...withdrawHash,
-      init: tx?.hash || "",
-    });
-  });
+  const { isLoading: proveLoading, callProve } = useCallProve(
+    tx1,
+    false,
+    false,
+    (tx) => {
+      setWithdrawHash({
+        ...withdrawHash,
+        init: tx?.transactionHash || "",
+      });
+    }
+  );
 
   const { isLoading: claimLoading, callClaim } = useCallClaim(
     tx1,

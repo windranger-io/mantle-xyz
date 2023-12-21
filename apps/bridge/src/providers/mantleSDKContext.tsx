@@ -328,16 +328,13 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     ): Promise<
       MessageStatus | { status: MessageStatus; receipt: MessageReceipt }
     > => {
-      console.log("getMessageStatus1: ", message);
       // attempt to fetch the messages receipt
       const receipt = await context.crossChainMessenger.getMessageReceipt(
         message
       );
-      console.log("receipt", receipt);
 
       const status: MessageStatus =
         await context.crossChainMessenger.getMessageStatus(message);
-      console.log("getMessageStatus2: ", status);
 
       // if returnReceipt is set then return an obj else just the status
       return options?.returnReceipt
