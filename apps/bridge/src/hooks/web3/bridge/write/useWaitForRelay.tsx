@@ -14,6 +14,7 @@ import { useToast } from "@hooks/useToast";
 import {
   CTAPages,
   Direction,
+  IS_MANTLE_V2,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
   WithdrawStatus,
@@ -203,32 +204,34 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
           tx2 as MessageReceipt
         )?.transactionReceipt?.transactionHash;
       } else {
-        // update the content and the callbacks
-        doUpdateToast({
-          borderLeft: "bg-blue-600",
-          content: (
-            <div>
-              <div>Withdrawal initiated</div>
-              <div className="text-sm">
-                Will be available to claim in{" "}
-                {`~${formatTime(
-                  challengePeriod && challengePeriod < 1200
-                    ? 1200
-                    : challengePeriod || 1200
-                )}`}
+        if (!IS_MANTLE_V2) {
+          // update the content and the callbacks
+          doUpdateToast({
+            borderLeft: "bg-blue-600",
+            content: (
+              <div>
+                <div>Withdrawal initiated</div>
+                <div className="text-sm">
+                  Will be available to claim in{" "}
+                  {`~${formatTime(
+                    challengePeriod && challengePeriod < 1200
+                      ? 1200
+                      : challengePeriod || 1200
+                  )}`}
+                </div>
               </div>
-            </div>
-          ),
-          type: "success",
-          id: `${txHash}`,
-          buttonText: `Restore loading screen`,
-          chainId: L2_CHAIN_ID,
-          receipt,
-          tx1Hash: txHash,
-          tx2Hash: false,
-          page: CTAPages.Loading,
-          safeChains: [L1_CHAIN_ID, L2_CHAIN_ID],
-        });
+            ),
+            type: "success",
+            id: `${txHash}`,
+            buttonText: `Restore loading screen`,
+            chainId: L2_CHAIN_ID,
+            receipt,
+            tx1Hash: txHash,
+            tx2Hash: false,
+            page: CTAPages.Loading,
+            safeChains: [L1_CHAIN_ID, L2_CHAIN_ID],
+          });
+        }
 
         // refetch to mark the claim available
         refetchWithdrawals();
@@ -243,6 +246,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
 
         // loop for 2000 blocks or until stopped
         while (!stopped && iterations < 2000) {
+          setSafeChains([L1_CHAIN_ID, L2_CHAIN_ID]);
           console.log("while: ", stopped, iterations);
           // 12s is approx time it takes to mine a block (wait 3 blocks before checking again)
           await timeout(36000);
