@@ -28,7 +28,6 @@ function useHistoryWithdrawals(
       ["HISTORICAL_WITHDRAWALS", { withdrawalsUrl }],
       async () => {
         const res = await fetch(withdrawalsUrl);
-        // console.log('withdraw res', res);
         const data = await res.json();
         console.log("withdraw res", data);
         const dataItems =
