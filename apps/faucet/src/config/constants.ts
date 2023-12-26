@@ -41,7 +41,7 @@ export function getBaseUrl() {
 // export the absolute path
 export const ABSOLUTE_PATH = getBaseUrl();
 
-// Configure which chain to use (sepolia)
+// Configure which chain to use (Sepolia Network)
 export const L1_CHAIN_ID = 11155111;
 
 // Configure the maximum balance the ui will mint until
