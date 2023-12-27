@@ -303,24 +303,26 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
             }
 
             // update the content and the callbacks
-            doUpdateToast({
-              borderLeft: "bg-green-600",
-              content: (
-                <div className="flex flex-row items-center gap-2">
-                  <span>Withdrawal ready to claim</span>
-                  <MantleToL1SVG />
-                </div>
-              ),
-              type: "success",
-              id: `${txHash}`,
-              buttonText: `Claim`,
-              chainId: L2_CHAIN_ID,
-              receipt,
-              tx1Hash: txHash,
-              tx2Hash: false,
-              page: CTAPages.Withdraw,
-              safeChains: [L1_CHAIN_ID, L2_CHAIN_ID],
-            });
+            if (!IS_MANTLE_V2) {
+              doUpdateToast({
+                borderLeft: "bg-green-600",
+                content: (
+                  <div className="flex flex-row items-center gap-2">
+                    <span>Withdrawal ready to claim</span>
+                    <MantleToL1SVG />
+                  </div>
+                ),
+                type: "success",
+                id: `${txHash}`,
+                buttonText: `Claim`,
+                chainId: L2_CHAIN_ID,
+                receipt,
+                tx1Hash: txHash,
+                tx2Hash: false,
+                page: CTAPages.Withdraw,
+                safeChains: [L1_CHAIN_ID, L2_CHAIN_ID],
+              });
+            }
             setWithdrawStatus(WithdrawStatus.READY_FOR_RELAY);
           } else if (status === MessageStatus.RELAYED) {
             try {
