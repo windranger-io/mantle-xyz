@@ -24,7 +24,7 @@ function Nav({ className = "" }: NavProps) {
   const NAV_ITEMS: NavItem[] = [
     {
       name: "Docs",
-      href: "https://docs.mantle.xyz",
+      href: "https://docs-v2.mantle.xyz",
       internal: true,
       key: "docs",
     },

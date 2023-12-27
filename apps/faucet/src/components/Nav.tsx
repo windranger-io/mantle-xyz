@@ -14,25 +14,25 @@ type NavProps = {
 const navItems: NavItem[] = [
   {
     name: "Docs",
-    href: "https://docs.mantle.xyz",
+    href: "https://docs-v2.mantle.xyz",
     internal: true,
     key: "docs",
   },
   {
     name: "Faucet",
-    href: "https://faucet.testnet.mantle.xyz",
+    href: "https://faucet.sepolia.mantle.xyz",
     internal: true,
     key: "faucet",
   },
   {
     name: "Bridge",
-    href: "https://bridge.testnet.mantle.xyz",
+    href: "https://bridge.sepolia.mantle.xyz",
     internal: true,
     key: "bridge",
   },
   {
     name: "Account",
-    href: "https://bridge.testnet.mantle.xyz/account/deposit",
+    href: "https://bridge.sepolia.mantle.xyz/account/deposit",
     internal: true,
     key: "account",
   },
