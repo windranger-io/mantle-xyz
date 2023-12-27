@@ -201,7 +201,7 @@ export const CHAINS: Record<
       symbol: "MNT",
       decimals: 18,
     },
-    rpcUrls: ["https://rpc-internal.sepolia.mantle.xyz"],
+    rpcUrls: ["https://rpc.sepolia.mantle.xyz"],
     blockExplorerUrls: ["https://explorer-v2.sepolia.mantle.xyz/"],
     // rpcUrls: ["https://op-geth-sepolia.qa.gomantle.org"],
     // blockExplorerUrls: [

@@ -199,6 +199,7 @@ export default function Status({
       refetch();
     }
   );
+  console.log("withdrawalStatuses", withdrawalStatuses);
 
   const { isLoading: isLoadingProve, callProve } = useCallProve(
     transactionHash,
