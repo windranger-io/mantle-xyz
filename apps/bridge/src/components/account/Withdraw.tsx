@@ -78,8 +78,8 @@ export default function Withdraw() {
           <tr className="border-b-[1px] border-stroke-secondary text-sm ">
             <th className="py-4">Block Timestamp</th>
             <th>Amount</th>
-            <th>Transaction 1</th>
             <th>Transaction 2</th>
+            <th>Transaction 1</th>
             <th>Status</th>
           </tr>
         </thead>

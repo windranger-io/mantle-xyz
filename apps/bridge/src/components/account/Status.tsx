@@ -184,6 +184,7 @@ export default function Status({
     false,
     false,
     (tx) => {
+      setCalStatus("4");
       // check if we already have an l1 hash in the cache
       const l1Hash = tx2Hashes[transactionHash];
       // persist the l2 txhash
