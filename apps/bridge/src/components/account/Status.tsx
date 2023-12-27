@@ -9,8 +9,10 @@ import { useMantleSDK } from "@providers/mantleSDKContext";
 
 import { useCallClaim } from "@hooks/web3/bridge/write/useCallClaim";
 import { Withdrawal } from "@hooks/web3/bridge/read";
-import { IS_MANTLE_V2 } from "@config/constants";
+import { IS_MANTLE_V2, L1_CHAIN_ID, CHAINS } from "@config/constants";
 import { useCallProve } from "@hooks/web3/bridge/write/useCallProve";
+import useIsChainID from "@hooks/web3/read/useIsChainID";
+import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 
 export default function Status({
   transactionHash,
@@ -42,6 +44,9 @@ export default function Status({
   const item = useMemo<Withdrawal | undefined>(() => {
     return discover !== -1 ? { ...withdrawals[discover] } : undefined;
   }, [discover, withdrawals]);
+
+  const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
+  const { switchToNetwork } = useSwitchToNetwork();
 
   // request the appropriate status information from mantle-sdk
   const {
@@ -277,6 +282,16 @@ export default function Status({
                 </div>
               );
             case "1":
+              if (!isLayer1ChainID) {
+                return (
+                  <Button
+                    size="regular"
+                    onClick={() => switchToNetwork(L1_CHAIN_ID)}
+                  >
+                    Switch to {CHAINS[L1_CHAIN_ID].chainName}
+                  </Button>
+                );
+              }
               return (
                 <Button
                   type="button"
@@ -327,6 +342,16 @@ export default function Status({
                 </div>
               );
             case "3":
+              if (!isLayer1ChainID) {
+                return (
+                  <Button
+                    size="regular"
+                    onClick={() => switchToNetwork(L1_CHAIN_ID)}
+                  >
+                    Switch to {CHAINS[L1_CHAIN_ID].chainName}
+                  </Button>
+                );
+              }
               return (
                 <Button
                   type="button"
