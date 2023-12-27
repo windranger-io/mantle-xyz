@@ -36,7 +36,7 @@ function Nav({ className = "" }: NavProps) {
     },
     {
       name: "Bridge",
-      href: "https://bridge.mantle.xyz",
+      href: "/",
       internal: true,
       key: "bridge",
     },
