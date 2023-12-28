@@ -29,11 +29,17 @@ function Nav({ className = "" }: NavProps) {
       key: "docs",
     },
     {
-      name: "Migrate",
-      href: "https://migratebit.mantle.xyz",
+      name: "Faucet",
+      href: "https://faucet.sepolia.mantle.xyz",
       internal: true,
-      key: "migrate",
+      key: "faucet",
     },
+    // {
+    //   name: "Migrate",
+    //   href: "https://migratebit.mantle.xyz",
+    //   internal: true,
+    //   key: "migrate",
+    // },
     {
       name: "Bridge",
       href: "/",
