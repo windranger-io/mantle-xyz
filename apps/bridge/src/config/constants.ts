@@ -202,7 +202,7 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: ["https://rpc.sepolia.mantle.xyz"],
-    blockExplorerUrls: ["https://explorer-v2.sepolia.mantle.xyz/"],
+    blockExplorerUrls: ["https://explorer.sepolia.mantle.xyz/"],
     // rpcUrls: ["https://op-geth-sepolia.qa.gomantle.org"],
     // blockExplorerUrls: [
     //   "https://explorer-fronted-sepolia-qa2.qa.gomantle.org/",
