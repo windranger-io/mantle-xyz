@@ -33,7 +33,6 @@ export const NavigationLite = ({
   navItems: NavItem[]
 }) => {
   const [isTestnet, setIsTestnet] = useState(false)
-  const gtag = (window as any)?.gtag
   useEffect(() => {
     try {
       if (typeof window !== 'undefined') {
