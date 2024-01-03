@@ -340,3 +340,23 @@ export const MANTLE_BRIDGE_URL: Record<number, string> = {
 };
 
 export const MANTLE_JOURNEY_URL = "https://journey.mantle.xyz";
+
+interface Bridge {
+  title: string;
+  desc: string;
+  img: string;
+  link: string;
+  isVerified?: boolean;
+}
+export interface BridgeList {
+  name: string;
+  version: {};
+  keywords: Array<string>;
+  timestamp: string;
+  bridges: Array<Bridge>;
+}
+
+export const RAW_CODE_LINK =
+  "https://raw.githubusercontent.com/windranger-io/mantle-xyz";
+
+export const BRIDGE_LIST = `${RAW_CODE_LINK}/feat/party-brigth/apps/bridge/src/bridges/third-party-bridges.json`;
