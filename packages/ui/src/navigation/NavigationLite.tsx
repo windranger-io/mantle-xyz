@@ -36,8 +36,10 @@ export const NavigationLite = ({
   const gtag = (window as any)?.gtag
   useEffect(() => {
     try {
-      const host = window?.location.host
-      setIsTestnet(host.indexOf('testnet') > -1)
+      if (typeof window !== 'undefined') {
+        const host = window?.location.host
+        setIsTestnet(host.indexOf('testnet') > -1)
+      }
     } catch (e) {
       console.log(e)
     }
