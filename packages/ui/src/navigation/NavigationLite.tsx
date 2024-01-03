@@ -6,6 +6,7 @@ import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import clsx from 'clsx'
+import { useEffect, useState } from 'react'
 import { MantleLogoIcon, MantleLogo } from '../base/Icons'
 
 import { mobileNavCat } from './styles'
@@ -31,6 +32,17 @@ export const NavigationLite = ({
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
   navItems: NavItem[]
 }) => {
+  const [isTestnet, setIsTestnet] = useState(false)
+  const gtag = (window as any)?.gtag
+  useEffect(() => {
+    try {
+      const host = window?.location.host
+      setIsTestnet(host.indexOf('testnet') > -1)
+    } catch (e) {
+      console.log(e)
+    }
+  }, [])
+
   return (
     <div className="relative">
       <nav
@@ -55,6 +67,12 @@ export const NavigationLite = ({
             return (
               <span key={`navLink-${item?.name || index}`}>
                 <MantleLink
+                  onClick={() =>
+                    gtag('event', 'header_bridge_click', {
+                      tab: item.name,
+                      network: isTestnet ? 'testnet' : 'mainnet',
+                    })
+                  }
                   variant="navLink"
                   href={item.href}
                   target={item.internal ? '_self' : '_blank'}
@@ -125,6 +143,12 @@ export const NavigationLite = ({
                 {navItems.map((item, index) => (
                   <span key={`navLink-${item?.name || index}`}>
                     <MantleLink
+                      onClick={() =>
+                        gtag('event', 'header_bridge_click', {
+                          tab: item.name,
+                          network: isTestnet ? 'testnet' : 'mainnet',
+                        })
+                      }
                       variant="navLink"
                       href={item.href}
                       target={item.internal ? '_self' : '_blank'}
