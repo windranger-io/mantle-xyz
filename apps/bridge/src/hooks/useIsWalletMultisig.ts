@@ -37,6 +37,7 @@ export function useIsWalletMultisig(
         setIsMultisig(true);
       }
 
+      // eslint-disable-next-line no-console
       console.log({ byteCode, walletAddress, chainId });
     }
 

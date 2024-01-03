@@ -2,6 +2,8 @@
 
 import {
   BRIDGE_BACKEND,
+  BRIDGE_LIST,
+  BridgeList,
   CTAPages,
   Direction,
   HISTORY_ITEMS_PER_PAGE,
@@ -48,6 +50,7 @@ import {
 import { getAddress } from "ethers/lib/utils.js";
 import { getMulticallContract } from "@utils/multicallContract";
 import useTokenList from "@hooks/web3/bridge/read/useTokenList";
+import useBridgeList from "@hooks/web3/bridge/read/useBridgeList";
 
 export type StateProps = {
   view: Views;
@@ -90,6 +93,7 @@ export type StateProps = {
 
   tokens: Token[];
   tokenList: TokenList;
+  bridgeList: BridgeList;
   balances: Record<string, string>;
   allowance: string;
   selectedToken: {
@@ -243,6 +247,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // fetch the tokenList from source
   const { tokenList } = useTokenList(MANTLE_TOKEN_LIST_URL);
+
+  // fetch the bridgeList from source
+
+  const { bridgeList } = useBridgeList(BRIDGE_LIST);
 
   // the current chains token list
   const tokens = useMemo(() => {
@@ -631,6 +639,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       balances,
       allowance,
       tokenList,
+      bridgeList,
       selectedToken,
       destinationToken,
       selectedTokenAmount,
@@ -712,6 +721,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     balances,
     allowance,
     tokenList,
+    bridgeList,
     selectedToken,
     destinationToken,
     selectedTokenAmount,
