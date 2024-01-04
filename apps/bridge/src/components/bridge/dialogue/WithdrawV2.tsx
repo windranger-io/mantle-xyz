@@ -110,7 +110,7 @@ export default function Default({
     (tx) => {
       setWithdrawHash({
         ...withdrawHash,
-        init: tx?.transactionHash || "",
+        prove: tx?.transactionHash || "",
       });
     }
   );
@@ -122,7 +122,7 @@ export default function Default({
     (tx) => {
       setWithdrawHash({
         ...withdrawHash,
-        init: tx?.transactionHash || "",
+        claim: tx?.transactionHash || "",
       });
     }
   );
