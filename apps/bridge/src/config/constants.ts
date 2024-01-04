@@ -188,7 +188,7 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
-      "https://eth-sepolia.g.alchemy.com/v2/mCOx1cDI3IKDuTnFIvoTv_lEeLUg0NoC",
+      "https://eth-sepolia.g.alchemy.com/v2/XMS1J6f654XZolfd7oaMe-kaNPEpWifX",
     ],
     blockExplorerUrls: ["https://sepolia.etherscan.io/"],
   },

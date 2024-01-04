@@ -11,7 +11,7 @@ import TxLink from "@components/bridge/utils/TxLink";
 import { useContext, useEffect, useState } from "react";
 import StateContext from "@providers/stateContext";
 
-import { useCallBridge } from "@hooks/web3/bridge/write/useCallBridge";
+import { useCallWithdraw } from "@hooks/web3/bridge/write/useCallWithdraw";
 import { useCallProve } from "@hooks/web3/bridge/write/useCallProve";
 
 import { Button, Typography } from "@mantle/ui";
@@ -22,6 +22,7 @@ import { useQuery } from "wagmi";
 import { useCallClaim } from "@hooks/web3/bridge/write/useCallClaim";
 import useIsChainID from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
+import { MessageStatus } from "@ethan-bedrock/sdk";
 import { IconLoading } from "../Loading";
 import { IconCheck } from "../Check";
 
@@ -60,8 +61,11 @@ export default function Default({
     setCTAChainId,
     withdrawStatus,
     tx1,
+    tx1Hash,
     withdrawHash,
     setWithdrawHash,
+    setCTAStatus,
+    setWithdrawStatus,
   } = useContext(StateContext);
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
   const { switchToNetwork } = useSwitchToNetwork();
@@ -70,7 +74,47 @@ export default function Default({
   // const [openToasts, setOpenToasts] = useState<string[]>([]);
 
   // use crossChainMessenger to get challengePeriod
-  const { crossChainMessenger } = useMantleSDK();
+  const { crossChainMessenger, getMessageStatus } = useMantleSDK();
+
+  // const [isPollingEnabled, setIsPollingEnabled] = useState(true);
+
+  useQuery(
+    ["withdrawStatus", tx1, tx1Hash],
+    async () => {
+      if (!tx1 || !tx1Hash) return null;
+      const status = await getMessageStatus(tx1);
+      console.log("withdraw status:", status);
+      if (status === MessageStatus.READY_TO_PROVE) {
+        setCTAStatus(
+          "Mantle v2 need to prove the withdraw message, waiting for status READY_TO_PROVE..."
+        );
+        setWithdrawStatus(WithdrawStatus.READY_TO_PROVE);
+      } else if (status === MessageStatus.IN_CHALLENGE_PERIOD) {
+        // based on the status update the states status and wait for the relayed message before setting the L1 txHash
+        setCTAStatus(
+          "In the challenge period, waiting for status READY_FOR_RELAY..."
+        );
+        setWithdrawStatus(WithdrawStatus.IN_CHALLENGE_PERIOD);
+      } else if (status === MessageStatus.READY_FOR_RELAY) {
+        // mark as ready for relay
+        setCTAStatus("Ready for relay, finalizing message now");
+        setWithdrawStatus(WithdrawStatus.READY_FOR_RELAY);
+      } else if (status === MessageStatus.RELAYED) {
+        // the message has been relayed and the l1 tx should be onchain
+        setCTAStatus("RELAYED");
+        setWithdrawStatus(WithdrawStatus.RELAYED);
+      }
+      return status;
+    },
+    {
+      enabled: true,
+      refetchInterval: 10000,
+    }
+  );
+
+  // const handleTogglePolling = () => {
+  //   setIsPollingEnabled(!isPollingEnabled);
+  // };
 
   // get and store the challengePeriod
   const { data: challengePeriod } = useQuery(
@@ -102,7 +146,7 @@ export default function Default({
   const [chkbx2, setChkbx2] = useState(false);
 
   // use the callCTA method...
-  const callCTA = useCallBridge(direction, selected, destination);
+  const callCTA = useCallWithdraw(selected, destination);
   const { isLoading: proveLoading, callProve } = useCallProve(
     tx1,
     false,

@@ -30,7 +30,7 @@ const config = {
       rpcUrl: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
     },
     11155111: {
-      rpcUrl: `https://eth-sepolia.g.alchemy.com/v2/mCOx1cDI3IKDuTnFIvoTv_lEeLUg0NoC`,
+      rpcUrl: `https://eth-sepolia.g.alchemy.com/v2/XMS1J6f654XZolfd7oaMe-kaNPEpWifX`,
     },
     5000: {
       rpcUrl: `https://rpc.mantle.xyz`,
