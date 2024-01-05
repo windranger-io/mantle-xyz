@@ -75,6 +75,7 @@ export default function Default({
 
   // use crossChainMessenger to get challengePeriod
   const { crossChainMessenger } = useMantleSDK();
+  const [proveStatusLoading, setProveStatusLoading] = useState(false);
 
   // const [isPollingEnabled, setIsPollingEnabled] = useState(true);
 
@@ -93,6 +94,7 @@ export default function Default({
         );
         setWithdrawStatus(WithdrawStatus.READY_TO_PROVE);
       } else if (status === MessageStatus.IN_CHALLENGE_PERIOD) {
+        setProveStatusLoading(false);
         // based on the status update the states status and wait for the relayed message before setting the L1 txHash
         setCTAStatus(
           "In the challenge period, waiting for status READY_FOR_RELAY..."
@@ -150,17 +152,12 @@ export default function Default({
 
   // use the callCTA method...
   const callCTA = useCallWithdraw(selected, destination);
-  const { isLoading: proveLoading, callProve } = useCallProve(
-    tx1,
-    false,
-    false,
-    (tx) => {
-      setWithdrawHash({
-        ...withdrawHash,
-        prove: tx?.transactionHash || "",
-      });
-    }
-  );
+  const { callProve } = useCallProve(tx1, false, false, (tx) => {
+    setWithdrawHash({
+      ...withdrawHash,
+      prove: tx?.transactionHash || "",
+    });
+  });
 
   const { isLoading: claimLoading, callClaim } = useCallClaim(
     tx1,
@@ -202,6 +199,7 @@ export default function Default({
     if (withdrawStatus === WithdrawStatus.INIT) {
       callCTA(undefined);
     } else if (withdrawStatus === WithdrawStatus.READY_TO_PROVE) {
+      setProveStatusLoading(true);
       callProve();
     } else if (withdrawStatus === WithdrawStatus.READY_FOR_RELAY) {
       callClaim();
@@ -282,7 +280,7 @@ export default function Default({
               )}
               <span>Prove withdrawal</span>
               {withdrawStatus === WithdrawStatus.READY_TO_PROVE &&
-                proveLoading && <IconLoading />}
+                proveStatusLoading && <IconLoading />}
             </div>
             {withdrawHash.prove && (
               <TxLink
@@ -409,7 +407,7 @@ export default function Default({
               (withdrawStatus === WithdrawStatus.INIT && !!ctaStatus) ||
               withdrawStatus === WithdrawStatus.SENDING_TX ||
               (withdrawStatus === WithdrawStatus.READY_TO_PROVE &&
-                proveLoading) ||
+                proveStatusLoading) ||
               withdrawStatus === WithdrawStatus.IN_CHALLENGE_PERIOD ||
               (withdrawStatus === WithdrawStatus.READY_FOR_RELAY &&
                 claimLoading) ||
@@ -434,10 +432,10 @@ export default function Default({
               </div>
             )}
             {withdrawStatus === WithdrawStatus.READY_TO_PROVE &&
-              !proveLoading &&
+              !proveStatusLoading &&
               "Submit Prove"}
             {withdrawStatus === WithdrawStatus.READY_TO_PROVE &&
-              proveLoading && (
+              proveStatusLoading && (
                 <div className="flex flex-row gap-4 items-center mx-auto w-fit">
                   <span>Submitting Prove </span>
                   <IconLoading className="w-8 h-8" />
@@ -446,7 +444,6 @@ export default function Default({
             {withdrawStatus === WithdrawStatus.IN_CHALLENGE_PERIOD && (
               <div className="flex flex-row gap-4 items-center mx-auto w-fit">
                 <span>Waiting Challenge Period </span>
-                <IconLoading className="w-8 h-8" />
               </div>
             )}
             {withdrawStatus === WithdrawStatus.READY_FOR_RELAY &&
