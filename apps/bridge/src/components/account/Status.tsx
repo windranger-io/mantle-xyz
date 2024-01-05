@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { useQuery } from "wagmi";
+import { useNetwork, useQuery } from "wagmi";
 import StateContext from "@providers/stateContext";
 
 import { Button } from "@mantle/ui";
@@ -11,7 +11,6 @@ import { useCallClaim } from "@hooks/web3/bridge/write/useCallClaim";
 import { Withdrawal } from "@hooks/web3/bridge/read";
 import { IS_MANTLE_V2, L1_CHAIN_ID, CHAINS } from "@config/constants";
 import { useCallProve } from "@hooks/web3/bridge/write/useCallProve";
-import useIsChainID from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 import toast, { Toaster } from "react-hot-toast";
 import TxLink from "@components/bridge/utils/TxLink";
@@ -46,8 +45,7 @@ export default function Status({
   const item = useMemo<Withdrawal | undefined>(() => {
     return discover !== -1 ? { ...withdrawals[discover] } : undefined;
   }, [discover, withdrawals]);
-
-  const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
+  const { chain: currentChain } = useNetwork();
   const { switchToNetwork } = useSwitchToNetwork();
 
   // request the appropriate status information from mantle-sdk
@@ -301,10 +299,12 @@ export default function Status({
                 </div>
               );
             case "1":
-              if (!isLayer1ChainID) {
+              if (currentChain?.id !== L1_CHAIN_ID) {
                 return (
                   <Button
+                    type="button"
                     size="regular"
+                    variant="dark"
                     onClick={() => switchToNetwork(L1_CHAIN_ID)}
                   >
                     Switch to {CHAINS[L1_CHAIN_ID].chainName}
@@ -361,10 +361,12 @@ export default function Status({
                 </div>
               );
             case "3":
-              if (!isLayer1ChainID) {
+              if (currentChain?.id !== L1_CHAIN_ID) {
                 return (
                   <Button
+                    type="button"
                     size="regular"
+                    variant="dark"
                     onClick={() => switchToNetwork(L1_CHAIN_ID)}
                   >
                     Switch to {CHAINS[L1_CHAIN_ID].chainName}
