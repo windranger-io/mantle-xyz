@@ -12,7 +12,7 @@ import { Withdrawal } from "@hooks/web3/bridge/read";
 import { IS_MANTLE_V2, L1_CHAIN_ID, CHAINS } from "@config/constants";
 import { useCallProve } from "@hooks/web3/bridge/write/useCallProve";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import TxLink from "@components/bridge/utils/TxLink";
 
 export default function Status({
@@ -446,18 +446,6 @@ export default function Status({
               );
           }
         })()}
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            // Define default options
-            className: "",
-            duration: 10000,
-            style: {
-              background: "#363636",
-              color: "#fff",
-            },
-          }}
-        />
       </div>
     );
   }

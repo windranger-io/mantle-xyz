@@ -74,7 +74,7 @@ export default function Default({
   // const [openToasts, setOpenToasts] = useState<string[]>([]);
 
   // use crossChainMessenger to get challengePeriod
-  const { crossChainMessenger, getMessageStatus } = useMantleSDK();
+  const { crossChainMessenger } = useMantleSDK();
 
   // const [isPollingEnabled, setIsPollingEnabled] = useState(true);
 
@@ -82,8 +82,11 @@ export default function Default({
     ["withdrawStatus", tx1, tx1Hash],
     async () => {
       if (!tx1 || !tx1Hash) return null;
-      const status = await getMessageStatus(tx1);
-      console.log("withdraw status:", status);
+      // const status = await getMessageStatus(tx1);
+      const { status } = await fetch(
+        `/api/getMessageStatus?txhash=${tx1Hash}`
+      ).then((_res) => _res.json());
+      console.log("message status: ", status);
       if (status === MessageStatus.READY_TO_PROVE) {
         setCTAStatus(
           "Mantle v2 need to prove the withdraw message, waiting for status READY_TO_PROVE..."
@@ -427,8 +430,7 @@ export default function Default({
             )}
             {withdrawStatus === WithdrawStatus.SENDING_TX && (
               <div className="flex flex-row gap-4 items-center mx-auto w-fit">
-                <span>Waiting </span>
-                <IconLoading className="w-8 h-8" />
+                <span>Waiting</span>
               </div>
             )}
             {withdrawStatus === WithdrawStatus.READY_TO_PROVE &&
