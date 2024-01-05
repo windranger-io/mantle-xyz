@@ -13,6 +13,8 @@ import { IS_MANTLE_V2, L1_CHAIN_ID, CHAINS } from "@config/constants";
 import { useCallProve } from "@hooks/web3/bridge/write/useCallProve";
 import useIsChainID from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
+import toast, { Toaster } from "react-hot-toast";
+import TxLink from "@components/bridge/utils/TxLink";
 
 export default function Status({
   transactionHash,
@@ -184,6 +186,12 @@ export default function Status({
     false,
     false,
     (tx) => {
+      toast.success(
+        <div className="flex flex-col items-start">
+          <h1>Claim successfully</h1>
+          <TxLink chainId={L1_CHAIN_ID} txHash={tx.transactionHash} asHash />
+        </div>
+      );
       setCalStatus("4");
       // check if we already have an l1 hash in the cache
       const l1Hash = tx2Hashes[transactionHash];
@@ -199,13 +207,17 @@ export default function Status({
       refetch();
     }
   );
-  console.log("withdrawalStatuses", withdrawalStatuses);
-
   const { isLoading: isLoadingProve, callProve } = useCallProve(
     transactionHash,
     false,
     false,
     (tx) => {
+      toast.success(
+        <div className="flex flex-col items-start">
+          <h1>Prove successfully</h1>
+          <TxLink chainId={L1_CHAIN_ID} txHash={tx.transactionHash} asHash />
+        </div>
+      );
       setCalStatus("2");
       // check if we already have an l1 hash in the cache
       // const l1Hash = tx2Hashes[transactionHash];
@@ -221,6 +233,11 @@ export default function Status({
       // refetch();
       getMessageStatus(tx.transactionHash).then((status) => {
         console.log(status);
+      });
+    },
+    (e) => {
+      toast.error(e, {
+        duration: 3000,
       });
     }
   );
@@ -427,6 +444,18 @@ export default function Status({
               );
           }
         })()}
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            // Define default options
+            className: "",
+            duration: 10000,
+            style: {
+              background: "#363636",
+              color: "#fff",
+            },
+          }}
+        />
       </div>
     );
   }

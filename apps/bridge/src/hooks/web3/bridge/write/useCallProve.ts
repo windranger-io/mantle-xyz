@@ -31,7 +31,8 @@ export function useCallProve(
   tx1: undefined | MessageLike,
   checkBeforeProve: boolean = false,
   storeProgress: boolean = true,
-  onSuccess?: (tx: TransactionReceipt) => void
+  onSuccess?: (tx: TransactionReceipt) => void,
+  onError?: (e: string) => void
 ) {
   // pull state from context
   const { tx2HashRef, setTx2Hash, setCTAPage } = useContext(StateContext);
@@ -127,6 +128,9 @@ export function useCallProve(
             ) {
               // if this prove has already been made we can return the checkFoProve response (tx2 receipt)
               return checkForProve();
+            }
+            if (onError) {
+              onError(e.reason || e.message);
             }
             return noopHandler() as TransactionResponse | TransactionReceipt;
           })
