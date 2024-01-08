@@ -28,7 +28,7 @@ class TxError extends Error {
 
 // call the prove method with the given tx
 export function useCallProve(
-  tx1: undefined | MessageLike,
+  tx1: undefined | boolean | MessageLike,
   checkBeforeProve: boolean = false,
   storeProgress: boolean = true,
   onSuccess?: (tx: TransactionReceipt) => void,
@@ -48,7 +48,12 @@ export function useCallProve(
   // commit prove method...
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const commitProve = () => {
-    if (tx1 && crossChainMessenger && getMessageStatus) {
+    if (
+      tx1 &&
+      typeof tx1 !== "boolean" &&
+      crossChainMessenger &&
+      getMessageStatus
+    ) {
       // check if a prove has already been made - if it has - return that instead
       const checkForProve = async () => {
         return getMessageStatus(tx1, { returnReceipt: true }).then(
@@ -75,9 +80,11 @@ export function useCallProve(
 
       // make a prove if not already proveed
       const makeProve = async () => {
+        console.log("makeProve", tx1);
         return crossChainMessenger
           .proveMessage(tx1)
           .catch((e) => {
+            console.log("makeProve: ", e);
             if (
               e.reason === "messenger has no L1 signer" ||
               e.reason === "underlying network changed" ||
@@ -135,6 +142,7 @@ export function useCallProve(
             return noopHandler() as TransactionResponse | TransactionReceipt;
           })
           .then(async (tx) => {
+            console.log("makeProve tx: ", tx);
             try {
               const finalTx = (
                 (tx as TransactionResponse)?.wait

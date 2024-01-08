@@ -66,6 +66,7 @@ export default function Default({
     setWithdrawHash,
     setCTAStatus,
     setWithdrawStatus,
+    setSafeChains,
   } = useContext(StateContext);
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
   const { switchToNetwork } = useSwitchToNetwork();
@@ -89,6 +90,7 @@ export default function Default({
       ).then((_res) => _res.json());
       console.log("message status: ", status);
       if (status === MessageStatus.READY_TO_PROVE) {
+        setSafeChains([L1_CHAIN_ID, L2_CHAIN_ID]);
         setCTAStatus(
           "Mantle v2 need to prove the withdraw message, waiting for status READY_TO_PROVE..."
         );
@@ -152,7 +154,7 @@ export default function Default({
 
   // use the callCTA method...
   const callCTA = useCallWithdraw(selected, destination);
-  const { callProve } = useCallProve(tx1, false, false, (tx) => {
+  const { callProve } = useCallProve(tx1Hash, false, false, (tx) => {
     setWithdrawHash({
       ...withdrawHash,
       prove: tx?.transactionHash || "",
