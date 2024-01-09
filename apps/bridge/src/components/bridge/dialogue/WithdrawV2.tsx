@@ -77,6 +77,7 @@ export default function Default({
   // use crossChainMessenger to get challengePeriod
   const { crossChainMessenger } = useMantleSDK();
   const [proveStatusLoading, setProveStatusLoading] = useState(false);
+  const [claimStatusLoading, setClaimStatusLoading] = useState(false);
 
   // const [isPollingEnabled, setIsPollingEnabled] = useState(true);
 
@@ -107,6 +108,7 @@ export default function Default({
         setCTAStatus("Ready for relay, finalizing message now");
         setWithdrawStatus(WithdrawStatus.READY_FOR_RELAY);
       } else if (status === MessageStatus.RELAYED) {
+        setClaimStatusLoading(false);
         // the message has been relayed and the l1 tx should be onchain
         setCTAStatus("RELAYED");
         setWithdrawStatus(WithdrawStatus.RELAYED);
@@ -161,17 +163,12 @@ export default function Default({
     });
   });
 
-  const { isLoading: claimLoading, callClaim } = useCallClaim(
-    tx1,
-    false,
-    true,
-    (tx) => {
-      setWithdrawHash({
-        ...withdrawHash,
-        claim: tx?.transactionHash || "",
-      });
-    }
-  );
+  const { callClaim } = useCallClaim(tx1Hash, false, true, (tx) => {
+    setWithdrawHash({
+      ...withdrawHash,
+      claim: tx?.transactionHash || "",
+    });
+  });
 
   // const ONE_HOUR_MS = 3600000;
 
@@ -204,6 +201,7 @@ export default function Default({
       setProveStatusLoading(true);
       callProve();
     } else if (withdrawStatus === WithdrawStatus.READY_FOR_RELAY) {
+      setClaimStatusLoading(true);
       callClaim();
     }
   };
@@ -284,7 +282,7 @@ export default function Default({
               {withdrawStatus === WithdrawStatus.READY_TO_PROVE &&
                 proveStatusLoading && <IconLoading />}
             </div>
-            {withdrawHash.prove && (
+            {withdrawHash.prove && !proveStatusLoading && (
               <TxLink
                 chainId={L1_CHAIN_ID}
                 txHash={withdrawHash.prove}
@@ -325,9 +323,9 @@ export default function Default({
               )}
               <span>Claim withdrawal</span>
               {withdrawStatus === WithdrawStatus.READY_FOR_RELAY &&
-                claimLoading && <IconLoading />}
+                claimStatusLoading && <IconLoading />}
             </div>
-            {withdrawHash.claim && (
+            {withdrawHash.claim && !claimStatusLoading && (
               <TxLink
                 chainId={L1_CHAIN_ID}
                 txHash={withdrawHash.claim}
@@ -412,7 +410,7 @@ export default function Default({
                 proveStatusLoading) ||
               withdrawStatus === WithdrawStatus.IN_CHALLENGE_PERIOD ||
               (withdrawStatus === WithdrawStatus.READY_FOR_RELAY &&
-                claimLoading) ||
+                claimStatusLoading) ||
               withdrawStatus === WithdrawStatus.RELAYED ||
               !chkbx1 ||
               !chkbx2
@@ -449,10 +447,10 @@ export default function Default({
               </div>
             )}
             {withdrawStatus === WithdrawStatus.READY_FOR_RELAY &&
-              !claimLoading &&
+              !claimStatusLoading &&
               "claim"}
             {withdrawStatus === WithdrawStatus.READY_FOR_RELAY &&
-              claimLoading && (
+              claimStatusLoading && (
                 <div className="flex flex-row gap-4 items-center mx-auto w-fit">
                   <span>Claiming </span>
                   <IconLoading className="w-8 h-8" />
