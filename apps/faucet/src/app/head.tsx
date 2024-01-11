@@ -7,6 +7,7 @@ import {
   TWITTER_TITLE,
 } from "@config/constants";
 import { Cookies } from "@mantle/ui";
+import Script from "next/script";
 
 export default function Head() {
   return (
@@ -28,6 +29,17 @@ export default function Head() {
       <meta name="twitter:image:src" content={`${ABSOLUTE_PATH}/twitter.png`} />
       <meta name="google" content="nositelinkssearchbox" />
       <Cookies siteId="178" />
+      <Script
+        strategy="afterInteractive"
+        src="https://www.googletagmanager.com/gtag/js?id=G-84NZKTFJ7S"
+      />
+      <Script strategy="afterInteractive" id="google-analytics">
+        {`window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-84NZKTFJ7S');`}
+      </Script>
     </>
   );
 }
