@@ -6,7 +6,6 @@ import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
 import { MantleLogoIcon, MantleLogo } from '../base/Icons'
 
 import { mobileNavCat } from './styles'
@@ -32,17 +31,8 @@ export const NavigationLite = ({
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
   navItems: NavItem[]
 }) => {
-  const [isTestnet, setIsTestnet] = useState(false)
-  useEffect(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        const host = window?.location.host
-        setIsTestnet(host.indexOf('testnet') > -1)
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }, [])
+  const isTestnet =
+    typeof window !== 'undefined' && window.location.host.includes('testnet')
 
   return (
     <div className="relative">
