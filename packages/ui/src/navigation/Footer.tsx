@@ -59,7 +59,7 @@ export const SlimFooter = ({ url }: { url: string }) => {
           <div className="flex flex-row align-center gap-4">
             <MantleLogoIcon height={40} width={40} />
             <div className="flex items-center">
-              Mantle {new Date().getFullYear()}&nbsp;&#169;
+              &#169;&nbsp;Mantle {new Date().getFullYear()}
             </div>
           </div>
         </a>
