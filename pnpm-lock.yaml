@@ -10,6 +10,10 @@ overrides:
 importers:
 
   .:
+    dependencies:
+      '@types/gtag.js':
+        specifier: ^0.0.18
+        version: 0.0.18
     devDependencies:
       '@commitlint/cli':
         specifier: ^17.4.0
@@ -4194,7 +4198,6 @@ packages:
 
   /@types/gtag.js@0.0.18:
     resolution: {integrity: sha512-GJxnIvuXuVhKaHfsOdzGipoOoXq72y3mdcncc9h6i6E7nlz89zBEj2wrLM7bqO5Xk9Lm2B94MwdQsSwRlaPSWw==, tarball: https://registry.npmmirror.com/@types/gtag.js/-/gtag.js-0.0.18.tgz}
-    dev: true
 
   /@types/http-cache-semantics@4.0.1:
     resolution: {integrity: sha512-SZs7ekbP8CN0txVG2xVRH6EgKmEm31BOxA07vkFaETzZz1xh+cbt8BcI0slpymvwhx5dlFnQG2rTlPVQn+iRPQ==}
