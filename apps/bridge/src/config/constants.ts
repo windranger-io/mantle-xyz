@@ -359,4 +359,4 @@ export interface BridgeList {
 export const RAW_CODE_LINK =
   "https://raw.githubusercontent.com/windranger-io/mantle-xyz";
 
-export const BRIDGE_LIST = `${RAW_CODE_LINK}/feat/main/apps/bridge/src/bridges/third-party-bridges.json`;
+export const BRIDGE_LIST = `${RAW_CODE_LINK}/main/apps/bridge/src/bridges/third-party-bridges.json`;
