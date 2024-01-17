@@ -11,49 +11,49 @@
     {
       "title": "Stargate",
       "desc": "stargate.finance",
-      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/feat/main/apps/bridge/public/thirdparty/stargate.png",
+      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/main/apps/bridge/public/thirdparty/stargate.png",
       "link": "https://stargate.finance/transfer",
       "isVerified": true
     },
     {
       "title": "Axelar",
       "desc": "satellite.money",
-      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/feat/main/apps/bridge/public/thirdparty/axelar.png",
+      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/main/apps/bridge/public/thirdparty/axelar.png",
       "link": "https://satellite.money/?source=ethereum&destination=mantle&asset_denom=eth&destination_address=",
       "isVerified": true
     },
     {
       "title": "Orbiter Finance",
       "desc": "orbiter.finance",
-      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/feat/main/apps/bridge/public/thirdparty/orbiter.png",
+      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/main/apps/bridge/public/thirdparty/orbiter.png",
       "link": "https://www.orbiter.finance/?source=Ethereum&dest=Mantle",
       "isVerified": true
     },
     {
       "title": "Symbiosis",
       "desc": "app.symbiosis.finance",
-      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/feat/main/apps/bridge/public/thirdparty/symbiosis.png",
+      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/main/apps/bridge/public/thirdparty/symbiosis.png",
       "link": "https://app.symbiosis.finance/swap?chainIn=Ethereum&chainOut=Mantle&tokenIn=ETH&tokenOut=MNT",
       "isVerified": true
     },
     {
       "title": "Owlto",
       "desc": "owlto.finance",
-      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/feat/main/apps/bridge/public/thirdparty/owlto.png",
+      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/main/apps/bridge/public/thirdparty/owlto.png",
       "link": "https://owlto.finance/",
       "isVerified": true
     },
     {
       "title": "XY Finance",
       "desc": "app.xy.finance",
-      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/feat/main/apps/bridge/public/thirdparty/xy.png",
+      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/main/apps/bridge/public/thirdparty/xy.png",
       "link": "https://app.xy.finance/",
       "isVerified": true
     },
     {
       "title": "Polyhedra",
       "desc": "zkbridge.com",
-      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/feat/main/apps/bridge/public/thirdparty/polyhedra.png",
+      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/main/apps/bridge/public/thirdparty/polyhedra.png",
       "link": "https://zkbridge.com/token",
       "isVerified": true
     }
