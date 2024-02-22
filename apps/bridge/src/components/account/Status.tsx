@@ -4,7 +4,7 @@ import StateContext from "@providers/stateContext";
 
 import { Button } from "@mantle/ui";
 
-import { MessageReceipt, MessageStatus } from "@ethan-bedrock/sdk";
+import { MessageReceipt, MessageStatus } from "@mantleio/sdk";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 
 import { useCallClaim } from "@hooks/web3/bridge/write/useCallClaim";

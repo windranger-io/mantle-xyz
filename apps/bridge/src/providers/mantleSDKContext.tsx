@@ -14,11 +14,11 @@ import {
   StateRoot,
   StateRootBatch,
   // CONTRACT_ADDRESSES,
-} from "@ethan-bedrock/sdk";
+} from "@mantleio/sdk";
 
-// import * as contracts from "@ethan-bedrock/contracts";
+// import * as contracts from "@mantleio/contracts";
 
-import { sleep } from "@ethan-bedrock/core-utils";
+import { sleep } from "@mantleio/core-utils";
 
 import {
   CHAINS_FORMATTED,

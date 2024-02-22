@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign, no-console, no-underscore-dangle */
-import { MessageDirection } from "@ethan-bedrock/sdk";
+import { MessageDirection } from "@mantleio/sdk";
 
 // Supagraph specific constants detailing the contracts we'll sync against
 import {
   TransactionReceipt,
   TransactionResponse,
 } from "@ethersproject/providers";
-import { hashCrossDomainMessage } from "@ethan-bedrock/core-utils";
+import { hashCrossDomainMessage } from "@mantleio/core-utils";
 
 import { BigNumber } from "ethers";
 import { Store, enqueuePromise } from "supagraph";

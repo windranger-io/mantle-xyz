@@ -1,7 +1,7 @@
 "use client";
 
 /* eslint-disable no-await-in-loop */
-import { MessageLike, MessageStatus } from "@ethan-bedrock/sdk";
+import { MessageLike, MessageStatus } from "@mantleio/sdk";
 
 import { useContext, useState } from "react";
 import StateContext from "@providers/stateContext";
