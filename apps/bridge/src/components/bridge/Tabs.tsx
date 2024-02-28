@@ -39,6 +39,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
     setSafeChains,
     setIsCTAPageOpen,
     setHasClosedClaims,
+    setSelectedTokenAmount,
   } = useContext(StateContext);
 
   const router = useRouter();
@@ -331,11 +332,13 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
                   // setChainId(L1_CHAIN_ID);
                   // setSafeChains([L1_CHAIN_ID]);
                   // setTab(Direction.Deposit);
+                  setSelectedTokenAmount("");
                   router.push("/deposit", { forceOptimisticNavigation: true });
                 } else {
                   // setChainId(L2_CHAIN_ID);
                   // setSafeChains([L2_CHAIN_ID]);
                   // setTab(Direction.Withdraw);
+                  setSelectedTokenAmount("");
                   router.push("/withdraw", { forceOptimisticNavigation: true });
                 }
               }}

@@ -37,6 +37,7 @@ import { Button, SimpleCard, Typography } from "@mantle/ui";
 
 import { CardHeading } from "./CardHeadings";
 import ConnectWallet from "./ConnectWallet";
+import AddTokenBtn from "./AddTokenBtn";
 
 // format according to the given locale
 const MAX_MINT_FORMATTED = formatBigNumberString(
@@ -377,26 +378,36 @@ function MintTokens() {
             </div> */}
             <div className="grid gap-2">
               <p className="text-sm">Mint token amount</p>
-              <input
-                type="number"
-                required
-                id="amount"
-                value={amount || ""}
-                min="1"
-                className="bg-black w-full rounded-input"
-                // disabled={
-                //   minting ||
-                //   !hasTweeted ||
-                //   (balanceMNT && parseFloat(myBalanceMNT) >= MAX_BALANCE)
-                // }
-                onChange={(e: {
-                  target: { value: React.SetStateAction<string> };
-                }) => {
-                  // pass the targer amount
-                  setAmount(`${Math.abs(+(e.target.value || "")) || ""}`);
-                }}
-              />
+              <div className="relative">
+                <input
+                  type="number"
+                  required
+                  id="amount"
+                  value={amount || ""}
+                  min="1"
+                  className="bg-black w-full rounded-input"
+                  // disabled={
+                  //   minting ||
+                  //   !hasTweeted ||
+                  //   (balanceMNT && parseFloat(myBalanceMNT) >= MAX_BALANCE)
+                  // }
+                  onChange={(e: {
+                    target: { value: React.SetStateAction<string> };
+                  }) => {
+                    // pass the targer amount
+                    setAmount(`${Math.abs(+(e.target.value || "")) || ""}`);
+                  }}
+                />
+                <AddTokenBtn
+                  iconHeight={26}
+                  iconWidth={26}
+                  className="absolute top-0 right-10 ml-[16px] py-0 px-0"
+                />
+              </div>
             </div>
+            <p className="text-sm whitespace-pre-wrap">
+              Balance: {myBalanceMNT} MNT
+            </p>
             <p
               className={`text-sm whitespace-pre-wrap ${
                 !session?.user?.access_token ||
