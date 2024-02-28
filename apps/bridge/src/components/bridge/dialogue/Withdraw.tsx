@@ -2,7 +2,7 @@ import { useContext } from "react";
 
 import StateContext from "@providers/stateContext";
 
-import { MessageLike } from "@ethan-bedrock/sdk";
+import { MessageLike } from "@mantleio/sdk";
 
 import { MdClear } from "react-icons/md";
 import { Button, Typography } from "@mantle/ui";

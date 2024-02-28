@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { CrossChainMessenger, MessageStatus } from "@ethan-bedrock/sdk";
+import { CrossChainMessenger, MessageStatus } from "@mantleio/sdk";
 import { providers } from "ethers";
 import {
   CHAINS_FORMATTED,

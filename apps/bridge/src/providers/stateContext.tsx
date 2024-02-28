@@ -15,7 +15,7 @@ import {
 } from "@config/constants";
 
 import { Contract, providers } from "ethers";
-import { MessageLike } from "@ethan-bedrock/sdk";
+import { MessageLike } from "@mantleio/sdk";
 import { BaseProvider, Network } from "@ethersproject/providers";
 
 import {

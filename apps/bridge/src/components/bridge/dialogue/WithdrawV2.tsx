@@ -22,7 +22,7 @@ import { useQuery } from "wagmi";
 import { useCallClaim } from "@hooks/web3/bridge/write/useCallClaim";
 import useIsChainID from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
-import { MessageStatus } from "@ethan-bedrock/sdk";
+import { MessageStatus } from "@mantleio/sdk";
 import { IconLoading } from "../Loading";
 import { IconCheck } from "../Check";
 

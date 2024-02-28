@@ -18,7 +18,7 @@ import {
   MessageDirection,
   TransactionLike,
   toTransactionHash,
-} from "@ethan-bedrock/sdk";
+} from "@mantleio/sdk";
 
 // Construct providers to supply the CrossChainMessenger
 const L1_PROVIDER = new JsonRpcProvider(

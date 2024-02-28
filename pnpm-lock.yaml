@@ -99,18 +99,6 @@ importers:
       '@apollo/experimental-nextjs-app-support':
         specifier: ^0.2.2
         version: 0.2.2(@apollo/client@3.7.16)(next@13.3.0)(react@18.2.0)
-      '@ethan-bedrock/contracts':
-        specifier: 1.5.0
-        version: 1.5.0(ethers@5.7.2)
-      '@ethan-bedrock/contracts-bedrock':
-        specifier: 1.5.0
-        version: 1.5.0
-      '@ethan-bedrock/core-utils':
-        specifier: 1.5.0
-        version: 1.5.0
-      '@ethan-bedrock/sdk':
-        specifier: 1.19.0
-        version: 1.19.0(ethers@5.7.2)
       '@ethersproject/providers':
         specifier: ^5.7.2
         version: 5.7.2
@@ -130,14 +118,17 @@ importers:
         specifier: workspace:*
         version: link:../../packages/wallet
       '@mantleio/contracts':
-        specifier: ^0.2.0
-        version: 0.2.0(ethers@5.7.2)
-      '@mantleio/core-utils':
+        specifier: ^0.3.0
+        version: 0.3.0(ethers@5.7.2)
+      '@mantleio/contracts-bedrock':
         specifier: ^0.1.0
         version: 0.1.0
+      '@mantleio/core-utils':
+        specifier: ^0.2.0
+        version: 0.2.0
       '@mantleio/sdk':
-        specifier: ^0.2.2
-        version: 0.2.2(ethers@5.7.2)
+        specifier: ^1.0.0
+        version: 1.0.0(ethers@5.7.2)
       '@tanstack/react-query':
         specifier: ^4.14.5
         version: 4.24.10(react-dom@18.2.0)(react@18.2.0)
@@ -1968,73 +1959,6 @@ packages:
       - supports-color
     dev: true
 
-  /@ethan-bedrock/contracts-bedrock@1.5.0:
-    resolution: {integrity: sha512-oC8afHKY7Wl4ykLy3FAgxgSXC8kMqdr9It78kWILlYWAtX6Pe4mVgHnI8CwZHIyutP6QTE/3J6xvSRvm6jj/KA==}
-    dependencies:
-      '@ethan-bedrock/core-utils': 1.5.0
-      '@openzeppelin/contracts': 4.7.3
-      '@openzeppelin/contracts-upgradeable': 4.7.3
-      ethers: 5.7.2
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
-  /@ethan-bedrock/contracts@1.5.0(ethers@5.7.2):
-    resolution: {integrity: sha512-Aomh7V/W24oMDKchBToi7f8iWRrA0k4ZOFIccmdukNXAOMxpkaHlnEHy43/6B0dZzu4DyOrvB+mdPvGWp8DAyQ==}
-    peerDependencies:
-      ethers: ^5
-    dependencies:
-      '@ethan-bedrock/core-utils': 1.5.0
-      '@ethersproject/abstract-provider': 5.7.0
-      '@ethersproject/abstract-signer': 5.7.0
-      ethers: 5.7.2
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
-  /@ethan-bedrock/core-utils@1.5.0:
-    resolution: {integrity: sha512-C4SFJOHILDgdxAvCbmcyeYv1G/2dIykDovGMfjgUXd9Mx4CIsWmUFKLylpvmMeyDvmEEpP/1uydbDOBWGePsEg==}
-    dependencies:
-      '@ethersproject/abi': 5.7.0
-      '@ethersproject/abstract-provider': 5.7.0
-      '@ethersproject/address': 5.7.0
-      '@ethersproject/bignumber': 5.7.0
-      '@ethersproject/bytes': 5.7.0
-      '@ethersproject/constants': 5.7.0
-      '@ethersproject/contracts': 5.7.0
-      '@ethersproject/hash': 5.7.0
-      '@ethersproject/keccak256': 5.7.0
-      '@ethersproject/properties': 5.7.0
-      '@ethersproject/providers': 5.7.2
-      '@ethersproject/rlp': 5.7.0
-      '@ethersproject/transactions': 5.7.0
-      '@ethersproject/web': 5.7.1
-      bufio: 1.2.0
-      chai: 4.3.7
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
-  /@ethan-bedrock/sdk@1.19.0(ethers@5.7.2):
-    resolution: {integrity: sha512-zS5ugwpSwXtT5CTwIBP00NU38m09w6oLcyaVx/iT+Xh/6m34yI3hhN6vXsMQj32Qf0yIpu3c0ayxPgSKGRYxYw==}
-    peerDependencies:
-      ethers: ^5
-    dependencies:
-      '@ethan-bedrock/contracts': 1.5.0(ethers@5.7.2)
-      '@ethan-bedrock/contracts-bedrock': 1.5.0
-      '@ethan-bedrock/core-utils': 1.5.0
-      ethers: 5.7.2
-      lodash: 4.17.21
-      merkletreejs: 0.2.32
-      rlp: 2.2.7
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
   /@ethereumjs/common@2.5.0:
     resolution: {integrity: sha512-DEHjW6e38o+JmB/NO3GZBpW4lpaiBpkFgXF6jLcJ6gETBYpEyaA5nTimsWBUJR3Vmtm/didUEbNjajskugZORg==}
     dependencies:
@@ -2634,57 +2558,64 @@ packages:
       '@lit-labs/ssr-dom-shim': 1.1.1
     dev: false
 
-  /@mantleio/contracts@0.2.0(ethers@5.7.2):
-    resolution: {integrity: sha512-ctvpgMhm179QbEUkSKA6K9VvzlCgm4EPHlDpzw2bgaRnMg3m3T5DGIgHpnG0N/GZYr9AQ2RdmSEilpSQ7OsMnQ==}
-    peerDependencies:
-      ethers: ^5
+  /@mantleio/contracts-bedrock@0.1.0:
+    resolution: {integrity: sha512-tQ6ZANXUC91w0r36yg1GcchT++roUNg+wkTddKFFLIL/rN34q1Uw0I/01rMZ9KitwG6L+WaVuL9Z+5V9pUWKvQ==}
     dependencies:
-      '@ethersproject/abstract-provider': 5.7.0
-      '@ethersproject/abstract-signer': 5.7.0
-      '@mantleio/core-utils': 0.1.0
+      '@mantleio/core-utils': 0.2.0
+      '@openzeppelin/contracts': 4.7.3
+      '@openzeppelin/contracts-upgradeable': 4.7.3
       ethers: 5.7.2
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
     dev: false
 
-  /@mantleio/contracts@0.2.1(ethers@5.7.2):
-    resolution: {integrity: sha512-NqWUO8Vhu2OVA+pH+k761uWwssQmKsSBRA1vO9wrKUvlHsWN50DL/wrIDHZBksDwcjqOFGeIxWmt9QLwndhAjw==}
+  /@mantleio/contracts@0.3.0(ethers@5.7.2):
+    resolution: {integrity: sha512-KCWEQMaIVq2fC07Lnz2bzdG+thk+LTK3VJi2g6a386uGlmhJfgC5ctN/renili8rBh9ZB/MF77rwu1bORBX30Q==}
     peerDependencies:
       ethers: ^5
     dependencies:
       '@ethersproject/abstract-provider': 5.7.0
       '@ethersproject/abstract-signer': 5.7.0
-      '@mantleio/core-utils': 0.1.0
+      '@mantleio/core-utils': 0.2.0
       ethers: 5.7.2
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
     dev: false
 
-  /@mantleio/core-utils@0.1.0:
-    resolution: {integrity: sha512-6v/CuKe8W3UVYVn6RUR6pbrMbKDcdrUoj24wCuwM4JFbPHzpTqUSnSXDHrDs3LJpWLxsptynNdIGw90wzCKpdg==}
+  /@mantleio/core-utils@0.2.0:
+    resolution: {integrity: sha512-tYIt224jqJ2MpZGJTi/JrSYOW1C3l69jCqQ8x3FJXH+WQZbSalPIGdclzursJu0HTZpFSpYgOCeSwHB62KdWfw==}
     dependencies:
+      '@ethersproject/abi': 5.7.0
       '@ethersproject/abstract-provider': 5.7.0
+      '@ethersproject/address': 5.7.0
+      '@ethersproject/bignumber': 5.7.0
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/constants': 5.7.0
+      '@ethersproject/contracts': 5.7.0
+      '@ethersproject/hash': 5.7.0
+      '@ethersproject/keccak256': 5.7.0
       '@ethersproject/properties': 5.7.0
       '@ethersproject/providers': 5.7.2
+      '@ethersproject/rlp': 5.7.0
       '@ethersproject/transactions': 5.7.0
       '@ethersproject/web': 5.7.1
       bufio: 1.2.0
       chai: 4.3.7
-      ethers: 5.7.2
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
     dev: false
 
-  /@mantleio/sdk@0.2.2(ethers@5.7.2):
-    resolution: {integrity: sha512-mmMGDG09GFpcWu/qPhJ18cU1N7m+qI7d5leykNoITw9Gwn70oGor9oDoH4ZtFfRe8W0XjP2jo0nGafS7FvOWJg==}
+  /@mantleio/sdk@1.0.0(ethers@5.7.2):
+    resolution: {integrity: sha512-G81lpOLpf2kqRvckW6FV9g6krrzK7CoCHIrUAsMu4BntxuvbyJlMz8TnmmnaXdpHSIfyeOPuRRsccdTWlBSZdQ==}
     peerDependencies:
       ethers: ^5
     dependencies:
-      '@mantleio/contracts': 0.2.1(ethers@5.7.2)
-      '@mantleio/core-utils': 0.1.0
+      '@mantleio/contracts': 0.3.0(ethers@5.7.2)
+      '@mantleio/contracts-bedrock': 0.1.0
+      '@mantleio/core-utils': 0.2.0
       ethers: 5.7.2
       lodash: 4.17.21
       merkletreejs: 0.2.32
@@ -9477,6 +9408,7 @@ packages:
 
   /loupe@2.3.6:
     resolution: {integrity: sha512-RaPMZKiMy8/JruncMU5Bt6na1eftNoo++R4Y+N2FrxkDVTrGvcyzFTsaGif4QTeKESheMGegbhw6iUAq+5A8zA==}
+    deprecated: Please upgrade to 2.3.7 which fixes GHSA-4q6p-r6v2-jvc5
     dependencies:
       get-func-name: 2.0.0
     dev: false
