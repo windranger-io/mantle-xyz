@@ -2,7 +2,13 @@ import { useContext } from "react";
 
 import StateContext from "@providers/stateContext";
 
-import { Direction, CTAPages, Token } from "@config/constants";
+import {
+  Direction,
+  CTAPages,
+  Token,
+  IS_MANTLE_V2,
+  WithdrawStatus,
+} from "@config/constants";
 
 import Default from "@components/bridge/dialogue/Default";
 
@@ -15,6 +21,7 @@ import Withdrawn from "@components/bridge/dialogue/Withdrawn";
 import WhatsNext from "@components/bridge/dialogue/WhatsNext";
 
 import { SimpleCard } from "@mantle/ui";
+import WithdrawV2 from "./WithdrawV2";
 
 export default function Dialogue({
   direction,
@@ -46,6 +53,8 @@ export default function Dialogue({
     isCTAPageOpenRef: isOpenRef,
     setSelectedTokenAmount,
     setDestinationTokenAmount,
+    setWithdrawHash,
+    setWithdrawStatus,
   } = useContext(StateContext);
 
   const reset = () => {
@@ -58,6 +67,12 @@ export default function Dialogue({
     setCTAPage(CTAPages.Default);
     // restore safeChains to selected chain
     setSafeChains([chainId]);
+    setWithdrawHash({
+      init: "",
+      prove: "",
+      claim: "",
+    });
+    setWithdrawStatus(WithdrawStatus.INIT);
     // reset selected token amount
     if (ctaPage !== CTAPages.Default) {
       setSelectedTokenAmount("");
@@ -77,51 +92,64 @@ export default function Dialogue({
     }, 201); // using ease-in duration-200 for animation
   };
 
+  const isMantleV2 = IS_MANTLE_V2;
   return (
     (isOpen && (
       <SimpleCard className="max-w-lg w-full grid gap-4 relative bg-black border border-stroke-primary">
-        <div className="w-full max-w-lg transform px-6 text-left align-middle transition-all space-y-10">
-          {ctaPage === CTAPages.Default && (
-            <Default
+        {isMantleV2 && direction === Direction.Withdraw ? (
+          <div className="w-full max-w-lg transform px-6 text-left align-middle transition-all space-y-10">
+            <WithdrawV2
               direction={direction}
               selected={selected}
               destination={destination}
               ctaStatus={ctaStatus}
               closeModal={closeModalAndReset}
             />
-          )}
-          {ctaPage === CTAPages.Deposit && (
-            <Deposited tx1Hash={tx1Hash} tx2Hash={tx2Hash} />
-          )}
-          {ctaPage === CTAPages.Deposited && (
-            <WhatsNext closeModal={closeModalAndReset} />
-          )}
-          {ctaPage === CTAPages.Withdraw && (
-            <Withdraw
-              tx1={tx1}
-              tx1Hash={tx1Hash}
-              tx2Hash={tx2Hash}
-              closeModal={closeModalAndReset}
-            />
-          )}
-          {ctaPage === CTAPages.Withdrawn && (
-            <Withdrawn
-              tx1Hash={tx1Hash}
-              tx2Hash={tx2Hash}
-              closeModal={closeModalAndReset}
-            />
-          )}
-          {ctaPage === CTAPages.Loading && (
-            <Loading
-              tx1Hash={tx1Hash}
-              tx2Hash={tx2Hash}
-              closeModal={closeModalAndReset}
-            />
-          )}
-          {ctaPage === CTAPages.Error && (
-            <Error reset={reset} closeModal={closeModalAndReset} />
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="w-full max-w-lg transform px-6 text-left align-middle transition-all space-y-10">
+            {ctaPage === CTAPages.Default && (
+              <Default
+                direction={direction}
+                selected={selected}
+                destination={destination}
+                ctaStatus={ctaStatus}
+                closeModal={closeModalAndReset}
+              />
+            )}
+            {ctaPage === CTAPages.Deposit && (
+              <Deposited tx1Hash={tx1Hash} tx2Hash={tx2Hash} />
+            )}
+            {ctaPage === CTAPages.Deposited && (
+              <WhatsNext closeModal={closeModalAndReset} />
+            )}
+            {ctaPage === CTAPages.Withdraw && (
+              <Withdraw
+                tx1={tx1}
+                tx1Hash={tx1Hash}
+                tx2Hash={tx2Hash}
+                closeModal={closeModalAndReset}
+              />
+            )}
+            {ctaPage === CTAPages.Withdrawn && (
+              <Withdrawn
+                tx1Hash={tx1Hash}
+                tx2Hash={tx2Hash}
+                closeModal={closeModalAndReset}
+              />
+            )}
+            {ctaPage === CTAPages.Loading && (
+              <Loading
+                tx1Hash={tx1Hash}
+                tx2Hash={tx2Hash}
+                closeModal={closeModalAndReset}
+              />
+            )}
+            {ctaPage === CTAPages.Error && (
+              <Error reset={reset} closeModal={closeModalAndReset} />
+            )}
+          </div>
+        )}
       </SimpleCard>
     )) || <div />
   );

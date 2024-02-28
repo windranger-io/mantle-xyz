@@ -1,11 +1,12 @@
 import {
   Direction,
+  IS_MANTLE_V2,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
   MANTLE_TOKEN_LIST_URL,
   Token,
 } from "@config/constants";
-import { constants } from "ethers";
+import { constants, ethers } from "ethers";
 
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 
@@ -58,30 +59,32 @@ function useGasEstimate(
         // invalid state - 0 the gas price
         return formatUnits("0", "gwei")?.toString();
       };
-
+      const isMantleV2 = IS_MANTLE_V2;
+      const isETH = destinationToken[type] === "ETH";
+      const isMNT = destinationToken[type] === "Mantle";
       if (
         tokenList?.timestamp &&
         selectedToken[type] &&
         destinationToken[type] &&
         crossChainMessenger
       ) {
-        if (type === Direction.Deposit && destinationToken[type] === "ETH") {
+        if (type === Direction.Deposit && isETH) {
           return crossChainMessenger?.estimateGas
             ?.depositETH(destinationTokenAmount || 0, {
               overrides: { from: client?.address },
             })
-            ?.catch((e) => errorHandler(e))
-            ?.then((val) => {
+            ?.catch((e: Error) => errorHandler(e))
+            ?.then((val: string | ethers.BigNumber) => {
               return val.toString();
             });
         }
-        if (type === Direction.Withdraw && destinationToken[type] === "ETH") {
+        if (type === Direction.Withdraw && isETH) {
           return crossChainMessenger?.estimateGas
             ?.withdrawETH(destinationTokenAmount || 0, {
               overrides: { from: client?.address },
             })
-            ?.catch((e) => errorHandler(e))
-            ?.then((val) => {
+            ?.catch((e: Error) => errorHandler(e))
+            ?.then((val: string | ethers.BigNumber) => {
               return val.toString();
             });
         }
@@ -105,6 +108,28 @@ function useGasEstimate(
             )
           )
         ) {
+          if (isMantleV2 && type === Direction.Deposit && isMNT) {
+            return crossChainMessenger?.estimateGas
+              ?.depositMNT(destinationTokenAmount || 0, {
+                overrides: { from: client?.address },
+              })
+              ?.catch((e: Error) => {
+                errorHandler(e);
+              })
+              ?.then((val: void | ethers.BigNumber) => {
+                return val;
+              });
+          }
+          if (isMantleV2 && type === Direction.Withdraw && isMNT) {
+            return crossChainMessenger?.estimateGas
+              ?.withdrawMNT(destinationTokenAmount || 0, {
+                overrides: { from: client?.address },
+              })
+              ?.catch((e: Error) => errorHandler(e))
+              ?.then((val: string | ethers.BigNumber) => {
+                return val.toString();
+              });
+          }
           if (type === Direction.Deposit) {
             return crossChainMessenger?.estimateGas
               ?.depositERC20(
@@ -116,8 +141,8 @@ function useGasEstimate(
                 ),
                 { overrides: { from: client?.address } }
               )
-              ?.catch((e) => errorHandler(e))
-              ?.then((val) => {
+              ?.catch((e: Error) => errorHandler(e))
+              ?.then((val: string | ethers.BigNumber) => {
                 return val.toString();
               });
           }
@@ -132,8 +157,8 @@ function useGasEstimate(
                 ),
                 { overrides: { from: client?.address } }
               )
-              ?.catch((e) => errorHandler(e))
-              ?.then((val) => {
+              ?.catch((e: Error) => errorHandler(e))
+              ?.then((val: string | ethers.BigNumber) => {
                 return val.toString();
               });
           }

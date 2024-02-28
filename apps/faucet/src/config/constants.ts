@@ -41,8 +41,8 @@ export function getBaseUrl() {
 // export the absolute path
 export const ABSOLUTE_PATH = getBaseUrl();
 
-// Configure which chain to use (goerli)
-export const L1_CHAIN_ID = 5;
+// Configure which chain to use (Sepolia Network)
+export const L1_CHAIN_ID = 11155111;
 
 // Configure the maximum balance the ui will mint until
 export const MAX_BALANCE = 1000;
@@ -57,6 +57,7 @@ export const REQUIRED_TWEET =
 // set the available networks token contract address (goerli)
 export const NETWORKS: Record<number, `0x${string}`> = {
   5: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
+  11155111: "0x65e37b558f64e2be5768db46df22f93d85741a9e",
 };
 
 // set the available chains configuration to allow network to be added
@@ -91,6 +92,22 @@ export const CHAINS: Record<
     ],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
+  11155111: {
+    chainId: "0xaa36a7",
+    chainName: "Sepolia",
+    nativeCurrency: {
+      name: "SepoliaETH",
+      symbol: "SepoliaETH",
+      decimals: 18,
+    },
+    rpcUrls: [
+      // infura backed redirect gateway
+      `${ABSOLUTE_PATH}/rpc`,
+      // public gateway
+      `https://rpc.ankr.com/eth_sepolia`,
+    ],
+    blockExplorerUrls: ["https://sepolia.etherscan.io/"],
+  },
 };
 
 // Formatted chains for use in wagmi
@@ -109,6 +126,21 @@ export const CHAINS_FORMATTED: Record<number, Chain> = {
     },
     id: 5,
     nativeCurrency: CHAINS[5].nativeCurrency,
+  },
+  11155111: {
+    testnet: true,
+    name: CHAINS[11155111].chainName,
+    network: CHAINS[11155111].chainName,
+    rpcUrls: {
+      default: {
+        http: [CHAINS[11155111].rpcUrls[0]],
+      },
+      public: {
+        http: [CHAINS[11155111].rpcUrls[1]],
+      },
+    },
+    id: 11155111,
+    nativeCurrency: CHAINS[11155111].nativeCurrency,
   },
 };
 

@@ -11,11 +11,18 @@ import { Typography } from "@mantle/ui";
 
 import { getAddress } from "ethers/lib/utils.js";
 import { CHAINS, Direction, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
+import toast from "react-hot-toast";
 
 export default function Account({ selectedTab }: { selectedTab: Direction }) {
   const { client } = useContext(StateContext);
 
   const { copy } = useCopyToClipboard();
+  const handleCopy = () => {
+    toast.success("Copied successfully", {
+      duration: 2000,
+    });
+    copy(getAddress(client.address as string));
+  };
 
   return (
     (client && client.address && (
@@ -28,10 +35,7 @@ export default function Account({ selectedTab }: { selectedTab: Direction }) {
         </Typography>
 
         <div className="flex justify-center space-x-1">
-          <AiOutlineCopy
-            onClick={() => copy(getAddress(client.address as string))}
-            className="cursor-pointer"
-          />
+          <AiOutlineCopy onClick={handleCopy} className="cursor-pointer" />
           <Link
             href={`${
               CHAINS[
