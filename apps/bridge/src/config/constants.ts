@@ -162,7 +162,7 @@ export const CHAINS: Record<
       // infura backed redirect gateway
       `${ABSOLUTE_PATH}/rpc`,
       // public gateway
-      `https://rpc.ankr.com/eth_goerli`,
+      `https://eth-goerli.g.alchemy.com/v2/C1HA_ubz9iHEBkGZi-LxwHijrRHzRhUe`,
     ],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
@@ -175,7 +175,7 @@ export const CHAINS: Record<
       symbol: "MNT",
       decimals: 18,
     },
-    rpcUrls: ["https://rpc.testnet.mantle.xyz"],
+    rpcUrls: ["https://op-geth-debug.testnet.mantle.xyz"],
     blockExplorerUrls: ["https://explorer.testnet.mantle.xyz/"],
   },
   // sepolia
