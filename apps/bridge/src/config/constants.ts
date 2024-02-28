@@ -208,6 +208,21 @@ export const CHAINS: Record<
     //   "https://explorer-fronted-sepolia-qa2.qa.gomantle.org/",
     // ],
   },
+  5003003: {
+    chainId: "0x4c56fb",
+    chainName: "Mantle Sepolia QA3",
+    nativeCurrency: {
+      name: "Mantle",
+      symbol: "MNT",
+      decimals: 18,
+    },
+    rpcUrls: ["https://rpc-op-geth-qa3.qa.gomantle.org"],
+    blockExplorerUrls: ["https://explorer.sepolia.mantle.xyz/"],
+    // rpcUrls: ["https://op-geth-sepolia.qa.gomantle.org"],
+    // blockExplorerUrls: [
+    //   "https://explorer-fronted-sepolia-qa2.qa.gomantle.org/",
+    // ],
+  },
 };
 
 export const CHAINS_FORMATTED: Record<number, Chain> = {
@@ -299,6 +314,20 @@ export const CHAINS_FORMATTED: Record<number, Chain> = {
     id: 5003,
     nativeCurrency: CHAINS[5003].nativeCurrency,
   },
+  5003003: {
+    name: CHAINS[5003003].chainName,
+    network: CHAINS[5003003].chainName,
+    rpcUrls: {
+      default: {
+        http: [CHAINS[5003003].rpcUrls[0]],
+      },
+      public: {
+        http: [CHAINS[5003003].rpcUrls[0]],
+      },
+    },
+    id: 5003003,
+    nativeCurrency: CHAINS[5003003].nativeCurrency,
+  },
 };
 
 export enum ChainID {
@@ -307,6 +336,7 @@ export enum ChainID {
   Goerli = 5,
   MantleTestnet = 5001,
   MantleSepolia = 5003,
+  MantleSepoliaQA3 = 5003003,
   Sepolia = 11155111,
 }
 
@@ -344,6 +374,7 @@ export const MULTICALL_CONTRACTS: Record<number, string> = {
   5001: "0xcA11bde05977b3631167028862bE2a173976CA11",
   11155111: "0xcA11bde05977b3631167028862bE2a173976CA11",
   5003: "0x783983D4FE933F52C79E179301Bc293508dfea19",
+  5003003: "0x0cfA950b9b2e8FCa604f1004802eD0c8D62D22d3",
 };
 
 // ERC-20 abi for balanceOf && allowanceOf

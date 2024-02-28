@@ -41,6 +41,9 @@ const config = {
     5003: {
       rpcUrl: `https://rpc.sepolia.mantle.xyz`,
     },
+    5003003: {
+      rpcUrl: `https://rpc-op-geth-qa3.qa.gomantle.org`,
+    },
   },
   // configure available Contracts and their block details
   contracts: {

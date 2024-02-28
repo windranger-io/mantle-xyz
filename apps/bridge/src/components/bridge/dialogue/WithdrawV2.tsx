@@ -60,8 +60,8 @@ export default function Default({
     destinationTokenAmount,
     setCTAChainId,
     withdrawStatus,
-    tx1,
-    tx1Hash,
+    // tx1,
+    // tx1Hash,
     withdrawHash,
     setWithdrawHash,
     setCTAStatus,
@@ -70,6 +70,10 @@ export default function Default({
   } = useContext(StateContext);
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
   const { switchToNetwork } = useSwitchToNetwork();
+  const tx1 =
+    "0x0afdb33e30197746b3e826cba15ca52e2f1ce96882bf4311f09587249f702068";
+  const tx1Hash =
+    "0x0afdb33e30197746b3e826cba15ca52e2f1ce96882bf4311f09587249f702068";
 
   // @TODO: we should keep track of which relays we have running
   // const [openToasts, setOpenToasts] = useState<string[]>([]);
@@ -401,22 +405,7 @@ export default function Default({
             Switch to {CHAINS[L1_CHAIN_ID].chainName}
           </Button>
         ) : (
-          <Button
-            size="full"
-            disabled={
-              (withdrawStatus === WithdrawStatus.INIT && !!ctaStatus) ||
-              withdrawStatus === WithdrawStatus.SENDING_TX ||
-              (withdrawStatus === WithdrawStatus.READY_TO_PROVE &&
-                proveStatusLoading) ||
-              withdrawStatus === WithdrawStatus.IN_CHALLENGE_PERIOD ||
-              (withdrawStatus === WithdrawStatus.READY_FOR_RELAY &&
-                claimStatusLoading) ||
-              withdrawStatus === WithdrawStatus.RELAYED ||
-              !chkbx1 ||
-              !chkbx2
-            }
-            onClick={submitWithdraw}
-          >
+          <Button size="full" disabled={false} onClick={submitWithdraw}>
             {withdrawStatus === WithdrawStatus.INIT &&
               !ctaStatus &&
               "Confirm Withdraw"}

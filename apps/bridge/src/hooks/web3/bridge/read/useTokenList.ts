@@ -24,11 +24,11 @@ function useTokenList(tokenListUrl: string) {
             logoURI: "https://token-list.mantle.xyz/data/ETH/logo.svg",
             extensions: {
               optimismBridgeAddress:
-                "0x21F308067241B2028503c07bd7cB3751FFab0Fb2",
+                "0xEce11c400019c58F5d848E19Dcb7BE831569E50F",
             },
           },
           {
-            chainId: 5003,
+            chainId: 5003003,
             address: "0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111",
             name: "Ether",
             symbol: "ETH",
@@ -48,11 +48,11 @@ function useTokenList(tokenListUrl: string) {
             logoURI: "https://token-list.mantle.xyz/data/Mantle/logo.svg",
             extensions: {
               optimismBridgeAddress:
-                "0x21F308067241B2028503c07bd7cB3751FFab0Fb2",
+                "0xEce11c400019c58F5d848E19Dcb7BE831569E50F",
             },
           },
           {
-            chainId: 5003,
+            chainId: 5003003,
             address: "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
             name: "Mantle",
             symbol: "MNT",
