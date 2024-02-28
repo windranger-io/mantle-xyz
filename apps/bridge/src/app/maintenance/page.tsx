@@ -7,7 +7,7 @@ const Page = async () => {
       <T variant="body20" className="mt-10">
         The network is being upgraded, please wait...{" "}
         <a
-          href="https://www.mantle.xyz/blog/research/fair-sequencing"
+          href="https://www.mantle.xyz/blog/"
           target="__blank"
           rel="noreferrer"
           className="underline mt-4"
