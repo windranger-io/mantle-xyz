@@ -217,7 +217,7 @@ export const InitBalances = async (): Promise<Migration> => {
             balances[(batch[index] as { id: string }).id] = response;
           });
         }),
-        50
+        10
       );
 
       console.log("All balances retrieved at blockNumber", +blockNumber);
