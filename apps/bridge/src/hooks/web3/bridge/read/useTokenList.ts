@@ -72,12 +72,12 @@ function useTokenList(tokenListUrl: string) {
             logoURI: "https://token-list.mantle.xyz/data/Babydoge/logo.png",
             extensions: {
               optimismBridgeAddress:
-                "0x21F308067241B2028503c07bd7cB3751FFab0Fb2",
+                "0xEce11c400019c58F5d848E19Dcb7BE831569E50F",
             },
           },
           {
-            chainId: 5003,
-            address: "0x579c282aF1cD3EEbeb2b452d0de94563CDe18DCe",
+            chainId: 5003003,
+            address: "0x1aC32FEec4CFF7EA0FC4f1A2f52e573F83ef862f",
             name: "Albert Token",
             symbol: "ATT",
             decimals: 18,

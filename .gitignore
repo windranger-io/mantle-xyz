@@ -44,4 +44,4 @@ yarn-error.log*
 # translations
 **/src/i18n
 
-packages/sdk/*
+!packages/sdk/dist
