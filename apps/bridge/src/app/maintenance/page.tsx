@@ -7,7 +7,7 @@ const Page = async () => {
       <T variant="body20" className="mt-10">
         The network is upgrading, please wait...{" "}
         <a
-          href="https://www.mantle.xyz/blog/announcements/mantle-goerli-testnet-upgrade"
+          href="https://twitter.com/0xMantle/status/1767165298724295108"
           target="__blank"
           rel="noreferrer"
           className="underline mt-4"
