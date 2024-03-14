@@ -27,9 +27,9 @@ export function AdditionalLinks() {
           <MantleLink
             variant="additionalLinks"
             target="blank"
-            href="https://faucet.testnet.mantle.xyz/"
+            href="https://faucet.sepolia.mantle.xyz/"
           >
-            Mantle Testnet Faucet
+            Mantle Sepolia Faucet
           </MantleLink>
         ) : (
           <>
