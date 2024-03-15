@@ -80,11 +80,17 @@ function Nav({ className = "" }: NavProps) {
   ];
 
   const navItems = isTestnet ? NAV_ITEMS_TESTNET : NAV_ITEMS;
+  const walletC =
+    process.env.NEXT_PUBLIC_SHOW_MAINTENANCE === "true" ? (
+      <span>upgrading</span>
+    ) : (
+      <ConnectWallet />
+    );
 
   return (
     <Header
       navLite
-      walletConnect={<ConnectWallet />}
+      walletConnect={walletC}
       className={className}
       activeKey={activeKey}
       mobileMenuOpen={mobileMenuOpen}
