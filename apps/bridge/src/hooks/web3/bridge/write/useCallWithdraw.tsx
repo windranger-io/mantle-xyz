@@ -1,11 +1,4 @@
-import {
-  L1_CHAIN_ID,
-  CTAPages,
-  Direction,
-  Token,
-  IS_MANTLE_V2,
-  WithdrawStatus,
-} from "@config/constants";
+import { CTAPages, Token, WithdrawStatus } from "@config/constants";
 import {
   TransactionReceipt,
   TransactionResponse,
@@ -19,10 +12,9 @@ import { useMantleSDK } from "@providers/mantleSDKContext";
 import { timeout } from "@utils/toolSet";
 import { parseUnits } from "ethers/lib/utils.js";
 
-import { ToastProps, useToast } from "@hooks/useToast";
-import { useMutation, useQuery } from "wagmi";
-import { formatTime } from "@mantle/utils";
-import { useWaitForRelay } from "./useWaitForRelay";
+import { useToast } from "@hooks/useToast";
+import { useMutation } from "wagmi";
+// import { useWaitWithdraw } from "./useWaitWithdraw";
 
 class TxError extends Error {
   receipt: TransactionReceipt | TransactionResponse;
@@ -38,8 +30,7 @@ class TxError extends Error {
 }
 
 // call this method to initiate the bridge procedure
-export function useCallBridge(
-  direction: Direction,
+export function useCallWithdraw(
   selected: Token,
   destination: Token
 ): UseMutateFunction<
@@ -50,24 +41,7 @@ export function useCallBridge(
   TransactionReceipt | TransactionResponse | undefined,
   unknown
 > {
-  // get the direction as string
-  const directionString = Direction[direction] as keyof typeof Direction;
-
-  // import crossChain comms
   const { crossChainMessenger } = useMantleSDK();
-
-  // get and store the challengePeriod
-  const { data: challengePeriod } = useQuery(
-    [
-      "CHALLENGE_PERIOD",
-      {
-        l1: crossChainMessenger?.l1ChainId,
-      },
-    ],
-    async () => {
-      return crossChainMessenger?.getChallengePeriodSeconds();
-    }
-  );
 
   // build toast to return to the current page
   const { updateToast, deleteToast } = useToast();
@@ -76,11 +50,9 @@ export function useCallBridge(
   const {
     chainId,
     destinationTokenAmount,
-    ctaChainId,
     isCTAPageOpenRef,
     ctaErrorReset,
     tx1HashRef,
-    tx2HashRef,
     withdrawHash,
     resetBalances,
     setCTAChainId,
@@ -95,7 +67,7 @@ export function useCallBridge(
   } = useContext(StateContext);
 
   // setup the waitForRelay with the given direction
-  const waitForRelay = useWaitForRelay({ direction });
+  // const waitForRelay = useWaitWithdraw();
 
   // main CTA method - we keep this mutation frame open until it error's or the tx succeeds - this keeps a closure over the current state so that we can return to it (via toasts)
   const { mutate: callBridgeCTA } = useMutation({
@@ -116,40 +88,18 @@ export function useCallBridge(
           throw e;
         };
 
-        const isDeposit = chainId === L1_CHAIN_ID;
-        const isMantleV2 = IS_MANTLE_V2;
         const isETH = selected.name === "ETH";
         const isMNT = selected.name === "Mantle";
         // if we've been given a receipt then the tx is already out there...
         if (!givenReceipt) {
-          // for each type of interaction...
-          if (isDeposit && isETH) {
-            // depositETH
-            receipt = await crossChainMessenger!
-              .depositETH(parseUnits(destinationTokenAmount, selected.decimals))
-              .catch(errorHandler);
-          } else if (isDeposit && isMNT && isMantleV2) {
-            // mantle v2 depositMNT
-            receipt = await crossChainMessenger!
-              .depositMNT(parseUnits(destinationTokenAmount, selected.decimals))
-              .catch(errorHandler);
-          } else if (isDeposit) {
-            // depositERC20
-            receipt = await crossChainMessenger!
-              .depositERC20(
-                selected.address,
-                destination.address,
-                parseUnits(destinationTokenAmount, selected.decimals)
-              )
-              .catch(errorHandler);
-          } else if (isETH) {
+          if (isETH) {
             // withdrawETH
             receipt = await crossChainMessenger!
               .withdrawETH(
                 parseUnits(destinationTokenAmount, selected.decimals)
               )
               .catch(errorHandler);
-          } else if (isMNT && isMantleV2) {
+          } else if (isMNT) {
             // mantle v2 withdrawMNT
             receipt = await crossChainMessenger!
               .withdrawMNT(
@@ -176,53 +126,6 @@ export function useCallBridge(
         const txHash =
           (receipt as TransactionReceipt).transactionHash ||
           (receipt as TransactionResponse).hash;
-
-        // load toast as soon as the tx is approved
-        const toastProps = {
-          id: `${txHash}`,
-          type: "success",
-          buttonText: `Restore loading screen`,
-          borderLeft:
-            ctaChainId === L1_CHAIN_ID ? "bg-yellow-500" : "bg-blue-600",
-          content: (
-            <div>
-              <div>
-                {ctaChainId === L1_CHAIN_ID ? "Deposit" : "Withdrawal"}{" "}
-                initiated
-              </div>
-              <div className="text-sm">
-                {ctaChainId === L1_CHAIN_ID
-                  ? "Assets will be available on Mantle in ~12 mins"
-                  : `Will be available to claim in ${`~${formatTime(
-                      challengePeriod && challengePeriod < 1200
-                        ? 1200
-                        : challengePeriod || 1200
-                    )}`}`}
-              </div>
-            </div>
-          ),
-        } as ToastProps;
-
-        // only update toast when it is not deposit
-        if (ctaChainId !== L1_CHAIN_ID && !IS_MANTLE_V2) {
-          // update the content and the callbacks
-          updateToast({
-            ...toastProps,
-            onButtonClick: () => {
-              setCTAChainId(chainId);
-              setTx1(receipt);
-              setTx1Hash(txHash);
-              setTx2Hash(false);
-              setCTAPage(CTAPages.Loading);
-              setIsCTAPageOpen(true);
-              // mark open now
-              isCTAPageOpenRef.current = true;
-
-              // close the toast when clicked...
-              return false;
-            },
-          });
-        }
 
         // set the l1 into storage
         setTx1(receipt);
@@ -283,10 +186,10 @@ export function useCallBridge(
         resetBalances();
 
         // double check the receipt is set
-        if (receipt) {
-          // wait for the relay and throw to outer context
-          await waitForRelay(receipt as TransactionReceipt).catch(errorHandler);
-        }
+        // if (receipt) {
+        //   // wait for the relay and throw to outer context
+        //   await waitForRelay(receipt as TransactionReceipt).catch(errorHandler);
+        // }
 
         // return the receipt
         return {
@@ -302,7 +205,7 @@ export function useCallBridge(
         (data.receipt as TransactionResponse).hash ||
         (data.receipt as TransactionReceipt).transactionHash;
       // eslint-disable-next-line no-console
-      console.log(`[${direction}] successful! => `, txHash);
+      console.log(`successful! => `, txHash);
       // set the chainID from this state
       setCTAChainId(chainId);
       // reset status on error
@@ -314,55 +217,6 @@ export function useCallBridge(
       } else {
         // reset now
         setCTAPage(CTAPages.Default);
-        // replace the toast with a success toast
-        const toastProps = {
-          id: `${txHash}`,
-          type: "success",
-          buttonText: `View TX Receipts`,
-          borderLeft: "bg-green-600",
-          content: (
-            <div>
-              <div>{directionString} complete!</div>
-            </div>
-          ),
-        } as ToastProps;
-
-        // store tx2 into local context
-        const associatedtx2Hash = tx2HashRef.current;
-
-        // update the content and the callbacks
-        if (!IS_MANTLE_V2) {
-          updateToast({
-            ...toastProps,
-            onButtonClick: () => {
-              setCTAChainId(chainId);
-              setTx1(data.receipt);
-              setTx1Hash(txHash);
-              setTx2Hash(associatedtx2Hash || false);
-              setCTAPage(
-                direction === Direction.Deposit
-                  ? CTAPages.Deposit
-                  : CTAPages.Withdrawn
-              );
-              setIsCTAPageOpen(true);
-              // mark open now
-              isCTAPageOpenRef.current = true;
-
-              // close the toast when clicked...
-              return false;
-            },
-          });
-        }
-      }
-
-      // deposits move on from here, withdrawals will have already been moved on when they reach here
-      if (
-        isCTAPageOpenRef.current &&
-        direction === Direction.Deposit &&
-        txHash === tx1HashRef.current
-      ) {
-        // assets have been onchained move to the success page
-        setCTAPage(CTAPages[directionString]);
       }
     },
     onError: (error: TxError) => {
@@ -372,12 +226,7 @@ export function useCallBridge(
         (error.receipt as TransactionReceipt).transactionHash;
 
       // eslint-disable-next-line no-console
-      console.log(
-        `[${direction}] errorMessage => `,
-        error.message,
-        " txHash => ",
-        txHash
-      );
+      console.log(`errorMessage => `, error.message, " txHash => ", txHash);
 
       // delete the toast if the tx failed or something generic that we don't know about went wrong...
       if (
@@ -446,4 +295,4 @@ export function useCallBridge(
   return callBridgeCTA;
 }
 
-export default useCallBridge;
+export default useCallWithdraw;

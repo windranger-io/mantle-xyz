@@ -24,6 +24,7 @@ import {
   Views,
 } from "@config/constants";
 import { usePathname, useRouter } from "next/navigation";
+import { Toaster } from "react-hot-toast";
 
 export default function Tabs() {
   const { view, setSafeChains, setView, refetchWithdrawals, refetchDeposits } =
@@ -158,6 +159,18 @@ export default function Tabs() {
             ))}
           </Tab.Panels>
         </Tab.Group>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            // Define default options
+            className: "",
+            duration: 10000,
+            style: {
+              background: "#363636",
+              color: "#fff",
+            },
+          }}
+        />
       </SimpleCard>
     )) || <span />
   );

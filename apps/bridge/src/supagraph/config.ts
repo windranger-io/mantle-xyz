@@ -29,11 +29,17 @@ const config = {
     5: {
       rpcUrl: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
     },
+    11155111: {
+      rpcUrl: `https://eth-sepolia.g.alchemy.com/v2/XMS1J6f654XZolfd7oaMe-kaNPEpWifX`,
+    },
     5000: {
       rpcUrl: `https://rpc.mantle.xyz`,
     },
     5001: {
       rpcUrl: `https://rpc.testnet.mantle.xyz`,
+    },
+    5003: {
+      rpcUrl: `https://rpc.sepolia.mantle.xyz`,
     },
   },
   // configure available Contracts and their block details

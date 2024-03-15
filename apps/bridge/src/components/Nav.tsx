@@ -24,19 +24,25 @@ function Nav({ className = "" }: NavProps) {
   const NAV_ITEMS: NavItem[] = [
     {
       name: "Docs",
-      href: "https://docs.mantle.xyz",
+      href: "https://docs-v2.mantle.xyz",
       internal: true,
       key: "docs",
     },
     {
-      name: "Migrate",
-      href: "https://migratebit.mantle.xyz",
+      name: "Faucet",
+      href: "https://faucet.sepolia.mantle.xyz",
       internal: true,
-      key: "migrate",
+      key: "faucet",
     },
+    // {
+    //   name: "Migrate",
+    //   href: "https://migratebit.mantle.xyz",
+    //   internal: true,
+    //   key: "migrate",
+    // },
     {
       name: "Bridge",
-      href: "https://bridge.mantle.xyz",
+      href: "/",
       internal: true,
       key: "bridge",
     },
@@ -80,17 +86,11 @@ function Nav({ className = "" }: NavProps) {
   ];
 
   const navItems = isTestnet ? NAV_ITEMS_TESTNET : NAV_ITEMS;
-  const walletC =
-    process.env.NEXT_PUBLIC_SHOW_MAINTENANCE === "true" ? (
-      <span>upgrading</span>
-    ) : (
-      <ConnectWallet />
-    );
 
   return (
     <Header
       navLite
-      walletConnect={walletC}
+      walletConnect={<ConnectWallet />}
       className={className}
       activeKey={activeKey}
       mobileMenuOpen={mobileMenuOpen}

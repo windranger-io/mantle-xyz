@@ -35,17 +35,20 @@ export function AdditionalLinks() {
           <>
             <MantleLink
               variant="additionalLinks"
-              target="blank"
-              href="https://faucet.paradigm.xyz/"
+              rel="noreferrer noopener"
+              target="_blank"
+              href="https://www.infura.io/faucet/sepolia"
             >
-              Paradigm gETH Faucet
+              Infura sepoliaETH Faucet
             </MantleLink>
+
             <MantleLink
               variant="additionalLinks"
-              target="blank"
-              href="https://goerlifaucet.com/"
+              rel="noreferrer noopener"
+              target="_blank"
+              href="https://sepoliafaucet.com/"
             >
-              Alchemy gETH Faucet
+              Alchemy sepoliaETH Faucet
             </MantleLink>
           </>
         )}

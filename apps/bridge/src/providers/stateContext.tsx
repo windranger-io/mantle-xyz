@@ -1,12 +1,12 @@
 "use client";
 
 import {
-  BRIDGE_BACKEND,
+  // BRIDGE_BACKEND,
   BRIDGE_LIST,
   BridgeList,
   CTAPages,
+  WithdrawStatus,
   Direction,
-  HISTORY_ITEMS_PER_PAGE,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
   MANTLE_TOKEN_LIST_URL,
@@ -14,6 +14,7 @@ import {
   Token,
   TokenList,
   Views,
+  WithdrawHash,
 } from "@config/constants";
 
 import { Contract, providers } from "ethers";
@@ -90,6 +91,7 @@ export type StateProps = {
   ctaErrorReset: MutableRefObject<(() => void | boolean) | undefined>;
   walletModalOpen: boolean;
   mobileMenuOpen: boolean;
+  withdrawHash: WithdrawHash;
 
   tokens: Token[];
   tokenList: TokenList;
@@ -116,6 +118,7 @@ export type StateProps = {
   hasClosedClaims: boolean;
   isLoadingDeposits: boolean;
   isLoadingWithdrawals: boolean;
+  withdrawStatus: WithdrawStatus;
 
   setView: (v: Views) => void;
   setChainId: (v: number) => void;
@@ -146,6 +149,8 @@ export type StateProps = {
   setHasClosedClaims: (closed: boolean) => void;
   setWalletModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setWithdrawStatus: (withdrawStatus: WithdrawStatus) => void;
+  setWithdrawHash: (wh: WithdrawHash) => void;
 };
 
 // create a context to bind the provider to
@@ -204,6 +209,14 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // the selected page within CTAPage to open
   const [ctaPage, setCTAPage] = useState<CTAPages>(CTAPages.Default);
+  const [withdrawStatus, setWithdrawStatus] = useState<WithdrawStatus>(
+    WithdrawStatus.INIT
+  );
+  const [withdrawHash, setWithdrawHash] = useState<WithdrawHash>({
+    init: "",
+    prove: "",
+    claim: "",
+  });
   // seperate the ctaChainId from the chainId to dissassociate the tabs from the cta
   const [ctaChainId, setCTAChainId] = useState(chainId);
   // status from the cta operation (this is currently being logged in the console)
@@ -282,8 +295,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // control the page to load more items from the history pages
   // - we're not using this style of pagination
   // - its cheaper to just request everything in 1 req because the sort order of the pagination is reversed
-  const withdrawalsPage = useRef(0);
-  const depositsPage = useRef(0);
+  const withdrawalsPage = useRef(1);
+  const depositsPage = useRef(1);
 
   // combine all results into arrays
   const [withdrawals, setWithdrawals] = useState<Withdrawal[] | undefined>([]);
@@ -299,11 +312,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     setWithdrawals(undefined);
     return (
       (client.address &&
-        `${BRIDGE_BACKEND}/v1/withdrawals/${getAddress(
-          client.address
-        )}?offset=${
-          withdrawalsPage.current * HISTORY_ITEMS_PER_PAGE
-        }&limit=${HISTORY_ITEMS_PER_PAGE}`) ||
+        `/api/withdraw?address=${getAddress(client.address)}&page=${
+          withdrawalsPage.current
+        }&pageSize=1000`) ||
       ""
     );
   }, [client.address, withdrawalsPage]);
@@ -312,9 +323,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     setDeposits(undefined);
     return (
       (client.address &&
-        `${BRIDGE_BACKEND}/v1/deposits/${getAddress(client.address)}?offset=${
-          depositsPage.current * HISTORY_ITEMS_PER_PAGE
-        }&limit=${HISTORY_ITEMS_PER_PAGE}`) ||
+        `/api/deposit?address=${getAddress(client.address)}&page=${
+          depositsPage.current
+        }&pageSize=1000`) ||
       ""
     );
   }, [client.address, depositsPage]);
@@ -436,6 +447,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // reset the loading state for the TransactionPanel
   useEffect(() => {
+    console.log("actualGasFee: ", actualGasFee);
     if (actualGasFee && actualGasFee !== "0") {
       setIsLoadingFeeData(false);
     }
@@ -646,6 +658,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       destinationTokenAmount,
 
       ctaErrorReset,
+      withdrawStatus,
+      withdrawHash,
 
       setView,
       setClient,
@@ -674,6 +688,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setDestinationTokenAmount,
       setSelectedToken: setSelectTokenByType,
       setDestinationToken: setDestinationTokenByType,
+      setWithdrawStatus,
+      setWithdrawHash,
     } as StateProps;
   }, [
     view,
@@ -728,6 +744,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     destinationTokenAmount,
 
     ctaErrorReset,
+    withdrawStatus,
+    withdrawHash,
 
     resetBalances,
     resetAllowance,

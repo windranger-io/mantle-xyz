@@ -26,12 +26,13 @@ class TxError extends Error {
   }
 }
 
-// call the claim method with the given tx
-export function useCallClaim(
+// call the prove method with the given tx
+export function useCallProve(
   tx1: undefined | boolean | MessageLike,
-  checkBeforeClaim: boolean = false,
+  checkBeforeProve: boolean = false,
   storeProgress: boolean = true,
-  onSuccess?: (tx: TransactionReceipt) => void
+  onSuccess?: (tx: TransactionReceipt) => void,
+  onError?: (e: string) => void
 ) {
   // pull state from context
   const { tx2HashRef, setTx2Hash, setCTAPage } = useContext(StateContext);
@@ -41,20 +42,20 @@ export function useCallClaim(
 
   const { switchToNetwork } = useSwitchToNetwork();
 
-  // mark loading between callClaim and the useEffect waiting for the finalizeMessage()
+  // mark loading between callProve and the useEffect waiting for the finalizeMessage()
   const [isLoading, setIsLoading] = useState(false);
 
-  // commit claim method...
+  // commit prove method...
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const commitClaim = () => {
+  const commitProve = () => {
     if (
       tx1 &&
       typeof tx1 !== "boolean" &&
       crossChainMessenger &&
       getMessageStatus
     ) {
-      // check if a claim has already been made - if it has - return that instead
-      const checkForClaim = async () => {
+      // check if a prove has already been made - if it has - return that instead
+      const checkForProve = async () => {
         return getMessageStatus(tx1, { returnReceipt: true }).then(
           async (res) => {
             const typedRes = res as {
@@ -77,14 +78,18 @@ export function useCallClaim(
         );
       };
 
-      // make a claim if not already claimed
-      const makeClaim = async () => {
+      // make a prove if not already proveed
+      const makeProve = async () => {
+        console.log("makeProve", tx1);
         return crossChainMessenger
-          .finalizeMessage(tx1)
+          .proveMessage(tx1)
           .catch((e) => {
+            console.log("makeProve: ", e);
             if (
               e.reason === "messenger has no L1 signer" ||
-              e.reason === "underlying network changed"
+              e.reason === "underlying network changed" ||
+              e.message === "messenger has no L1 signer" ||
+              e.message === "underlying network changed"
             ) {
               setIsLoading(true);
               switchToNetwork(L1_CHAIN_ID)
@@ -95,7 +100,7 @@ export function useCallClaim(
                 .then((completed) => {
                   if (completed !== false) {
                     setTimeout(() => {
-                      makeClaim()
+                      makeProve()
                         .catch(() => {
                           return noopHandler() as TransactionReceipt;
                         })
@@ -128,12 +133,16 @@ export function useCallClaim(
               e.message ===
               "execution reverted: Provided message has already been received."
             ) {
-              // if this claim has already been made we can return the checkFoClaim response (tx2 receipt)
-              return checkForClaim();
+              // if this prove has already been made we can return the checkFoProve response (tx2 receipt)
+              return checkForProve();
+            }
+            if (onError) {
+              onError(e.reason || e.message);
             }
             return noopHandler() as TransactionResponse | TransactionReceipt;
           })
           .then(async (tx) => {
+            console.log("makeProve tx: ", tx);
             try {
               const finalTx = (
                 (tx as TransactionResponse)?.wait
@@ -156,15 +165,15 @@ export function useCallClaim(
       (
         new Promise((resolve) => {
           resolve(
-            checkBeforeClaim
-              ? checkForClaim().catch((e) => {
+            checkBeforeProve
+              ? checkForProve().catch((e) => {
                   // only incomplete bridge tx's need to be caught and made...
                   if (e.message === "incomplete") {
-                    return makeClaim();
+                    return makeProve();
                   }
                   throw e;
                 })
-              : makeClaim()
+              : makeProve()
           );
         }) as Promise<true | TransactionReceipt>
       )
@@ -192,19 +201,19 @@ export function useCallClaim(
     }
   };
 
-  // initiate claim and make sure we're on the correct network
-  const callClaim = async (): Promise<void> => {
-    // initiate loading/claim state
+  // initiate prove and make sure we're on the correct network
+  const callProve = async (): Promise<void> => {
+    // initiate loading/prove state
     setIsLoading(true);
     // first step is to ensure we're on the correct network - we break this up because we need the correct signer to finalise the message
     if (tx1) {
-      return commitClaim();
+      return commitProve();
     }
     return Promise.resolve();
   };
 
   return {
     isLoading,
-    callClaim,
+    callProve,
   };
 }
