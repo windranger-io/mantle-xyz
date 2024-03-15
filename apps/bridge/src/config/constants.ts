@@ -146,7 +146,9 @@ export const CHAINS: Record<
       symbol: "MNT",
       decimals: 18,
     },
-    rpcUrls: ["https://rpc.mantle.xyz"],
+    rpcUrls: [
+      "https://rpc-moon.mantle.xyz/v1/NTQ3ODk1ZDdiOWRmODIyM2FiM2Y5YTVh",
+    ],
     blockExplorerUrls: ["https://explorer.mantle.xyz/"],
   },
   // setup goerli so that it can be added to the users wallet
