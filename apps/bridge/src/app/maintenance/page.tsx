@@ -3,7 +3,7 @@ import { T } from "@mantle/ui";
 const Page = async () => {
   return (
     <div className="flex items-center flex-col justify-center mt-10">
-      <T variant="h5Title">Mantle V2 Upgrade</T>
+      <T variant="h5Title">Mantle v2 Tectonic Upgrade</T>
       <T variant="body20" className="mt-10">
         The network is upgrading, please wait...{" "}
         <a
