@@ -134,7 +134,7 @@ export const CHAINS: Record<
       // infura backed redirect gateway
       `${ABSOLUTE_PATH}/rpc`,
       // public gateway
-      `https://rpc.ankr.com/eth`,
+      `https://eth.meowrpc.com/`,
     ],
     blockExplorerUrls: ["https://etherscan.io/"],
   },
