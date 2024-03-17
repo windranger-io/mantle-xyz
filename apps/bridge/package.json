@@ -22,7 +22,7 @@
     "@mantleio/contracts": "^0.3.0",
     "@mantleio/contracts-bedrock": "^0.1.0",
     "@mantleio/core-utils": "^0.2.0",
-    "@mantleio/sdk": "^1.0.2",
+    "@mantleio/sdk": "^1.0.3",
     "@tanstack/react-query": "^4.14.5",
     "ethers": "^5.7.2",
     "framer-motion": "^10.12.10",
