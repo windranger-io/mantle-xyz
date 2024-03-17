@@ -343,6 +343,13 @@ class CrossChainMessenger {
             }
             catch (err) {
             }
+            try {
+                ;
+                [, , mntValue] =
+                    this.contracts.l1.L1StandardBridge.interface.decodeFunctionData('finalizeMantleWithdrawal', resolved.message);
+            }
+            catch (error) {
+            }
         }
         return Object.assign(Object.assign({}, resolved), { mntValue,
             ethValue, minGasLimit: ethers_1.BigNumber.from(0), messageNonce: (0, core_utils_1.encodeVersionedNonce)(ethers_1.BigNumber.from(0), resolved.messageNonce) });
