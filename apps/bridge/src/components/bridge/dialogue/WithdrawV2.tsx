@@ -303,7 +303,7 @@ export default function Default({
             ) : (
               <No n="4" />
             )}
-            <span>Wait 30 minutes</span>
+            <span>Wait 7 days</span>
             {withdrawStatus === WithdrawStatus.IN_CHALLENGE_PERIOD && (
               <IconLoading />
             )}
