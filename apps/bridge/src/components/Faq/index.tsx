@@ -167,7 +167,7 @@ const faqList: Array<AccordionItemType> = [
     content: (
       <div className="text-type-secondary max-w-[90%]">
         <Typography className="mb-4">
-          Initiating a deposit typically completes in around ~12 minutes.
+          Initiating a deposit typically completes in around ~1 minutes.
         </Typography>
         <Typography className="mb-4">
           Conversely, withdrawals, due to the intricacies of Optimistic Rollups,

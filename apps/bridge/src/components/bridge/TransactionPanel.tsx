@@ -148,7 +148,7 @@ export default function TransactionPanel({
               className="text-xs text-white pl-2"
             >
               {direction === Direction.Deposit
-                ? `~12 minutes`
+                ? `~1 minutes`
                 : `~${formatTime(
                     challengePeriod && challengePeriod < 1200
                       ? 1200
