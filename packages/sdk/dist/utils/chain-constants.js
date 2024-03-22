@@ -48,9 +48,9 @@ exports.CONTRACT_ADDRESSES = {
             CanonicalTransactionChain: '0x291dc3819b863e19b0a9b9809F8025d2EB4aaE93',
             BondManager: '0x31aBe1c466C2A8b95fd84258dD1471472979B650',
             Rollup: process.env.Rollup ||
-                '0xD1328C9167e0693B689b5aa5a024379d4e437858',
-            OptimismPortal: '0x0000000000000000000000000000000000000000',
-            L2OutputOracle: '0x0000000000000000000000000000000000000000',
+                '0x242a33ca49C564caFC9C83C700b79f1074c42A0D',
+            OptimismPortal: '0xc54cb22944F2bE476E02dECfCD7e3E7d3e15A8Fb',
+            L2OutputOracle: '0x31d543e7BE1dA6eFDc2206Ef7822879045B9f481',
         },
         l2: exports.DEFAULT_L2_CONTRACT_ADDRESSES,
     },
@@ -185,21 +185,21 @@ exports.CONTRACT_ADDRESSES = {
     [interfaces_1.L2ChainID.MANTLE_SEPOLIA_QA3]: {
         l1: {
             AddressManager: process.env.ADDRESS_MANAGER_ADDRESS ||
-                '0x916fd384d84A159499926055b4986d49a09F32B8',
+                '0xCA856D9bbF9C75E4c1Dd09c5F3608221cf94B8be',
             L1CrossDomainMessenger: process.env.L1_CROSS_DOMAIN_MESSENGER_ADDRESS ||
-                '0xE1a499d9b9A2d5c54E818F470c6b2290CE6F1e2a',
+                '0x394D337151339405C30Db8F5878c5eC57ee76498',
             L1StandardBridge: process.env.L1_STANDARD_BRIDGE_ADDRESS ||
-                '0xEce11c400019c58F5d848E19Dcb7BE831569E50F',
+                '0x4dbF878e18c1B5C08ffe421cEB285E33a01E44FE',
             StateCommitmentChain: process.env.STATE_COMMITMENT_CHAIN_ADDRESS ||
-                '0xD124e0ab525ec052E9C1662B478d8d0e39D12E56',
+                '0x1A59B193DCA0f98FB403Bd302f3b5674Be4a264F',
             CanonicalTransactionChain: process.env.CANONICAL_TRANSACTION_CHAIN_ADDRESS ||
-                '0x76f65942260746C82d5800b830A51f4C173D383d',
+                '0x45F4AE4BB88DaC18Be76a041a136DDC8c61CC2A8',
             BondManager: process.env.BOND_MANAGER_ADDRESS ||
-                '0x79405CD7e6E431bFAA3888f98380aB27bB33D2EA',
+                '0x7D447Aede9591edeD483039b3298125dfE49cA6A',
             Rollup: process.env.Rollup ||
-                '0xd4D0C12C2183BcF19035eC56DA4F57367ae4A281',
-            OptimismPortal: process.env.OptimismPortal || "0x8f6272D08E436521A0F6B809647EeA5712C36624",
-            L2OutputOracle: process.env.L2OutputOracle || "0x29AefD059f78C39D7933fBDdDD1DfaF04448ecA8"
+                '0x97a6899196de2bc53D14530A0D2b0B813f79a0a0',
+            OptimismPortal: process.env.OptimismPortal || "0xC54a00A4AbeBA64e6fdbeA4b6521e79a4ae5722a",
+            L2OutputOracle: process.env.L2OutputOracle || "0x5FeB2590A2AFFB3385908077449639513C186d12"
         },
         l2: exports.DEFAULT_L2_CONTRACT_ADDRESSES,
     },
