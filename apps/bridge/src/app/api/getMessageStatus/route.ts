@@ -9,7 +9,7 @@ import {
 } from "@config/constants";
 
 const layer1Provider = new providers.JsonRpcProvider(
-  CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
+  CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.default.http[0]
 );
 const layer2Provider = new providers.JsonRpcProvider(
   CHAINS_FORMATTED[L2_CHAIN_ID].rpcUrls.public.http[0]
