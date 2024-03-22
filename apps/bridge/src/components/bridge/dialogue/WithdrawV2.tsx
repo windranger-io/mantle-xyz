@@ -262,7 +262,7 @@ export default function Default({
             ) : (
               <No n="2" />
             )}
-            <span>Wait ~30 minutes</span>
+            <span>Wait ~1 hours</span>
             {withdrawStatus === WithdrawStatus.SENDING_TX && <IconLoading />}
           </div>
           <DottedLine />
