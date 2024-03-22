@@ -151,7 +151,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
         //     <div>
         //       <div>Deposit initiated</div>
         //       <div className="text-sm">
-        //         Assets will be available on Mantle in ~1 mins
+        //         Assets will be available on Mantle in ~1 min
         //       </div>
         //     </div>
         //   ),
