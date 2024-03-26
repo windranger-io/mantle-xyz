@@ -43,7 +43,7 @@ const fetchL2SnapshotVotes = async (address: string, snapshot: string) => {
 
 export async function GET() {
   return NextResponse.json({
-    hello: "123",
+    result: "ok",
   });
 }
 
