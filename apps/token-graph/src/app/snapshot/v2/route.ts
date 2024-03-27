@@ -20,7 +20,7 @@ const fetchL2SnapshotVotes = async (address: string, snapshot: string) => {
           }
         `,
         variables: {
-          address,
+          address: address.toLowerCase(),
           snapshot: Number(snapshot),
         },
       }),
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
   };
 
   const checksummed = addresses.map((address) =>
-    getAddress(address.toLowerCase()).toLowerCase()
+    getAddress(address.toLowerCase())
   );
 
   const score: { address: string; score: string }[] = [];
@@ -69,7 +69,15 @@ export async function POST(request: NextRequest) {
   }
   /* eslint-enable */
 
-  return NextResponse.json({
-    score,
-  });
+  return NextResponse.json(
+    {
+      score,
+    },
+    {
+      headers: {
+        // allow to be cached for revalidate seconds and allow caching in shared public cache (upto revalidate seconds)
+        "Cache-Control": `max-age=99999999, public, s-maxage=99999999`,
+      },
+    }
+  );
 }
