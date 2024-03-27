@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import StateContext from "@providers/stateContext";
 
 import { Button } from "@mantle/ui";
-import { formatUnits, getAddress } from "ethers/lib/utils.js";
+import { formatUnits } from "ethers/lib/utils.js";
 import {
   L1_CHAIN_ID,
   L2_CHAIN_ID,
@@ -24,7 +24,7 @@ export default function Withdraw() {
     () =>
       tokenList?.tokens.reduce((indx, token) => {
         // eslint-disable-next-line no-param-reassign
-        indx[token.address as string] = token;
+        indx[token.address.toLocaleLowerCase() as string] = token;
         return indx;
       }, {} as Record<string, Token>),
     [tokenList?.tokens]
@@ -123,9 +123,13 @@ export default function Withdraw() {
                   <div className="py-2">
                     {formatUnits(
                       transaction.amount,
-                      TOKEN_INDEX?.[getAddress(transaction.l2_token)]?.decimals
+                      TOKEN_INDEX?.[transaction.l2_token.toLocaleLowerCase()]
+                        ?.decimals
                     ).toString()}{" "}
-                    {TOKEN_INDEX?.[getAddress(transaction.l2_token)]?.symbol}
+                    {
+                      TOKEN_INDEX?.[transaction.l2_token.toLocaleLowerCase()]
+                        ?.symbol
+                    }
                   </div>
                 </td>
                 <td className="table-row md:table-cell">
