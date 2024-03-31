@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAddress } from "ethers/lib/utils";
 
 const fetchL2SnapshotVotes = async (address: string, snapshot: string) => {
   const fetchSnapshotVotes = await fetch(
@@ -53,14 +52,10 @@ export async function POST(request: NextRequest) {
     snapshot: string;
   };
 
-  const checksummed = addresses.map((address) =>
-    getAddress(address.toLowerCase())
-  );
-
   const score: { address: string; score: string }[] = [];
 
   /* eslint-disable */
-  for (const addr of checksummed) {
+  for (const addr of addresses) {
     const l2Votes: string = await fetchL2SnapshotVotes(addr, snapshot);
     score.push({
       address: addr,
