@@ -444,3 +444,6 @@ export type WithdrawHash = {
   prove: string;
   claim: string;
 };
+
+export const feeNotices =
+  "The actual gas fee incurred will be between 20% to 25% of the estimated fee displayed. Though your wallet will only be charged a much smaller amount after you click the confirm button, it is recommended to have more ETH balance than the fee estimate to ensure a smooth transaction.";
