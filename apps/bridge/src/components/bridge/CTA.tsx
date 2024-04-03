@@ -18,6 +18,8 @@ import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useCallApprove } from "@hooks/web3/bridge/write/useCallApprove";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 import { useIsWalletMultisig } from "@hooks/useIsWalletMultisig";
+import Link from "next/link";
+import Image from "next/image";
 
 // Contains a button & a modal to control allowance and deposits/withdrawals
 export default function CTA({
@@ -37,8 +39,10 @@ export default function CTA({
     allowance,
     selectedTokenAmount = "",
     destinationTokenAmount = "",
+    selectedToken,
     setCTAPage,
     setWalletModalOpen,
+    tokens,
   } = useContext(StateContext);
 
   // check that we're connected to the appropriate chain
@@ -63,6 +67,16 @@ export default function CTA({
 
   // create an allowance approval request on the selected token
   const { approve, approvalStatus } = useCallApprove(selected || {});
+
+  const type = chainId === L1_CHAIN_ID ? Direction.Deposit : Direction.Withdraw;
+
+  // get the selection Token
+  const selection =
+    tokens.find((v) => {
+      return selectedToken[type] === v.name && v.chainId === chainId;
+    }) ||
+    tokens[chainId === L1_CHAIN_ID ? 0 : 1] ||
+    {};
 
   // ensure we don't overflow
   const fixDecimals = useCallback(
@@ -168,6 +182,35 @@ export default function CTA({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client?.address]);
+
+  if (selection.extensions?.thirdparty) {
+    return (
+      <div className="mt-4">
+        <Link
+          href={selection.extensions.thirdparty.url}
+          rel="noreferrer noopener"
+          target="_blank"
+        >
+          <Button
+            type="button"
+            size="full"
+            className="h-14 flex items-center justify-center gap-1"
+          >
+            {direction === Direction.Deposit
+              ? `Deposit with ${selection.extensions.thirdparty.name}`
+              : `Withdraw with ${selection.extensions.thirdparty.name}`}
+            <Image
+              className="translate -translate-y-[2px]"
+              src="/thirdparty/external-dark.svg"
+              alt="external"
+              width={16}
+              height={16}
+            />
+          </Button>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-4">

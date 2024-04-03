@@ -320,7 +320,11 @@ export interface Token {
   decimals: number;
   logoURI: string;
   extensions: {
-    optimismBridgeAddress: Address;
+    optimismBridgeAddress?: Address;
+    thirdparty?: {
+      name: string;
+      url: string;
+    };
   };
   balance?: BigNumberish;
   allowance?: BigNumberish;
