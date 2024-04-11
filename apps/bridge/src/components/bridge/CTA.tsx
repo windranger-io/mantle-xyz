@@ -274,6 +274,7 @@ export default function CTA({
             if (!isChainID) {
               switchToNetwork(chainId);
             } else if (
+              selected.address &&
               tokensToRevoke.includes(selected.address.toLocaleLowerCase()) &&
               fixDecimals(allowance).gt(0) &&
               fixDecimals(allowance).lt(
