@@ -23,54 +23,57 @@ export function useCallApprove(selected: Token) {
   });
 
   // construct a method to call and await an approval call to allocate allowance to the bridge
-  const approve = useCallback(async () => {
-    try {
-      // mark as waiting...
-      setApprovalStatus("Waiting for tx approval...");
-      // perform the tx call
-      const txRes = await writeApprove?.({
-        args: [
-          bridgeAddress as `0x${string}`,
-          BigInt(
-            parseUnits(
-              destinationTokenAmount || "1",
-              selected.decimals
-            ).toString()
-          ),
-        ],
-      }).catch((e) => {
-        throw e;
-      });
-      // mark approval...
-      setApprovalStatus("Tx approved, waiting for confirmation...");
-      // wait for one confirmation
-      await provider
-        .waitForTransaction(txRes?.hash || "", 1)
-        .catch((e: any) => {
+  const approve = useCallback(
+    async (overwriteAmount?: string) => {
+      try {
+        // mark as waiting...
+        setApprovalStatus("Waiting for tx approval...");
+        // perform the tx call
+        const txRes = await writeApprove?.({
+          args: [
+            bridgeAddress as `0x${string}`,
+            BigInt(
+              parseUnits(
+                overwriteAmount || destinationTokenAmount || "1",
+                selected.decimals
+              ).toString()
+            ),
+          ],
+        }).catch((e) => {
           throw e;
         });
-      // final update
-      setApprovalStatus("Tx settled");
-    } catch {
-      // log the approval was cancelled
-      setApprovalStatus("Approval cancelled");
-    } finally {
-      // call this to reset the allowance in the ui
-      resetAllowance();
-      // stop awaiting
-      setApprovalStatus(false);
-    }
+        // mark approval...
+        setApprovalStatus("Tx approved, waiting for confirmation...");
+        // wait for one confirmation
+        await provider
+          .waitForTransaction(txRes?.hash || "", 1)
+          .catch((e: any) => {
+            throw e;
+          });
+        // final update
+        setApprovalStatus("Tx settled");
+      } catch {
+        // log the approval was cancelled
+        setApprovalStatus("Approval cancelled");
+      } finally {
+        // call this to reset the allowance in the ui
+        resetAllowance();
+        // stop awaiting
+        setApprovalStatus(false);
+      }
 
-    // token is now approved
-    return true;
-  }, [
-    bridgeAddress,
-    destinationTokenAmount,
-    provider,
-    selected.decimals,
-    resetAllowance,
-    writeApprove,
-  ]);
+      // token is now approved
+      return true;
+    },
+    [
+      bridgeAddress,
+      destinationTokenAmount,
+      provider,
+      selected.decimals,
+      resetAllowance,
+      writeApprove,
+    ]
+  );
 
   return {
     approvalStatus,
