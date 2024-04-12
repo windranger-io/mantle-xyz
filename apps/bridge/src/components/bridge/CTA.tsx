@@ -23,7 +23,8 @@ import Image from "next/image";
 
 const tokensToRevoke = [
   "0xdac17f958d2ee523a2206206994597c13d831ec7",
-  // "0xa1cd76d0a3e122f689e6bec548155e842c4a06a1", \\sepolia testing
+  // "0xa1cd76d0a3e122f689e6bec548155e842c4a06a1",
+  // sepolia testing
 ];
 
 // Contains a button & a modal to control allowance and deposits/withdrawals

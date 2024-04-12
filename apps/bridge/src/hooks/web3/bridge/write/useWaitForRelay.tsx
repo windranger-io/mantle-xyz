@@ -375,7 +375,7 @@ export function useWaitForRelay({ direction }: { direction: Direction }) {
       // if we got a receipt then we can reset everything and return
       if (receipt.status) {
         // call this to reset the allowance and balances in the ui
-        resetAllowance();
+        await resetAllowance();
         resetBalances();
       }
 

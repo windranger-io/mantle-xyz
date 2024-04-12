@@ -130,7 +130,7 @@ export type StateProps = {
   }) => void;
   setSafeChains: (chains: number[]) => void;
   resetBalances: () => void;
-  resetAllowance: () => void;
+  resetAllowance: () => Promise<unknown>;
   refetchWithdrawals: () => void;
   refetchDeposits: () => void;
   loadMoreWithdrawals: () => void;
@@ -471,10 +471,13 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // reset the allowances and balances once we gather enough intel to make the calls
   useEffect(
     () => {
-      resetAllowance();
-      resetBalances();
-      refetchL1FeeData();
-      refetchL2FeeData();
+      const reset = async () => {
+        await resetAllowance();
+        resetBalances();
+        refetchL1FeeData();
+        refetchL2FeeData();
+      };
+      reset();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [chainId, client?.address, selectedToken, multicall, bridgeAddress]

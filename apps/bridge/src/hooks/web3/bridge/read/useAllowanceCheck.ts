@@ -130,7 +130,7 @@ function useAllowanceCheck(
     resetAllowance,
   } as {
     allowance: string;
-    resetAllowance: () => void;
+    resetAllowance: () => Promise<unknown>;
   };
 }
 

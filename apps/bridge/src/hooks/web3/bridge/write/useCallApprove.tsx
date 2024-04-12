@@ -57,7 +57,10 @@ export function useCallApprove(selected: Token) {
         setApprovalStatus("Approval cancelled");
       } finally {
         // call this to reset the allowance in the ui
-        resetAllowance();
+        console.log("reseting allowance");
+        await resetAllowance();
+        console.log("reset allowance done");
+
         // stop awaiting
         setApprovalStatus(false);
       }
