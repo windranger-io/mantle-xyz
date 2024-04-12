@@ -131,7 +131,6 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
-      "https://eth-mainnet.g.alchemy.com/v2/aWJkilx5wJU1uL2UGOfqQRo4pl_hYyUA",
       // infura backed redirect gateway
       `${ABSOLUTE_PATH}/rpc`,
       // public gateway
