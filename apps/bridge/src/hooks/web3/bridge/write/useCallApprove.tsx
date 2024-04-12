@@ -50,8 +50,16 @@ export function useCallApprove(selected: Token) {
           .catch((e: any) => {
             throw e;
           });
+
         // final update
         setApprovalStatus("Tx settled");
+
+        // delay for rpc update
+        await new Promise((resolve: (value: unknown) => void) => {
+          setTimeout(() => {
+            resolve(true);
+          }, 6000);
+        });
       } catch {
         // log the approval was cancelled
         setApprovalStatus("Approval cancelled");

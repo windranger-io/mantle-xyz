@@ -381,6 +381,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     provider
   );
 
+  useEffect(() => {
+    console.log({ allowance });
+  }, [allowance]);
+
   // fetch the gas estimate for the selected operation on in the selected direction
   const { actualGasFee, resetGasEstimate } = useGasEstimate(
     chainId,
