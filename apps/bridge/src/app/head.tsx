@@ -8,7 +8,7 @@ import {
   TWITTER_DESC,
   TWITTER_TITLE,
 } from "@config/constants";
-import { Cookies } from "@mantle/ui";
+import { Cookies, MetaCRM } from "@mantle/ui";
 import Script from "next/script";
 
 export default function Head() {
@@ -33,6 +33,7 @@ export default function Head() {
       <meta name="twitter:image" content={`${ABSOLUTE_PATH}/twitter.png`} />
       <meta name="google" content="nositelinkssearchbox" />
       <Cookies siteId={isTestnet ? "176" : "174"} />
+      <MetaCRM />
       <Script
         strategy="afterInteractive"
         src="https://www.googletagmanager.com/gtag/js?id=G-84NZKTFJ7S"
