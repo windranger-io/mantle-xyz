@@ -124,6 +124,7 @@ export default function CTA({
     ) {
       text = "Insufficient balance";
     } else if (
+      selected.address &&
       tokensToRevoke.includes(selected.address.toLocaleLowerCase()) &&
       direction === Direction.Deposit &&
       fixDecimals(allowance).gt(0) &&
