@@ -283,6 +283,11 @@ export default function Status({
   );
   const isMantleV2 = IS_MANTLE_V2;
 
+  useEffect(() => {
+    // add log for user debug
+    console.log({ isLoading, calStatus });
+  }, [isLoading, calStatus]);
+
   if (isMantleV2) {
     // 0: Waiting  1:Ready to Prove  [status=2 && time_left != 0]: In Challenge Period  [status=2 && time_left == 0] : Ready to Finalized 3:Relayed
     return (
