@@ -131,8 +131,8 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0
       '@mantleio/sdk':
-        specifier: ^1.0.3
-        version: 1.0.3(ethers@5.7.2)
+        specifier: ^1.0.4
+        version: 1.0.4(ethers@5.7.2)
       '@tanstack/react-query':
         specifier: ^4.14.5
         version: 4.24.10(react-dom@18.2.0)(react@18.2.0)
@@ -2618,8 +2618,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@mantleio/sdk@1.0.3(ethers@5.7.2):
-    resolution: {integrity: sha512-66ucAVrPplGnZ+otsxGzuviuKVPzmLCw8pczrOzjDTeVAF9ab4BLWbovghwy1u9titzbnQ8PhYMkLCkhFYomsw==}
+  /@mantleio/sdk@1.0.4(ethers@5.7.2):
+    resolution: {integrity: sha512-VnATK+lH1uTj67YtQ0U802CShUrqZ9nW42+HX3yyLm0BTxciSJyow9vB+eV4BqJZb1iB2HvXuhUxc73ctc6/LA==}
     peerDependencies:
       ethers: ^5
     dependencies:
