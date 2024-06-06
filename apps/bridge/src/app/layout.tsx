@@ -29,10 +29,12 @@ export default function RootLayout({
         <Providers>
           <PageWrapper
             siteBackroundImage={
-              <PageBackroundImage
-                imgSrc={bridgeBG}
-                altDesc="Bridge Background Image"
-              />
+              (
+                <PageBackroundImage
+                  imgSrc={bridgeBG}
+                  altDesc="Bridge Background Image"
+                />
+              ) as React.ReactNode
             }
             header={<Nav />}
             className="min-h-screen justify-between"
