@@ -7,6 +7,8 @@ import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 import StateContext from "@providers/stateContext";
 import { usePathname } from "next/navigation";
 import { NavItem } from "@mantle/ui/src/navigation/NavigationLite";
+import Link from "next/link";
+import Image from "next/image";
 
 type NavProps = {
   // eslint-disable-next-line react/require-default-props
@@ -14,7 +16,8 @@ type NavProps = {
 };
 
 function Nav({ className = "" }: NavProps) {
-  const { mobileMenuOpen, setMobileMenuOpen } = useContext(StateContext);
+  const { mobileMenuOpen, setMobileMenuOpen, isShowNewBridge } =
+    useContext(StateContext);
   const pathName = usePathname();
 
   const activeKey = pathName.includes("account") ? "account" : "bridge";
@@ -88,15 +91,34 @@ function Nav({ className = "" }: NavProps) {
   const navItems = isTestnet ? NAV_ITEMS_TESTNET : NAV_ITEMS;
 
   return (
-    <Header
-      navLite
-      walletConnect={<ConnectWallet />}
-      className={className}
-      activeKey={activeKey}
-      mobileMenuOpen={mobileMenuOpen}
-      setMobileMenuOpen={setMobileMenuOpen}
-      navItems={navItems}
-    />
+    <>
+      {isShowNewBridge && (
+        <div className="p-3 flex items-center justify-center text-sm bg-[#06DD76]/10 flex-wrap">
+          <span className="text-[#C4C4C4]">
+            Our new bridge is officially live!&nbsp;&nbsp;
+          </span>
+          <Link
+            href="https://app.mantle.xyz/bridge"
+            rel="noreferrer noopener"
+            target="_blank"
+            className="flex items-center  hover:underline"
+          >
+            Go to the new version&nbsp;
+            <Image alt="arrow" src="/top-left-arrow.svg" width={7} height={7} />
+          </Link>
+        </div>
+      )}
+
+      <Header
+        navLite
+        walletConnect={<ConnectWallet />}
+        className={className}
+        activeKey={activeKey}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
+        navItems={navItems}
+      />
+    </>
   );
 }
 

@@ -52,8 +52,10 @@ import { getAddress } from "ethers/lib/utils.js";
 import { getMulticallContract } from "@utils/multicallContract";
 import useTokenList from "@hooks/web3/bridge/read/useTokenList";
 import useBridgeList from "@hooks/web3/bridge/read/useBridgeList";
+import { useLocalStorage } from "usehooks-ts";
 
 export type StateProps = {
+  isShowNewBridge: boolean;
   view: Views;
   client: {
     isConnected: boolean;
@@ -159,6 +161,15 @@ const StateContext = createContext<StateProps>({} as StateProps);
 // create a provider to contain all state
 export function StateProvider({ children }: { children: React.ReactNode }) {
   const pathName = usePathname();
+
+  const [showNewBridgeVal, setValue] = useLocalStorage("show-new-bridge", "");
+
+  useEffect(() => {
+    if (showNewBridgeVal === "") {
+      const randomNo = Math.floor(Math.random() * 10);
+      setValue(randomNo.toString());
+    }
+  }, [showNewBridgeVal, setValue]);
 
   // page toggled chainId (set according to Deposit/Withdraw)
   const [view, setView] = useState(
@@ -612,6 +623,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     };
 
     return {
+      isShowNewBridge: showNewBridgeVal === "0",
       view,
       client,
       chainId,
@@ -699,6 +711,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setWithdrawHash,
     } as StateProps;
   }, [
+    showNewBridgeVal,
     view,
     client,
     chainId,

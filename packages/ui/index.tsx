@@ -78,3 +78,4 @@ export { LocaleSwitcher } from './src/LocaleSwitcher'
  *
  */
 export { Cookies } from './src/scripts/Cookies'
+export { MetaCRM } from './src/scripts/MetaCRM'
