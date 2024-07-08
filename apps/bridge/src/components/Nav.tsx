@@ -16,8 +16,7 @@ type NavProps = {
 };
 
 function Nav({ className = "" }: NavProps) {
-  const { mobileMenuOpen, setMobileMenuOpen, isShowNewBridge } =
-    useContext(StateContext);
+  const { mobileMenuOpen, setMobileMenuOpen } = useContext(StateContext);
   const pathName = usePathname();
 
   const activeKey = pathName.includes("account") ? "account" : "bridge";
@@ -92,22 +91,20 @@ function Nav({ className = "" }: NavProps) {
 
   return (
     <>
-      {isShowNewBridge && (
-        <div className="p-3 flex items-center justify-center text-sm bg-[#06DD76]/10 flex-wrap">
-          <span className="text-[#C4C4C4]">
-            Our new bridge is officially live!&nbsp;&nbsp;
-          </span>
-          <Link
-            href="https://app.mantle.xyz/bridge"
-            rel="noreferrer noopener"
-            target="_blank"
-            className="flex items-center  hover:underline"
-          >
-            Go to the new version&nbsp;
-            <Image alt="arrow" src="/top-left-arrow.svg" width={7} height={7} />
-          </Link>
-        </div>
-      )}
+      <div className="p-3 flex items-center justify-center text-sm bg-[#06DD76]/10 flex-wrap">
+        <span className="text-[#C4C4C4]">
+          Our new bridge is officially live!&nbsp;&nbsp;
+        </span>
+        <Link
+          href="https://app.mantle.xyz/bridge"
+          rel="noreferrer noopener"
+          target="_blank"
+          className="flex items-center  hover:underline"
+        >
+          Go to the new version&nbsp;
+          <Image alt="arrow" src="/top-left-arrow.svg" width={7} height={7} />
+        </Link>
+      </div>
 
       <Header
         navLite
