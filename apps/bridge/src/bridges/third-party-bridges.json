@@ -51,10 +51,17 @@
       "isVerified": true
     },
     {
-      "title": "Polyhedra",
+      "title": "Polyhedra 123",
       "desc": "zkbridge.com",
       "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/main/apps/bridge/public/thirdparty/polyhedra.png",
       "link": "https://zkbridge.com/token",
+      "isVerified": true
+    },
+    {
+      "title": "FBTC Bridge",
+      "desc": "fbtc.com",
+      "img": "https://raw.githubusercontent.com/windranger-io/mantle-xyz/main/apps/bridge/public/thirdparty/fbtc-bridge.svg",
+      "link": "https://fbtc.com/bridge",
       "isVerified": true
     }
   ]
