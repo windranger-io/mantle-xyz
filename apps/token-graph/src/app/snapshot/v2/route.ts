@@ -10,7 +10,7 @@ const fetchL2SnapshotVotes = async (address: string, snapshot: string) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        query: `query GetDelegates($address: String, $snapshot: Int){
+        query: `query GetDelegates($address: String!, $snapshot: Float!){
             l2TotalVotesChangedsByAddressAndBlockNumber(address: $address, blockNumber: $snapshot, limit: 1) {
               address
               totalVotes
@@ -30,10 +30,10 @@ const fetchL2SnapshotVotes = async (address: string, snapshot: string) => {
   let totalVotes = "0";
 
   if (
-    data.l2DelegateVotesChangeds.length &&
-    data.l2DelegateVotesChangeds[0].totalVotes
+    data.l2TotalVotesChangedsByAddressAndBlockNumber.length &&
+    data.l2TotalVotesChangedsByAddressAndBlockNumber[0].totalVotes
   ) {
-    totalVotes = data.l2DelegateVotesChangeds[0].totalVotes;
+    totalVotes = data.l2TotalVotesChangedsByAddressAndBlockNumber[0].totalVotes;
   }
 
   return totalVotes;
@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
   /* eslint-disable */
   for (const addr of addresses) {
     const l2Votes: string = await fetchL2SnapshotVotes(addr, snapshot);
+    console.log(addr, l2Votes);
     score.push({
       address: addr,
       score: l2Votes,
