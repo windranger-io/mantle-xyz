@@ -10,10 +10,11 @@ const fetchL2SnapshotVotes = async (address: string, snapshot: string) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        query: `query GetDelegates($address: String!, $snapshot: Float!){
-            l2TotalVotesChangedsByAddressAndBlockNumber(address: $address, blockNumber: $snapshot, limit: 1) {
+        query: `query GetDelegates($address: String, $snapshot: Int){
+            l2DelegateVotesChangeds(orderBy: blockNumber_DESC, limit: 1, where: {address_eq: $address, blockNumber_lte: $snapshot}) {
               address
-              totalVotes
+              l2Votes
+              blockNumber
             }
           }
         `,
@@ -27,16 +28,16 @@ const fetchL2SnapshotVotes = async (address: string, snapshot: string) => {
 
   const snapshotVotes = await fetchSnapshotVotes.json();
   const { data } = await snapshotVotes;
-  let totalVotes = "0";
+  let l2Votes = "0";
 
   if (
-    data.l2TotalVotesChangedsByAddressAndBlockNumber.length &&
-    data.l2TotalVotesChangedsByAddressAndBlockNumber[0].totalVotes
+    data.l2DelegateVotesChangeds.length &&
+    data.l2DelegateVotesChangeds[0].l2Votes
   ) {
-    totalVotes = data.l2TotalVotesChangedsByAddressAndBlockNumber[0].totalVotes;
+    l2Votes = data.l2DelegateVotesChangeds[0].l2Votes;
   }
 
-  return totalVotes;
+  return l2Votes;
 };
 
 export async function GET() {
