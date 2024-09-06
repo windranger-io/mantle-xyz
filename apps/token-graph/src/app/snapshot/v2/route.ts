@@ -55,8 +55,8 @@ export async function POST(request: NextRequest) {
 
   /* eslint-disable */
   for (const addr of addresses) {
+    console.log(addr);
     const l2Votes: string = await fetchL2SnapshotVotes(addr, snapshot);
-    console.log(addr, l2Votes);
     score.push({
       address: addr,
       score: l2Votes,
