@@ -75,6 +75,8 @@ function useTokenList(tokenListUrl: string) {
       const updatedData = data.tokens.concat(externalTokens);
 
       data.tokens = updatedData;
+
+      console.log({ tokens: data });
       return data;
     },
     { cacheTime: 300000 }
