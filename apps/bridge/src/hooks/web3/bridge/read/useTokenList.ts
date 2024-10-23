@@ -11,8 +11,7 @@ function useTokenList(tokenListUrl: string) {
     ["TOKEN_LIST", { tokenListUrl }],
     async () => {
       const res = await fetch(tokenListUrl);
-      const data = await res.json();
-
+      const data: TokenList = await res.json();
       return data;
     },
     { cacheTime: 300000 }

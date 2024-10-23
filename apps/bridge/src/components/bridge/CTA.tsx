@@ -253,6 +253,34 @@ export default function CTA({
       </div>
     );
   }
+  if (selection.extensions?.external) {
+    return (
+      <div className="mt-4">
+        <Link
+          href={selection.extensions.external.url}
+          rel="noreferrer noopener"
+          target="_blank"
+        >
+          <Button
+            type="button"
+            size="full"
+            className="h-14 flex items-center justify-center gap-1"
+          >
+            {direction === Direction.Deposit
+              ? `Deposit with ${selection.extensions.external.name}`
+              : `Withdraw with ${selection.extensions.external.name}`}
+            <Image
+              className="translate -translate-y-[2px]"
+              src="/thirdparty/external-dark.svg"
+              alt="external"
+              width={16}
+              height={16}
+            />
+          </Button>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-4">

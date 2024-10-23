@@ -325,6 +325,10 @@ export interface Token {
       name: string;
       url: string;
     };
+    external?: {
+      name: string;
+      url: string;
+    };
   };
   balance?: BigNumberish;
   allowance?: BigNumberish;
