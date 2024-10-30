@@ -90,7 +90,7 @@ export default function AddTokenBtn({
         setEffect(true);
         addToken({
           address: NETWORKS[L1_CHAIN_ID],
-          symbol: "MNT",
+          symbol: "SepoliaMNT",
           decimals: 18,
           image: "https://token-list.mantle.xyz/data/Mantle/logo.svg",
         });
