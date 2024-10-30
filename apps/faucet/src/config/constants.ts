@@ -84,12 +84,7 @@ export const CHAINS: Record<
       symbol: "GoerliETH",
       decimals: 18,
     },
-    rpcUrls: [
-      // infura backed redirect gateway
-      `${ABSOLUTE_PATH}/rpc`,
-      // public gateway
-      `https://rpc.ankr.com/eth_goerli`,
-    ],
+    rpcUrls: [process.env.NEXT_PUBLIC_GOERLI_RPC_URL || `${ABSOLUTE_PATH}/rpc`],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
   11155111: {
@@ -101,10 +96,7 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
-      // infura backed redirect gateway
-      `${ABSOLUTE_PATH}/rpc`,
-      // public gateway
-      `https://rpc.ankr.com/eth_sepolia`,
+      process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL || `${ABSOLUTE_PATH}/rpc`,
     ],
     blockExplorerUrls: ["https://sepolia.etherscan.io/"],
   },
@@ -121,7 +113,7 @@ export const CHAINS_FORMATTED: Record<number, Chain> = {
         http: [CHAINS[5].rpcUrls[0]],
       },
       public: {
-        http: [CHAINS[5].rpcUrls[1]],
+        http: [CHAINS[5].rpcUrls[0]],
       },
     },
     id: 5,
@@ -136,7 +128,7 @@ export const CHAINS_FORMATTED: Record<number, Chain> = {
         http: [CHAINS[11155111].rpcUrls[0]],
       },
       public: {
-        http: [CHAINS[11155111].rpcUrls[1]],
+        http: [CHAINS[11155111].rpcUrls[0]],
       },
     },
     id: 11155111,
