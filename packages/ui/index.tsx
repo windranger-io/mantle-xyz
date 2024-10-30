@@ -28,6 +28,7 @@ export * from './src/links/MantleLinks'
 export * from './src/base/Icons'
 export * from './src/base/T'
 export * from './src/base/Accordion'
+export * from './src/base/MyTooltip'
 
 /**
  * Navigation Components
@@ -77,3 +78,4 @@ export { LocaleSwitcher } from './src/LocaleSwitcher'
  *
  */
 export { Cookies } from './src/scripts/Cookies'
+export { MetaCRM } from './src/scripts/MetaCRM'

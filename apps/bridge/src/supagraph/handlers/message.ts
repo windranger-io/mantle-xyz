@@ -119,7 +119,7 @@ export const getMessagesByTransaction = async (
       // convert each SentMessage log into a message object
       const parsed = messenger.interface.parseLog(log);
       return {
-        value,
+        // value,
         direction: opts.direction,
         target: parsed.args.target,
         sender: parsed.args.sender,
@@ -129,6 +129,8 @@ export const getMessagesByTransaction = async (
         logIndex: log.logIndex,
         blockNumber: log.blockNumber,
         transactionHash: log.transactionHash,
+        mntValue: value,
+        ethValue: value,
       };
     });
 };

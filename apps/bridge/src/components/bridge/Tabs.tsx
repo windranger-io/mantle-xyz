@@ -13,7 +13,7 @@ import { Button, SimpleCard } from "@mantle/ui";
 import { Direction, L1_CHAIN_ID, L2_CHAIN_ID, Views } from "@config/constants";
 
 import Deposit from "@components/bridge/Deposit";
-import Withdraw from "@components/bridge/Withdraw";
+import WithdrawV2 from "@components/bridge/WithdrawV2";
 import Dialogue from "@components/bridge/dialogue";
 
 import { usePathname, useRouter } from "next/navigation";
@@ -39,6 +39,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
     setSafeChains,
     setIsCTAPageOpen,
     setHasClosedClaims,
+    setSelectedTokenAmount,
   } = useContext(StateContext);
 
   const router = useRouter();
@@ -49,6 +50,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
       ? Direction.Withdraw
       : Direction.Deposit
   );
+
   const isWalletMultisig = useIsWalletMultisig(client.chainId, client.address);
 
   // on first load
@@ -114,7 +116,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
       />,
     ],
     Withdraw: [
-      <Withdraw
+      <WithdrawV2
         setIsOpen={setIsCTAPageOpen}
         selected={selected}
         destination={destination}
@@ -132,7 +134,7 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
         />,
       ],
       Withdraw: [
-        <Withdraw
+        <WithdrawV2
           setIsOpen={setIsCTAPageOpen}
           selected={selected}
           destination={destination}
@@ -320,7 +322,8 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
           setIsOpen={setIsCTAPageOpen}
         />
       )) || (
-        <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col md:flex-row lg:block lg:mx-auto ">
+        //  md:flex-row
+        <div className="relative w-full lg:min-w-[484px] lg:w-[484px] flex flex-col lg:block lg:mx-auto ">
           <SimpleCard className="max-w-lg w-full grid gap-4 relative">
             <Tab.Group
               selectedIndex={tab === Direction.Deposit ? 0 : 1}
@@ -329,11 +332,13 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
                   // setChainId(L1_CHAIN_ID);
                   // setSafeChains([L1_CHAIN_ID]);
                   // setTab(Direction.Deposit);
+                  setSelectedTokenAmount("");
                   router.push("/deposit", { forceOptimisticNavigation: true });
                 } else {
                   // setChainId(L2_CHAIN_ID);
                   // setSafeChains([L2_CHAIN_ID]);
                   // setTab(Direction.Withdraw);
+                  setSelectedTokenAmount("");
                   router.push("/withdraw", { forceOptimisticNavigation: true });
                 }
               }}
@@ -377,7 +382,8 @@ export default function Tabs({ selectedTab }: { selectedTab: Direction }) {
             </Tab.Group>
           </SimpleCard>
           {(isWalletMultisig || displayFAQ) && (
-            <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] lg:max-w-[250px] xl:w-[320px] xl:max-w-[320px] lg:absolute lg:top-0 lg:right-[-55%] xl:right-[-80%]">
+            // <div className="flex flex-col w-full md:w-[80%] lg:w-auto lg:min-w-[250px] lg:max-w-[250px] xl:w-[320px] xl:max-w-[320px] lg:absolute lg:top-0 lg:right-[-55%] xl:right-[-80%]">
+            <div className="flex flex-col w-full lg:w-auto mt-16">
               {isWalletMultisig && <MultisigWarning />}
               {displayFAQ && <Faq />}
             </div>

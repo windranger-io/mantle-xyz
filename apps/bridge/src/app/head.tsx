@@ -8,7 +8,8 @@ import {
   TWITTER_DESC,
   TWITTER_TITLE,
 } from "@config/constants";
-import { Cookies } from "@mantle/ui";
+import { Cookies, MetaCRM } from "@mantle/ui";
+import Script from "next/script";
 
 export default function Head() {
   const isTestnet = L1_CHAIN_ID === 5 || L2_CHAIN_ID === 5001;
@@ -32,6 +33,18 @@ export default function Head() {
       <meta name="twitter:image" content={`${ABSOLUTE_PATH}/twitter.png`} />
       <meta name="google" content="nositelinkssearchbox" />
       <Cookies siteId={isTestnet ? "176" : "174"} />
+      <MetaCRM />
+      <Script
+        strategy="afterInteractive"
+        src="https://www.googletagmanager.com/gtag/js?id=G-84NZKTFJ7S"
+      />
+      <Script strategy="afterInteractive" id="google-analytics">
+        {`window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-84NZKTFJ7S');`}
+      </Script>
     </>
   );
 }

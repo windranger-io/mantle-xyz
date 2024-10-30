@@ -55,6 +55,18 @@ function ConnectWallet() {
 
   // chain is valid if it matches any of these states...
   const isChainID = useMemo(() => {
+    console.log(
+      "isChainID useMemo: ",
+      currentChain,
+      "safeChains: ",
+      safeChains,
+      chainId,
+      L1_CHAIN_ID,
+      L2_CHAIN_ID,
+      isLayer1ChainID,
+      isMantleChainID,
+      address
+    );
     return (
       currentChain &&
       ((safeChains.length === 2 &&

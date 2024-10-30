@@ -4,25 +4,25 @@ export function AdditionalLinks() {
   return (
     <div className="flex flex-col items-center gap-4 pb-10">
       <Typography>
-        Don’t have enough gas to mint tokens? Get some goerli ETH here:
+        Don’t have enough gas to mint tokens? Get some sepolia ETH here:
       </Typography>
       <div className="flex flex-col gap-2">
         <MantleLink
           variant="additionalLinks"
           rel="noreferrer noopener"
           target="_blank"
-          href="https://faucet.paradigm.xyz/"
+          href="https://www.infura.io/faucet/sepolia"
         >
-          Paradigm gETH Faucet
+          Infura sepoliaETH Faucet
         </MantleLink>
 
         <MantleLink
           variant="additionalLinks"
           rel="noreferrer noopener"
           target="_blank"
-          href="https://goerlifaucet.com/"
+          href="https://sepoliafaucet.com/"
         >
-          Alchemy gETH Faucet
+          Alchemy sepoliaETH Faucet
         </MantleLink>
       </div>
     </div>

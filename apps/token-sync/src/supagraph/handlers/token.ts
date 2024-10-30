@@ -387,7 +387,14 @@ export const DelegateVotesChangedHandler = async (
   args: DelegateVotesChangedEvent,
   { tx }: { tx: TransactionReceipt & TransactionResponse }
 ) => {
-  // console.log("votes changed:", args.delegate, "from", args.previousBalance.toString(), "to", args.newBalance.toString());
+  console.log(
+    "votes changed:",
+    args.delegate,
+    "from",
+    args.previousBalance.toString(),
+    "to",
+    args.newBalance.toString()
+  );
 
   // format the current contractAddress
   const contractAddress = getAddress(tx.contractAddress || tx.to);

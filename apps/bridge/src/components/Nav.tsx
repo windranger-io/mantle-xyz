@@ -7,6 +7,8 @@ import { L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
 import StateContext from "@providers/stateContext";
 import { usePathname } from "next/navigation";
 import { NavItem } from "@mantle/ui/src/navigation/NavigationLite";
+import Link from "next/link";
+import Image from "next/image";
 
 type NavProps = {
   // eslint-disable-next-line react/require-default-props
@@ -24,19 +26,25 @@ function Nav({ className = "" }: NavProps) {
   const NAV_ITEMS: NavItem[] = [
     {
       name: "Docs",
-      href: "https://docs.mantle.xyz",
+      href: "https://docs-v2.mantle.xyz",
       internal: true,
       key: "docs",
     },
     {
-      name: "Migrate",
-      href: "https://migratebit.mantle.xyz",
+      name: "Faucet",
+      href: "https://faucet.sepolia.mantle.xyz",
       internal: true,
-      key: "migrate",
+      key: "faucet",
     },
+    // {
+    //   name: "Migrate",
+    //   href: "https://migratebit.mantle.xyz",
+    //   internal: true,
+    //   key: "migrate",
+    // },
     {
       name: "Bridge",
-      href: "https://bridge.mantle.xyz",
+      href: "/",
       internal: true,
       key: "bridge",
     },
@@ -82,15 +90,32 @@ function Nav({ className = "" }: NavProps) {
   const navItems = isTestnet ? NAV_ITEMS_TESTNET : NAV_ITEMS;
 
   return (
-    <Header
-      navLite
-      walletConnect={<ConnectWallet />}
-      className={className}
-      activeKey={activeKey}
-      mobileMenuOpen={mobileMenuOpen}
-      setMobileMenuOpen={setMobileMenuOpen}
-      navItems={navItems}
-    />
+    <>
+      <div className="p-3 flex items-center justify-center text-sm bg-[#06DD76]/10 flex-wrap">
+        <span className="text-[#C4C4C4]">
+          Our new bridge is officially live!&nbsp;&nbsp;
+        </span>
+        <Link
+          href="https://app.mantle.xyz/bridge"
+          rel="noreferrer noopener"
+          target="_blank"
+          className="flex items-center  hover:underline"
+        >
+          Go to the new version&nbsp;
+          <Image alt="arrow" src="/top-left-arrow.svg" width={7} height={7} />
+        </Link>
+      </div>
+
+      <Header
+        navLite
+        walletConnect={<ConnectWallet />}
+        className={className}
+        activeKey={activeKey}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
+        navItems={navItems}
+      />
+    </>
   );
 }
 

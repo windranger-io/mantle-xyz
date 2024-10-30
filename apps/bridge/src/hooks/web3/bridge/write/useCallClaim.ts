@@ -28,7 +28,7 @@ class TxError extends Error {
 
 // call the claim method with the given tx
 export function useCallClaim(
-  tx1: undefined | MessageLike,
+  tx1: undefined | boolean | MessageLike,
   checkBeforeClaim: boolean = false,
   storeProgress: boolean = true,
   onSuccess?: (tx: TransactionReceipt) => void
@@ -47,7 +47,12 @@ export function useCallClaim(
   // commit claim method...
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const commitClaim = () => {
-    if (tx1 && crossChainMessenger && getMessageStatus) {
+    if (
+      tx1 &&
+      typeof tx1 !== "boolean" &&
+      crossChainMessenger &&
+      getMessageStatus
+    ) {
       // check if a claim has already been made - if it has - return that instead
       const checkForClaim = async () => {
         return getMessageStatus(tx1, { returnReceipt: true }).then(

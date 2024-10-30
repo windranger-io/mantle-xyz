@@ -31,6 +31,9 @@ export const NavigationLite = ({
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
   navItems: NavItem[]
 }) => {
+  const isTestnet =
+    typeof window !== 'undefined' && window.location.host.includes('testnet')
+
   return (
     <div className="relative">
       <nav
@@ -55,6 +58,12 @@ export const NavigationLite = ({
             return (
               <span key={`navLink-${item?.name || index}`}>
                 <MantleLink
+                  onClick={() =>
+                    gtag('event', 'header_bridge_click', {
+                      tab: item.name,
+                      network: isTestnet ? 'testnet' : 'mainnet',
+                    })
+                  }
                   variant="navLink"
                   href={item.href}
                   target={item.internal ? '_self' : '_blank'}
@@ -125,6 +134,12 @@ export const NavigationLite = ({
                 {navItems.map((item, index) => (
                   <span key={`navLink-${item?.name || index}`}>
                     <MantleLink
+                      onClick={() =>
+                        gtag('event', 'header_bridge_click', {
+                          tab: item.name,
+                          network: isTestnet ? 'testnet' : 'mainnet',
+                        })
+                      }
                       variant="navLink"
                       href={item.href}
                       target={item.internal ? '_self' : '_blank'}

@@ -1,10 +1,12 @@
 "use client";
 
 import {
-  BRIDGE_BACKEND,
+  // BRIDGE_BACKEND,
+  BRIDGE_LIST,
+  BridgeList,
   CTAPages,
+  WithdrawStatus,
   Direction,
-  HISTORY_ITEMS_PER_PAGE,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
   MANTLE_TOKEN_LIST_URL,
@@ -12,6 +14,7 @@ import {
   Token,
   TokenList,
   Views,
+  WithdrawHash,
 } from "@config/constants";
 
 import { Contract, providers } from "ethers";
@@ -48,8 +51,11 @@ import {
 import { getAddress } from "ethers/lib/utils.js";
 import { getMulticallContract } from "@utils/multicallContract";
 import useTokenList from "@hooks/web3/bridge/read/useTokenList";
+import useBridgeList from "@hooks/web3/bridge/read/useBridgeList";
+import { useLocalStorage } from "usehooks-ts";
 
 export type StateProps = {
+  isShowNewBridge: boolean;
   view: Views;
   client: {
     isConnected: boolean;
@@ -87,9 +93,11 @@ export type StateProps = {
   ctaErrorReset: MutableRefObject<(() => void | boolean) | undefined>;
   walletModalOpen: boolean;
   mobileMenuOpen: boolean;
+  withdrawHash: WithdrawHash;
 
   tokens: Token[];
   tokenList: TokenList;
+  bridgeList: BridgeList;
   balances: Record<string, string>;
   allowance: string;
   selectedToken: {
@@ -112,6 +120,7 @@ export type StateProps = {
   hasClosedClaims: boolean;
   isLoadingDeposits: boolean;
   isLoadingWithdrawals: boolean;
+  withdrawStatus: WithdrawStatus;
 
   setView: (v: Views) => void;
   setChainId: (v: number) => void;
@@ -123,7 +132,7 @@ export type StateProps = {
   }) => void;
   setSafeChains: (chains: number[]) => void;
   resetBalances: () => void;
-  resetAllowance: () => void;
+  resetAllowance: () => Promise<unknown>;
   refetchWithdrawals: () => void;
   refetchDeposits: () => void;
   loadMoreWithdrawals: () => void;
@@ -142,6 +151,8 @@ export type StateProps = {
   setHasClosedClaims: (closed: boolean) => void;
   setWalletModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setWithdrawStatus: (withdrawStatus: WithdrawStatus) => void;
+  setWithdrawHash: (wh: WithdrawHash) => void;
 };
 
 // create a context to bind the provider to
@@ -150,6 +161,15 @@ const StateContext = createContext<StateProps>({} as StateProps);
 // create a provider to contain all state
 export function StateProvider({ children }: { children: React.ReactNode }) {
   const pathName = usePathname();
+
+  const [showNewBridgeVal, setValue] = useLocalStorage("show-new-bridge", "");
+
+  useEffect(() => {
+    if (showNewBridgeVal === "") {
+      const randomNo = Math.floor(Math.random() * 10);
+      setValue(randomNo.toString());
+    }
+  }, [showNewBridgeVal, setValue]);
 
   // page toggled chainId (set according to Deposit/Withdraw)
   const [view, setView] = useState(
@@ -200,6 +220,14 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // the selected page within CTAPage to open
   const [ctaPage, setCTAPage] = useState<CTAPages>(CTAPages.Default);
+  const [withdrawStatus, setWithdrawStatus] = useState<WithdrawStatus>(
+    WithdrawStatus.INIT
+  );
+  const [withdrawHash, setWithdrawHash] = useState<WithdrawHash>({
+    init: "",
+    prove: "",
+    claim: "",
+  });
   // seperate the ctaChainId from the chainId to dissassociate the tabs from the cta
   const [ctaChainId, setCTAChainId] = useState(chainId);
   // status from the cta operation (this is currently being logged in the console)
@@ -244,6 +272,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // fetch the tokenList from source
   const { tokenList } = useTokenList(MANTLE_TOKEN_LIST_URL);
 
+  // fetch the bridgeList from source
+
+  const { bridgeList } = useBridgeList(BRIDGE_LIST);
+
   // the current chains token list
   const tokens = useMemo(() => {
     const chainId1 = L1_CHAIN_ID === chainId ? L1_CHAIN_ID : L2_CHAIN_ID;
@@ -274,8 +306,8 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // control the page to load more items from the history pages
   // - we're not using this style of pagination
   // - its cheaper to just request everything in 1 req because the sort order of the pagination is reversed
-  const withdrawalsPage = useRef(0);
-  const depositsPage = useRef(0);
+  const withdrawalsPage = useRef(1);
+  const depositsPage = useRef(1);
 
   // combine all results into arrays
   const [withdrawals, setWithdrawals] = useState<Withdrawal[] | undefined>([]);
@@ -291,11 +323,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     setWithdrawals(undefined);
     return (
       (client.address &&
-        `${BRIDGE_BACKEND}/v1/withdrawals/${getAddress(
-          client.address
-        )}?offset=${
-          withdrawalsPage.current * HISTORY_ITEMS_PER_PAGE
-        }&limit=${HISTORY_ITEMS_PER_PAGE}`) ||
+        `/api/withdraw?address=${getAddress(client.address)}&page=${
+          withdrawalsPage.current
+        }&pageSize=1000`) ||
       ""
     );
   }, [client.address, withdrawalsPage]);
@@ -304,9 +334,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     setDeposits(undefined);
     return (
       (client.address &&
-        `${BRIDGE_BACKEND}/v1/deposits/${getAddress(client.address)}?offset=${
-          depositsPage.current * HISTORY_ITEMS_PER_PAGE
-        }&limit=${HISTORY_ITEMS_PER_PAGE}`) ||
+        `/api/deposit?address=${getAddress(client.address)}&page=${
+          depositsPage.current
+        }&pageSize=1000`) ||
       ""
     );
   }, [client.address, depositsPage]);
@@ -361,6 +391,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     tokens,
     provider
   );
+
+  useEffect(() => {
+    console.log({ allowance });
+  }, [allowance]);
 
   // fetch the gas estimate for the selected operation on in the selected direction
   const { actualGasFee, resetGasEstimate } = useGasEstimate(
@@ -428,6 +462,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // reset the loading state for the TransactionPanel
   useEffect(() => {
+    console.log("actualGasFee: ", actualGasFee);
     if (actualGasFee && actualGasFee !== "0") {
       setIsLoadingFeeData(false);
     }
@@ -451,10 +486,13 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // reset the allowances and balances once we gather enough intel to make the calls
   useEffect(
     () => {
-      resetAllowance();
-      resetBalances();
-      refetchL1FeeData();
-      refetchL2FeeData();
+      const reset = async () => {
+        await resetAllowance();
+        resetBalances();
+        refetchL1FeeData();
+        refetchL2FeeData();
+      };
+      reset();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [chainId, client?.address, selectedToken, multicall, bridgeAddress]
@@ -585,6 +623,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     };
 
     return {
+      isShowNewBridge: showNewBridgeVal === "0",
       view,
       client,
       chainId,
@@ -631,12 +670,15 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       balances,
       allowance,
       tokenList,
+      bridgeList,
       selectedToken,
       destinationToken,
       selectedTokenAmount,
       destinationTokenAmount,
 
       ctaErrorReset,
+      withdrawStatus,
+      withdrawHash,
 
       setView,
       setClient,
@@ -665,8 +707,11 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setDestinationTokenAmount,
       setSelectedToken: setSelectTokenByType,
       setDestinationToken: setDestinationTokenByType,
+      setWithdrawStatus,
+      setWithdrawHash,
     } as StateProps;
   }, [
+    showNewBridgeVal,
     view,
     client,
     chainId,
@@ -712,12 +757,15 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     balances,
     allowance,
     tokenList,
+    bridgeList,
     selectedToken,
     destinationToken,
     selectedTokenAmount,
     destinationTokenAmount,
 
     ctaErrorReset,
+    withdrawStatus,
+    withdrawHash,
 
     resetBalances,
     resetAllowance,

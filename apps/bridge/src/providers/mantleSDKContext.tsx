@@ -9,20 +9,23 @@ import {
   MessageDirection,
   MessageStatus,
   MessageReceipt,
-  MessageReceiptStatus,
   MessageLike,
   CrossChainMessage,
   StateRoot,
-  TransactionLike,
-  toTransactionHash,
   StateRootBatch,
+  // CONTRACT_ADDRESSES,
 } from "@mantleio/sdk";
 
-import * as contracts from "@mantleio/contracts";
+// import * as contracts from "@mantleio/contracts";
 
-import { hashCrossDomainMessage } from "@mantleio/core-utils";
+import { sleep } from "@mantleio/core-utils";
 
-import { CHAINS_FORMATTED, L1_CHAIN_ID, L2_CHAIN_ID } from "@config/constants";
+import {
+  CHAINS_FORMATTED,
+  L1_CHAIN_ID,
+  L2_CHAIN_ID,
+  IS_MANTLE_V2,
+} from "@config/constants";
 
 import { useNetwork, useWalletClient } from "wagmi";
 import type {
@@ -32,7 +35,7 @@ import type {
 } from "@ethersproject/providers";
 import { BytesLike, Signer, ethers, providers } from "ethers";
 
-import { timeout } from "@utils/toolSet";
+// import { timeout } from "@utils/toolSet";
 
 import { gql, useApolloClient } from "@apollo/client";
 import { useMemo } from "react";
@@ -197,6 +200,15 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     )
       return { crossChainMessenger: undefined };
 
+    // const contractAddr = CONTRACT_ADDRESSES[5003];
+    // contractAddr.l1.OptimismPortal =
+    //   "0xB3db4bd5bc225930eD674494F9A4F6a11B8EFBc8";
+    // contractAddr.l1.L2OutputOracle =
+    //   "0x4121dc8e48Bc6196795eb4867772A5e259fecE07";
+    // contractAddr.l1.L1StandardBridge =
+    //   "0x21F308067241B2028503c07bd7cB3751FFab0Fb2";
+    // contractAddr.l1.L1CrossDomainMessenger =
+    //   "0x37dAC5312e31Adb8BB0802Fc72Ca84DA5cDfcb4c";
     // context only stores the manager
     const context: MantleSDK = {
       crossChainMessenger: new CrossChainMessenger({
@@ -206,6 +218,8 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
           chain?.id === L1_CHAIN_ID ? layer1Signer! : layer1Provider!,
         l2SignerOrProvider:
           chain?.id === L2_CHAIN_ID ? mantleSigner! : mantleProvider!,
+        bedrock: IS_MANTLE_V2,
+        // contracts: contractAddr,
       }),
     } as MantleSDK;
 
@@ -400,234 +414,6 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
         : res;
     };
 
-    // find the relayed messageReceipt
-    context.crossChainMessenger.getMessageReceipt = async (
-      message: TransactionResponse
-    ): Promise<MessageReceipt> => {
-      const resolved = await context.toCrossChainMessage(message);
-
-      // memoise the IS_L1_TO_L2 check, we'll do this a few times to make sure we're pulling data from the correct contract/network
-      const IS_L1_TO_L2 = resolved.direction === MessageDirection.L1_TO_L2;
-
-      // we produce a hash of the message which we can use to search the logs
-      const messageHash = hashCrossDomainMessage(
-        resolved.messageNonce,
-        resolved.sender,
-        resolved.target,
-        resolved.value,
-        resolved.minGasLimit,
-        resolved.message
-      );
-
-      // select the correct network/contract
-      const unconnectedMessenger = IS_L1_TO_L2
-        ? context.crossChainMessenger.contracts.l2.L2CrossDomainMessenger
-        : context.crossChainMessenger.contracts.l1.L1CrossDomainMessenger;
-
-      // get the provider to read the receipt from
-      const provider = IS_L1_TO_L2
-        ? mantleTestnetRef.current!
-        : layer1ProviderRef.current!;
-
-      // connect to the fixed provider
-      const messenger = unconnectedMessenger.connect(
-        IS_L1_TO_L2 ? mantleTestnetRef.current! : layer1InfuraRef.current!
-      );
-
-      // look for successfully relayed messages
-      const relayedMessageEvents = await messenger
-        .queryFilter(messenger.filters.RelayedMessage(messageHash))
-        .catch(() => []);
-
-      // if the relay was successful only once then return the receipt
-      if (relayedMessageEvents.length === 1) {
-        return {
-          receiptStatus: MessageReceiptStatus.RELAYED_SUCCEEDED,
-          transactionReceipt: await provider.getTransactionReceipt(
-            relayedMessageEvents[0].transactionHash
-          ),
-        };
-      }
-
-      // otherwise we have a bad state...[]
-      if (relayedMessageEvents.length > 1) {
-        throw new Error(`multiple successful relays for message`);
-      }
-
-      // if we didn't find any events then look for errors (using the same block constraints)
-      const failedRelayedMessageEvents = await messenger.queryFilter(
-        messenger.filters.FailedRelayedMessage(messageHash)
-      );
-      // if there was an error then return the RELAYED_FAILED state with the appropriate tx receipt
-      if (failedRelayedMessageEvents.length > 0) {
-        return {
-          receiptStatus: MessageReceiptStatus.RELAYED_FAILED,
-          transactionReceipt: await provider.getTransactionReceipt(
-            failedRelayedMessageEvents[failedRelayedMessageEvents.length - 1]
-              .transactionHash
-          ),
-        };
-      }
-
-      return null as unknown as MessageReceipt;
-    };
-
-    // get the messages associated with the tx
-    context.crossChainMessenger.getMessagesByTransaction = async (
-      transaction: TransactionLike,
-      opts: {
-        direction?: MessageDirection;
-      } = {}
-    ): Promise<CrossChainMessage[]> => {
-      // Wait for the transaction receipt if the input is waitable.
-      await (transaction as TransactionResponse).wait?.();
-
-      // Convert the input to a transaction hash.
-      const txHash = toTransactionHash(transaction);
-
-      let receipt: TransactionReceipt;
-      if (opts.direction !== undefined) {
-        // Get the receipt for the requested direction.
-        if (opts.direction === MessageDirection.L1_TO_L2) {
-          receipt = await layer1ProviderRef.current!.getTransactionReceipt(
-            txHash
-          );
-        } else {
-          receipt = await mantleTestnetRef.current!.getTransactionReceipt(
-            txHash
-          );
-        }
-      } else {
-        // Try both directions, starting with L1 => L2.
-        receipt = await layer1ProviderRef.current!.getTransactionReceipt(
-          txHash
-        );
-        if (receipt) {
-          // eslint-disable-next-line no-param-reassign
-          opts.direction = MessageDirection.L1_TO_L2;
-        } else {
-          receipt = await mantleTestnetRef.current!.getTransactionReceipt(
-            txHash
-          );
-          // eslint-disable-next-line no-param-reassign
-          opts.direction = MessageDirection.L2_TO_L1;
-        }
-      }
-
-      if (!receipt) {
-        throw new Error(`unable to find transaction receipt for ${txHash}`);
-      }
-
-      // By this point opts.direction will always be defined.
-      const contract =
-        opts.direction === MessageDirection.L1_TO_L2
-          ? context.crossChainMessenger.contracts.l1.L1CrossDomainMessenger
-          : context.crossChainMessenger.contracts.l2.L2CrossDomainMessenger;
-
-      // connect the contract to the provider
-      const messenger = contract.connect(
-        opts.direction === MessageDirection.L1_TO_L2
-          ? layer1ProviderRef.current!
-          : mantleTestnetRef.current!
-      );
-
-      return receipt.logs
-        .filter((log) => {
-          // Only look at logs emitted by the messenger address
-          return log.address === messenger.address;
-        })
-        .filter((log) => {
-          // Only look at SentMessage logs specifically
-          const parsed = messenger.interface.parseLog(log);
-          return parsed.name === "SentMessage";
-        })
-        .map((log) => {
-          let value = ethers.BigNumber.from(0);
-          if (receipt.logs.length > log.logIndex + 1) {
-            const next = receipt.logs[log.logIndex + 1];
-            if (next.address === messenger.address) {
-              const nextParsed = messenger.interface.parseLog(next);
-              if (nextParsed.name === "SentMessageExtension1") {
-                value = nextParsed.args.value;
-              }
-            }
-          }
-
-          // Convert each SentMessage log into a message object
-          const parsed = messenger.interface.parseLog(log);
-          return {
-            direction: opts.direction,
-            target: parsed.args.target,
-            sender: parsed.args.sender,
-            message: parsed.args.message,
-            messageNonce: parsed.args.messageNonce,
-            value,
-            minGasLimit: parsed.args.gasLimit,
-            logIndex: log.logIndex,
-            blockNumber: log.blockNumber,
-            transactionHash: log.transactionHash,
-          };
-        }) as CrossChainMessage[];
-    };
-
-    // find the l1 stateBatchAppenedEvent by batch index
-    context.crossChainMessenger.getStateBatchAppendedEventByBatchIndex = async (
-      batchIndex
-    ) => {
-      // connect the contract to the read-only provider but use InfuraRef so that we can search without knowing the expected block
-      const stateCommitmentChain =
-        context.crossChainMessenger.contracts.l1.StateCommitmentChain.connect(
-          layer1InfuraRef.current!
-        );
-
-      // check for events in either the last 2000 blocks or 1000 blocks either side of the requested block
-      const events = await stateCommitmentChain.queryFilter(
-        stateCommitmentChain.filters.StateBatchAppended(batchIndex)
-      );
-      if (events.length === 0) {
-        return null;
-      }
-      if (events.length > 1) {
-        throw new Error(`found more than one StateBatchAppended event`);
-      } else {
-        return events[0];
-      }
-    };
-
-    context.crossChainMessenger.finalizeMessage = async (message, opts) => {
-      return layer1SignerRef.current!.sendTransaction(
-        await context.crossChainMessenger.populateTransaction.finalizeMessage(
-          message,
-          opts
-        )
-      );
-    };
-
-    context.crossChainMessenger.populateTransaction.finalizeMessage = async (
-      message,
-      opts
-    ) => {
-      const resolved = await context.toCrossChainMessage(message);
-      if (resolved.direction === MessageDirection.L1_TO_L2) {
-        throw new Error(`cannot finalize L1 to L2 message`);
-      }
-      const proof = await context.crossChainMessenger.getMessageProof(resolved);
-      const legacyL1XDM = new ethers.Contract(
-        context.crossChainMessenger.contracts.l1.L1CrossDomainMessenger.address,
-        contracts.getContractInterface("L1CrossDomainMessenger"),
-        // use l1 provider
-        layer1InfuraRef.current
-      );
-      return legacyL1XDM.populateTransaction.relayMessage(
-        resolved.target,
-        resolved.sender,
-        resolved.message,
-        resolved.messageNonce,
-        proof,
-        (opts === null || opts === undefined ? undefined : opts.overrides) || {}
-      );
-    };
-
     /*
      * Exposing new instances of these two methods so that we can return the receipt directly from the call
      */
@@ -641,74 +427,13 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
     ): Promise<
       MessageStatus | { status: MessageStatus; receipt: MessageReceipt }
     > => {
-      // starts as unconfirmed
-      let status: MessageStatus = 0;
-
-      // convert message to message hash
-      const resolved = await context.toCrossChainMessage(message);
-
       // attempt to fetch the messages receipt
       const receipt = await context.crossChainMessenger.getMessageReceipt(
-        resolved
+        message
       );
 
-      // match the status according to state...
-      if (resolved.direction === MessageDirection.L1_TO_L2) {
-        if (receipt === null) {
-          status = MessageStatus.UNCONFIRMED_L1_TO_L2_MESSAGE;
-        } else {
-          if (
-            receipt.receiptStatus === MessageReceiptStatus.RELAYED_SUCCEEDED &&
-            receipt.transactionReceipt.transactionHash
-          ) {
-            status = MessageStatus.RELAYED;
-          }
-          status = status || MessageStatus.FAILED_L1_TO_L2_MESSAGE;
-        }
-      } else if (receipt === null) {
-        // no receipt - check if the message was published (if we do a successful stateRoot check we could memoise the rest of this)
-        const stateRoot = await context.getMessageStateRoot(resolved);
-        // no published
-        if (stateRoot === null) {
-          status = MessageStatus.STATE_ROOT_NOT_PUBLISHED;
-        } else {
-          // published - find out in which block
-          challengePeriod.current =
-            challengePeriod.current ||
-            (await context.crossChainMessenger.getChallengePeriodSeconds());
-          // now get the latest block...
-          const latestBlock = await layer1ProviderRef.current!.getBlock(
-            "latest"
-          );
-          // check that the challengePeriod period has ellapsed before marking as ready
-          if (
-            stateRoot.timestamp + challengePeriod.current >
-            latestBlock.timestamp
-          ) {
-            // now get the latest block...
-            const nextBlock = await layer1ProviderRef.current!.getBlock(
-              "latest"
-            );
-            if (
-              stateRoot.timestamp + challengePeriod.current >
-              nextBlock.timestamp
-            ) {
-              status = MessageStatus.IN_CHALLENGE_PERIOD;
-            } else {
-              status = MessageStatus.READY_FOR_RELAY;
-            }
-          } else {
-            status = MessageStatus.READY_FOR_RELAY;
-          }
-        }
-      } else if (
-        // we have the receipt ... and it is goood
-        receipt.receiptStatus === MessageReceiptStatus.RELAYED_SUCCEEDED
-      ) {
-        status = MessageStatus.RELAYED;
-      } else {
-        status = MessageStatus.READY_FOR_RELAY;
-      }
+      const status: MessageStatus =
+        await context.crossChainMessenger.getMessageStatus(message);
 
       // if returnReceipt is set then return an obj else just the status
       return options?.returnReceipt
@@ -786,16 +511,11 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
           }
         }
 
-        await timeout(opts.pollIntervalMs || 4000);
+        await sleep(opts.pollIntervalMs || 4000);
         totalTimeMs += Date.now() - tick;
       }
 
       throw new Error(`timed out waiting for message status change`);
-    };
-
-    // attach this to internal getMessageStatus
-    context.crossChainMessenger.getMessageStatus = async (message) => {
-      return (await context.getMessageStatus(message)) as MessageStatus;
     };
 
     // attach this to internal waitForMessageStatus
@@ -814,7 +534,7 @@ function MantleSDKProvider({ children }: MantleSDKProviderProps) {
   }, [
     layer1Signer,
     layer1Provider,
-    layer1InfuraRef,
+    // layer1InfuraRef,
     layer1ProviderRef,
     mantleSigner,
     mantleProvider,

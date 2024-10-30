@@ -17,6 +17,7 @@ import Values from "@components/bridge/utils/Values";
 import { useMantleSDK } from "@providers/mantleSDKContext";
 import { formatTime } from "@mantle/utils";
 import { useQuery } from "wagmi";
+import { FeeNoticesCard } from "../FeeNoticesCard";
 
 export default function Default({
   direction,
@@ -103,7 +104,7 @@ export default function Default({
           label="Time to transfer"
           value={
             direction === Direction.Deposit
-              ? "~12 minutes"
+              ? "~1 minute"
               : `~${formatTime(
                   challengePeriod && challengePeriod < 1200
                     ? 1200
@@ -112,6 +113,7 @@ export default function Default({
           }
           border
         />
+        <Values value={<FeeNoticesCard />} border />
         {/* different between chains */}
         {/* {direction === Direction.Deposit && (
           <Values

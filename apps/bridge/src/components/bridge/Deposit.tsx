@@ -22,11 +22,11 @@ export default function Deposit({
     <div>
       <TokenSelect selected={selected} direction={direction} />
       <Divider />
-      <Destination direction={direction} />
+      <Destination direction={direction} destination={destination} />
       <CTA direction={direction} setIsOpen={setIsOpen} selected={selected} />
       <TransactionPanel
         selected={selected}
-        destination={destination}
+        // destination={destination}
         direction={direction}
       />
     </div>

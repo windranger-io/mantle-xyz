@@ -17,11 +17,11 @@ import { useQuery } from "wagmi";
 export default function TransactionPanel({
   direction,
   selected,
-  destination,
-}: {
+}: // destination,
+{
   direction: Direction;
   selected: Token;
-  destination: Token;
+  // destination: Token;
 }) {
   // unpack the context
   const {
@@ -138,12 +138,17 @@ export default function TransactionPanel({
         fixDecimals(destinationTokenAmount || "0")
       ) &&
       ((!isLoadingFeeData && (
-        <div className="space-y-3" key="tx-panel-0">
-          <div className="flex justify-between">
-            <Typography variant="smallWidget">Time to transfer</Typography>
-            <Typography variant="smallWidget" className="text-white">
+        <div className="flex items-center justify-between" key="tx-panel-0">
+          <div className="flex">
+            <Typography variant="smallWidget" className="text-xs text-white/50">
+              Time to transfer
+            </Typography>
+            <Typography
+              variant="smallWidget"
+              className="text-xs text-white pl-2"
+            >
               {direction === Direction.Deposit
-                ? `~12 minutes`
+                ? `~1 minute`
                 : `~${formatTime(
                     challengePeriod && challengePeriod < 1200
                       ? 1200
@@ -263,14 +268,20 @@ export default function TransactionPanel({
                 //   </Typography>
                 // </div>,
               ]}
-          {client?.address &&
+          {/* {client?.address &&
             client?.address !== "0x" &&
             direction === Direction.Deposit && (
-              <div className="flex justify-between" key="tx-panel-3">
-                <Typography variant="smallWidget" className="text-type-muted">
+              <div className="flex" key="tx-panel-3">
+                <Typography
+                  variant="smallWidget"
+                  className="text-xs text-type-muted"
+                >
                   Current Balance
                 </Typography>
-                <Typography variant="smallWidget" className="text-type-muted">
+                <Typography
+                  variant="smallWidget"
+                  className="text-xs text-white pl-2"
+                >
                   {Number.isNaN(
                     parseFloat(balances?.[selected?.address || ""] || "")
                   )
@@ -284,13 +295,19 @@ export default function TransactionPanel({
                   {selected.symbol}
                 </Typography>
               </div>
-            )}
+            )} */}
           {client?.address && client?.address !== "0x" && (
-            <div className="flex justify-between" key="tx-panel-4">
-              <Typography variant="smallWidget" className="text-type-muted">
+            <div className="flex" key="tx-panel-4">
+              <Typography
+                variant="smallWidget"
+                className="text-xs text-white/50"
+              >
                 Current Allowance
               </Typography>
-              <Typography variant="smallWidget" className="text-type-muted">
+              <Typography
+                variant="smallWidget"
+                className="text-xs text-white pl-2 overflow-hidden whitespace-nowrap text-overflow-ellipsis"
+              >
                 {/* eslint-disable-next-line no-nested-ternary */}
                 {Number.isNaN(parseFloat(allowance || ""))
                   ? localeZero
@@ -302,7 +319,7 @@ export default function TransactionPanel({
               </Typography>
             </div>
           )}
-          {client?.address && client?.address !== "0x" && (
+          {/* {client?.address && client?.address !== "0x" && (
             <div
               className="flex justify-between"
               key="tx-panel-5"
@@ -333,7 +350,7 @@ export default function TransactionPanel({
                 {destination?.symbol}
               </Typography>
             </div>
-          )}
+          )} */}
         </div>
       )) || (
         <div className="flex justify-center items-center">

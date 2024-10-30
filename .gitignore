@@ -43,3 +43,7 @@ yarn-error.log*
 
 # translations
 **/src/i18n
+
+#devtools
+.idea
+

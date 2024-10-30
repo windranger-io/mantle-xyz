@@ -1,4 +1,11 @@
-import { L1_CHAIN_ID, CTAPages, Direction, Token } from "@config/constants";
+import {
+  L1_CHAIN_ID,
+  CTAPages,
+  Direction,
+  Token,
+  IS_MANTLE_V2,
+  WithdrawStatus,
+} from "@config/constants";
 import {
   TransactionReceipt,
   TransactionResponse,
@@ -74,6 +81,7 @@ export function useCallBridge(
     ctaErrorReset,
     tx1HashRef,
     tx2HashRef,
+    withdrawHash,
     resetBalances,
     setCTAChainId,
     setTx1,
@@ -82,6 +90,8 @@ export function useCallBridge(
     setCTAStatus,
     setCTAPage,
     setIsCTAPageOpen,
+    setWithdrawStatus,
+    setWithdrawHash,
   } = useContext(StateContext);
 
   // setup the waitForRelay with the given direction
@@ -106,15 +116,24 @@ export function useCallBridge(
           throw e;
         };
 
+        const isDeposit = chainId === L1_CHAIN_ID;
+        const isMantleV2 = IS_MANTLE_V2;
+        const isETH = selected.name === "ETH";
+        const isMNT = selected.name === "Mantle";
         // if we've been given a receipt then the tx is already out there...
         if (!givenReceipt) {
           // for each type of interaction...
-          if (chainId === L1_CHAIN_ID && selected.name === "ETH") {
+          if (isDeposit && isETH) {
             // depositETH
             receipt = await crossChainMessenger!
               .depositETH(parseUnits(destinationTokenAmount, selected.decimals))
               .catch(errorHandler);
-          } else if (chainId === L1_CHAIN_ID) {
+          } else if (isDeposit && isMNT && isMantleV2) {
+            // mantle v2 depositMNT
+            receipt = await crossChainMessenger!
+              .depositMNT(parseUnits(destinationTokenAmount, selected.decimals))
+              .catch(errorHandler);
+          } else if (isDeposit) {
             // depositERC20
             receipt = await crossChainMessenger!
               .depositERC20(
@@ -123,10 +142,17 @@ export function useCallBridge(
                 parseUnits(destinationTokenAmount, selected.decimals)
               )
               .catch(errorHandler);
-          } else if (selected.name === "ETH") {
+          } else if (isETH) {
             // withdrawETH
             receipt = await crossChainMessenger!
               .withdrawETH(
+                parseUnits(destinationTokenAmount, selected.decimals)
+              )
+              .catch(errorHandler);
+          } else if (isMNT && isMantleV2) {
+            // mantle v2 withdrawMNT
+            receipt = await crossChainMessenger!
+              .withdrawMNT(
                 parseUnits(destinationTokenAmount, selected.decimals)
               )
               .catch(errorHandler);
@@ -178,7 +204,7 @@ export function useCallBridge(
         } as ToastProps;
 
         // only update toast when it is not deposit
-        if (ctaChainId !== L1_CHAIN_ID) {
+        if (ctaChainId !== L1_CHAIN_ID && !IS_MANTLE_V2) {
           // update the content and the callbacks
           updateToast({
             ...toastProps,
@@ -212,6 +238,15 @@ export function useCallBridge(
 
         // move to the loading page
         setCTAPage(CTAPages.Loading);
+        setWithdrawStatus(WithdrawStatus.SENDING_TX);
+        console.log({
+          ...withdrawHash,
+          init: txHash || "",
+        });
+        setWithdrawHash({
+          ...withdrawHash,
+          init: txHash || "",
+        });
 
         // wait for the receipt if its not already present
         if (
@@ -296,26 +331,28 @@ export function useCallBridge(
         const associatedtx2Hash = tx2HashRef.current;
 
         // update the content and the callbacks
-        updateToast({
-          ...toastProps,
-          onButtonClick: () => {
-            setCTAChainId(chainId);
-            setTx1(data.receipt);
-            setTx1Hash(txHash);
-            setTx2Hash(associatedtx2Hash || false);
-            setCTAPage(
-              direction === Direction.Deposit
-                ? CTAPages.Deposit
-                : CTAPages.Withdrawn
-            );
-            setIsCTAPageOpen(true);
-            // mark open now
-            isCTAPageOpenRef.current = true;
+        if (!IS_MANTLE_V2) {
+          updateToast({
+            ...toastProps,
+            onButtonClick: () => {
+              setCTAChainId(chainId);
+              setTx1(data.receipt);
+              setTx1Hash(txHash);
+              setTx2Hash(associatedtx2Hash || false);
+              setCTAPage(
+                direction === Direction.Deposit
+                  ? CTAPages.Deposit
+                  : CTAPages.Withdrawn
+              );
+              setIsCTAPageOpen(true);
+              // mark open now
+              isCTAPageOpenRef.current = true;
 
-            // close the toast when clicked...
-            return false;
-          },
-        });
+              // close the toast when clicked...
+              return false;
+            },
+          });
+        }
       }
 
       // deposits move on from here, withdrawals will have already been moved on when they reach here

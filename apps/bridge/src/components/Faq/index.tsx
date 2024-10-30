@@ -44,7 +44,7 @@ const faqList: Array<AccordionItemType> = [
         testnet. It provides a safe environment to try out the bridge
         functionality without any real token transactions.
         <a
-          href="https://bridge.testnet.mantle.xyz"
+          href="https://bridge.sepolia.mantle.xyz"
           target="__blank"
           rel="noreferrer"
           className="underline block mt-4"
@@ -167,7 +167,7 @@ const faqList: Array<AccordionItemType> = [
     content: (
       <div className="text-type-secondary max-w-[90%]">
         <Typography className="mb-4">
-          Initiating a deposit typically completes in around ~12 minutes.
+          Initiating a deposit typically completes in around ~1 minute.
         </Typography>
         <Typography className="mb-4">
           Conversely, withdrawals, due to the intricacies of Optimistic Rollups,
@@ -178,55 +178,6 @@ const faqList: Array<AccordionItemType> = [
       </div>
     ),
     value: "faq-5",
-  },
-  {
-    trigger: (
-      <Typography
-        className="text-type-primary max-w-[90%]"
-        variant="microBody14"
-      >
-        How are withdrawal fees determined?
-      </Typography>
-    ),
-    content: (
-      <div className="text-type-secondary max-w-[90%]">
-        <Typography className="mb-4">
-          The cost to claim on the bridge is dependent on the gas costs,
-          measured in Gwei, at the time of your transaction. The estimated
-          formula to determine this cost is:
-        </Typography>
-        <Typography className="mb-4">Cost (ETH)=600,000×Gwei</Typography>
-        <Typography>For example:</Typography>
-        <ul>
-          <li className="flex">
-            <span className="mr-4">•</span>
-            <Typography className="text-type-secondary">
-              At 15 Gwei, the cost is approximately 0.009 ETH.
-            </Typography>
-          </li>
-          <li className="flex">
-            <span className="mr-4">•</span>
-            <Typography className="text-type-secondary">
-              At 30 Gwei, the cost is approximately 0.018 ETH.
-            </Typography>
-          </li>
-        </ul>
-        <Typography>
-          To minimize your costs, you can opt to claim during a period when the
-          Gwei is low. For current gas prices, you can check the{" "}
-          <a
-            href="https://etherscan.io/gastracker"
-            target="__blank"
-            rel="noreferrer"
-            className="underline text-md"
-          >
-            Etherscan Gas Tracker
-          </a>
-          .
-        </Typography>
-      </div>
-    ),
-    value: "faq-6",
   },
   {
     trigger: (
@@ -254,7 +205,7 @@ const faqList: Array<AccordionItemType> = [
         </Typography>
       </div>
     ),
-    value: "faq-7",
+    value: "faq-6",
   },
 ];
 
