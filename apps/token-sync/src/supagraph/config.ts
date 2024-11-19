@@ -48,11 +48,10 @@ export const config: SyncConfig = {
   providers: {
     1: {
       rpcUrl:
-        "https://eth-mainnet.g.alchemy.com/v2/SAHsqwOlJwwKDMVVxm3btE0yNzEYTXK4",
+        "https://eth-mainnet.g.alchemy.com/v2/C1HA_ubz9iHEBkGZi-LxwHijrRHzRhUe",
     },
     5: {
-      rpcUrl:
-        "https://eth-goerli.g.alchemy.com/v2/bn2bNKk1scsttlQTK00-FQ3ZoQT4FB1e",
+      rpcUrl: "https://goerli.infura.io/v3/927668fc3dec43bcb1225299596c2e58",
     },
     [process.env.L2_MANTLE_CHAIN_ID]: {
       rpcUrl: withDefault(

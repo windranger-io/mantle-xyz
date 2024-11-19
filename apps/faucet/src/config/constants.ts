@@ -84,7 +84,10 @@ export const CHAINS: Record<
       symbol: "GoerliETH",
       decimals: 18,
     },
-    rpcUrls: [process.env.NEXT_PUBLIC_GOERLI_RPC_URL || `${ABSOLUTE_PATH}/rpc`],
+    rpcUrls: [
+      process.env.NEXT_PUBLIC_GOERLI_RPC_URL ||
+        "https://goerli.infura.io/v3/927668fc3dec43bcb1225299596c2e58",
+    ],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
   11155111: {
@@ -96,7 +99,8 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
-      process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL || `${ABSOLUTE_PATH}/rpc`,
+      process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL ||
+        "https://eth-sepolia.g.alchemy.com/v2/XMS1J6f654XZolfd7oaMe-kaNPEpWifX",
     ],
     blockExplorerUrls: ["https://sepolia.etherscan.io/"],
   },

@@ -131,8 +131,9 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
+      "https://eth-mainnet.g.alchemy.com/v2/C1HA_ubz9iHEBkGZi-LxwHijrRHzRhUe",
       // infura backed redirect gateway
-      `${ABSOLUTE_PATH}/rpc`,
+      // `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth`,
     ],
@@ -161,10 +162,11 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
+      "https://goerli.infura.io/v3/927668fc3dec43bcb1225299596c2e58",
       // infura backed redirect gateway
-      `${ABSOLUTE_PATH}/rpc`,
+      // `${ABSOLUTE_PATH}/rpc`,
       // public gateway
-      `https://eth-goerli.g.alchemy.com/v2/C1HA_ubz9iHEBkGZi-LxwHijrRHzRhUe`,
+      `https://rpc.ankr.com/eth_goerli`,
     ],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
