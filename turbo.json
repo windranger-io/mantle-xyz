@@ -34,7 +34,6 @@
     },
     "dev:bridge": {
       "env": [
-        "NEXT_PUBLIC_INFURA_API_KEY",
         "NEXT_PUBLIC_SITE_URL",
         "NEXT_PUBLIC_VERCEL_URL",
         "NODE_ENV",
@@ -58,7 +57,6 @@
     },
     "dev:converter": {
       "env": [
-        "NEXT_PUBLIC_INFURA_API_KEY",
         "NEXT_PUBLIC_SITE_URL",
         "NEXT_PUBLIC_VERCEL_URL",
         "NEXT_PUBLIC_L1_CHAIN_ID",
@@ -69,7 +67,6 @@
     },
     "dev:charity": {
       "env": [
-        "NEXT_PUBLIC_INFURA_API_KEY",
         "NEXT_PUBLIC_SITE_URL",
         "NEXT_PUBLIC_VERCEL_URL",
         "NEXT_PUBLIC_L1_CHAIN_ID",
@@ -100,7 +97,6 @@
     },
     "dev:lsp": {
       "env": [
-        "NEXT_PUBLIC_INFURA_API_KEY",
         "NEXT_PUBLIC_SITE_URL",
         "NEXT_PUBLIC_VERCEL_URL",
         "NEXT_PUBLIC_CHAIN_ID",
