@@ -86,7 +86,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       process.env.NEXT_PUBLIC_GOERLI_RPC_URL ||
-        "https://goerli.infura.io/v3/927668fc3dec43bcb1225299596c2e58",
+        `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_GOERLI_KEY}`,
     ],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
@@ -100,7 +100,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL ||
-        "https://eth-sepolia.g.alchemy.com/v2/XMS1J6f654XZolfd7oaMe-kaNPEpWifX",
+        `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ETH_SEPOLIA_KEY}`,
     ],
     blockExplorerUrls: ["https://sepolia.etherscan.io/"],
   },
