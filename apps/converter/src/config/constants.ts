@@ -157,8 +157,9 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
+      `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ETH_MAINNET_KEY}`,
       // infura backed redirect gateway
-      `${ABSOLUTE_PATH}/rpc`,
+      // `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth`,
     ],
@@ -174,8 +175,9 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
+      `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_GOERLI_KEY}`,
       // infura backed redirect gateway
-      `${ABSOLUTE_PATH}/rpc`,
+      // `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth_goerli`,
     ],

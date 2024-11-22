@@ -24,13 +24,13 @@ const config = {
   // configure providers
   providers: {
     1: {
-      rpcUrl: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
+      rpcUrl: `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ETH_MAINNET_KEY}`,
     },
     5: {
-      rpcUrl: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
+      rpcUrl: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_GOERLI_KEY}`,
     },
     11155111: {
-      rpcUrl: `https://eth-sepolia.g.alchemy.com/v2/XMS1J6f654XZolfd7oaMe-kaNPEpWifX`,
+      rpcUrl: `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ETH_SEPOLIA_KEY}`,
     },
     5000: {
       rpcUrl: `https://rpc.mantle.xyz`,

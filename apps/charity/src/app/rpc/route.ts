@@ -9,12 +9,12 @@ const fetchInfura = async (
   method: string,
   params: any[]
 ) => {
+  const isGoerli = CHAINS[L1_CHAIN_ID].chainName.toLowerCase() === "goerli";
+
   const res = await fetch(
-    `https://${
-      CHAINS[L1_CHAIN_ID].chainName.toLowerCase() === "goerli"
-        ? "goerli"
-        : "mainnet"
-    }.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
+    isGoerli
+      ? `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_GOERLI_KEY}`
+      : `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ETH_MAINNET_KEY}`,
     {
       method: "post",
       headers: {

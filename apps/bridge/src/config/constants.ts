@@ -131,8 +131,9 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
+      `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ETH_MAINNET_KEY}`,
       // infura backed redirect gateway
-      `${ABSOLUTE_PATH}/rpc`,
+      // `${ABSOLUTE_PATH}/rpc`,
       // public gateway
       `https://rpc.ankr.com/eth`,
     ],
@@ -161,10 +162,11 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
+      `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_GOERLI_KEY}`,
       // infura backed redirect gateway
-      `${ABSOLUTE_PATH}/rpc`,
+      // `${ABSOLUTE_PATH}/rpc`,
       // public gateway
-      `https://eth-goerli.g.alchemy.com/v2/C1HA_ubz9iHEBkGZi-LxwHijrRHzRhUe`,
+      `https://rpc.ankr.com/eth_goerli`,
     ],
     blockExplorerUrls: ["https://goerli.etherscan.io/"],
   },
@@ -190,7 +192,7 @@ export const CHAINS: Record<
       decimals: 18,
     },
     rpcUrls: [
-      "https://eth-sepolia.g.alchemy.com/v2/XMS1J6f654XZolfd7oaMe-kaNPEpWifX",
+      `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ETH_SEPOLIA_KEY}`,
     ],
     blockExplorerUrls: ["https://sepolia.etherscan.io/"],
   },
