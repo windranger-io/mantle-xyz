@@ -1,9 +1,13 @@
-import { Typography } from '@mantle/ui'
+import Ethcc from '../components/Ethcc'
+import EthccSuccess from '../components/EthccSuccess'
+import EthccClaimFail from '../components/EthccClaimFail'
 
-/**
- *
- * @todo Updated with real components and content when ready
- */
 export default function Page() {
-  return <Typography>Mantle Template</Typography>
+  return (
+    <>
+      <Ethcc />
+      <EthccSuccess />
+      <EthccClaimFail />
+    </>
+  )
 }
