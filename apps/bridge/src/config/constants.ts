@@ -51,7 +51,9 @@ export function getBaseUrl() {
       : false) ||
     (process.env.NEXT_PUBLIC_SITE_URL
       ? `https://${
-          L1_CHAIN_ID === 1 ? "bridge.mantle.xyz" : "bridge.testnet.mantle.xyz"
+          L1_CHAIN_ID === 1
+            ? "app.mantle.xyz/bridge"
+            : "bridge.testnet.mantle.xyz"
         }`
       : // this should match the port used by the current app
         "http://localhost:3003")
@@ -423,7 +425,7 @@ export const MANTLE_MIGRATOR_V2_HISTORY_PATH = "/account/migratev2";
 export const DELEGATION_URL: string = "https://delegatevote.mantle.xyz/";
 
 export const MANTLE_BRIDGE_URL: Record<number, string> = {
-  1: "https://bridge.mantle.xyz",
+  1: "https://app.mantle.xyz/bridge",
   5: "https://bridge.testnet.mantle.xyz",
 };
 

@@ -162,7 +162,7 @@ function ConnectWallet() {
   return (
     <div className="flex flex-row gap-4 w-full">
       {isChainID && client.isConnected && client.address ? (
-        <Link href="https://bridge.mantle.xyz/account" scroll shallow>
+        <Link href="https://app.mantle.xyz/bridge/history" scroll shallow>
           <Button
             type="button"
             size="regular"

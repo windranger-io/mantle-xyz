@@ -30,7 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     name: "Bridge",
-    href: "https://bridge.mantle.xyz",
+    href: "https://app.mantle.xyz/bridge",
     internal: true,
     key: "bridge",
   },

@@ -26,7 +26,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     name: "Account",
-    href: "https://bridge.mantle.xyz/account",
+    href: "https://app.mantle.xyz/bridge/history",
     internal: true,
     key: "account",
   },
