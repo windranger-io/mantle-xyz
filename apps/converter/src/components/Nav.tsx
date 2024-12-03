@@ -57,7 +57,7 @@ const NAV_ITEMS_TESTNET: NavItem[] = [
   },
   {
     name: "Bridge",
-    href: "https://app.mantle.xyz/bridge",
+    href: "https://app.mantle.xyz/bridge?network=testnet",
     internal: true,
     key: "bridge",
   },
