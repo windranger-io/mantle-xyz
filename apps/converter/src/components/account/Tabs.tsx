@@ -83,8 +83,8 @@ export default function Tabs() {
             // redirect to bridge app if the user chooses the deposit / withdraw app
             if (val === 0 || val === 1) {
               window.open(
-                `${MANTLE_BRIDGE_URL[L1_CHAIN_ID]}/account/${
-                  val === 0 ? "deposit" : "withdraw"
+                `${MANTLE_BRIDGE_URL[L1_CHAIN_ID]}/history${
+                  val === 0 ? "" : "?tab=withdrawals"
                 }`,
                 "_self"
               );

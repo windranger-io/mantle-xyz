@@ -51,9 +51,7 @@ export function getBaseUrl() {
       : false) ||
     (process.env.NEXT_PUBLIC_SITE_URL
       ? `https://${
-          L1_CHAIN_ID === 1
-            ? "https://app.mantle.xyz/bridge"
-            : "https://app.mantle.xyz/bridge?network=testnet"
+          L1_CHAIN_ID === 1 ? "bridge.mantle.xyz" : "bridge.testnet.mantle.xyz"
         }`
       : // this should match the port used by the current app
         "http://localhost:3003")
