@@ -37,11 +37,13 @@ const nextConfig = {
     //       },
     //     ];
 
-    return {
-      source: "/:path*",
-      destination: "https://app.mantle.xyz/bridge/:path*",
-      permanent: true,
-    };
+    return [
+      {
+        source: "/:path*",
+        destination: "https://app.mantle.xyz/bridge/:path*",
+        permanent: true,
+      },
+    ];
   },
 };
 
