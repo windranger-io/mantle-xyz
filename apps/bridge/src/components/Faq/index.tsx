@@ -44,7 +44,7 @@ const faqList: Array<AccordionItemType> = [
         testnet. It provides a safe environment to try out the bridge
         functionality without any real token transactions.
         <a
-          href="https://bridge.sepolia.mantle.xyz"
+          href="https://app.mantle.xyz/bridge"
           target="__blank"
           rel="noreferrer"
           className="underline block mt-4"
