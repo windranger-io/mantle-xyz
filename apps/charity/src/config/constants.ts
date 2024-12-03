@@ -381,11 +381,6 @@ export const TOKEN_ABI = [
   },
 ] as const;
 
-export const MANTLE_BRIDGE_URL: Record<number, string> = {
-  1: "https://app.mantle.xyz/bridge",
-  5: "https://app.mantle.xyz/bridge?network=testnet",
-};
-
 export const DELEGATION_URL: string = "https://delegatevote.mantle.xyz/";
 
 export enum ErrorMessages {

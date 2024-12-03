@@ -422,11 +422,6 @@ export const MANTLE_MIGRATOR_V2_HISTORY_PATH = "/account/migratev2";
 
 export const DELEGATION_URL: string = "https://delegatevote.mantle.xyz/";
 
-export const MANTLE_BRIDGE_URL: Record<number, string> = {
-  1: "https://app.mantle.xyz/bridge",
-  5: "https://app.mantle.xyz/bridge?network=testnet",
-};
-
 export const MANTLE_JOURNEY_URL = "https://journey.mantle.xyz";
 
 interface Bridge {
