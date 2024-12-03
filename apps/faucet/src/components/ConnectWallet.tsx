@@ -149,7 +149,7 @@ function ConnectWallet() {
     <div className="flex flex-row gap-4 w-full">
       {isChainID && client.isConnected && client.address ? (
         <Link
-          href="https://app.mantle.xyz/bridge/history"
+          href="https://app.mantle.xyz/bridge/history?network=testnet"
           className="w-full"
           scroll
           shallow

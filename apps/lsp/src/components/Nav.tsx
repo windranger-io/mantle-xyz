@@ -14,7 +14,7 @@ type NavProps = {
 const NAV_ITEMS: NavItem[] = [
   {
     name: "Bridge",
-    href: "https://app.mantle.xyz/bridge",
+    href: "https://app.mantle.xyz/bridge?network=testnet",
     internal: true,
     key: "bridge",
   },
