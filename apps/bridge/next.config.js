@@ -15,29 +15,26 @@ const nextConfig = {
     scrollRestoration: true,
   },
   async redirects() {
-    const redirectMaintenancePage =
-      process.env.NEXT_PUBLIC_SHOW_MAINTENANCE === "true"
-        ? [
-            {
-              source: "/",
-              destination: "/maintenance",
-              permanent: true,
-            },
-            {
-              source: "/((?!maintenance).*)",
-              destination: "/maintenance",
-              permanent: true,
-            },
-          ]
-        : [
-            {
-              source: "/maintenance",
-              destination: "/",
-              permanent: false,
-            },
-          ];
-
-    return redirectMaintenancePage;
+    return process.env.NEXT_PUBLIC_SHOW_MAINTENANCE === "true"
+      ? [
+          {
+            source: "/",
+            destination: "/maintenance",
+            permanent: true,
+          },
+          {
+            source: "/((?!maintenance).*)",
+            destination: "/maintenance",
+            permanent: true,
+          },
+        ]
+      : [
+          {
+            source: "/maintenance",
+            destination: "/",
+            permanent: false,
+          },
+        ];
   },
 };
 
