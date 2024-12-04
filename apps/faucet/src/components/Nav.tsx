@@ -26,13 +26,13 @@ const navItems: NavItem[] = [
   },
   {
     name: "Bridge",
-    href: "https://bridge.sepolia.mantle.xyz",
+    href: "https://app.mantle.xyz/bridge?network=sepolia",
     internal: true,
     key: "bridge",
   },
   {
     name: "Account",
-    href: "https://bridge.sepolia.mantle.xyz/account/deposit",
+    href: "https://app.mantle.xyz/bridge/history?network=sepolia",
     internal: true,
     key: "account",
   },
