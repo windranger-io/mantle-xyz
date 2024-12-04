@@ -366,7 +366,7 @@ export const TOKEN_ABI = [
 
 export const MANTLE_BRIDGE_URL: Record<number, string> = {
   1: "https://app.mantle.xyz/bridge",
-  5: "https://app.mantle.xyz/bridge?network=testnet",
+  5: "https://app.mantle.xyz/bridge?network=sepolia",
 };
 
 export const DELEGATION_URL: string = "https://delegatevote.mantle.xyz/";
