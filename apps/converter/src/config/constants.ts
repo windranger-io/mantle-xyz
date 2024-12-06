@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/dot-notation */
+import { Chain } from "@rainbow-me/rainbowkit";
 import { BigNumberish } from "ethers";
-import { Address, Chain } from "wagmi";
+import { Address } from "viem";
 
 // these control which chains we treat as l1/l2 - the rest of the this constants doc will need to be altered for mainnet (we can $ENV most of this)
 export const L1_CHAIN_ID = +(process.env["NEXT_PUBLIC_L1_CHAIN_ID"] || "1");
@@ -208,7 +209,7 @@ export const CHAINS: Record<
   },
 };
 
-export const CHAINS_FORMATTED: Record<number, Chain> = {
+export const CHAINS_FORMATTED: Record<number, Chain & { network: string }> = {
   1: {
     testnet: false,
     name: CHAINS[1].chainName,

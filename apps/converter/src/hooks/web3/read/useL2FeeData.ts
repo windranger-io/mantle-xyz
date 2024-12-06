@@ -1,18 +1,10 @@
-import { CHAINS_FORMATTED, L2_CHAIN_ID } from "@config/constants";
-import { providers } from "ethers";
-import { useMemo } from "react";
-import useFeeData from "./useFeeData";
+import { L2_CHAIN_ID } from "@config/constants";
+import { useEstimateFeesPerGas } from "wagmi";
 
 function useL2FeeData() {
-  const provider = useMemo(
-    () =>
-      new providers.JsonRpcProvider(
-        CHAINS_FORMATTED[L2_CHAIN_ID].rpcUrls.public.http[0]
-      ),
-    []
-  );
-
-  const { feeData, refetchFeeData } = useFeeData(provider);
+  const { data: feeData, refetch: refetchFeeData } = useEstimateFeesPerGas({
+    chainId: L2_CHAIN_ID,
+  });
 
   return {
     l2FeeData: feeData,

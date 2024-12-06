@@ -86,7 +86,6 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
           }
           border
         />
-        {/* <Values label="Time to migrate" value="~5 minutes" border /> */}
         <Values
           label="Expected gas fee"
           value={`~${
@@ -110,16 +109,6 @@ export default function Default({ closeModal }: { closeModal: () => void }) {
             </div>
           )}
         </Button>
-        {/* {!ctaStatus && (
-          <Button
-            size="full"
-            variant="secondary"
-            className="mt-4"
-            onClick={closeModal}
-          >
-            Back
-          </Button>
-        )} */}
       </div>
     </>
   );
