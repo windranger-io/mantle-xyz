@@ -5,12 +5,6 @@ import { useToast } from "@hooks/useToast";
 
 import { useSwitchChain } from "wagmi";
 
-declare global {
-  interface Window {
-    ethereum: import("ethers").providers.ExternalProvider;
-  }
-}
-
 export function useSwitchToNetwork() {
   const { switchChainAsync } = useSwitchChain();
 
