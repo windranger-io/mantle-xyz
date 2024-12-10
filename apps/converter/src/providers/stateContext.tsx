@@ -13,7 +13,7 @@ import {
 import { Network } from "@ethersproject/providers";
 import { Contract, providers } from "ethers";
 
-import { FeeData, useAccountBalances, useL1FeeData } from "@hooks/web3/read";
+import { useAccountBalances } from "@hooks/web3/read";
 import { usePathname } from "next/navigation";
 import {
   Context,
@@ -24,7 +24,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { usePublicClient } from "wagmi";
+import { Connector, usePublicClient } from "wagmi";
 
 import useAllowanceCheck from "@hooks/web3/converter/read/useAllowanceCheck";
 import useGasEstimate from "@hooks/web3/converter/read/useGasEstimate";
@@ -36,7 +36,7 @@ export type StateProps = {
     isConnected: boolean;
     chainId?: number;
     address?: `0x${string}`;
-    connector?: string;
+    connector?: Connector;
   };
   safeChains: number[];
   chainId: number;
@@ -46,9 +46,6 @@ export type StateProps = {
     multicallContract: Contract;
   }>;
 
-  feeData: FeeData;
-  l1FeeData: FeeData;
-  l2FeeData: FeeData;
   actualGasFee: string;
   isLoadingFeeData: boolean;
   isLoadingBalances: boolean;
@@ -62,7 +59,6 @@ export type StateProps = {
   isCTAPageOpen: boolean;
   isCTAPageOpenRef: MutableRefObject<boolean>;
   ctaErrorReset: MutableRefObject<(() => void | boolean) | undefined>;
-  walletModalOpen: boolean;
   mobileMenuOpen: boolean;
 
   amount: string | undefined;
@@ -79,7 +75,7 @@ export type StateProps = {
     isConnected: boolean;
     chainId?: number;
     address?: `0x${string}`;
-    connector?: string;
+    connector?: Connector;
   }) => void;
   setSafeChains: (chains: number[]) => void;
   resetBalances: () => void;
@@ -92,7 +88,6 @@ export type StateProps = {
   setIsCTAPageOpen: (isCTAPageOpen: boolean) => void;
   setTxHash: (hash: string | boolean) => void;
   setAmount: (amount: string | boolean) => void;
-  setWalletModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -121,7 +116,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
   // create an ethers provider from the publicClient
   const provider = useMemo(() => {
-    const { chain, transport } = publicClient;
+    const { chain, transport } = publicClient!;
     const network = {
       chainId: chain.id,
       name: chain.name,
@@ -141,7 +136,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     isConnected: boolean;
     chainId?: number;
     address?: `0x${string}`;
-    connector?: string;
+    connector?: Connector;
   }>({
     isConnected: false,
   });
@@ -159,8 +154,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [ctaStatus, setCTAStatus] = useState<string | boolean>(false);
   // setup modal controls - we will open and close the modal based on this state
   const [isCTAPageOpen, setIsCTAPageOpen] = useState(false);
-  // wallet modal controls
-  const [walletModalOpen, setWalletModalOpen] = useState<boolean>(false);
   // mobile menu controls
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   // a ref to the current page
@@ -186,12 +179,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [isLoadingBalances, setIsLoadingBalances] = useState(false);
   // loadingState for feeData
   const [isLoadingFeeData, setIsLoadingFeeData] = useState(true);
-
-  // get current gas fees for L1
-  const { l1FeeData, refetchL1FeeData } = useL1FeeData();
-
-  // get current gas fees on selected network
-  const feeData = useMemo(() => l1FeeData, [l1FeeData]);
 
   // perform a multicall on the given network to get token balances for user
   const { balances, resetBalances, isFetchingBalances, isRefetchingBalances } =
@@ -249,7 +236,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   useEffect(
     () => {
       resetBalances();
-      refetchL1FeeData();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [chainId, client?.address, multicall]
@@ -273,8 +259,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       provider,
       multicall,
 
-      feeData,
-      l1FeeData,
       actualGasFee,
       isLoadingFeeData,
       isLoadingBalances:
@@ -288,7 +272,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       ctaChainId,
       isCTAPageOpen,
       isCTAPageOpenRef,
-      walletModalOpen,
       mobileMenuOpen,
 
       amount,
@@ -313,9 +296,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setCTAChainId,
       setCTAStatus,
       setIsCTAPageOpen,
-      setWalletModalOpen,
       setMobileMenuOpen,
-
       setAmount,
       setTxHash,
     } as StateProps;
@@ -326,9 +307,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     safeChains,
     provider,
     multicall,
-
-    feeData,
-    l1FeeData,
     actualGasFee,
     isLoadingFeeData,
     isLoadingBalances,
@@ -343,7 +321,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     ctaChainId,
     isCTAPageOpen,
     isCTAPageOpenRef,
-    walletModalOpen,
     mobileMenuOpen,
 
     amount,

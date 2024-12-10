@@ -7,8 +7,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import StateContext from "@providers/stateContext";
 
-import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
+import { useAccount, useConnections, useDisconnect } from "wagmi";
 
 import { CHAINS, L1_CHAIN_ID } from "@config/constants";
 
@@ -22,20 +21,16 @@ import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
 
 import { getAddress } from "ethers/lib/utils";
+import useAccountConnectionEffect from "@hooks/useAccountConnectionEffect";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 function ConnectWallet() {
-  // get the currently connected wallet-selected-chain
-  const { chain: currentChain } = useNetwork();
+  // pick up connection details from wagmi
+  const { address: wagmiAddress, chain: currentChain } = useAccount();
 
   // unpack the context
-  const {
-    chainId,
-    client,
-    safeChains,
-    setClient,
-    setWalletModalOpen,
-    setMobileMenuOpen,
-  } = useContext(StateContext);
+  const { chainId, client, safeChains, setClient, setMobileMenuOpen } =
+    useContext(StateContext);
 
   // check that we're connected to the appropriate chain
   const isLayer1ChainID = useIsChainID(L1_CHAIN_ID);
@@ -61,81 +56,39 @@ function ConnectWallet() {
   const { switchToNetwork } = useSwitchToNetwork();
 
   // control wagmi connector
-  const { connectAsync, connectors, pendingConnector } = useConnect();
+  // const { connectAsync, pendingConnector } = useConnect();
 
-  // Find the right connector by ID
-  const connector = useMemo(
-    // we can allow this connection.id to be set in connection modal phase
-    () =>
-      connectors.find((conn) => conn.id === "metamask") ||
-      // fallback to injected provider
-      new InjectedConnector(),
-    [connectors]
-  );
+  const { disconnect, disconnectAsync } = useDisconnect();
+  const connections = useConnections();
 
-  const { disconnect, disconnectAsync } = useDisconnect({
-    onMutate: () => {
-      if (!reconnect.current && !client.address) {
-        setClient({
-          isConnected: false,
-        });
-      }
+  useAccountConnectionEffect({
+    onConnect({
+      connector: con,
+      address: onConnectAddress,
+      chainId: onConnectChainId,
+    }) {
+      setClient({
+        chainId: onConnectChainId,
+        isConnected: true,
+        address: onConnectAddress,
+        connector: con,
+      });
     },
-    onSettled: async () => {
-      if (reconnect.current) {
-        await new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(connectAsync({ connector }).catch(() => null));
-          }, 1000);
-        });
-      }
+    onDisconnect() {
+      connections.forEach(({ connector }) => {
+        disconnect({ connector });
+      });
+      setClient({
+        isConnected: false,
+      });
     },
   });
-
-  // pick up connection details from wagmi
-  const { address: wagmiAddress } = useAccount({
-    onConnect: async () => {
-      await checkConnection();
-
-      // auto-switch - ask the wallet to attempt to switch to chosen chain on first-connect
-      if (!isChainID) {
-        // await changeNetwork();
-      }
-
-      await changeAccount();
-    },
-  });
-
-  // record change of account
-  const changeAccount = async () => {
-    setClient({
-      chainId,
-      isConnected: true,
-      address: wagmiAddress,
-      connector: client?.connector || pendingConnector?.id,
-    });
-  };
 
   // trigger change of network
   const changeNetwork = async () => {
     if (!window.ethereum) throw new Error("No crypto wallet found");
     // trigger a change of network
     await switchToNetwork(chainId);
-  };
-
-  // check the connection is valid
-  const checkConnection = async () => {
-    if (wagmiAddress) {
-      setClient({
-        isConnected: true,
-        address: wagmiAddress,
-        connector: client?.connector,
-      });
-    } else {
-      setClient({
-        isConnected: false,
-      });
-    }
   };
 
   // set wagmi address to address for ssr
@@ -162,10 +115,10 @@ function ConnectWallet() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentChain]
   );
+  const { openConnectModal } = useConnectModal();
 
   const onConnect = () => {
-    setWalletModalOpen(true);
-    setMobileMenuOpen(false);
+    openConnectModal?.();
   };
 
   // return connect/disconnect component

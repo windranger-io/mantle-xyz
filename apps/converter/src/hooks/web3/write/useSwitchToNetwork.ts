@@ -3,16 +3,10 @@
 import { CHAINS } from "@config/constants";
 import { useToast } from "@hooks/useToast";
 
-import { useSwitchNetwork } from "wagmi";
-
-declare global {
-  interface Window {
-    ethereum: import("ethers").providers.ExternalProvider;
-  }
-}
+import { useSwitchChain } from "wagmi";
 
 export function useSwitchToNetwork() {
-  const { switchNetwork } = useSwitchNetwork();
+  const { switchChainAsync } = useSwitchChain();
 
   // create an error toast if required
   const { updateToast } = useToast();
@@ -32,7 +26,7 @@ export function useSwitchToNetwork() {
     // we should req this via wagmi
     // if (!window.ethereum) throw new Error("No crypto wallet found");
     try {
-      switchNetwork?.(chainId);
+      switchChainAsync?.({ chainId });
       return chainId;
     } catch (switchError: any) {
       // This error code indicates that the chain has not been added to MetaMask.

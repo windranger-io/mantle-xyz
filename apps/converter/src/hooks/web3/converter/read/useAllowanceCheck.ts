@@ -8,23 +8,22 @@ import {
 import { BigNumberish, Contract, providers } from "ethers";
 
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
-
-import { useQuery } from "wagmi";
+import { useQuery } from "wagmi/query";
 
 function useAllowanceCheck(
   chainId: number,
   client: { address?: `0x${string}` | undefined }
 ) {
   // fetch the allowance for the selected token on the selected chain
-  const { data: allowance, refetch: resetAllowance } = useQuery(
-    [
+  const { data: allowance, refetch: resetAllowance } = useQuery({
+    queryKey: [
       "ALLOWANCE_CHECK",
       {
         address: client?.address,
         chainId,
       },
     ],
-    () => {
+    queryFn: () => {
       const provider = new providers.JsonRpcProvider(
         CHAINS_FORMATTED[chainId].rpcUrls.public.http[0]
       );
@@ -42,8 +41,7 @@ function useAllowanceCheck(
             ?.allowance(client.address, L1_CONVERTER_V2_CONTRACT_ADDRESS)
             .catch(() => {
               // eslint-disable-next-line no-console
-              // console.log("Allowance call error:", e);
-              return parseUnits(allowance || "0", L1_BITDAO_TOKEN.decimals);
+              return parseUnits("0", L1_BITDAO_TOKEN.decimals);
             })
             .then((givenAllowance: BigNumberish) => {
               const newAllowance = formatUnits(
@@ -57,18 +55,17 @@ function useAllowanceCheck(
       }
       return "0";
     },
-    {
-      initialData: "0",
-      // refetch every 60s or when refetched
-      staleTime: 60000,
-      refetchInterval: 60000,
-      // background refetch stale data
-      refetchOnMount: true,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
-      refetchIntervalInBackground: true,
-    }
-  );
+
+    initialData: "0",
+    // refetch every 60s or when refetched
+    staleTime: 60000,
+    refetchInterval: 60000,
+    // background refetch stale data
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true,
+    refetchIntervalInBackground: true,
+  });
 
   return {
     allowance,

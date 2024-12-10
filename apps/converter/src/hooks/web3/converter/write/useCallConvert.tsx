@@ -10,14 +10,14 @@ import {
   TransactionReceipt,
   TransactionResponse,
 } from "@ethersproject/providers";
-import { UseMutateFunction } from "@tanstack/react-query";
+import { UseMutateFunction, useMutation } from "@tanstack/react-query";
 
 import { useContext, useMemo } from "react";
 import StateContext from "@providers/stateContext";
 
 import { timeout } from "@utils/toolSet";
 
-import { useMutation, useWalletClient } from "wagmi";
+import { useWalletClient } from "wagmi";
 import { Contract, providers } from "ethers";
 import { parseUnits } from "ethers/lib/utils.js";
 
@@ -122,37 +122,6 @@ export function useCallConvert(): UseMutateFunction<
           (receipt as TransactionReceipt).transactionHash ||
           (receipt as TransactionResponse).hash;
 
-        // load toast as soon as the tx is approved
-        // const toastProps = {
-        //   id: `${txHash}`,
-        //   type: "success",
-        //   buttonText: `Restore loading screen`,
-        //   borderLeft:
-        //     ctaChainId === L1_CHAIN_ID ? "bg-yellow-500" : "bg-blue-600",
-        //   content: (
-        //     <div>
-        //       <div>Conversion initiated</div>
-        //       <div className="text-sm">Conversion will take ~5 mins</div>
-        //     </div>
-        //   ),
-        // } as ToastProps;
-
-        // // update the content and the callbacks
-        // updateToast({
-        //   ...toastProps,
-        //   onButtonClick: () => {
-        //     setCTAChainId(chainId);
-        //     setTxHash(txHash);
-        //     setCTAPage(CTAPages.Loading);
-        //     setIsCTAPageOpen(true);
-        //     // mark open now
-        //     isCTAPageOpenRef.current = true;
-
-        //     // close the toast when clicked...
-        //     return true;
-        //   },
-        // });
-
         // store the hash as soon as we make the tx
         setTxHash(txHash);
 
@@ -216,41 +185,8 @@ export function useCallConvert(): UseMutateFunction<
       // reset status on error
       setCTAStatus(false);
       // if the page is open then delete the toast else update it
-      if (isCTAPageOpenRef.current) {
-        // delete the toast (or change it to a success message)
-        // deleteToast(`${txHash}`);
-      } else {
-        // reset now
+      if (!isCTAPageOpenRef.current) {
         setCTAPage(CTAPages.Default);
-        // replace the toast with a success toast
-        // const toastProps = {
-        //   id: `${txHash}`,
-        //   type: "success",
-        //   buttonText: `View Receipt`,
-        //   borderLeft: "bg-green-600",
-        //   content: (
-        //     <div>
-        //       <div>Conversion complete!</div>
-        //     </div>
-        //   ),
-        // } as ToastProps;
-
-        // // update the content and the callbacks
-        // updateToast({
-        //   ...toastProps,
-        //   onButtonClick: () => {
-        //     setCTAChainId(chainId);
-        //     // setTx1(data.receipt);
-        //     setTxHash(txHash);
-        //     setCTAPage(CTAPages.Converted);
-        //     setIsCTAPageOpen(true);
-        //     // mark open now
-        //     isCTAPageOpenRef.current = true;
-
-        //     // close the toast when clicked...
-        //     return true;
-        //   },
-        // });
       }
 
       // deposits move on from here, withdrawals will have already been moved on when they reach here
@@ -287,11 +223,6 @@ export function useCallConvert(): UseMutateFunction<
         error.message.indexOf("Error: failed to meet quorum") === -1 &&
         error.message.indexOf("Error: underlying network changed") === -1
       ) {
-        // check the txHash is set...
-        if (txHash) {
-          // delete the toast, we won't be able to reuse/await this tx - it has failed.
-          // deleteToast(`${txHash}`);
-        }
         // reset status to clear loading states
         setCTAStatus(false);
       } else if (txHash) {
@@ -315,22 +246,7 @@ export function useCallConvert(): UseMutateFunction<
         };
         // set the restoration point
         ctaErrorReset.current = () => restore();
-        // we can update the toast to an error state and allow us to recall the waitForRelay in this same context
-        // updateToast({
-        //   borderLeft: "bg-red-600",
-        //   content: (
-        //     <div>
-        //       <div>There was a connection error</div>
-        //       <div className="text-sm">Reattempt the conversion process.</div>
-        //     </div>
-        //   ),
-        //   type: "success",
-        //   id: `${txHash}`,
-        //   buttonText: `Retry`,
-        //   // this buttonClick action should also be associated with the "Try again" button in the error page
-        //   onButtonClick: () => restore(),
-        // });
-        // move the page if this the current tx in view
+
         if (txHash === txHashRef.current) {
           // show error modal
           setCTAPage(CTAPages.Error);

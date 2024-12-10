@@ -2,12 +2,6 @@
 
 import { ABSOLUTE_PATH, Token } from "@config/constants";
 
-declare global {
-  interface Window {
-    ethereum: import("ethers").providers.ExternalProvider;
-  }
-}
-
 export function useAddToken() {
   // trigger change of network
   const addToken = async (token: Token) => {
