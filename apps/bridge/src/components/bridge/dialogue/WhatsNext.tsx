@@ -4,14 +4,7 @@ import Image from "next/image";
 
 import CONST from "@mantle/constants";
 import { Typography } from "@mantle/ui";
-
-// import StateContext from "@providers/stateContext";
-import {
-  DELEGATION_URL,
-  // MANTLE_BRIDGE_URL,
-  MANTLE_JOURNEY_URL,
-} from "@config/constants";
-// import AddNetworkBtn from "@components/bridge/dialogue/AddNetworkBtn";
+import { DELEGATION_URL, MANTLE_JOURNEY_URL } from "@config/constants";
 
 function WhatNextLink({
   href,
@@ -124,21 +117,7 @@ export default function WhatsNext({ closeModal }: { closeModal: () => void }) {
           href={MANTLE_JOURNEY_URL || "#"}
           newTab
         />
-        {/* <WhatNextLink
-          image="/deposited/bridge.png"
-          title="Bridge"
-          description="Move your tokens to Mantle Network"
-          href={MANTLE_BRIDGE_URL[chainId] || "#"}
-          newTab={false}
-          onClick={() => {
-            // this link will be ignored (but cmd+clicks will work) - manually close the modal and reset
-            closeModal();
-          }}
-        /> */}
       </div>
-      {/* <div>
-        <AddNetworkBtn />
-      </div> */}
     </div>
   );
 }

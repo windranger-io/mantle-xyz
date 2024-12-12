@@ -25,7 +25,7 @@ export default {
     TERMS_LINK: 'https://www.mantle.xyz/terms',
   },
   RESOURCE_LINKS: {
-    BRIDGE_LINK: 'https://bridge.mantle.xyz',
+    BRIDGE_LINK: 'https://app.mantle.xyz/bridge',
     FAUCET_LINK: 'https://faucet.testnet.mantle.xyz',
     MIGRATE_LINK: 'https://migratebit.mantle.xyz',
     EXPLORER_LINK: 'https://explorer.testnet.mantle.xyz',
