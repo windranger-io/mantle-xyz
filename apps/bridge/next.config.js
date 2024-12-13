@@ -15,26 +15,13 @@ const nextConfig = {
     scrollRestoration: true,
   },
   async redirects() {
-    return process.env.NEXT_PUBLIC_SHOW_MAINTENANCE === "true"
-      ? [
-          {
-            source: "/",
-            destination: "/maintenance",
-            permanent: true,
-          },
-          {
-            source: "/((?!maintenance).*)",
-            destination: "/maintenance",
-            permanent: true,
-          },
-        ]
-      : [
-          {
-            source: "/maintenance",
-            destination: "/",
-            permanent: false,
-          },
-        ];
+    return [
+      {
+        source: "/:path*",
+        destination: "https://app.mantle.xyz/bridge/:path*?network=sepolia",
+        permanent: true,
+      },
+    ];
   },
 };
 
