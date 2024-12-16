@@ -6,15 +6,14 @@ import {
   TOKEN_ABI,
   Token,
 } from "@config/constants";
-import { BigNumberish, Contract, providers } from "ethers";
+import { Contract, providers } from "ethers";
 
 import {
   callMulticallContract,
   getMulticallContract,
 } from "@utils/multicallContract";
 import { formatUnits } from "ethers/lib/utils.js";
-
-import { useQuery } from "wagmi";
+import { useQuery } from "wagmi/query";
 
 function useAccountBalances(
   chainId: number,
@@ -28,17 +27,15 @@ function useAccountBalances(
     refetch: resetBalances,
     isFetching: isFetchingBalances,
     isRefetching: isRefetchingBalances,
-  } = useQuery<{
-    [key: string]: BigNumberish;
-  }>(
-    [
+  } = useQuery({
+    queryKey: [
       "ADDRESS_BALANCES_FOR_ON_CHAINID",
       {
         address: client?.address,
         chainId,
       },
     ],
-    async () => {
+    queryFn: async () => {
       // connect to L1 on public gateway but use default rpc for L2
       const provider = new providers.JsonRpcProvider(
         CHAINS_FORMATTED[
@@ -130,18 +127,16 @@ function useAccountBalances(
       // clear the balances
       return {};
     },
-    {
-      initialData: {},
-      // refetch every 60s or when refetched
-      staleTime: 60000,
-      refetchInterval: 60000,
-      // background refetch stale data
-      refetchOnMount: true,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
-      refetchIntervalInBackground: true,
-    }
-  );
+    initialData: {},
+    // refetch every 60s or when refetched
+    staleTime: 60000,
+    refetchInterval: 60000,
+    // background refetch stale data
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true,
+    refetchIntervalInBackground: true,
+  });
 
   return {
     balances,

@@ -9,8 +9,7 @@ import {
 import { BigNumber, Contract, constants, providers } from "ethers";
 
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
-
-import { useQuery } from "wagmi";
+import { useQuery } from "wagmi/query";
 
 function useGasEstimate(
   chainId: number,
@@ -24,8 +23,8 @@ function useGasEstimate(
     data: actualGasFee,
     isLoading: isLoadingGasEstimate,
     refetch: resetGasEstimate,
-  } = useQuery(
-    [
+  } = useQuery({
+    queryKey: [
       "GAS_ESTIMATE",
       {
         chainId,
@@ -34,7 +33,7 @@ function useGasEstimate(
         amount,
       },
     ],
-    async () => {
+    queryFn: async () => {
       const provider = new providers.JsonRpcProvider(
         CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
       );
@@ -81,19 +80,18 @@ function useGasEstimate(
       // not estimating with a good setup show error state
       return "0";
     },
-    {
-      // show infinity while loading...
-      initialData: `${formatUnits(constants.MaxUint256.toString(), "gwei")}`,
-      // refetch every 60s or when refetched
-      staleTime: 10000,
-      refetchInterval: 60000,
-      // background refetch stale data
-      refetchOnMount: true,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
-      refetchIntervalInBackground: true,
-    }
-  );
+
+    // show infinity while loading...
+    initialData: `${formatUnits(constants.MaxUint256.toString(), "gwei")}`,
+    // refetch every 60s or when refetched
+    staleTime: 10000,
+    refetchInterval: 60000,
+    // background refetch stale data
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true,
+    refetchIntervalInBackground: true,
+  });
 
   return {
     actualGasFee,

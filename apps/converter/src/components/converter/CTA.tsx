@@ -17,6 +17,7 @@ import { useIsChainID } from "@hooks/web3/read/useIsChainID";
 // import { useCallApprove } from "@hooks/web3/bridge/write/useCallApprove";
 import { useCallApprove } from "@hooks/web3/converter/write/useCallApprove";
 import { useSwitchToNetwork } from "@hooks/web3/write/useSwitchToNetwork";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 type CTAProps = {
   setIsOpen: (val: boolean) => void;
@@ -33,7 +34,6 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
     allowance,
     amount = "",
     setCTAPage,
-    setWalletModalOpen,
   } = useContext(StateContext);
 
   // check that we're connected to the appropriate chain
@@ -125,6 +125,7 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
     approvalStatus,
     halted,
   ]);
+  const { openConnectModal } = useConnectModal();
 
   // set wagmi address to address for ssr
   useEffect(() => {
@@ -142,7 +143,7 @@ export default function CTA({ setIsOpen, halted }: CTAProps) {
             type="button"
             size="full"
             className="h-14"
-            onClick={() => setWalletModalOpen(true)}
+            onClick={() => openConnectModal?.()}
           >
             Please connect your wallet
           </Button>
