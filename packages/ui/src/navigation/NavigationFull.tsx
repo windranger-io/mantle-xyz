@@ -8,7 +8,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 import CONST from '@mantle/constants'
 import clsx from 'clsx'
-import { MantleLogoIcon, MantleLogo } from '../base/Icons'
+import { MantleLogoIcon, MantleNetworkBrand } from '../base/Icons'
 import { Links } from '../actions/Links'
 
 import {
@@ -106,7 +106,7 @@ export const NavigationFull = ({
           >
             <span className="sr-only">Mantle</span>
 
-            <MantleLogo />
+            <MantleNetworkBrand />
           </Link>
         </div>
         <div className="flex lg:hidden">
