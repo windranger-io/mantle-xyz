@@ -6,7 +6,7 @@ import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import clsx from 'clsx'
-import { MantleLogoIcon, MantleLogo } from '../base/Icons'
+import { MantleLogoIcon, MantleNetworkBrand } from '../base/Icons'
 
 import { mobileNavCat } from './styles'
 import { MantleLink } from '../links/MantleLinks'
@@ -46,7 +46,7 @@ export const NavigationLite = ({
           >
             <span className="sr-only">Mantle</span>
 
-            <MantleLogo />
+            <MantleNetworkBrand />
           </Link>
         </div>
         <div className="hidden lg:flex justify-center gap-6 xl:gap-12 lg:grow">
