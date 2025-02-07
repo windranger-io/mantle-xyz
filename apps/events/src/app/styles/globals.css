@@ -3,3 +3,19 @@
 @tailwind utilities;
 
 /** The less we use this global style the better! */
+
+body {
+  color: white;
+  background-color: black;
+}
+
+/* disabling default number input appearance (in webkit & moz) */
+@layer base {
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number'] {
+    -webkit-appearance: none;
+    margin: 0;
+    -moz-appearance: textfield !important;
+  }
+}
