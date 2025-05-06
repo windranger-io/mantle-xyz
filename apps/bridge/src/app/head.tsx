@@ -1,18 +1,18 @@
 import {
   ABSOLUTE_PATH,
   APP_NAME,
-  L1_CHAIN_ID,
-  L2_CHAIN_ID,
+  // L1_CHAIN_ID,
+  // L2_CHAIN_ID,
   META,
   OG_TITLE,
   TWITTER_DESC,
   TWITTER_TITLE,
 } from "@config/constants";
-import { Cookies, MetaCRM } from "@mantle/ui";
+import { MetaCRM } from "@mantle/ui";
 import Script from "next/script";
 
 export default function Head() {
-  const isTestnet = L1_CHAIN_ID === 5 || L2_CHAIN_ID === 5001;
+  // const isTestnet = L1_CHAIN_ID === 5 || L2_CHAIN_ID === 5001;
 
   return (
     <>
@@ -32,7 +32,14 @@ export default function Head() {
       <meta name="twitter:description" content={`${TWITTER_DESC}`} />
       <meta name="twitter:image" content={`${ABSOLUTE_PATH}/twitter.png`} />
       <meta name="google" content="nositelinkssearchbox" />
-      <Cookies siteId={isTestnet ? "176" : "174"} />
+      {/* have migrated to https://app.mantle.xyz/bridge/ */}
+      {/* <Cookies
+        siteId={
+          isTestnet
+            ? "c8c0f51d-eaf1-42f0-9cb9-c73f01024b0e"
+            : "2adc2f79-be37-433c-8c01-f44bd45297ac"
+        }
+      /> */}
       <MetaCRM />
       <Script
         strategy="afterInteractive"
