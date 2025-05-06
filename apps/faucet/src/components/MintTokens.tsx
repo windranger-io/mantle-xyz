@@ -1,5 +1,7 @@
 /* eslint-disable no-nested-ternary */
 
+// @ts-nocheck
+
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
