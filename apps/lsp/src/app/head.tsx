@@ -6,7 +6,6 @@ import {
   TWITTER_DESC,
   TWITTER_TITLE,
 } from "@config/constants";
-import { Cookies } from "@mantle/ui";
 
 export default function Head() {
   return (
@@ -27,7 +26,8 @@ export default function Head() {
       <meta name="twitter:description" content={TWITTER_DESC} />
       <meta name="twitter:image" content={`${ABSOLUTE_PATH}/twitter.png`} />
       <meta name="google" content="nositelinkssearchbox" />
-      <Cookies siteId="999" />
+      {/* have migrated to https://app.methprotocol.xyz/ */}
+      {/* <Cookies siteId="999" /> */}
     </>
   );
 }

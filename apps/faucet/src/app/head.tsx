@@ -28,7 +28,7 @@ export default function Head() {
       <meta name="twitter:description" content={`${TWITTER_DESC}`} />
       <meta name="twitter:image:src" content={`${ABSOLUTE_PATH}/twitter.png`} />
       <meta name="google" content="nositelinkssearchbox" />
-      <Cookies siteId="178" />
+      <Cookies siteId="d208ad98-f703-4fcc-a96f-9bb61f399ae8" />
       <Script
         strategy="afterInteractive"
         src="https://www.googletagmanager.com/gtag/js?id=G-84NZKTFJ7S"
