@@ -44,5 +44,9 @@ export async function GET(request: NextRequest) {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

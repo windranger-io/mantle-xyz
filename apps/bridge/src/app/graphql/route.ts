@@ -60,6 +60,10 @@ export async function GET(request: NextRequest) {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -77,5 +81,9 @@ export async function POST(request: NextRequest) {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
