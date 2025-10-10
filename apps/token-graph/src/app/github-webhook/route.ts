@@ -90,6 +90,14 @@ function extractRepoKey(payload: any): string | null {
   return payload?.repository?.full_name ?? null;
 }
 
+// extract branch from push event
+function extractPushBranch(payload: any): string | null {
+  if (payload?.ref && payload.ref.startsWith("refs/heads/")) {
+    return payload.ref.replace("refs/heads/", "");
+  }
+  return null;
+}
+
 // get current block number
 async function getCurrentBlockNumber(): Promise<number> {
   const rpcUrl = process.env.MANTLE_RPC_URL || "https://rpc.mantle.xyz";
@@ -210,6 +218,7 @@ export async function POST(request: NextRequest) {
     const repoKey = extractRepoKey(payload);
     const signature = request.headers.get("x-hub-signature-256") ?? "";
     const event = request.headers.get("x-github-event");
+    const pushBranch = extractPushBranch(payload);
 
     if (!repoKey || !ALLOWED_REPOS.includes(repoKey)) {
       return NextResponse.json(
@@ -238,6 +247,17 @@ export async function POST(request: NextRequest) {
         success: true,
         message: `Event ${event} ignored`,
         repo: repoKey,
+      });
+    }
+
+    // For push events, only process if it's the configured branch
+    if (event === "push" && pushBranch && pushBranch !== branch) {
+      return NextResponse.json({
+        success: true,
+        message: `Push to branch '${pushBranch}' ignored, expecting '${branch}'`,
+        repo: repoKey,
+        pushBranch,
+        expectedBranch: branch,
       });
     }
 
@@ -270,6 +290,7 @@ export async function POST(request: NextRequest) {
       success: true,
       repo: repoKey,
       event,
+      branch: pushBranch || branch,
       reposMerged: count,
       blockNumber,
       timestamp: new Date().toISOString(),
