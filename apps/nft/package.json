@@ -6,7 +6,7 @@
     "dev": "",
     "dev:nft": "",
     "build": "next build",
-    "build:locales": "i18nexus pull -p ./src/i18n",
+    "build:locales": "i18nexus pull -k ${I18NEXUS_API_KEY} -p ./src/i18n",
     "test": "echo 'Running nft tests'",
     "start": "next start",
     "lint": "eslint ./src --fix",
