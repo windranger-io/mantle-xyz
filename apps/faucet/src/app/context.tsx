@@ -12,7 +12,7 @@ export default function AuthContext({ children, session }: AuthContextProps) {
   // we could filter the session content here to avoid sending any session secrets down the wire
   return (
     <SessionProvider
-      refetchInterval={3_000}
+      // refetchInterval={3_000}
       refetchOnWindowFocus
       session={session}
     >
