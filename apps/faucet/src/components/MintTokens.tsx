@@ -495,7 +495,7 @@ function MintTokens() {
                 error?.indexOf("Warning:") === 0
                   ? "text-white"
                   : "text-status-error"
-              } text-sm`}
+              } text-sm [word-break:break-word]`}
             >
               {sendTo !== address
                 ? `Please connect ${
