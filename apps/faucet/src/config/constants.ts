@@ -32,7 +32,7 @@ export function getBaseUrl() {
         : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
       : false) ||
     (process.env.NEXT_PUBLIC_SITE_URL
-      ? `https://faucet.testnet.mantle.xyz`
+      ? `https://faucet.sepolia.mantle.xyz`
       : // this should match the port used by the current app
         "http://localhost:3002")
   );
@@ -100,7 +100,7 @@ export const CHAINS: Record<
     },
     rpcUrls: [
       process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL ||
-        `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ETH_SEPOLIA_KEY}`,
+        `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ETH_SEPOLIA_KEY}`,
     ],
     blockExplorerUrls: ["https://sepolia.etherscan.io/"],
   },
