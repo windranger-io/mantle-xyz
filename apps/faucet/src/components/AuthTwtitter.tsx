@@ -3,7 +3,7 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Button, SimpleCard, Typography } from "@mantle/ui";
 import { AiOutlineCheckCircle } from "react-icons/ai";
-import { BirdIcon } from "@mantle/ui/src/base/Icons";
+import { XIcon } from "@mantle/ui/src/base/Icons";
 import { CardHeading } from "./CardHeadings";
 
 function AuthTwitter() {
@@ -34,7 +34,7 @@ function AuthTwitter() {
       ) : (
         <>
           <Typography variant="body" className="text-center mb-4">
-            Authenticate with your Twitter account.
+            Authenticate with your X account.
           </Typography>
           <Button
             variant="secondary"
@@ -44,7 +44,7 @@ function AuthTwitter() {
             onClick={() => signIn("twitter")}
           >
             <div className="flex justify-center gap-2 items-center">
-              <BirdIcon />
+              <XIcon className="text-[26px]" />
               Authenticate
             </div>
           </Button>
