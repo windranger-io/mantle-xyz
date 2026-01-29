@@ -24,6 +24,10 @@ import config from "@supagraph/config";
 // forces the route handler to be dynamic
 export const dynamic = "force-dynamic";
 
+// Increase timeout to 60 seconds (requires Vercel Pro plan)
+// For Hobby plan, this will be capped at 30 seconds
+export const maxDuration = 60;
+
 // Switch out the engine for development to avoid the mongo requirment locally
 setEngine({
   // name the connection

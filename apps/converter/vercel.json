@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/graphql/sync",
-      "schedule": "* * * * *"
+      "schedule": "*/2 * * * *"
     }
   ]
 }
