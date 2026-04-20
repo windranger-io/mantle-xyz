@@ -31,6 +31,8 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   ]
 );
 
+const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_ID;
+
 const config = createConfig({
   autoConnect: true,
   connectors: [
@@ -52,12 +54,18 @@ const config = createConfig({
         shimDisconnect: true,
       },
     }),
-    new WalletConnectConnector({
-      chains,
-      options: {
-        projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_ID || "",
-      },
-    }),
+    // Only register WalletConnect when a valid projectId is configured.
+    // An empty/invalid key causes the relay to spam WebSocket 3000 errors.
+    ...(walletConnectProjectId
+      ? [
+          new WalletConnectConnector({
+            chains,
+            options: {
+              projectId: walletConnectProjectId,
+            },
+          }),
+        ]
+      : []),
     new BybitWalletConnector({
       chains,
       options: {

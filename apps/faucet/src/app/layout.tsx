@@ -13,7 +13,6 @@ export default async function RootLayout({
     <html lang="en" className={`${GTWalsheim.className}`}>
       <Head />
       <body className="antialiased">
-        {/* @ts-expect-error Server Component */}
         <Providers>{children}</Providers>
       </body>
     </html>
