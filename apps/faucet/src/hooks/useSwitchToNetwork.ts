@@ -1,6 +1,6 @@
 "use client";
 
-import { CHAINS } from "@config/constants";
+import { CHAINS, type SupportedChainId } from "@config/constants";
 import { useToast } from "@hooks/useToast";
 import { useEffect, useState } from "react";
 
@@ -28,7 +28,7 @@ export function useSwitchToNetwork() {
     // add the woollyhat network to users wallet
     await window.ethereum.request?.({
       method: "wallet_addEthereumChain",
-      params: [CHAINS[chainId]],
+      params: [CHAINS[chainId as SupportedChainId]],
     });
   };
 
