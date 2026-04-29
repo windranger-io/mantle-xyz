@@ -1,6 +1,6 @@
 "use client";
 
-import { L1_CHAIN_ID } from "@config/constants";
+import { MantleSepoliaChainId } from "@config/constants";
 
 import { providers } from "ethers";
 
@@ -36,7 +36,7 @@ const StateContext: Context<StateProps> = createContext<StateProps>(
 // create a provider to contain all state
 export function StateProvider({ children }: { children: React.ReactNode }) {
   // page toggled chainId (set according to Deposit/Withdraw)
-  const [chainId] = useState(L1_CHAIN_ID);
+  const [chainId] = useState(MantleSepoliaChainId);
 
   // get the provider for the chosen chain
   const publicClient = usePublicClient({ chainId });

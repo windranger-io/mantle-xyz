@@ -1,4 +1,4 @@
-import { FAUCET_API_URL, L1_CHAIN_ID } from "@config/constants";
+import { FAUCET_API_URL } from "@config/constants";
 
 let rpcId = 0;
 
@@ -10,9 +10,13 @@ export type EligibilityResult = {
   remaining: string;
 };
 
-async function rpcCall<T>(method: string, params: unknown[] = []): Promise<T> {
+async function rpcCall<T>(
+  url: string,
+  method: string,
+  params: unknown[] = []
+): Promise<T> {
   rpcId += 1;
-  const res = await fetch(`${FAUCET_API_URL}/chain/${L1_CHAIN_ID}`, {
+  const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -32,22 +36,29 @@ async function rpcCall<T>(method: string, params: unknown[] = []): Promise<T> {
   return json.result as T;
 }
 
-/** Check eligibility — does NOT auto-register */
+/** Check eligibility — does NOT auto-register (chain-agnostic) */
 export async function faucetEligibility(
   address: string
 ): Promise<EligibilityResult> {
-  return rpcCall<EligibilityResult>("faucet_eligibility", [address]);
+  return rpcCall<EligibilityResult>(FAUCET_API_URL, "faucet_eligibility", [
+    address,
+  ]);
 }
 
-/** Register user — call only after Twitter auth */
+/** Register user — call only after Twitter auth (chain-agnostic) */
 export async function faucetRegister(address: string): Promise<boolean> {
-  return rpcCall<boolean>("faucet_register", [address]);
+  return rpcCall<boolean>(FAUCET_API_URL, "faucet_register", [address]);
 }
 
-/** Claim MNT */
+/** Claim MNT — chain-specific */
 export async function faucetRequestMNT(
   address: string,
-  amountWei: string
+  amountWei: string,
+  chainId: number
 ): Promise<null> {
-  return rpcCall<null>("faucet_requestMNT", [address, amountWei]);
+  return rpcCall<null>(
+    `${FAUCET_API_URL}/chain/${chainId}`,
+    "faucet_requestMNT",
+    [address, amountWei]
+  );
 }

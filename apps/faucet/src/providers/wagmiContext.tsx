@@ -1,7 +1,7 @@
 "use client";
 
-// this version of L1_CHAIN will use infura
-import { CHAINS_FORMATTED, L1_CHAIN_ID } from "@config/constants";
+// Register all supported faucet chains
+import { CHAINS_FORMATTED, SUPPORTED_CHAIN_IDS } from "@config/constants";
 
 // Required components for wagmi...
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
@@ -20,7 +20,7 @@ import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [CHAINS_FORMATTED[L1_CHAIN_ID]],
+  SUPPORTED_CHAIN_IDS.map((id) => CHAINS_FORMATTED[id]),
   [
     jsonRpcProvider({
       rpc: (chain) => ({

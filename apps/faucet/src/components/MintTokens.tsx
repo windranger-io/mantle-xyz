@@ -14,6 +14,12 @@ import {
   EligibilityResult,
 } from "@utils/faucetRpc";
 import { useTwitterSession } from "@hooks/useTwitterSession";
+import {
+  SUPPORTED_CHAIN_IDS,
+  CHAINS,
+  MantleSepoliaChainId,
+  type SupportedChainId,
+} from "@config/constants";
 
 import { CardHeading } from "./CardHeadings";
 import ConnectWallet from "./ConnectWallet";
@@ -26,6 +32,9 @@ function MintTokens() {
     login: signIn,
   } = useTwitterSession(wagmiAddress);
 
+  const [selectedChainId, setSelectedChainId] = useState<SupportedChainId>(
+    MantleSepoliaChainId as SupportedChainId
+  );
   const [amount, setAmount] = useState<string>("1");
   const [error, setError] = useState<string>();
   const [success, setSuccess] = useState<string>();
@@ -95,6 +104,15 @@ function MintTokens() {
     }
   };
 
+  // Reset claim state when chain changes (eligibility is chain-agnostic, keep it)
+  const handleChainChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newChainId = Number(e.target.value) as SupportedChainId;
+    setSelectedChainId(newChainId);
+    setAmount("1");
+    setError(undefined);
+    setSuccess(undefined);
+  };
+
   // Needs auth: connected + loaded + not registered + not authenticated
   const needsAuth =
     !!address &&
@@ -131,7 +149,7 @@ function MintTokens() {
     setError(undefined);
     setSuccess(undefined);
     try {
-      await faucetRequestMNT(address, amountWei.toString());
+      await faucetRequestMNT(address, amountWei.toString(), selectedChainId);
       setSuccess(
         `Success! Sent ${amount} MNT to ${truncateAddress(
           address as `0x${string}`
@@ -145,6 +163,25 @@ function MintTokens() {
       setClaiming(false);
     }
   };
+
+  // --- Chain selector component ---
+  const chainSelector = (
+    <div className="grid gap-2">
+      <p className="text-sm">Network</p>
+      <select
+        value={selectedChainId}
+        onChange={handleChainChange}
+        className="bg-black w-full rounded-input px-3 py-2 text-white border border-stroke-secondary focus:outline-none focus:border-white cursor-pointer"
+        disabled={claiming}
+      >
+        {SUPPORTED_CHAIN_IDS.map((id) => (
+          <option key={id} value={id}>
+            {CHAINS[id].chainName}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
 
   // --- RENDER ---
 
@@ -228,6 +265,8 @@ function MintTokens() {
             {success}
           </div>
         )}
+
+        {chainSelector}
 
         <div className="grid gap-2">
           <p className="text-sm">Amount (MNT)</p>

@@ -45,12 +45,20 @@ export const ABSOLUTE_PATH = getBaseUrl();
 export const FAUCET_API_URL =
   process.env.NEXT_PUBLIC_FAUCET_API_URL || "http://localhost:8545";
 
-// Configure which chain to use (Mantle Sepolia)
-export const L1_CHAIN_ID = 5003;
+// Chain IDs
+export const MantleSepoliaChainId = 5003;
+export const MantleHoodiChainId = 5001;
+
+// All supported faucet chain IDs (used for the chain selector)
+export const SUPPORTED_CHAIN_IDS = [
+  MantleSepoliaChainId,
+  MantleHoodiChainId,
+] as const;
+export type SupportedChainId = (typeof SUPPORTED_CHAIN_IDS)[number];
 
 // set the available chains configuration to allow network to be added
 export const CHAINS: Record<
-  number,
+  SupportedChainId,
   {
     chainId: string;
     chainName: string;
@@ -63,7 +71,7 @@ export const CHAINS: Record<
     blockExplorerUrls: string[];
   }
 > = {
-  5003: {
+  [MantleSepoliaChainId]: {
     chainId: "0x138b",
     chainName: "Mantle Sepolia",
     nativeCurrency: {
@@ -77,30 +85,61 @@ export const CHAINS: Record<
     ],
     blockExplorerUrls: ["https://sepolia.mantlescan.xyz/"],
   },
+  [MantleHoodiChainId]: {
+    chainId: "0x1389",
+    chainName: "Mantle Hoodi",
+    nativeCurrency: {
+      name: "MNT",
+      symbol: "MNT",
+      decimals: 18,
+    },
+    rpcUrls: [
+      process.env.NEXT_PUBLIC_MANTLE_HOODI_RPC_URL ||
+        "https://rpc.hoodi.mantle.xyz",
+    ],
+    blockExplorerUrls: ["https://explorer.hoodi.mantle.xyz/"],
+  },
 };
 
 // Formatted chains for use in wagmi
-export const CHAINS_FORMATTED: Record<number, Chain> = {
-  5003: {
+export const CHAINS_FORMATTED: Record<SupportedChainId, Chain> = {
+  [MantleSepoliaChainId]: {
     testnet: true,
-    name: CHAINS[5003].chainName,
-    network: CHAINS[5003].chainName,
+    name: CHAINS[MantleSepoliaChainId].chainName,
+    network: CHAINS[MantleSepoliaChainId].chainName,
     rpcUrls: {
       default: {
-        http: [CHAINS[5003].rpcUrls[0]],
+        http: [CHAINS[MantleSepoliaChainId].rpcUrls[0]],
       },
       public: {
-        http: [CHAINS[5003].rpcUrls[0]],
+        http: [CHAINS[MantleSepoliaChainId].rpcUrls[0]],
       },
     },
-    id: 5003,
-    nativeCurrency: CHAINS[5003].nativeCurrency,
+    id: MantleSepoliaChainId,
+    nativeCurrency: CHAINS[MantleSepoliaChainId].nativeCurrency,
+  },
+  [MantleHoodiChainId]: {
+    testnet: true,
+    name: CHAINS[MantleHoodiChainId].chainName,
+    network: CHAINS[MantleHoodiChainId].chainName,
+    rpcUrls: {
+      default: {
+        http: [CHAINS[MantleHoodiChainId].rpcUrls[0]],
+      },
+      public: {
+        http: [CHAINS[MantleHoodiChainId].rpcUrls[0]],
+      },
+    },
+    id: MantleHoodiChainId,
+    nativeCurrency: CHAINS[MantleHoodiChainId].nativeCurrency,
   },
 };
 
 // everything by default
 export default {
   APP_NAME,
-  L1_CHAIN_ID,
+  MantleSepoliaChainId,
+  MantleHoodiChainId,
+  SUPPORTED_CHAIN_IDS,
   CHAINS,
 };
