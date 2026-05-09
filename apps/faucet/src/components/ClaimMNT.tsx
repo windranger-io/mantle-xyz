@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
+import { BigNumber } from "ethers";
 import { parseEther, formatEther } from "ethers/lib/utils.js";
 import { truncateAddress } from "@mantle/utils";
 import { Button, SimpleCard, Typography } from "@mantle/ui";
@@ -11,6 +12,7 @@ import {
   faucetEligibility,
   faucetRegister,
   faucetRequestMNT,
+  faucetBalance,
   EligibilityResult,
 } from "@utils/faucetRpc";
 import { useTwitterSession } from "@hooks/useTwitterSession";
@@ -18,13 +20,14 @@ import {
   SUPPORTED_CHAIN_IDS,
   CHAINS,
   MantleSepoliaChainId,
+  MIN_FAUCET_RESERVE_MNT,
   type SupportedChainId,
 } from "@config/constants";
 
 import { CardHeading } from "./CardHeadings";
 import ConnectWallet from "./ConnectWallet";
 
-function MintTokens() {
+function ClaimMNT() {
   const { address: wagmiAddress } = useAccount();
   const {
     isLoading: sessionLoading,
@@ -42,6 +45,8 @@ function MintTokens() {
   const [eligibility, setEligibility] = useState<EligibilityResult>();
   const [checking, setChecking] = useState(false);
   const [registering, setRegistering] = useState(false);
+  const [reserveWei, setReserveWei] = useState<BigNumber | null>(null);
+  const [reserveLoading, setReserveLoading] = useState(false);
 
   const address = wagmiAddress;
 
@@ -65,6 +70,26 @@ function MintTokens() {
       )
       .finally(() => setChecking(false));
   }, [wagmiAddress]);
+
+  // Fetch faucet reserve for the selected chain on mount and on chain change.
+  useEffect(() => {
+    let cancelled = false;
+    setReserveLoading(true);
+    setReserveWei(null);
+    faucetBalance(selectedChainId)
+      .then((wei) => {
+        if (!cancelled) setReserveWei(BigNumber.from(wei));
+      })
+      .catch(() => {
+        if (!cancelled) setReserveWei(null);
+      })
+      .finally(() => {
+        if (!cancelled) setReserveLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedChainId]);
 
   // 2) After Twitter auth succeeds for unregistered user → faucet_register → refresh
   const eligibilityRegistered = eligibility?.registered;
@@ -142,6 +167,8 @@ function MintTokens() {
   const exceedsRemaining =
     amountWei && eligibility?.remaining && amountWei.gt(eligibility.remaining);
   const invalidAmount = !amountWei || amountWei.lte(0);
+  const minReserveWei = parseEther(MIN_FAUCET_RESERVE_MNT.toString());
+  const lowReserve = reserveWei !== null && reserveWei.lt(minReserveWei);
 
   const handleClaim = async () => {
     if (!address || !amountWei || invalidAmount) return;
@@ -299,20 +326,26 @@ function MintTokens() {
             claiming ||
             invalidAmount ||
             !!exceedsRemaining ||
-            !eligibility.eligible
+            !eligibility.eligible ||
+            lowReserve ||
+            reserveLoading
           }
           onClick={handleClaim}
         >
           {claiming ? "Claiming..." : "Claim MNT"}
         </Button>
 
-        {(error || exceedsRemaining || !eligibility.eligible) && (
+        {(error || lowReserve || exceedsRemaining || !eligibility.eligible) && (
           <div className="bg-slate-900 p-4 rounded-md">
             <div className="text-status-error text-sm [word-break:break-word]">
-              {error ||
-                (exceedsRemaining
-                  ? `Amount exceeds your remaining daily limit (${remainingMNT} MNT)`
-                  : "Daily limit reached. Please try again tomorrow.")}
+              {(() => {
+                if (error) return error;
+                if (lowReserve)
+                  return `Faucet reserve is low on ${CHAINS[selectedChainId].chainName}. Please try again later.`;
+                if (exceedsRemaining)
+                  return `Amount exceeds your remaining daily limit (${remainingMNT} MNT)`;
+                return "Daily limit reached. Please try again tomorrow.";
+              })()}
             </div>
           </div>
         )}
@@ -323,4 +356,4 @@ function MintTokens() {
   return null;
 }
 
-export default MintTokens;
+export default ClaimMNT;

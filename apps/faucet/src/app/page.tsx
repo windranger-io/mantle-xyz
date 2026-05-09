@@ -5,7 +5,7 @@ import {
   PageContainer,
   Typography,
 } from "@mantle/ui";
-import MintTokens from "@components/MintTokens";
+import ClaimMNT from "@components/ClaimMNT";
 import { AdditionalLinks } from "@components/AdditionalLinks";
 import CONST from "@mantle/constants";
 import Nav from "@components/Nav";
@@ -28,7 +28,7 @@ export default async function Page() {
           Testnet Faucet
         </Typography>
 
-        <MintTokens />
+        <ClaimMNT />
         <AdditionalLinks />
       </PageContainer>
       <SlimFooter url={CONST.WEBSITE} />

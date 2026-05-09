@@ -56,6 +56,10 @@ export const SUPPORTED_CHAIN_IDS = [
 ] as const;
 export type SupportedChainId = (typeof SUPPORTED_CHAIN_IDS)[number];
 
+// Minimum faucet reserve required to allow claims (in MNT, whole units).
+// When the per-chain reserve drops below this the Claim button is disabled.
+export const MIN_FAUCET_RESERVE_MNT = 1000;
+
 // set the available chains configuration to allow network to be added
 export const CHAINS: Record<
   SupportedChainId,

@@ -62,3 +62,12 @@ export async function faucetRequestMNT(
     [address, amountWei]
   );
 }
+
+/** Get faucet reserve balance (wei string) — chain-specific */
+export async function faucetBalance(chainId: number): Promise<string> {
+  return rpcCall<string>(
+    `${FAUCET_API_URL}/chain/${chainId}`,
+    "faucet_balance",
+    []
+  );
+}
