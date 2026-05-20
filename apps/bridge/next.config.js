@@ -4,7 +4,6 @@ const nextConfig = {
   transpilePackages: ["@design-system/ui"],
   images: {
     domains: [
-      "raw.githubusercontent.com",
       "token-list.mantle.xyz",
       "safe-transaction-assets.gnosis-safe.io",
       "safe-transaction-assets.safe.global",
