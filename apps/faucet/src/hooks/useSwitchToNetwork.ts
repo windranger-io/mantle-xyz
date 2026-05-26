@@ -4,17 +4,15 @@ import { CHAINS, type SupportedChainId } from "@config/constants";
 import { useToast } from "@hooks/useToast";
 import { useEffect, useState } from "react";
 
-import { useSwitchNetwork } from "wagmi";
+import { useSwitchChain } from "wagmi";
 
-declare global {
-  interface Window {
-    ethereum: import("ethers").providers.ExternalProvider;
-  }
-}
+type EthereumProvider = {
+  request?: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+};
 
 export function useSwitchToNetwork() {
   // allow wagmi to attempt to switch networks
-  const { switchNetwork, error } = useSwitchNetwork();
+  const { switchChainAsync, error } = useSwitchChain();
 
   // set the given error into context to control dismissals
   const [displayError, setDisplayError] = useState("");
@@ -24,9 +22,10 @@ export function useSwitchToNetwork() {
 
   // trigger addNetwork
   const addNetwork = async (chainId: number) => {
-    if (!window.ethereum) throw new Error("No crypto wallet found");
+    const { ethereum } = window as unknown as { ethereum?: EthereumProvider };
+    if (!ethereum) throw new Error("No crypto wallet found");
     // add the woollyhat network to users wallet
-    await window.ethereum.request?.({
+    await ethereum.request?.({
       method: "wallet_addEthereumChain",
       params: [CHAINS[chainId as SupportedChainId]],
     });
@@ -39,7 +38,7 @@ export function useSwitchToNetwork() {
       // reset prev error
       setDisplayError("");
       // attempt to switch the network
-      switchNetwork?.(chainId);
+      await switchChainAsync({ chainId });
       // on success return the chainID we moved to
       return chainId;
     } catch (switchError: any) {

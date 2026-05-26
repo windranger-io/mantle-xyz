@@ -1,4 +1,4 @@
-import { Chain } from "wagmi";
+import { Chain } from "@rainbow-me/rainbowkit";
 
 // Configure the applications name
 export const APP_NAME = "Mantle Testnet Faucet";
@@ -106,7 +106,10 @@ export const CHAINS: Record<
 };
 
 // Formatted chains for use in wagmi
-export const CHAINS_FORMATTED: Record<SupportedChainId, Chain> = {
+export const CHAINS_FORMATTED: Record<
+  SupportedChainId,
+  Chain & { network: string }
+> = {
   [MantleSepoliaChainId]: {
     testnet: true,
     name: CHAINS[MantleSepoliaChainId].chainName,

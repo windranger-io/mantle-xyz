@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { BigNumber } from "ethers";
 import { parseEther, formatEther } from "ethers/lib/utils.js";
@@ -8,6 +8,7 @@ import { truncateAddress } from "@mantle/utils";
 import { Button, SimpleCard, Typography } from "@mantle/ui";
 import { XIcon } from "@mantle/ui/src/base/Icons";
 
+import StateContext from "@providers/stateContext";
 import {
   faucetEligibility,
   faucetRegister,
@@ -19,7 +20,6 @@ import { useTwitterSession } from "@hooks/useTwitterSession";
 import {
   SUPPORTED_CHAIN_IDS,
   CHAINS,
-  MantleSepoliaChainId,
   MIN_FAUCET_RESERVE_MNT,
   type SupportedChainId,
 } from "@config/constants";
@@ -35,9 +35,7 @@ function ClaimMNT() {
     login: signIn,
   } = useTwitterSession(wagmiAddress);
 
-  const [selectedChainId, setSelectedChainId] = useState<SupportedChainId>(
-    MantleSepoliaChainId as SupportedChainId
-  );
+  const { selectedChainId, setSelectedChainId } = useContext(StateContext);
   const [amount, setAmount] = useState<string>("1");
   const [error, setError] = useState<string>();
   const [success, setSuccess] = useState<string>();

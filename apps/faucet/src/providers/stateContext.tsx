@@ -1,6 +1,6 @@
 "use client";
 
-import { MantleSepoliaChainId } from "@config/constants";
+import { MantleSepoliaChainId, type SupportedChainId } from "@config/constants";
 
 import { providers } from "ethers";
 
@@ -15,6 +15,7 @@ export type StateProps = {
     connector?: string;
   };
   chainId: number;
+  selectedChainId: SupportedChainId;
   provider: providers.JsonRpcProvider | providers.FallbackProvider;
   setClient: (client: {
     isConnected: boolean;
@@ -22,9 +23,8 @@ export type StateProps = {
     address?: `0x${string}`;
     connector?: string;
   }) => void;
-  walletModalOpen: boolean;
+  setSelectedChainId: React.Dispatch<React.SetStateAction<SupportedChainId>>;
   mobileMenuOpen: boolean;
-  setWalletModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -38,11 +38,18 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   // page toggled chainId (set according to Deposit/Withdraw)
   const [chainId] = useState(MantleSepoliaChainId);
 
+  // chain selected in the Claim form — shared so siblings (AdditionalLinks
+  // etc.) render in sync with the user's pick.
+  const [selectedChainId, setSelectedChainId] = useState<SupportedChainId>(
+    MantleSepoliaChainId as SupportedChainId
+  );
+
   // get the provider for the chosen chain
   const publicClient = usePublicClient({ chainId });
 
   // create an ethers provider from the publicClient
   const provider = useMemo(() => {
+    if (!publicClient) return new providers.JsonRpcProvider();
     const { chain, transport } = publicClient;
     const network = {
       chainId: chain.id,
@@ -68,8 +75,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     isConnected: false,
   });
 
-  // wallet modal controls
-  const [walletModalOpen, setWalletModalOpen] = useState<boolean>(false);
   // mobile menu controls
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
@@ -78,14 +83,14 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     return {
       client,
       chainId,
+      selectedChainId,
       provider,
       setClient,
-      walletModalOpen,
+      setSelectedChainId,
       mobileMenuOpen,
-      setWalletModalOpen,
       setMobileMenuOpen,
     } as StateProps;
-  }, [client, chainId, provider, walletModalOpen, mobileMenuOpen]);
+  }, [client, chainId, selectedChainId, provider, mobileMenuOpen]);
 
   return (
     <StateContext.Provider value={context}>{children}</StateContext.Provider>

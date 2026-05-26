@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3002",
-    "dev:faucet": "next dev --port 3002",
+    "dev": "next dev --port 3012",
+    "dev:faucet": "next dev --port 3012",
     "build": "next build",
     "test": "echo 'Running faucet tests'",
     "start": "next start",
@@ -14,7 +14,8 @@
   "dependencies": {
     "@mantle/constants": "workspace:*",
     "@mantle/ui": "workspace:*",
-    "@mantle/wallet": "workspace:*",
+    "@rainbow-me/rainbowkit": "^2.2.1",
+    "@tanstack/react-query": "^5.0.0",
     "@xdevplatform/xdk": "^0.5.0",
     "ethers": "^5.7.2",
     "framer-motion": "^10.12.10",
@@ -22,7 +23,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
-    "wagmi": "^1.3.9",
+    "viem": "^2.0.10",
+    "wagmi": "^2.9.0",
     "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {

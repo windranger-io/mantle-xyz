@@ -1,15 +1,13 @@
-import { WagmiProvider } from "@providers/wagmiContext";
+import { RainbowKit } from "@providers/rainbowContext";
 import { StateProvider } from "@providers/stateContext";
-import WalletProvider from "@providers/walletProvider";
 import { ToastContainer } from "@components/Toast";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <WagmiProvider>
+    <RainbowKit>
       <StateProvider>
-        <WalletProvider />
         <ToastContainer>{children}</ToastContainer>
       </StateProvider>
-    </WagmiProvider>
+    </RainbowKit>
   );
 }
