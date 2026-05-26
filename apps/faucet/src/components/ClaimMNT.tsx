@@ -214,7 +214,7 @@ function ClaimMNT() {
   if (!address) {
     return (
       <SimpleCard className="max-w-lg w-full grid gap-4">
-        <CardHeading numDisplay="1" header="Connect your wallet" />
+        <CardHeading numDisplay="" header="Connect your wallet" />
         <Typography variant="body" className="text-center mb-4">
           Connect your wallet to claim testnet MNT from the faucet.
         </Typography>
@@ -259,7 +259,7 @@ function ClaimMNT() {
   if (needsAuth) {
     return (
       <SimpleCard className="max-w-lg w-full grid gap-4">
-        <CardHeading numDisplay="1" header="Authenticate" />
+        <CardHeading numDisplay="" header="Authenticate" />
         <Typography variant="body" className="text-center mb-4">
           Authenticate with your X account to use the faucet.
         </Typography>
@@ -277,7 +277,7 @@ function ClaimMNT() {
   if (eligibility?.registered) {
     return (
       <SimpleCard className="max-w-lg w-full grid gap-4">
-        <CardHeading numDisplay="1" header="Claim testnet MNT" />
+        <CardHeading numDisplay="" header="Claim testnet MNT" />
 
         <div className="grid gap-1 text-sm">
           <p>Daily limit: {dailyLimitMNT} MNT</p>
