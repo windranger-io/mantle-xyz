@@ -1,4 +1,4 @@
-import { Chain } from "wagmi";
+import { Chain } from "@rainbow-me/rainbowkit";
 
 // Configure the applications name
 export const APP_NAME = "Mantle Testnet Faucet";
@@ -34,35 +34,35 @@ export function getBaseUrl() {
     (process.env.NEXT_PUBLIC_SITE_URL
       ? `https://faucet.sepolia.mantle.xyz`
       : // this should match the port used by the current app
-        "http://localhost:3002")
+        "http://127.0.0.1:3002")
   );
 }
 
 // export the absolute path
 export const ABSOLUTE_PATH = getBaseUrl();
 
-// Configure which chain to use (Sepolia Network)
-export const L1_CHAIN_ID = 11155111;
+// op-faucet backend URL (JSON-RPC 2.0)
+export const FAUCET_API_URL =
+  process.env.NEXT_PUBLIC_FAUCET_API_URL || "http://localhost:8545";
 
-// Configure the maximum balance the ui will mint until
-export const MAX_BALANCE = 1000;
+// Chain IDs
+export const MantleSepoliaChainId = 5003;
+export const MantleHoodiChainId = 5001;
 
-// The max amount that can be minted in a single tx (this is not enforced by the contract)
-export const MAX_MINT = 1000;
+// All supported faucet chain IDs (used for the chain selector)
+export const SUPPORTED_CHAIN_IDS = [
+  MantleSepoliaChainId,
+  MantleHoodiChainId,
+] as const;
+export type SupportedChainId = (typeof SUPPORTED_CHAIN_IDS)[number];
 
-// User must tweet the following before they can mint tokens...
-export const REQUIRED_TWEET =
-  /To #BuildonMantle, I am claiming test \$MNT tokens on https:\/\/([^\s]+) for @0xMantle, a next generation high-performance modular @Ethereum L2 built for hyperscaled dApps.\n\nLearn more: \[https:\/\/([^\]]+)\]/;
-
-// set the available networks token contract address (goerli)
-export const NETWORKS: Record<number, `0x${string}`> = {
-  5: "0xc1dC2d65A2243c22344E725677A3E3BEBD26E604",
-  11155111: "0x65e37b558f64e2be5768db46df22f93d85741a9e",
-};
+// Minimum faucet reserve required to allow claims (in MNT, whole units).
+// When the per-chain reserve drops below this the Claim button is disabled.
+export const MIN_FAUCET_RESERVE_MNT = 1000;
 
 // set the available chains configuration to allow network to be added
 export const CHAINS: Record<
-  number,
+  SupportedChainId,
   {
     chainId: string;
     chainName: string;
@@ -75,114 +75,78 @@ export const CHAINS: Record<
     blockExplorerUrls: string[];
   }
 > = {
-  // setup goerli so that it can be added to the users wallet
-  5: {
-    chainId: "0x5",
-    chainName: "Goerli",
+  [MantleSepoliaChainId]: {
+    chainId: "0x138b",
+    chainName: "Mantle Sepolia",
     nativeCurrency: {
-      name: "GoerliETH",
-      symbol: "GoerliETH",
+      name: "MNT",
+      symbol: "MNT",
       decimals: 18,
     },
     rpcUrls: [
-      process.env.NEXT_PUBLIC_GOERLI_RPC_URL ||
-        `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_GOERLI_KEY}`,
+      process.env.NEXT_PUBLIC_MANTLE_SEPOLIA_RPC_URL ||
+        "https://rpc.sepolia.mantle.xyz",
     ],
-    blockExplorerUrls: ["https://goerli.etherscan.io/"],
+    blockExplorerUrls: ["https://sepolia.mantlescan.xyz/"],
   },
-  11155111: {
-    chainId: "0xaa36a7",
-    chainName: "Sepolia",
+  [MantleHoodiChainId]: {
+    chainId: "0x1389",
+    chainName: "Mantle Hoodi",
     nativeCurrency: {
-      name: "SepoliaETH",
-      symbol: "SepoliaETH",
+      name: "MNT",
+      symbol: "MNT",
       decimals: 18,
     },
     rpcUrls: [
-      process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL ||
-        `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ETH_SEPOLIA_KEY}`,
+      process.env.NEXT_PUBLIC_MANTLE_HOODI_RPC_URL ||
+        "https://rpc.hoodi.mantle.xyz",
     ],
-    blockExplorerUrls: ["https://sepolia.etherscan.io/"],
+    blockExplorerUrls: ["https://explorer.hoodi.mantle.xyz/"],
   },
 };
 
 // Formatted chains for use in wagmi
-export const CHAINS_FORMATTED: Record<number, Chain> = {
-  5: {
+export const CHAINS_FORMATTED: Record<
+  SupportedChainId,
+  Chain & { network: string }
+> = {
+  [MantleSepoliaChainId]: {
     testnet: true,
-    name: CHAINS[5].chainName,
-    network: CHAINS[5].chainName,
+    name: CHAINS[MantleSepoliaChainId].chainName,
+    network: CHAINS[MantleSepoliaChainId].chainName,
     rpcUrls: {
       default: {
-        http: [CHAINS[5].rpcUrls[0]],
+        http: [CHAINS[MantleSepoliaChainId].rpcUrls[0]],
       },
       public: {
-        http: [CHAINS[5].rpcUrls[0]],
+        http: [CHAINS[MantleSepoliaChainId].rpcUrls[0]],
       },
     },
-    id: 5,
-    nativeCurrency: CHAINS[5].nativeCurrency,
+    id: MantleSepoliaChainId,
+    nativeCurrency: CHAINS[MantleSepoliaChainId].nativeCurrency,
   },
-  11155111: {
+  [MantleHoodiChainId]: {
     testnet: true,
-    name: CHAINS[11155111].chainName,
-    network: CHAINS[11155111].chainName,
+    name: CHAINS[MantleHoodiChainId].chainName,
+    network: CHAINS[MantleHoodiChainId].chainName,
     rpcUrls: {
       default: {
-        http: [CHAINS[11155111].rpcUrls[0]],
+        http: [CHAINS[MantleHoodiChainId].rpcUrls[0]],
       },
       public: {
-        http: [CHAINS[11155111].rpcUrls[0]],
+        http: [CHAINS[MantleHoodiChainId].rpcUrls[0]],
       },
     },
-    id: 11155111,
-    nativeCurrency: CHAINS[11155111].nativeCurrency,
+    id: MantleHoodiChainId,
+    nativeCurrency: CHAINS[MantleHoodiChainId].nativeCurrency,
   },
 };
-
-// export the mintable erc20 tokens mint function ABI
-export const ABI = [
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_amount",
-        type: "uint256",
-      },
-    ],
-    name: "mint",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "for",
-        type: "address",
-      },
-    ],
-    name: "mintRecord",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "blockNumber",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-] as const;
 
 // everything by default
 export default {
   APP_NAME,
-  L1_CHAIN_ID,
-  MAX_BALANCE,
-  REQUIRED_TWEET,
-  NETWORKS,
+  MantleSepoliaChainId,
+  MantleHoodiChainId,
+  SUPPORTED_CHAIN_IDS,
   CHAINS,
-  ABI,
 };
