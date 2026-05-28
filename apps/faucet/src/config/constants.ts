@@ -47,7 +47,7 @@ export const FAUCET_API_URL =
 
 // Chain IDs
 export const MantleSepoliaChainId = 5003;
-export const MantleHoodiChainId = 5001;
+export const MantleHoodiChainId = 50002;
 
 // All supported faucet chain IDs (used for the chain selector)
 export const SUPPORTED_CHAIN_IDS = [
