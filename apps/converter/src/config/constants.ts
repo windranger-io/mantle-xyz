@@ -161,7 +161,10 @@ export const CHAINS: Record<
       `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ETH_MAINNET_KEY}`,
       // infura backed redirect gateway
       // `${ABSOLUTE_PATH}/rpc`,
-      "https://eth.llamarpc.com",
+      // "https://eth.llamarpc.com",
+      "https://ethereum-rpc.publicnode.com",
+      "https://eth.drpc.org",
+      "https://rpc.ankr.com/eth/acfad6cee74f202a2e0446f4217f46b1d75990ffa142fa00ed86aa3b7f7c4009",
     ],
     blockExplorerUrls: ["https://etherscan.io/"],
   },
@@ -213,10 +216,12 @@ export const CHAINS_FORMATTED: Record<number, Chain & { network: string }> = {
     network: CHAINS[1].chainName,
     rpcUrls: {
       default: {
+        // alchemy — kept for the wagmi/rainbowkit write transport
         http: [CHAINS[1].rpcUrls[0]],
       },
       public: {
-        http: [CHAINS[1].rpcUrls[1]],
+        // public pool (everything after alchemy) — primary for read hooks
+        http: CHAINS[1].rpcUrls.slice(1),
       },
     },
     id: 1,
