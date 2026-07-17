@@ -1,17 +1,17 @@
 import {
-  CHAINS_FORMATTED,
   L1_CHAIN_ID,
   L2_CHAIN_ID,
   MULTICALL_CONTRACTS,
   TOKEN_ABI,
   Token,
 } from "@config/constants";
-import { Contract, providers } from "ethers";
+import { Contract } from "ethers";
 
 import {
   callMulticallContract,
   getMulticallContract,
 } from "@utils/multicallContract";
+import { getFallbackProvider } from "@utils/getFallbackProvider";
 import { formatUnits } from "ethers/lib/utils.js";
 import { useQuery } from "wagmi/query";
 
@@ -36,11 +36,9 @@ function useAccountBalances(
       },
     ],
     queryFn: async () => {
-      // connect to L1 on public gateway but use default rpc for L2
-      const provider = new providers.JsonRpcProvider(
-        CHAINS_FORMATTED[
-          chainId === L1_CHAIN_ID ? L1_CHAIN_ID : L2_CHAIN_ID
-        ].rpcUrls.public.http[0]
+      // fail over across the chain's RPC pool (L1: public nodes → alchemy; L2: default)
+      const provider = getFallbackProvider(
+        chainId === L1_CHAIN_ID ? L1_CHAIN_ID : L2_CHAIN_ID
       );
       // get the current multicall contract
       const multicall = await getMulticallContract(

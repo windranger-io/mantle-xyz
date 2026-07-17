@@ -1,14 +1,14 @@
 import {
-  CHAINS_FORMATTED,
   L1_BITDAO_TOKEN,
   L1_BITDAO_TOKEN_ADDRESS,
   L1_CONVERTER_V2_CONTRACT_ADDRESS,
   TOKEN_ABI,
 } from "@config/constants";
-import { BigNumberish, Contract, providers } from "ethers";
+import { BigNumberish, Contract } from "ethers";
 
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { useQuery } from "wagmi/query";
+import { getFallbackProvider } from "@utils/getFallbackProvider";
 
 function useAllowanceCheck(
   chainId: number,
@@ -24,9 +24,7 @@ function useAllowanceCheck(
       },
     ],
     queryFn: () => {
-      const provider = new providers.JsonRpcProvider(
-        CHAINS_FORMATTED[chainId].rpcUrls.public.http[0]
-      );
+      const provider = getFallbackProvider(chainId);
       // only run the multicall if we're connected to the correct network
       if (client?.address && client?.address !== "0x") {
         if (client.address) {

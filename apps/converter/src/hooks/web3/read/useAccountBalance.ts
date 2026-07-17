@@ -1,6 +1,7 @@
-import { CHAINS_FORMATTED, L1_CHAIN_ID } from "@config/constants";
-import { BigNumber, Contract, providers } from "ethers";
+import { L1_CHAIN_ID } from "@config/constants";
+import { BigNumber, Contract } from "ethers";
 import { useQuery } from "wagmi/query";
+import { getFallbackProvider } from "@utils/getFallbackProvider";
 
 function useAccountBalance(address: `0x${string}`, token: string) {
   // perform a multicall on the given network to get all token balances for user
@@ -17,9 +18,7 @@ function useAccountBalance(address: `0x${string}`, token: string) {
       },
     ],
     queryFn: async () => {
-      const provider = new providers.JsonRpcProvider(
-        CHAINS_FORMATTED[L1_CHAIN_ID].rpcUrls.public.http[0]
-      );
+      const provider = getFallbackProvider(L1_CHAIN_ID);
       const abi = [
         {
           constant: true,
