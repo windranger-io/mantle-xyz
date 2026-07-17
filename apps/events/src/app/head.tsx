@@ -1,7 +1,7 @@
 export default function Head() {
   return (
     <>
-      <title>BitDAO OS App Template</title>
+      <title>ETHcc Mantle Airdrop</title>
       <link rel="icon" href="/favicon.ico" />
     </>
   )
