@@ -19,14 +19,17 @@ const fetchL2SnapshotVotes = async (address: string, snapshot: string) => {
         `,
         variables: {
           address: address.toLowerCase(),
-          snapshot: Number(snapshot),
+          // "latest" -> Number() is NaN (sent as null); use the resolver's default = latest
+          snapshot: Number(snapshot) || Number.MAX_SAFE_INTEGER,
         },
       }),
     }
   );
 
-  const snapshotVotes = await fetchSnapshotVotes.json();
-  const { data } = await snapshotVotes;
+  const { data, errors } = await fetchSnapshotVotes.json();
+  if (!data?.l2TotalVotesChangedsByAddressAndBlockNumber) {
+    throw new Error(`subgraph error: ${JSON.stringify(errors)}`);
+  }
   let totalVotes = "0";
 
   if (
