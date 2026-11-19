@@ -11,15 +11,13 @@ import { getMongodb } from "@providers/mongoClient";
 // force-dynamic rendering as we're basing reqs on url
 export const dynamic = "force-dynamic";
 
-// Generate client
-const client = getMongodb(process.env.MONGODB_URI!);
-
 // Expose a post handler to accept api-v2 type strategy reqs from snapshot
 export async function GET() {
   // check for uri before connecting
-  if (process.env.MONGODB_URI && client) {
-    // fetch the db connection
-    const mongo = (await client).db(config.name || "supagraph");
+  if (process.env.MONGODB_URI) {
+    // fetch the db connection per request, so a failed connect is retried on the next call
+    const client = await getMongodb(process.env.MONGODB_URI);
+    const mongo = client.db(config.name || "supagraph");
 
     // connect to the entity collection
     const collection = mongo.collection("__meta__");
